@@ -299,24 +299,24 @@ pub struct CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgn
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -420,24 +420,24 @@ pub struct CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgno
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -572,24 +572,24 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulin
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -693,24 +693,24 @@ pub struct CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringScheduling
     pub label_selector: Option<CoreProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -875,8 +875,10 @@ pub struct CoreProviderDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -916,8 +918,10 @@ pub struct CoreProviderDeploymentContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -945,10 +949,8 @@ pub struct CoreProviderDeploymentContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -972,6 +974,11 @@ pub struct CoreProviderDeploymentContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -979,8 +986,10 @@ pub struct CoreProviderDeploymentContainersResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderDeploymentImagePullSecrets {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1077,7 +1086,6 @@ pub struct CoreProviderManager {
     /// CacheNamespace if specified restricts the manager's cache to watch objects in
     /// the desired namespace Defaults to all namespaces
     /// 
-    /// 
     /// Note: If a namespace is specified, controllers can still Watch for a
     /// cluster-scoped resource (e.g Node).  For namespaced resources the cache
     /// will only hold objects from the desired namespace.
@@ -1109,7 +1117,7 @@ pub struct CoreProviderManager {
     /// which can be run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
-    /// Metrics contains the controller metrics configuration
+    /// Metrics contains thw controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<CoreProviderManagerMetrics>,
     /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
@@ -1145,12 +1153,10 @@ pub struct CoreProviderManagerController {
     /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation
     /// allowed for that controller.
     /// 
-    /// 
     /// When a controller is registered within this manager using the builder utilities,
     /// users have to specify the type the controller reconciles in the For(...) call.
     /// If the object's kind passed matches one of the keys in this map, the concurrency
     /// for that controller is set to the number specified.
-    /// 
     /// 
     /// The key is expected to be consistent in form with GroupKind.String(),
     /// e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
@@ -1219,7 +1225,7 @@ pub struct CoreProviderManagerLeaderElection {
     pub retry_period: String,
 }
 
-/// Metrics contains the controller metrics configuration
+/// Metrics contains thw controller metrics configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to

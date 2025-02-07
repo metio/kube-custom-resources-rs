@@ -24,7 +24,10 @@ pub struct PodIOChaosSpec {
     /// TODO: support multiple different container to inject in one pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
-    /// VolumeMountPath represents the target mount path It must be a root of mount path now. TODO: search the mount parent of any path automatically. TODO: support multiple different volume mount path in one pod
+    /// VolumeMountPath represents the target mount path
+    /// It must be a root of mount path now.
+    /// TODO: search the mount parent of any path automatically.
+    /// TODO: support multiple different volume mount path in one pod
     #[serde(rename = "volumeMountPath")]
     pub volume_mount_path: String,
 }

@@ -100,6 +100,13 @@ spec:
                       default: false
                       description: "Specifies whether automated backup is enabled for the Cluster."
                       type: "boolean"
+                    incrementalBackupEnabled:
+                      default: false
+                      description: "Specifies whether to enable incremental backup."
+                      type: "boolean"
+                    incrementalCronExpression:
+                      description: "The cron expression for the incremental backup schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron."
+                      type: "string"
                     method:
                       description: "Specifies the backup method to use, as defined in backupPolicy."
                       type: "string"
@@ -3035,6 +3042,7 @@ spec:
                               maxLength: 25
                               type: "string"
                             podService:
+                              default: false
                               description: "Indicates whether to generate individual Services for each Pod.\nIf set to true, a separate Service will be created for each Pod in the Cluster."
                               type: "boolean"
                             serviceType:
@@ -8094,6 +8102,7 @@ spec:
                                   maxLength: 25
                                   type: "string"
                                 podService:
+                                  default: false
                                   description: "Indicates whether to generate individual Services for each Pod.\nIf set to true, a separate Service will be created for each Pod in the Cluster."
                                   type: "boolean"
                                 serviceType:

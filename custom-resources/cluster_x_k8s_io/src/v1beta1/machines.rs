@@ -69,7 +69,11 @@ pub struct MachineSpec {
     /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
     /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
     /// 
-    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    /// NOTE: This field is considered only for computing v1beta2 conditions.
+    /// NOTE: In case readinessGates conditions start with the APIServer, ControllerManager, Scheduler prefix, and all those
+    /// readiness gates condition are reporting the same message, when computing the Machine's Ready condition those
+    /// readinessGates will be replaced by a single entry reporting "Control plane components: " + message.
+    /// This helps to improve readability of conditions bubbling up to the Machine's owner resource / to the Cluster).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachineReadinessGates>>,
     /// version defines the desired Kubernetes version.
@@ -271,9 +275,9 @@ pub struct MachineStatus {
 /// MachineAddress contains information for the node's address.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatusAddresses {
-    /// The machine address.
+    /// address is the machine address.
     pub address: String,
-    /// Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
+    /// type is the machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
     #[serde(rename = "type")]
     pub r#type: String,
 }

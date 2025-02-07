@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   name: "contourconfigurations.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -718,9 +718,6 @@ spec:
                           description: "Client key filename."
                           type: "string"
                       type: "object"
-                    type:
-                      description: "Defines the XDSServer to use for `contour serve`.\nValues: `envoy` (default), `contour (deprecated)`.\nOther values will produce an error.\nDeprecated: this field will be removed in a future release when\nthe `contour` xDS server implementation is removed."
-                      type: "string"
                   type: "object"
               type: "object"
             status:

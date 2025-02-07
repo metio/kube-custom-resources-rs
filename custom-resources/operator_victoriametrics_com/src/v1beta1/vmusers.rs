@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -36,6 +37,13 @@ pub struct VMUserSpec {
     /// See [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
+    /// DumpRequestOnErrors instructs vmauth to return detailed request params to the client
+    /// if routing rules don't allow to forward request to the backends.
+    /// Useful for debugging `src_hosts` and `src_headers` based routing rules
+    /// 
+    /// available since v1.107.0 vmauth version
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dump_request_on_errors: Option<bool>,
     /// GeneratePassword instructs operator to generate password for user
     /// if spec.password if empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePassword")]
@@ -86,7 +94,7 @@ pub struct VMUserSpec {
     /// TargetRefs - reference to endpoints, which user may access.
     #[serde(rename = "targetRefs")]
     pub target_refs: Vec<VMUserTargetRefs>,
-    /// TLSConfig specifies TLSConfig configuration parameters.
+    /// TLSConfig defines tls configuration for the backend connection
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<VMUserTlsConfig>,
     /// TokenRef allows fetching token from user-created secrets by its name and key.
@@ -223,6 +231,7 @@ pub enum VMUserTargetRefsCrdKind {
     VmAlert,
     #[serde(rename = "VMSingle")]
     VmSingle,
+    VLogs,
     #[serde(rename = "VMAlertManager")]
     VmAlertManager,
     #[serde(rename = "VMAlertmanager")]
@@ -310,7 +319,7 @@ pub struct VMUserTargetRefsTargetRefBasicAuthUsername {
     pub optional: Option<bool>,
 }
 
-/// TLSConfig specifies TLSConfig configuration parameters.
+/// TLSConfig defines tls configuration for the backend connection
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTlsConfig {
     /// Stuct containing the CA cert to use for the targets.
@@ -466,12 +475,18 @@ pub struct VMUserTokenRef {
 /// VMUserStatus defines the observed state of VMUser
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserStatus {
-    /// LastSyncError contains error message for unsuccessful config generation
-    /// for given user
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
-    pub last_sync_error: Option<String>,
-    /// Status defines update status of resource
+    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Reason defines human readable error reason
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+    /// UpdateStatus defines a status for update rollout
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 

@@ -118,10 +118,16 @@ pub struct MaxScaleSpec {
     /// Services define how the traffic is forwarded to the MariaDB servers. It is defaulted if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MaxScaleServices>>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MaxScaleStartupProbe>,
     /// Suspend indicates whether the current resource should be suspended or not.
     /// This can be useful for maintenance, as disabling the reconciliation prevents the operator from interfering with user operations during maintenance activities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,
+    /// TLS defines the PKI to be used with MaxScale.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MaxScaleTls>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MaxScaleTolerations>>,
@@ -864,6 +870,9 @@ pub struct MaxScaleLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MaxScaleLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -886,6 +895,14 @@ pub struct MaxScaleLivenessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// MariaDBRef is a reference to the MariaDB that MaxScale points to. It is used to initialize the servers field.
@@ -1494,6 +1511,9 @@ pub struct MaxScaleReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MaxScaleReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1516,6 +1536,14 @@ pub struct MaxScaleReadinessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Resouces describes the compute resource requirements.
@@ -1635,6 +1663,202 @@ pub enum MaxScaleServicesRouter {
     Readwritesplit,
     #[serde(rename = "readconnroute")]
     Readconnroute,
+}
+
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStartupProbe {
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MaxScaleStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MaxScaleStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MaxScaleStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+/// TLS defines the PKI to be used with MaxScale.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTls {
+    /// AdminCASecretRef is a reference to a Secret containing the admin certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's administrative REST API and GUI.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either adminCertSecretRef or adminCertIssuerRef fields must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCASecretRef")]
+    pub admin_ca_secret_ref: Option<MaxScaleTlsAdminCaSecretRef>,
+    /// AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with adminCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCertIssuerRef")]
+    pub admin_cert_issuer_ref: Option<MaxScaleTlsAdminCertIssuerRef>,
+    /// AdminCertSecretRef is a reference to a TLS Secret used by the MaxScale's administrative REST API and GUI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCertSecretRef")]
+    pub admin_cert_secret_ref: Option<MaxScaleTlsAdminCertSecretRef>,
+    /// Enabled indicates whether TLS is enabled, determining if certificates should be issued and mounted to the MaxScale instance.
+    /// It is enabled by default when the referred MariaDB instance (via mariaDbRef) has TLS enabled and enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ListenerCASecretRef is a reference to a Secret containing the listener certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's listeners.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either listenerCertSecretRef or listenerCertIssuerRef fields must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the listener certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCASecretRef")]
+    pub listener_ca_secret_ref: Option<MaxScaleTlsListenerCaSecretRef>,
+    /// ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with listenerCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCertIssuerRef")]
+    pub listener_cert_issuer_ref: Option<MaxScaleTlsListenerCertIssuerRef>,
+    /// ListenerCertSecretRef is a reference to a TLS Secret used by the MaxScale's listeners.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCertSecretRef")]
+    pub listener_cert_secret_ref: Option<MaxScaleTlsListenerCertSecretRef>,
+    /// ReplicationSSLEnabled specifies whether the replication SSL is enabled. If enabled, the SSL options will be added to the server configuration.
+    /// It is enabled by default when the referred MariaDB instance (via mariaDbRef) has replication enabled.
+    /// If the MariaDB servers are manually provided by the user via the 'servers' field, this must be set by the user as well.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSSLEnabled")]
+    pub replication_ssl_enabled: Option<bool>,
+    /// ServerCASecretRef is a reference to a Secret containing the MariaDB server CA certificates. It is used to establish trust with MariaDB servers.
+    /// The Secret should contain a 'ca.crt' key in order to establish trust.
+    /// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB CA bundle.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCASecretRef")]
+    pub server_ca_secret_ref: Option<MaxScaleTlsServerCaSecretRef>,
+    /// ServerCertSecretRef is a reference to a TLS Secret used by MaxScale to connect to the MariaDB servers.
+    /// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB client certificate (clientCertSecretRef).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertSecretRef")]
+    pub server_cert_secret_ref: Option<MaxScaleTlsServerCertSecretRef>,
+    /// VerifyPeerCertificate specifies whether the peer certificate's signature should be validated against the CA.
+    /// It is disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyPeerCertificate")]
+    pub verify_peer_certificate: Option<bool>,
+    /// VerifyPeerHost specifies whether the peer certificate's SANs should match the peer host.
+    /// It is disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyPeerHost")]
+    pub verify_peer_host: Option<bool>,
+}
+
+/// AdminCASecretRef is a reference to a Secret containing the admin certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's administrative REST API and GUI.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either adminCertSecretRef or adminCertIssuerRef fields must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsAdminCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with adminCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsAdminCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// AdminCertSecretRef is a reference to a TLS Secret used by the MaxScale's administrative REST API and GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsAdminCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ListenerCASecretRef is a reference to a Secret containing the listener certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's listeners.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either listenerCertSecretRef or listenerCertIssuerRef fields must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the listener certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsListenerCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with listenerCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsListenerCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// ListenerCertSecretRef is a reference to a TLS Secret used by the MaxScale's listeners.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsListenerCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCASecretRef is a reference to a Secret containing the MariaDB server CA certificates. It is used to establish trust with MariaDB servers.
+/// The Secret should contain a 'ca.crt' key in order to establish trust.
+/// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB CA bundle.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsServerCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCertSecretRef is a reference to a TLS Secret used by MaxScale to connect to the MariaDB servers.
+/// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB client certificate (clientCertSecretRef).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleTlsServerCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -1797,6 +2021,9 @@ pub struct MaxScaleStatus {
     /// Services is the state of the services in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MaxScaleStatusServices>>,
+    /// TLS aggregates the status of the certificates used by the MaxScale instance.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MaxScaleStatusTls>,
 }
 
 /// ConfigSync is the state of config sync.
@@ -1834,5 +2061,82 @@ pub struct MaxScaleStatusServers {
 pub struct MaxScaleStatusServices {
     pub name: String,
     pub state: String,
+}
+
+/// TLS aggregates the status of the certificates used by the MaxScale instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStatusTls {
+    /// AdminCert is the status of the admin certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCert")]
+    pub admin_cert: Option<MaxScaleStatusTlsAdminCert>,
+    /// CABundle is the status of the Certificate Authority bundle.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<Vec<MaxScaleStatusTlsCaBundle>>,
+    /// ListenerCert is the status of the listener certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCert")]
+    pub listener_cert: Option<MaxScaleStatusTlsListenerCert>,
+    /// ServerCert is the status of the MariaDB server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCert")]
+    pub server_cert: Option<MaxScaleStatusTlsServerCert>,
+}
+
+/// AdminCert is the status of the admin certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStatusTlsAdminCert {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
+}
+
+/// CertificateStatus represents the current status of a TLS certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStatusTlsCaBundle {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
+}
+
+/// ListenerCert is the status of the listener certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStatusTlsListenerCert {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
+}
+
+/// ServerCert is the status of the MariaDB server certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MaxScaleStatusTlsServerCert {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
 }
 

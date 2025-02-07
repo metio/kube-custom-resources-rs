@@ -121,18 +121,9 @@ pub struct GRPCRouteSpec {
     /// allowed by something in the namespace they are referring to. For example,
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable other kinds of cross-namespace reference.
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<GRPCRouteParentRefs>>,
     /// Rules are a list of GRPC matchers, filters and actions.
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<GRPCRouteRules>>,
 }
@@ -182,8 +173,6 @@ pub struct GRPCRouteParentRefs {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -197,8 +186,6 @@ pub struct GRPCRouteParentRefs {
     /// as opposed to a listener(s) whose port(s) may be changed. When both Port
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
-    /// 
-    /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly
@@ -363,24 +350,6 @@ pub struct GRPCRouteRules {
 /// ReferenceGrant object is required in the referent namespace to allow that
 /// namespace's owner to accept the reference. See the ReferenceGrant
 /// documentation for details.
-/// 
-/// <gateway:experimental:description>
-/// 
-/// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-/// honor the appProtocol field if it is set for the target Service Port.
-/// 
-/// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-/// Standard Application Protocols defined in KEP-3726.
-/// 
-/// If a Service appProtocol isn't specified, an implementation MAY infer the
-/// backend protocol through its own means. Implementations MAY infer the
-/// protocol from the Route type referring to the backend Service.
-/// 
-/// If a Route is not able to send traffic to the backend using the specified
-/// protocol then the backend is considered invalid. Implementations MUST set the
-/// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-/// 
-/// </gateway:experimental:description>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefs {
     /// Filters defined at this level MUST be executed if and only if the
@@ -480,8 +449,6 @@ pub struct GRPCRouteRulesBackendRefsFilters {
     /// backends.
     /// 
     /// Support: Extended
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<GRPCRouteRulesBackendRefsFiltersRequestMirror>,
     /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -514,8 +481,6 @@ pub struct GRPCRouteRulesBackendRefsFilters {
     /// If a reference to a custom filter type cannot be resolved, the filter
     /// MUST NOT be skipped. Instead, requests that would have been processed by
     /// that filter MUST receive a HTTP error response.
-    /// 
-    /// 
     #[serde(rename = "type")]
     pub r#type: GRPCRouteRulesBackendRefsFiltersType,
 }
@@ -642,8 +607,6 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifierSet {
 /// backends.
 /// 
 /// Support: Extended
-/// 
-/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -881,8 +844,6 @@ pub struct GRPCRouteRulesFilters {
     /// backends.
     /// 
     /// Support: Extended
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<GRPCRouteRulesFiltersRequestMirror>,
     /// ResponseHeaderModifier defines a schema for a filter that modifies response
@@ -915,8 +876,6 @@ pub struct GRPCRouteRulesFilters {
     /// If a reference to a custom filter type cannot be resolved, the filter
     /// MUST NOT be skipped. Instead, requests that would have been processed by
     /// that filter MUST receive a HTTP error response.
-    /// 
-    /// 
     #[serde(rename = "type")]
     pub r#type: GRPCRouteRulesFiltersType,
 }
@@ -1043,8 +1002,6 @@ pub struct GRPCRouteRulesFiltersRequestHeaderModifierSet {
 /// backends.
 /// 
 /// Support: Extended
-/// 
-/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -1441,8 +1398,6 @@ pub struct GRPCRouteStatusParentsParentRef {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -1456,8 +1411,6 @@ pub struct GRPCRouteStatusParentsParentRef {
     /// as opposed to a listener(s) whose port(s) may be changed. When both Port
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
-    /// 
-    /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly

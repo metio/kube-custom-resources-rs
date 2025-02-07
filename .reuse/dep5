@@ -19,6 +19,10 @@ Files: crd-catalog/3scale-ops/marin3r/*
 Copyright: The 3scale-ops/marin3r Authors
 License: Apache-2.0
 
+Files: crd-catalog/abalki001/mariadb-operator/*
+Copyright: The abalki001/mariadb-operator Authors
+License: MIT
+
 Files: crd-catalog/actions/actions-runner-controller/*
 Copyright: The actions/actions-runner-controller Authors
 License: Apache-2.0
@@ -387,6 +391,10 @@ Files: crd-catalog/confidential-containers/operator/*
 Copyright: The confidential-containers/operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/controlplaneio-fluxcd/flux-operator/*
+Copyright: The controlplaneio-fluxcd/flux-operator Authors
+License: AGPL-3.0-or-later
+
 Files: crd-catalog/couchbase-partners/helm-charts/*
 Copyright: The couchbase-partners/helm-charts Authors
 License: Apache-2.0
@@ -659,6 +667,10 @@ Files: crd-catalog/k8up-io/k8up/*
 Copyright: The k8up-io/k8up Authors
 License: Apache-2.0
 
+Files: crd-catalog/kaiso/kom-operator/*
+Copyright: The kaiso/kom-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/KaotoIO/kaoto-operator/*
 Copyright: The KaotoIO/kaoto-operator Authors
 License: Apache-2.0
@@ -915,6 +927,10 @@ Files: crd-catalog/m88i/nexus-operator/*
 Copyright: The m88i/nexus-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/maistra/istio-workspace/*
+Copyright: The maistra/istio-workspace Authors
+License: Apache-2.0
+
 Files: crd-catalog/mariadb-operator/mariadb-operator/*
 Copyright: The mariadb-operator/mariadb-operator Authors
 License: MIT
@@ -949,6 +965,10 @@ License: Apache-2.0
 
 Files: crd-catalog/metal3-io/ip-address-manager/*
 Copyright: The metal3-io/ip-address-manager Authors
+License: Apache-2.0
+
+Files: crd-catalog/metallb/metallb-operator/*
+Copyright: The metallb/metallb-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/microcks/microcks-ansible-operator/*

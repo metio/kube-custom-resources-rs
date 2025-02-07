@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ExtensionConfigSpec is the desired state of the ExtensionConfig
+/// spec is the desired state of the ExtensionConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "runtime.cluster.x-k8s.io", version = "v1alpha1", kind = "ExtensionConfig", plural = "extensionconfigs")]
 #[kube(status = "ExtensionConfigStatus")]
@@ -118,7 +118,7 @@ pub struct ExtensionConfigNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// ExtensionConfigStatus is the current state of the ExtensionConfig
+/// status is the current state of the ExtensionConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigStatus {
     /// conditions define the current service state of the ExtensionConfig.

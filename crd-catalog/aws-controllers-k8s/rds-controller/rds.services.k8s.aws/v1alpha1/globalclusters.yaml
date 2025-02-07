@@ -30,25 +30,25 @@ spec:
               description: "GlobalClusterSpec defines the desired state of GlobalCluster.\n\nA data type representing an Aurora global database."
               properties:
                 databaseName:
-                  description: "The name for your database of up to 64 alphanumeric characters. If you do\nnot provide a name, Amazon Aurora will not create a database in the global\ndatabase cluster you are creating."
+                  description: "The name for your database of up to 64 alphanumeric characters. If you don't\nspecify a name, Amazon Aurora doesn't create a database in the global database\ncluster.\n\nConstraints:\n\n   * Can't be specified if SourceDBClusterIdentifier is specified. In this\n   case, Amazon Aurora uses the database name from the source DB cluster."
                   type: "string"
                 deletionProtection:
-                  description: "The deletion protection setting for the new global database. The global database\ncan't be deleted when deletion protection is enabled."
+                  description: "Specifies whether to enable deletion protection for the new global database\ncluster. The global database can't be deleted when deletion protection is\nenabled."
                   type: "boolean"
                 engine:
-                  description: "The name of the database engine to be used for this DB cluster."
+                  description: "The database engine to use for this global database cluster.\n\nValid Values: aurora-mysql | aurora-postgresql\n\nConstraints:\n\n   * Can't be specified if SourceDBClusterIdentifier is specified. In this\n   case, Amazon Aurora uses the engine of the source DB cluster."
                   type: "string"
                 engineVersion:
-                  description: "The engine version of the Aurora global database."
+                  description: "The engine version to use for this global database cluster.\n\nConstraints:\n\n   * Can't be specified if SourceDBClusterIdentifier is specified. In this\n   case, Amazon Aurora uses the engine version of the source DB cluster."
                   type: "string"
                 globalClusterIdentifier:
-                  description: "The cluster identifier of the new global database cluster."
+                  description: "The cluster identifier for this global database cluster. This parameter is\nstored as a lowercase string."
                   type: "string"
                 sourceDBClusterIdentifier:
-                  description: "The Amazon Resource Name (ARN) to use as the primary cluster of the global\ndatabase. This parameter is optional."
+                  description: "The Amazon Resource Name (ARN) to use as the primary cluster of the global\ndatabase.\n\nIf you provide a value for this parameter, don't specify values for the following\nsettings because Amazon Aurora uses the values from the specified source\nDB cluster:\n\n   * DatabaseName\n\n   * Engine\n\n   * EngineVersion\n\n   * StorageEncrypted"
                   type: "string"
                 storageEncrypted:
-                  description: "The storage encryption setting for the new global database cluster."
+                  description: "Specifies whether to enable storage encryption for the new global database\ncluster.\n\nConstraints:\n\n   * Can't be specified if SourceDBClusterIdentifier is specified. In this\n   case, Amazon Aurora uses the setting from the source DB cluster."
                   type: "boolean"
               type: "object"
             status:
@@ -96,8 +96,11 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                engineLifecycleSupport:
+                  description: "The life cycle type for the global cluster.\n\nFor more information, see CreateGlobalCluster."
+                  type: "string"
                 failoverState:
-                  description: "A data object containing all properties for the current state of an in-process\nor pending failover process for this Aurora global database. This object\nis empty unless the FailoverGlobalCluster API operation has been called on\nthis Aurora global database (GlobalCluster)."
+                  description: "A data object containing all properties for the current state of an in-process\nor pending switchover or failover process for this global cluster (Aurora\nglobal database). This object is empty unless the SwitchoverGlobalCluster\nor FailoverGlobalCluster operation was called on this global cluster."
                   properties:
                     fromDBClusterARN:
                       type: "string"
@@ -109,7 +112,7 @@ spec:
                 globalClusterMembers:
                   description: "The list of primary and secondary clusters within the global database cluster."
                   items:
-                    description: "A data structure with information about any primary and secondary clusters\nassociated with an Aurora global database."
+                    description: "A data structure with information about any primary and secondary clusters\nassociated with a global cluster (Aurora global database)."
                     properties:
                       dbClusterARN:
                         type: "string"

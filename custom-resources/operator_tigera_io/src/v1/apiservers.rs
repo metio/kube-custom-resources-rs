@@ -25,6 +25,8 @@ pub struct APIServerSpec {
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerDeployment")]
     pub api_server_deployment: Option<APIServerApiServerDeployment>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logging: Option<APIServerLogging>,
 }
 
 /// APIServerDeployment configures the calico-apiserver (or tigera-apiserver in Enterprise) Deployment. If
@@ -126,6 +128,9 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
     /// WARNING: Please note that this field will modify the default API server Deployment nodeSelector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// PriorityClassName allows to specify a PriorityClass resource to be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// Tolerations is the API server pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the API server Deployment.
     /// If omitted, the API server Deployment will use its default value for tolerations.
@@ -348,7 +353,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -359,7 +364,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -469,7 +474,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -480,7 +485,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -621,7 +626,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPr
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -632,7 +637,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPr
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -742,7 +747,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -753,7 +758,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -900,6 +905,11 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecContainersResourcesClaims
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// APIServerDeploymentInitContainer is an API server Deployment init container.
@@ -953,6 +963,11 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecInitContainersResourcesCl
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -1124,6 +1139,48 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIServerLogging {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServer")]
+    pub api_server: Option<APIServerLoggingApiServer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryServer")]
+    pub query_server: Option<APIServerLoggingQueryServer>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIServerLoggingApiServer {
+    /// LogSeverity defines log level for APIServer container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverity")]
+    pub log_severity: Option<APIServerLoggingApiServerLogSeverity>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum APIServerLoggingApiServerLogSeverity {
+    Fatal,
+    Error,
+    Warn,
+    Info,
+    Debug,
+    Trace,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIServerLoggingQueryServer {
+    /// LogSeverity defines log level for QueryServer container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverity")]
+    pub log_severity: Option<APIServerLoggingQueryServerLogSeverity>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum APIServerLoggingQueryServerLogSeverity {
+    Fatal,
+    Error,
+    Warn,
+    Info,
+    Debug,
+    Trace,
 }
 
 /// Most recently observed status for the Tigera API server.

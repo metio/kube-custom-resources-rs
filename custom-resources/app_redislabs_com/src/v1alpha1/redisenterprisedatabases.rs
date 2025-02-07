@@ -55,7 +55,7 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// memory size of database. use formats like 100MB, 0.1GB. minimum value in 100MB. When redis on flash (RoF) is enabled, this value refers to RAM+Flash memory, and it must not be below 1GB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySize")]
     pub memory_size: Option<String>,
-    /// List of modules associated with database. Note - For Active-Active databases this feature is currently in preview. For this feature to take effect for Active-Active databases, set a boolean environment variable with the name "ENABLE_ALPHA_FEATURES" to True. This variable can be set via the redis-enterprise-operator pod spec, or through the operator-environment-config Config Map.
+    /// List of modules associated with database. Note - For Active-Active databases this feature is currently in preview. For this feature to take effect for Active-Active databases, set a boolean environment variable with the name "ENABLE_ALPHA_FEATURES" to True. This variable can be set via the redis-enterprise-operator pod spec, or through the operator-environment-config Config Map. Note - if you do not want to upgrade to the latest version you must set upgradeSpec -> upgradeModulesToLatest to false. if you specify a version and do not set the upgradeModulesToLatest it can result errors in the operator. in addition, the option to specify specific version is Deprecated and will be deleted in next releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesList")]
     pub modules_list: Option<Vec<RedisEnterpriseDatabaseModulesList>>,
     /// OSS Cluster mode option. Note that not all client libraries support OSS cluster mode.
@@ -387,7 +387,7 @@ pub struct RedisEnterpriseDatabaseModulesList {
     pub config: Option<String>,
     /// The module's name e.g "ft" for redissearch
     pub name: String,
-    /// Module's semantic version e.g "1.6.12" - optional only in REDB, must be set in REAADB
+    /// DEPRECATED - Module's semantic version e.g "1.6.12" - optional only in REDB, must be set in REAADB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
@@ -482,7 +482,7 @@ pub enum RedisEnterpriseDatabaseType {
 /// Specifications for DB upgrade.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseDatabaseUpgradeSpec {
-    /// Upgrades the modules to the latest version that supportes the DB version during a DB upgrade action, to upgrade the DB version view the 'redisVersion' field. Notes - All modules must be without specifing the version. in addition, This field is currently not supported for Active-Active databases.
+    /// DEPRECATED Upgrades the modules to the latest version that supports the DB version during a DB upgrade action, to upgrade the DB version view the 'redisVersion' field. Notes - All modules must be without specifying the version. in addition, This field is currently not supported for Active-Active databases. The default is true
     #[serde(rename = "upgradeModulesToLatest")]
     pub upgrade_modules_to_latest: bool,
 }

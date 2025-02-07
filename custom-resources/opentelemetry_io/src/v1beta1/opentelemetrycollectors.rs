@@ -2771,6 +2771,10 @@ pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCr {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMonitorSelector")]
     pub pod_monitor_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrPodMonitorSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probeSelector")]
+    pub probe_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
+    pub scrape_config_selector: Option<OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeConfigSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
@@ -2787,6 +2791,38 @@ pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrPodMonitorSelector {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrPodMonitorSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrProbeSelectorMatchExpressions {
+    pub key: String,
+    pub operator: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeConfigSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeConfigSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorTargetAllocatorPrometheusCrScrapeConfigSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]

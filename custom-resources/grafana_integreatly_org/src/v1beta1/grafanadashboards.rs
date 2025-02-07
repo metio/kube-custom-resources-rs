@@ -20,7 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaDashboardSpec {
-    /// allow to import this resources from an operator in a different namespace
+    /// Allow the Operator to match this resource with Grafanas outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
     /// dashboard from configmap
@@ -53,7 +53,7 @@ pub struct GrafanaDashboardSpec {
     /// GzipJson the dashboard's JSON compressed with Gzip. Base64-encoded when in YAML.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gzipJson")]
     pub gzip_json: Option<String>,
-    /// selects Grafanas for import
+    /// Selects Grafana instances for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaDashboardInstanceSelector,
     /// dashboard json
@@ -68,10 +68,12 @@ pub struct GrafanaDashboardSpec {
     /// plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaDashboardPlugins>>,
-    /// how often the dashboard is refreshed, defaults to 5m if not set
+    /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
-    /// Manually specify the uid for the dashboard, overwrites uids already present in the json model
+    /// Manually specify the uid for the dashboard, overwrites uids already present
+    /// in the json model. Can be any string consisting of alphanumeric characters,
+    /// - and _ with a maximum length of 40
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
     /// dashboard url
@@ -215,7 +217,7 @@ pub struct GrafanaDashboardGrafanaCom {
     pub revision: Option<i64>,
 }
 
-/// selects Grafanas for import
+/// Selects Grafana instances for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -319,6 +321,7 @@ pub struct GrafanaDashboardStatus {
     /// The dashboard instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
+    /// Results when synchonizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCache")]
@@ -329,7 +332,7 @@ pub struct GrafanaDashboardStatus {
     pub content_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
-    /// Last time the dashboard was resynced
+    /// Last time the resource was synchronized with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -16,9 +16,12 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct GCPChaosSpec {
-    /// Action defines the specific gcp chaos action. Supported action: node-stop / node-reset / disk-loss Default action: node-stop
+    /// Action defines the specific gcp chaos action.
+    /// Supported action: node-stop / node-reset / disk-loss
+    /// Default action: node-stop
     pub action: GCPChaosAction,
-    /// The device name of disks to detach. Needed in disk-loss.
+    /// The device name of disks to detach.
+    /// Needed in disk-loss.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceNames")]
     pub device_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action.
@@ -52,7 +55,8 @@ pub enum GCPChaosAction {
 /// GCPChaosStatus represents the status of a GCPChaos
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GCPChaosStatus {
-    /// The attached disk info strings. Needed in disk-loss.
+    /// The attached disk info strings.
+    /// Needed in disk-loss.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachedDiskStrings")]
     pub attached_disk_strings: Option<Vec<String>>,
     /// Conditions represents the current global condition of the chaos

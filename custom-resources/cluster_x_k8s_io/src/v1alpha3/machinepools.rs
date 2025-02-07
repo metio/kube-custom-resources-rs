@@ -28,7 +28,7 @@ pub struct MachinePoolSpec {
     /// failureDomains is the list of failure domains this MachinePool should be attached to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
-    /// Minimum number of seconds for which a newly created machine instances should
+    /// minReadySeconds is the minimum number of seconds for which a newly created machine instances should
     /// be ready.
     /// Defaults to 0 (machine instance will be considered available as soon as it
     /// is ready)
@@ -38,11 +38,11 @@ pub struct MachinePoolSpec {
     /// This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerIDList")]
     pub provider_id_list: Option<Vec<String>>,
-    /// Number of desired machines. Defaults to 1.
+    /// replicas is the number of desired machines. Defaults to 1.
     /// This is a pointer to distinguish between explicit zero and not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// The deployment strategy to use to replace existing machine instances with
+    /// strategy is the deployment strategy to use to replace existing machine instances with
     /// new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<MachinePoolStrategy>,
@@ -50,11 +50,11 @@ pub struct MachinePoolSpec {
     pub template: MachinePoolTemplate,
 }
 
-/// The deployment strategy to use to replace existing machine instances with
+/// strategy is the deployment strategy to use to replace existing machine instances with
 /// new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStrategy {
-    /// Rolling update config params. Present only if
+    /// rollingUpdate is the rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MachinePoolStrategyRollingUpdate>,
@@ -65,11 +65,11 @@ pub struct MachinePoolStrategy {
     pub r#type: Option<String>,
 }
 
-/// Rolling update config params. Present only if
+/// rollingUpdate is the rolling update config params. Present only if
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStrategyRollingUpdate {
-    /// The maximum number of machines that can be scheduled above the
+    /// maxSurge is the maximum number of machines that can be scheduled above the
     /// desired number of machines.
     /// Value can be an absolute number (ex: 5) or a percentage of
     /// desired machines (ex: 10%).
@@ -84,7 +84,7 @@ pub struct MachinePoolStrategyRollingUpdate {
     /// at any time during the update is at most 130% of desired machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    /// The maximum number of machines that can be unavailable during the update.
+    /// maxUnavailable is the maximum number of machines that can be unavailable during the update.
     /// Value can be an absolute number (ex: 5) or a percentage of desired
     /// machines (ex: 10%).
     /// Absolute number is calculated from percentage by rounding down.
@@ -107,7 +107,7 @@ pub struct MachinePoolTemplate {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachinePoolTemplateMetadata>,
-    /// Specification of the desired behavior of the machine.
+    /// spec is the specification of the desired behavior of the machine.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<MachinePoolTemplateSpec>,
@@ -142,7 +142,7 @@ pub struct MachinePoolTemplateMetadata {
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
     pub generate_name: Option<String>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -170,7 +170,7 @@ pub struct MachinePoolTemplateMetadata {
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// List of objects depended by this object. If ALL objects in the list have
+    /// ownerReferences is the list of objects depended by this object. If ALL objects in the list have
     /// been deleted, this object will be garbage collected. If this object is managed by a controller,
     /// then an entry in this list will point to this controller, with the controller field set to true.
     /// There cannot be more than one managing controller.
@@ -212,7 +212,7 @@ pub struct MachinePoolTemplateMetadataOwnerReferences {
     pub uid: String,
 }
 
-/// Specification of the desired behavior of the machine.
+/// spec is the specification of the desired behavior of the machine.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplateSpec {
@@ -356,7 +356,7 @@ pub struct MachinePoolTemplateSpecInfrastructureRef {
 /// MachinePoolStatus defines the observed state of MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatus {
-    /// The number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+    /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachinePool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// bootstrapReady is the state of the bootstrap provider.
@@ -386,13 +386,13 @@ pub struct MachinePoolStatus {
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
-    /// The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+    /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the most recently observed number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Total number of unavailable machine instances targeted by this machine pool.
+    /// unavailableReplicas is the total number of unavailable machine instances targeted by this machine pool.
     /// This is the total number of machine instances that are still required for
     /// the machine pool to have 100% available capacity. They may either
     /// be machine instances that are running but not yet available or machine instances

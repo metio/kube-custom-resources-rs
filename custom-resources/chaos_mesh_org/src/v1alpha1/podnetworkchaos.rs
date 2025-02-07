@@ -32,10 +32,12 @@ pub struct PodNetworkChaosSpec {
 /// RawIPSet represents an ipset on specific pod
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodNetworkChaosIpsets {
-    /// The contents of ipset. Only available when IPSetType is NetPortIPSet.
+    /// The contents of ipset.
+    /// Only available when IPSetType is NetPortIPSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrAndPorts")]
     pub cidr_and_ports: Option<Vec<PodNetworkChaosIpsetsCidrAndPorts>>,
-    /// The contents of ipset. Only available when IPSetType is NetIPSet.
+    /// The contents of ipset.
+    /// Only available when IPSetType is NetIPSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidrs: Option<Vec<String>>,
     /// IPSetType represents the type of IP set
@@ -43,7 +45,8 @@ pub struct PodNetworkChaosIpsets {
     pub ipset_type: String,
     /// The name of ipset
     pub name: String,
-    /// The contents of ipset. Only available when IPSetType is SetIPSet.
+    /// The contents of ipset.
+    /// Only available when IPSetType is SetIPSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setNames")]
     pub set_names: Option<Vec<String>>,
     pub source: String,
@@ -113,10 +116,16 @@ pub struct PodNetworkChaosTcsBandwidth {
     pub buffer: i32,
     /// Limit is the number of bytes that can be queued waiting for tokens to become available.
     pub limit: i32,
-    /// Minburst specifies the size of the peakrate bucket. For perfect accuracy, should be set to the MTU of the interface.  If a peakrate is needed, but some burstiness is acceptable, this size can be raised. A 3000 byte minburst allows around 3mbit/s of peakrate, given 1000 byte packets.
+    /// Minburst specifies the size of the peakrate bucket. For perfect
+    /// accuracy, should be set to the MTU of the interface.  If a
+    /// peakrate is needed, but some burstiness is acceptable, this
+    /// size can be raised. A 3000 byte minburst allows around 3mbit/s
+    /// of peakrate, given 1000 byte packets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minburst: Option<i32>,
-    /// Peakrate is the maximum depletion rate of the bucket. The peakrate does not need to be set, it is only necessary if perfect millisecond timescale shaping is required.
+    /// Peakrate is the maximum depletion rate of the bucket.
+    /// The peakrate does not need to be set, it is only necessary
+    /// if perfect millisecond timescale shaping is required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peakrate: Option<i64>,
     /// Rate is the speed knob. Allows bit, kbit, mbit, gbit, tbit, bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.

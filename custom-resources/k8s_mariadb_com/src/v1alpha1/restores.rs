@@ -425,8 +425,8 @@ pub enum RestoreRestartPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RestoreS3 {
     /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
-    #[serde(rename = "accessKeyIdSecretKeyRef")]
-    pub access_key_id_secret_key_ref: RestoreS3AccessKeyIdSecretKeyRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyIdSecretKeyRef")]
+    pub access_key_id_secret_key_ref: Option<RestoreS3AccessKeyIdSecretKeyRef>,
     /// Bucket is the name Name of the bucket to store backups.
     pub bucket: String,
     /// Endpoint is the S3 API endpoint without scheme.
@@ -438,8 +438,8 @@ pub struct RestoreS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
-    #[serde(rename = "secretAccessKeySecretKeyRef")]
-    pub secret_access_key_secret_key_ref: RestoreS3SecretAccessKeySecretKeyRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretKeyRef")]
+    pub secret_access_key_secret_key_ref: Option<RestoreS3SecretAccessKeySecretKeyRef>,
     /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
     pub session_token_secret_key_ref: Option<RestoreS3SessionTokenSecretKeyRef>,

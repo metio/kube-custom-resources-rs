@@ -60,7 +60,7 @@ spec:
                   description: "The JSON repository policy text to apply to the repository."
                   type: "string"
                 name:
-                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app)."
+                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app).\n\nThe repository name must start with a letter and can only contain lowercase\nletters, numbers, hyphens, underscores, and forward slashes."
                   type: "string"
                 policy:
                   description: "The JSON repository policy text to apply to the repository. For more information,\nsee Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)\nin the Amazon Elastic Container Registry User Guide."

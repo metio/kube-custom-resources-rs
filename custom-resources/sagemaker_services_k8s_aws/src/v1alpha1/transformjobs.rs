@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// TransformJobSpec defines the desired state of TransformJob.
 /// 
-/// 
 /// A batch transform job. For information about SageMaker batch transform, see
 /// Use Batch Transform (https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform.html).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -28,14 +27,11 @@ pub struct TransformJobSpec {
     /// request. A record is a single unit of input data that inference can be made
     /// on. For example, a single line in a CSV file is a record.
     /// 
-    /// 
     /// To enable the batch strategy, you must set the SplitType property to Line,
     /// RecordIO, or TFRecord.
     /// 
-    /// 
     /// To use only one record when making an HTTP invocation request to a container,
     /// set BatchStrategy to SingleRecord and SplitType to Line.
-    /// 
     /// 
     /// To fit as many records in a mini-batch as can fit within the MaxPayloadInMB
     /// limit, set BatchStrategy to MultiRecord and SplitType to Line.
@@ -50,19 +46,17 @@ pub struct TransformJobSpec {
     /// Prediction Results with their Corresponding Input Records (https://docs.aws.amazon.com/sagemaker/latest/dg/batch-transform-data-processing.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataProcessing")]
     pub data_processing: Option<TransformJobDataProcessing>,
-    /// The environment variables to set in the Docker container. We support up to
-    /// 16 key and values entries in the map.
+    /// The environment variables to set in the Docker container. Don't include any
+    /// sensitive data in your environment variables. We support up to 16 key and
+    /// values entries in the map.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
     /// Associates a SageMaker job as a trial component with an experiment and trial.
     /// Specified when you call the following APIs:
     /// 
-    /// 
     ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
     /// 
-    /// 
     ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-    /// 
     /// 
     ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
@@ -83,11 +77,9 @@ pub struct TransformJobSpec {
     /// ensure that the records fit within the maximum payload size, we recommend
     /// using a slightly larger value. The default value is 6 MB.
     /// 
-    /// 
     /// The value of MaxPayloadInMB cannot be greater than 100 MB. If you specify
     /// the MaxConcurrentTransforms parameter, the value of (MaxConcurrentTransforms
     /// * MaxPayloadInMB) also cannot exceed 100 MB.
-    /// 
     /// 
     /// For cases where the payload might be arbitrarily large and is transmitted
     /// using HTTP chunked encoding, set the value to 0. This feature works only
@@ -145,12 +137,9 @@ pub struct TransformJobDataProcessing {
 /// Associates a SageMaker job as a trial component with an experiment and trial.
 /// Specified when you call the following APIs:
 /// 
-/// 
 ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
 /// 
-/// 
 ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-/// 
 /// 
 ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -176,12 +165,10 @@ pub struct TransformJobModelClientConfig {
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -289,7 +276,6 @@ pub struct TransformJobStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

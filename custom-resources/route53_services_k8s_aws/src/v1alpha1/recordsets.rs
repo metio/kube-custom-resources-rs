@@ -91,9 +91,6 @@ pub struct RecordSetSpec {
     /// to a web server with an IP address of 192.0.2.111, create a resource record
     /// set with a Type of A and a ContinentCode of AF.
     /// 
-    /// Although creating geolocation and geolocation alias resource record sets
-    /// in a private hosted zone is allowed, it's not supported.
-    /// 
     /// If you create separate resource record sets for overlapping geographic regions
     /// (for example, one resource record set for a continent and one for a country
     /// on the same continent), priority goes to the smallest geographic region.
@@ -292,11 +289,6 @@ pub struct RecordSetSpec {
     ///    domain name, DNS treats it as an * character (ASCII 42), not as a wildcard.
     ///    You can't use the * wildcard for resource records sets that have a type
     ///    of NS.
-    /// 
-    /// You can use the * wildcard as the leftmost label in a domain name, for example,
-    /// *.example.com. You can't use an * for one of the middle labels, for example,
-    /// marketing.*.example.com. In addition, the * must replace the entire label;
-    /// for example, you can't specify prod*.example.com.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The DNS record type. For information about different record types and how
@@ -304,15 +296,16 @@ pub struct RecordSetSpec {
     /// in the Amazon Route 53 Developer Guide.
     /// 
     /// Valid values for basic resource record sets: A | AAAA | CAA | CNAME | DS
-    /// |MX | NAPTR | NS | PTR | SOA | SPF | SRV | TXT
+    /// |MX | NAPTR | NS | PTR | SOA | SPF | SRV | TXT| TLSA| SSHFP| SVCB| HTTPS
     /// 
     /// Values for weighted, latency, geolocation, and failover resource record sets:
-    /// A | AAAA | CAA | CNAME | MX | NAPTR | PTR | SPF | SRV | TXT. When creating
-    /// a group of weighted, latency, geolocation, or failover resource record sets,
-    /// specify the same value for all of the resource record sets in the group.
+    /// A | AAAA | CAA | CNAME | MX | NAPTR | PTR | SPF | SRV | TXT| TLSA| SSHFP|
+    /// SVCB| HTTPS. When creating a group of weighted, latency, geolocation, or
+    /// failover resource record sets, specify the same value for all of the resource
+    /// record sets in the group.
     /// 
     /// Valid values for multivalue answer resource record sets: A | AAAA | MX |
-    /// NAPTR | PTR | SPF | SRV | TXT
+    /// NAPTR | PTR | SPF | SRV | TXT| CAA| TLSA| SSHFP| SVCB| HTTPS
     /// 
     /// SPF records were formerly used to verify the identity of the sender of email
     /// messages. However, we no longer recommend that you create resource record
@@ -606,9 +599,6 @@ pub struct RecordSetCidrRoutingConfig {
 /// of the query. For example, if you want all queries from Africa to be routed
 /// to a web server with an IP address of 192.0.2.111, create a resource record
 /// set with a Type of A and a ContinentCode of AF.
-/// 
-/// Although creating geolocation and geolocation alias resource record sets
-/// in a private hosted zone is allowed, it's not supported.
 /// 
 /// If you create separate resource record sets for overlapping geographic regions
 /// (for example, one resource record set for a continent and one for a country

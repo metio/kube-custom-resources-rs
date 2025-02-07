@@ -19,7 +19,8 @@ use self::prelude::*;
 pub struct PhysicalMachineChaosSpec {
     /// the subAction, generate automatically
     pub action: PhysicalMachineChaosAction,
-    /// DEPRECATED: Use Selector instead. Only one of Address and Selector could be specified.
+    /// DEPRECATED: Use Selector instead.
+    /// Only one of Address and Selector could be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,7 +75,8 @@ pub struct PhysicalMachineChaosSpec {
     pub kafka_flood: Option<PhysicalMachineChaosKafkaFlood>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-io")]
     pub kafka_io: Option<PhysicalMachineChaosKafkaIo>,
-    /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
+    /// Mode defines the mode to run chaos action.
+    /// Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: PhysicalMachineChaosMode,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-bandwidth")]
     pub network_bandwidth: Option<PhysicalMachineChaosNetworkBandwidth>,
@@ -121,7 +123,10 @@ pub struct PhysicalMachineChaosSpec {
     pub uid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_defined: Option<PhysicalMachineChaosUserDefined>,
-    /// Value is required when the mode is set to `FixedMode` / `FixedPercentMode` / `RandomMaxPercentMode`. If `FixedMode`, provide an integer of physical machines to do chaos action. If `FixedPercentMode`, provide a number from 0-100 to specify the percent of physical machines the server can do chaos action. IF `RandomMaxPercentMode`,  provide a number from 0-100 to specify the max percent of pods to do chaos action
+    /// Value is required when the mode is set to `FixedMode` / `FixedPercentMode` / `RandomMaxPercentMode`.
+    /// If `FixedMode`, provide an integer of physical machines to do chaos action.
+    /// If `FixedPercentMode`, provide a number from 0-100 to specify the percent of physical machines the server can do chaos action.
+    /// IF `RandomMaxPercentMode`,  provide a number from 0-100 to specify the max percent of pods to do chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -213,7 +218,9 @@ pub enum PhysicalMachineChaosAction {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosClock {
-    /// the identifier of the particular clock on which to act. More clock description in linux kernel can be found in man page of clock_getres, clock_gettime, clock_settime. Muti clock ids should be split with ","
+    /// the identifier of the particular clock on which to act.
+    /// More clock description in linux kernel can be found in man page of clock_getres, clock_gettime, clock_settime.
+    /// Muti clock ids should be split with ","
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clock-ids-slice")]
     pub clock_ids_slice: Option<String>,
     /// the pid of target program.
@@ -229,36 +236,42 @@ pub struct PhysicalMachineChaosDiskFill {
     /// fill disk by fallocate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fill-by-fallocate")]
     pub fill_by_fallocate: Option<bool>,
-    /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
+    /// specifies the location to fill data in. if path not provided,
+    /// payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
+    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000,
+    /// K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosDiskReadPayload {
-    /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
+    /// specifies the location to fill data in. if path not provided,
+    /// payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
-    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
+    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000,
+    /// K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosDiskWritePayload {
-    /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
+    /// specifies the location to fill data in. if path not provided,
+    /// payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
-    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
+    /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000,
+    /// K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }
@@ -445,13 +458,16 @@ pub struct PhysicalMachineChaosJvmLatency {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosJvmMysql {
-    /// the match database default value is "", means match all database
+    /// the match database
+    /// default value is "", means match all database
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<String>,
-    /// The exception which needs to throw for action `exception` or the exception message needs to throw in action `mysql`
+    /// The exception which needs to throw for action `exception`
+    /// or the exception message needs to throw in action `mysql`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exception: Option<String>,
-    /// The latency duration for action 'latency' or the latency duration in action `mysql`
+    /// The latency duration for action 'latency'
+    /// or the latency duration in action `mysql`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<i64>,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
@@ -463,10 +479,13 @@ pub struct PhysicalMachineChaosJvmMysql {
     /// the port of agent server, default 9277
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// the match sql type default value is "", means match all SQL type. The value can be 'select', 'insert', 'update', 'delete', 'replace'.
+    /// the match sql type
+    /// default value is "", means match all SQL type.
+    /// The value can be 'select', 'insert', 'update', 'delete', 'replace'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqlType")]
     pub sql_type: Option<String>,
-    /// the match table default value is "", means match all table
+    /// the match table
+    /// default value is "", means match all table
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub table: Option<String>,
 }
@@ -628,7 +647,8 @@ pub struct PhysicalMachineChaosNetworkCorrupt {
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
@@ -643,14 +663,16 @@ pub struct PhysicalMachineChaosNetworkCorrupt {
     /// percentage of packets to corrupt (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
-    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosNetworkDelay {
-    /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
+    /// only the packet which match the tcp flag can be accepted, others will be dropped.
+    /// only set when the IPProtocol is tcp, used for partition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// correlation is percentage (10 is 10%)
@@ -659,7 +681,8 @@ pub struct PhysicalMachineChaosNetworkDelay {
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
@@ -677,7 +700,8 @@ pub struct PhysicalMachineChaosNetworkDelay {
     /// delay egress time, time units: ns, us (or µs), ms, s, m, h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<String>,
-    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
@@ -713,7 +737,8 @@ pub struct PhysicalMachineChaosNetworkDuplicate {
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
@@ -728,7 +753,8 @@ pub struct PhysicalMachineChaosNetworkDuplicate {
     /// percentage of packets to duplicate (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
-    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
@@ -758,7 +784,8 @@ pub struct PhysicalMachineChaosNetworkLoss {
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
@@ -773,20 +800,24 @@ pub struct PhysicalMachineChaosNetworkLoss {
     /// percentage of packets to loss (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
-    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
+    /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010.
+    /// it can only be used in conjunction with -p tcp or -p udp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosNetworkPartition {
-    /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
+    /// only the packet which match the tcp flag can be accepted, others will be dropped.
+    /// only set when the IPProtocol is tcp, used for partition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
-    /// specifies the partition direction, values can be 'from', 'to'. 'from' means packets coming from the 'IPAddress' or 'Hostname' and going to your server, 'to' means packets originating from your server and going to the 'IPAddress' or 'Hostname'.
+    /// specifies the partition direction, values can be 'from', 'to'.
+    /// 'from' means packets coming from the 'IPAddress' or 'Hostname' and going to your server,
+    /// 'to' means packets originating from your server and going to the 'IPAddress' or 'Hostname'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub direction: Option<String>,
     /// only impact traffic to these hostnames
@@ -902,34 +933,45 @@ pub struct PhysicalMachineChaosRedisStop {
 /// Selector is used to select physical machines that are used to inject chaos action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosSelector {
-    /// Map of string keys and values that can be used to select objects. A selector based on annotations.
+    /// Map of string keys and values that can be used to select objects.
+    /// A selector based on annotations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
-    /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
+    /// a slice of label selector expressions that can be used to select objects.
+    /// A list of selectors based on set-based label expressions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<PhysicalMachineChaosSelectorExpressionSelectors>>,
-    /// Map of string keys and values that can be used to select objects. A selector based on fields.
+    /// Map of string keys and values that can be used to select objects.
+    /// A selector based on fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to select objects. A selector based on labels.
+    /// Map of string keys and values that can be used to select objects.
+    /// A selector based on labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// PhysicalMachines is a map of string keys and a set values that used to select physical machines. The key defines the namespace which physical machine belong, and each value is a set of physical machine names.
+    /// PhysicalMachines is a map of string keys and a set values that used to select physical machines.
+    /// The key defines the namespace which physical machine belong,
+    /// and each value is a set of physical machine names.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalMachines")]
     pub physical_machines: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PhysicalMachineChaosSelectorExpressionSelectors {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -952,7 +994,8 @@ pub struct PhysicalMachineChaosStressMem {
     /// extend stress-ng options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<String>>,
-    /// specifies N bytes consumed per vm worker, default is the total available memory. One can specify the size as % of total available memory or in units of B, KB/KiB, MB/MiB, GB/GiB, TB/TiB..
+    /// specifies N bytes consumed per vm worker, default is the total available memory.
+    /// One can specify the size as % of total available memory or in units of B, KB/KiB, MB/MiB, GB/GiB, TB/TiB..
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }

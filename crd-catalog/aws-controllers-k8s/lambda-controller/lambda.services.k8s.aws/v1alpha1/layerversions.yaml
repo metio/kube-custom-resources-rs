@@ -35,7 +35,7 @@ spec:
                     type: "string"
                   type: "array"
                 compatibleRuntimes:
-                  description: "A list of compatible function runtimes (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).\nUsed for filtering with ListLayers and ListLayerVersions."
+                  description: "A list of compatible function runtimes (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).\nUsed for filtering with ListLayers and ListLayerVersions.\n\nThe following list includes deprecated runtimes. For more information, see\nRuntime deprecation policy (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-support-policy)."
                   items:
                     type: "string"
                   type: "array"

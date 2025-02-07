@@ -19,6 +19,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `IPReservation`
 - `KubeControllersConfiguration`
 - `NetworkSet`
+- `StagedGlobalNetworkPolicy`
+- `StagedKubernetesNetworkPolicy`
+- `StagedNetworkPolicy`
 - `Tier`
 */
 #[cfg(feature = "v1")]

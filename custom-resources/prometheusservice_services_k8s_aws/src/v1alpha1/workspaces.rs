@@ -20,11 +20,14 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct WorkspaceSpec {
-    /// An optional user-assigned alias for this workspace. This alias is for user
-    /// reference and does not need to be unique.
+    /// An alias that you assign to this workspace to help you identify it. It does
+    /// not need to be unique.
+    /// 
+    /// Blank spaces at the beginning or end of the alias that you specify will be
+    /// trimmed from the value used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alias: Option<String>,
-    /// Optional, user-provided tags for this workspace.
+    /// The list of tag keys and values to associate with the workspace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
@@ -43,10 +46,11 @@ pub struct WorkspaceStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The status of the workspace that was just created (usually CREATING).
+    /// The current status of the new workspace. Immediately after you create the
+    /// workspace, the status is usually CREATING.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<WorkspaceStatusStatus>,
-    /// The generated ID of the workspace that was just created.
+    /// The unique ID for the new workspace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
 }
@@ -73,7 +77,8 @@ pub struct WorkspaceStatusAckResourceMetadata {
     pub region: String,
 }
 
-/// The status of the workspace that was just created (usually CREATING).
+/// The current status of the new workspace. Immediately after you create the
+/// workspace, the status is usually CREATING.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceStatusStatus {
     /// State of a workspace.

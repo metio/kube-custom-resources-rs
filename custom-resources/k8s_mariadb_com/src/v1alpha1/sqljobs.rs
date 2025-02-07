@@ -91,6 +91,14 @@ pub struct SqlJobSpec {
     /// TimeZone defines the timezone associated with the cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
+    /// TLSCACertSecretRef is a reference toa CA Secret used to establish trust when executing the SqlJob.
+    /// If not provided, the CA bundle provided by the referred MariaDB is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCASecretRef")]
+    pub tls_ca_secret_ref: Option<SqlJobTlsCaSecretRef>,
+    /// TLSClientCertSecretRef is a reference to a Kubernetes TLS Secret used as authentication when executing the SqlJob.
+    /// If not provided, the client certificate provided by the referred MariaDB is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCertSecretRef")]
+    pub tls_client_cert_secret_ref: Option<SqlJobTlsClientCertSecretRef>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SqlJobTolerations>>,
@@ -481,6 +489,22 @@ pub struct SqlJobSecurityContextCapabilities {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobSqlConfigMapKeyRef {
     pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLSCACertSecretRef is a reference toa CA Secret used to establish trust when executing the SqlJob.
+/// If not provided, the CA bundle provided by the referred MariaDB is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SqlJobTlsCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// TLSClientCertSecretRef is a reference to a Kubernetes TLS Secret used as authentication when executing the SqlJob.
+/// If not provided, the client certificate provided by the referred MariaDB is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SqlJobTlsClientCertSecretRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

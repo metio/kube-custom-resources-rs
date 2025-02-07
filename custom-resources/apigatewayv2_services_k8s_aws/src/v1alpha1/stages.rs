@@ -22,9 +22,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct StageSpec {
-    /// Settings for logging access in a stage.
+    /// Settings for logging access in this stage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogSettings")]
     pub access_log_settings: Option<StageAccessLogSettings>,
+    /// The API identifier.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -36,13 +37,18 @@ pub struct StageSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
     pub api_ref: Option<StageApiRef>,
+    /// Specifies whether updates to an API automatically trigger a new deployment.
+    /// The default value is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDeploy")]
     pub auto_deploy: Option<bool>,
+    /// The identifier of a client certificate for a Stage. Supported only for WebSocket
+    /// APIs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificateID")]
     pub client_certificate_id: Option<String>,
-    /// Represents a collection of route settings.
+    /// The default route settings for the stage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRouteSettings")]
     pub default_route_settings: Option<StageDefaultRouteSettings>,
+    /// The deployment identifier of the API stage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentID")]
     pub deployment_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -54,19 +60,25 @@ pub struct StageSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentRef")]
     pub deployment_ref: Option<StageDeploymentRef>,
+    /// The description for the API stage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Route settings for the stage, by routeKey.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeSettings")]
     pub route_settings: Option<BTreeMap<String, StageRouteSettings>>,
+    /// The name of the stage.
     #[serde(rename = "stageName")]
     pub stage_name: String,
+    /// A map that defines the stage variables for a Stage. Variable names can have
+    /// alphanumeric and underscore characters, and the values must match [A-Za-z0-9-._~:/?#&=,]+.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stageVariables")]
     pub stage_variables: Option<BTreeMap<String, String>>,
+    /// The collection of tags. Each tag element is associated with a given resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
 
-/// Settings for logging access in a stage.
+/// Settings for logging access in this stage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageAccessLogSettings {
     /// Represents an Amazon Resource Name (ARN).
@@ -102,7 +114,7 @@ pub struct StageApiRefFrom {
     pub namespace: Option<String>,
 }
 
-/// Represents a collection of route settings.
+/// The default route settings for the stage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageDefaultRouteSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTraceEnabled")]
@@ -143,6 +155,7 @@ pub struct StageDeploymentRefFrom {
     pub namespace: Option<String>,
 }
 
+/// Route settings for the stage, by routeKey.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StageRouteSettings {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTraceEnabled")]
@@ -166,6 +179,9 @@ pub struct StageStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<StageStatusAckResourceMetadata>,
+    /// Specifies whether a stage is managed by API Gateway. If you created an API
+    /// using quick create, the $default stage is managed by API Gateway. You can't
+    /// modify the $default stage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGatewayManaged")]
     pub api_gateway_managed: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
@@ -174,10 +190,14 @@ pub struct StageStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// The timestamp when the stage was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
+    /// Describes the status of the last deployment of a stage. Supported only for
+    /// stages with autoDeploy enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastDeploymentStatusMessage")]
     pub last_deployment_status_message: Option<String>,
+    /// The timestamp when the stage was last updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdatedDate")]
     pub last_updated_date: Option<String>,
 }

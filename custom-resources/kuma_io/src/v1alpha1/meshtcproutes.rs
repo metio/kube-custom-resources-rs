@@ -80,6 +80,7 @@ pub enum MeshTCPRouteTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -161,6 +162,7 @@ pub enum MeshTCPRouteToRulesDefaultBackendRefsKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 /// TargetRef is a reference to the resource that represents a group of
@@ -212,5 +214,6 @@ pub enum MeshTCPRouteToTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

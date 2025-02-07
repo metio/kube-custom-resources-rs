@@ -23,10 +23,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `PolicyException`
 - `UpdateRequest`
 ## kyverno.io/v2alpha1
+- `CELPolicyException`
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`
 - `GlobalContextEntry`
 - `PolicyException`
+- `ValidatingPolicy`
 ## kyverno.io/v2beta1
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`

@@ -45,6 +45,13 @@ pub struct SelfNodeRemediationConfigSpec {
     /// After this threshold, the node will start contacting its peers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxApiErrorThreshold")]
     pub max_api_error_threshold: Option<i64>,
+    /// Minimum number of peer workers/control nodes to attempt to contact before deciding if node is unhealthy or not
+    /// 	if set to zero, no other peers will be required to be present for remediation action to occur when this
+    /// 	node has lost API server access.  If an insufficient number of peers are found, we will not attempt to ask
+    /// 	any peer nodes (if present) whether they see that the current node has been marked unhealthy with a
+    /// 	SelfNodeRemediation CR
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minPeersForRemediation")]
+    pub min_peers_for_remediation: Option<i64>,
     /// The timeout for api-server connectivity check.
     /// Valid time units are "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerApiServerTimeout")]

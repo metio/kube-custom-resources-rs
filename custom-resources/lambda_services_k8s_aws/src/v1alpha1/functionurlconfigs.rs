@@ -22,16 +22,16 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct FunctionURLConfigSpec {
     /// The type of authentication that your function URL uses. Set to AWS_IAM if
-    /// you want to restrict access to authenticated IAM users only. Set to NONE
-    /// if you want to bypass IAM authentication to create a public endpoint. For
-    /// more information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
+    /// you want to restrict access to authenticated users only. Set to NONE if you
+    /// want to bypass IAM authentication to create a public endpoint. For more information,
+    /// see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html).
     #[serde(rename = "authType")]
     pub auth_type: String,
     /// The cross-origin resource sharing (CORS) (https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
     /// settings for your function URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cors: Option<FunctionURLConfigCors>,
-    /// The name of the Lambda function.
+    /// The name or ARN of the Lambda function.
     /// 
     /// Name formats
     /// 

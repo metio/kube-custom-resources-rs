@@ -20,6 +20,9 @@ pub struct NutanixDatacenterConfigSpec {
     /// AdditionalTrustBundle is the optional PEM-encoded certificate bundle for users that configured their Prism Central with certificates from non-publicly trusted CAs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalTrustBundle")]
     pub additional_trust_bundle: Option<String>,
+    /// CcmExcludeIPs is the optional list of IP addresses that should be excluded from the CCM IP pool for nodes. List should be valid IP addresses and IP address ranges.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ccmExcludeNodeIPs")]
+    pub ccm_exclude_node_i_ps: Option<Vec<String>>,
     /// CredentialRef is the reference to the secret name that contains the credentials for the Nutanix Prism Central. The namespace for the secret is assumed to be a constant i.e. eksa-system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialRef")]
     pub credential_ref: Option<NutanixDatacenterConfigCredentialRef>,

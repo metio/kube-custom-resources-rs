@@ -123,18 +123,16 @@ pub struct ComponentSpec {
     /// with other Kubernetes resources, such as modifying Pod labels or sending events.
     /// 
     /// 
-    /// Defaults:
-    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}",
-    /// bound to a default role defined during KubeBlocks installation.
+    /// If not specified, KubeBlocks automatically creates a default ServiceAccount named
+    /// "kb-{componentdefinition.name}", bound to a role with rules defined in ComponentDefinition's
+    /// `policyRules` field. If needed (currently this means if any lifecycleAction is enabled),
+    /// it will also be bound to a default role named
+    /// "kubeblocks-cluster-pod-role", which is installed together with KubeBlocks.
+    /// If multiple components use the same ComponentDefinition, they will share one ServiceAccount.
     /// 
     /// 
-    /// Future Changes:
-    /// Future versions might change the default ServiceAccount creation strategy to one per Component,
-    /// potentially revising the naming to "kb-{cluster.name}-{component.name}".
-    /// 
-    /// 
-    /// Users can override the automatic ServiceAccount assignment by explicitly setting the name of
-    /// an existed ServiceAccount in this field.
+    /// If the field is not empty, the specified ServiceAccount will be used, and KubeBlocks will not
+    /// create a ServiceAccount. But KubeBlocks does create RoleBindings for the specified ServiceAccount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Defines a list of ServiceRef for a Component, enabling access to both external services and
@@ -172,9 +170,12 @@ pub struct ComponentSpec {
     /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides Services defined in referenced ComponentDefinition and exposes endpoints that can be accessed by clients.
+    /// Overrides Services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ComponentServices>>,
+    /// Specifies the sidecars to be injected into the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sidecars: Option<Vec<ComponentSidecars>>,
     /// Stop the Component.
     /// If set, all the computing resources will be released.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -182,6 +183,9 @@ pub struct ComponentSpec {
     /// Overrides system accounts defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<Vec<ComponentSystemAccounts>>,
+    /// Specifies the behavior when a Component is deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationPolicy")]
+    pub termination_policy: Option<ComponentTerminationPolicy>,
     /// Specifies the TLS configuration for the Component, including:
     /// 
     /// 
@@ -383,6 +387,16 @@ pub struct ComponentInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ComponentInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -504,6 +518,30 @@ pub struct ComponentInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ComponentInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -1507,6 +1545,12 @@ pub struct ComponentInstancesVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -4630,7 +4674,27 @@ pub struct ComponentServicesSpecSessionAffinityConfigClientIp {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentSidecars {
+    /// Name specifies the unique name of the sidecar.
+    /// 
+    /// 
+    /// The name will be used as the name of the sidecar container in the Pod.
+    pub name: String,
+    /// Specifies the exact component definition that the sidecar belongs to.
+    /// 
+    /// 
+    /// A sidecar will be updated when the owner component definition is updated only.
+    pub owner: String,
+    /// Specifies the sidecar definition CR to be used to create the sidecar.
+    #[serde(rename = "sidecarDef")]
+    pub sidecar_def: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentSystemAccounts {
+    /// Specifies whether the system account is disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
     /// The name of the system account.
     pub name: String,
     /// Specifies the policy for generating the account's password.
@@ -4640,6 +4704,9 @@ pub struct ComponentSystemAccounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordConfig")]
     pub password_config: Option<ComponentSystemAccountsPasswordConfig>,
     /// Refers to the secret from which data will be copied to create the new account.
+    /// 
+    /// 
+    /// For user-specified passwords, the maximum length is limited to 64 bytes.
     /// 
     /// 
     /// This field is immutable once set.
@@ -4685,6 +4752,9 @@ pub enum ComponentSystemAccountsPasswordConfigLetterCase {
 /// Refers to the secret from which data will be copied to create the new account.
 /// 
 /// 
+/// For user-specified passwords, the maximum length is limited to 64 bytes.
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentSystemAccountsSecretRef {
@@ -4692,6 +4762,17 @@ pub struct ComponentSystemAccountsSecretRef {
     pub name: String,
     /// The namespace where the secret is located.
     pub namespace: String,
+    /// The key in the secret data that contains the password.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
+}
+
+/// ComponentSpec defines the desired state of Component
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentTerminationPolicy {
+    DoNotTerminate,
+    Delete,
+    WipeOut,
 }
 
 /// Specifies the TLS configuration for the Component, including:
@@ -4753,6 +4834,10 @@ pub struct ComponentTlsConfigIssuerSecretRef {
     pub key: String,
     /// Name of the Secret that contains user-provided certificates.
     pub name: String,
+    /// The namespace where the secret is located.
+    /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4798,6 +4883,12 @@ pub struct ComponentVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -6450,6 +6541,7 @@ pub struct ComponentStatus {
     /// - Failed: A significant number of Pods have failed.
     /// - Stopping: All Pods are being terminated, with current replica count at zero.
     /// - Stopped: All associated Pods have been successfully deleted.
+    /// - Starting: Pods are being started.
     /// - Deleting: The Component is being deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ComponentStatusPhase>,
@@ -6462,6 +6554,7 @@ pub enum ComponentStatusPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,

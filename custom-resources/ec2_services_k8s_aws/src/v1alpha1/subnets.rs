@@ -31,8 +31,7 @@ pub struct SubnetSpec {
     /// 
     /// To create a subnet in a Local Zone, set this value to the Local Zone ID,
     /// for example us-west-2-lax-1a. For information about the Regions that support
-    /// Local Zones, see Available Regions (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)
-    /// in the Amazon Elastic Compute Cloud User Guide.
+    /// Local Zones, see Available Local Zones (https://docs.aws.amazon.com/local-zones/latest/ug/available-local-zones.html).
     /// 
     /// To create a subnet in an Outpost, set this value to the Availability Zone
     /// for the Outpost and specify the Outpost ARN.
@@ -58,10 +57,8 @@ pub struct SubnetSpec {
     pub enable_resource_name_dnsa_record: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameType")]
     pub hostname_type: Option<String>,
-    /// The IPv6 network range for the subnet, in CIDR notation. The subnet size
-    /// must use a /64 prefix length.
-    /// 
-    /// This parameter is required for an IPv6 only subnet.
+    /// The IPv6 network range for the subnet, in CIDR notation. This parameter is
+    /// required for an IPv6 only subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlock")]
     pub ipv6_cidr_block: Option<String>,
     /// Indicates whether to create an IPv6 only subnet.

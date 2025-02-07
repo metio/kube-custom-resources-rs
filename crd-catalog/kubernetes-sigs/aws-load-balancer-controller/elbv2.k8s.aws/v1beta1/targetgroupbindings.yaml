@@ -31,6 +31,11 @@ spec:
           name: "ARN"
           priority: 1
           type: "string"
+        - description: "The AWS TargetGroup's Name"
+          jsonPath: ".spec.targetGroupName"
+          name: "NAME"
+          priority: 2
+          type: "string"
         - jsonPath: ".metadata.creationTimestamp"
           name: "AGE"
           type: "date"
@@ -50,6 +55,12 @@ spec:
             spec:
               description: "TargetGroupBindingSpec defines the desired state of TargetGroupBinding"
               properties:
+                assumeRoleExternalId:
+                  description: "IAM Role ARN to assume when calling AWS APIs. Needed to assume a role in another account and prevent the confused deputy problem. https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html"
+                  type: "string"
+                iamRoleArnToAssume:
+                  description: "IAM Role ARN to assume when calling AWS APIs. Useful if the target group is in a different AWS account"
+                  type: "string"
                 ipAddressType:
                   description: "ipAddressType specifies whether the target group is of type IPv4 or IPv6. If unspecified, it will be automatically inferred."
                   enum:
@@ -168,7 +179,9 @@ spec:
                   type: "object"
                 targetGroupARN:
                   description: "targetGroupARN is the Amazon Resource Name (ARN) for the TargetGroup."
-                  minLength: 1
+                  type: "string"
+                targetGroupName:
+                  description: "targetGroupName is the Name of the TargetGroup."
                   type: "string"
                 targetType:
                   description: "targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred."
@@ -181,7 +194,6 @@ spec:
                   type: "string"
               required:
                 - "serviceRef"
-                - "targetGroupARN"
               type: "object"
             status:
               description: "TargetGroupBindingStatus defines the observed state of TargetGroupBinding"

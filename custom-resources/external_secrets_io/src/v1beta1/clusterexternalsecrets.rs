@@ -21,7 +21,8 @@ pub struct ClusterExternalSecretSpec {
     /// The metadata of the external secrets to be created
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSecretMetadata")]
     pub external_secret_metadata: Option<ClusterExternalSecretExternalSecretMetadata>,
-    /// The name of the external secrets to be created defaults to the name of the ClusterExternalSecret
+    /// The name of the external secrets to be created.
+    /// Defaults to the name of the ClusterExternalSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSecretName")]
     pub external_secret_name: Option<String>,
     /// The spec for the ExternalSecrets to be created
@@ -61,8 +62,10 @@ pub struct ClusterExternalSecretExternalSecretSpec {
     /// If multiple entries are specified, the Secret keys are merged in the specified order
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataFrom")]
     pub data_from: Option<Vec<ClusterExternalSecretExternalSecretSpecDataFrom>>,
-    /// RefreshInterval is the amount of time before the values are read again from the SecretStore provider
+    /// RefreshInterval is the amount of time before the values are read again from the SecretStore provider,
+    /// specified as Golang Duration strings.
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"
+    /// Example values: "1h", "2h30m", "5d", "10s"
     /// May be set to zero to fetch and create it once. Defaults to 1h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
@@ -82,12 +85,11 @@ pub struct ClusterExternalSecretExternalSecretSpecData {
     /// which secret (version/property/..) to fetch.
     #[serde(rename = "remoteRef")]
     pub remote_ref: ClusterExternalSecretExternalSecretSpecDataRemoteRef,
-    /// SecretKey defines the key in which the controller stores
-    /// the value. This is the key in the Kind=Secret
+    /// The key in the Kubernetes Secret to store the value.
     #[serde(rename = "secretKey")]
     pub secret_key: String,
     /// SourceRef allows you to override the source
-    /// from which the value will pulled from.
+    /// from which the value will be pulled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceRef")]
     pub source_ref: Option<ClusterExternalSecretExternalSecretSpecDataSourceRef>,
 }
@@ -143,7 +145,7 @@ pub enum ClusterExternalSecretExternalSecretSpecDataRemoteRefMetadataPolicy {
 }
 
 /// SourceRef allows you to override the source
-/// from which the value will pulled from.
+/// from which the value will be pulled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
     /// GeneratorRef points to a generator custom resource.
@@ -161,15 +163,41 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
 /// 
 /// Deprecated: The generatorRef is not implemented in .data[].
 /// this will be removed with v1.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Specify the Kind of the resource, e.g. Password, ACRAccessToken etc.
-    pub kind: String,
+    /// Specify the Kind of the generator resource
+    pub kind: ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRefKind,
     /// Specify the name of the generator resource
     pub name: String,
+}
+
+/// GeneratorRef points to a generator custom resource.
+/// 
+/// Deprecated: The generatorRef is not implemented in .data[].
+/// this will be removed with v1.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRefKind {
+    #[serde(rename = "ACRAccessToken")]
+    AcrAccessToken,
+    ClusterGenerator,
+    #[serde(rename = "ECRAuthorizationToken")]
+    EcrAuthorizationToken,
+    Fake,
+    #[serde(rename = "GCRAccessToken")]
+    GcrAccessToken,
+    GithubAccessToken,
+    QuayAccessToken,
+    Password,
+    #[serde(rename = "STSSessionToken")]
+    StsSessionToken,
+    #[serde(rename = "UUID")]
+    Uuid,
+    VaultDynamicSecret,
+    Webhook,
+    Grafana,
 }
 
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -178,9 +206,17 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRefStoreRef {
     /// Kind of the SecretStore resource (SecretStore or ClusterSecretStore)
     /// Defaults to `SecretStore`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: Option<ClusterExternalSecretExternalSecretSpecDataSourceRefStoreRefKind>,
     /// Name of the SecretStore resource
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecDataSourceRefStoreRefKind {
+    SecretStore,
+    ClusterSecretStore,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -353,15 +389,38 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRef {
 }
 
 /// GeneratorRef points to a generator custom resource.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Specify the Kind of the resource, e.g. Password, ACRAccessToken etc.
-    pub kind: String,
+    /// Specify the Kind of the generator resource
+    pub kind: ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRefKind,
     /// Specify the name of the generator resource
     pub name: String,
+}
+
+/// GeneratorRef points to a generator custom resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRefKind {
+    #[serde(rename = "ACRAccessToken")]
+    AcrAccessToken,
+    ClusterGenerator,
+    #[serde(rename = "ECRAuthorizationToken")]
+    EcrAuthorizationToken,
+    Fake,
+    #[serde(rename = "GCRAccessToken")]
+    GcrAccessToken,
+    GithubAccessToken,
+    QuayAccessToken,
+    Password,
+    #[serde(rename = "STSSessionToken")]
+    StsSessionToken,
+    #[serde(rename = "UUID")]
+    Uuid,
+    VaultDynamicSecret,
+    Webhook,
+    Grafana,
 }
 
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -370,9 +429,17 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRefStoreRef {
     /// Kind of the SecretStore resource (SecretStore or ClusterSecretStore)
     /// Defaults to `SecretStore`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: Option<ClusterExternalSecretExternalSecretSpecDataFromSourceRefStoreRefKind>,
     /// Name of the SecretStore resource
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefStoreRefKind {
+    SecretStore,
+    ClusterSecretStore,
 }
 
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -381,28 +448,35 @@ pub struct ClusterExternalSecretExternalSecretSpecSecretStoreRef {
     /// Kind of the SecretStore resource (SecretStore or ClusterSecretStore)
     /// Defaults to `SecretStore`
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
+    pub kind: Option<ClusterExternalSecretExternalSecretSpecSecretStoreRefKind>,
     /// Name of the SecretStore resource
-    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecSecretStoreRefKind {
+    SecretStore,
+    ClusterSecretStore,
 }
 
 /// ExternalSecretTarget defines the Kubernetes Secret to be created
 /// There can be only one target per ExternalSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTarget {
-    /// CreationPolicy defines rules on how to create the resulting Secret
-    /// Defaults to 'Owner'
+    /// CreationPolicy defines rules on how to create the resulting Secret.
+    /// Defaults to "Owner"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationPolicy")]
     pub creation_policy: Option<ClusterExternalSecretExternalSecretSpecTargetCreationPolicy>,
-    /// DeletionPolicy defines rules on how to delete the resulting Secret
-    /// Defaults to 'Retain'
+    /// DeletionPolicy defines rules on how to delete the resulting Secret.
+    /// Defaults to "Retain"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<ClusterExternalSecretExternalSecretSpecTargetDeletionPolicy>,
     /// Immutable defines if the final secret will be immutable
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub immutable: Option<bool>,
-    /// Name defines the name of the Secret resource to be managed
-    /// This field is immutable
+    /// The name of the Secret resource to be managed.
     /// Defaults to the .metadata.name of the ExternalSecret resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -490,12 +564,15 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFrom {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMap {
+    /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
     pub items: Vec<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItems>,
+    /// The name of the ConfigMap/Secret resource
     pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItems {
+    /// A key in the ConfigMap/Secret
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItemsTemplateAs>,
@@ -509,12 +586,15 @@ pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfig
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecret {
+    /// A list of keys in the ConfigMap/Secret to use as templates for Secret data
     pub items: Vec<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItems>,
+    /// The name of the ConfigMap/Secret resource
     pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItems {
+    /// A key in the ConfigMap/Secret
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
     pub template_as: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItemsTemplateAs>,

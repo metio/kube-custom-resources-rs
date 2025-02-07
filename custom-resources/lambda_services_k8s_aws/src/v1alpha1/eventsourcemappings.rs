@@ -41,14 +41,17 @@ pub struct EventSourceMappingSpec {
     ///    * Self-managed Apache Kafka – Default 100. Max 10,000.
     /// 
     ///    * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
+    /// 
+    ///    * DocumentDB – Default 100. Max 10,000.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
     pub batch_size: Option<i64>,
-    /// (Streams only) If the function returns an error, split the batch in two and
-    /// retry.
+    /// (Kinesis and DynamoDB Streams only) If the function returns an error, split
+    /// the batch in two and retry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bisectBatchOnFunctionError")]
     pub bisect_batch_on_function_error: Option<bool>,
-    /// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
-    /// records.
+    /// (Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Kafka only) A configuration
+    /// object that specifies the destination of an event after Lambda processes
+    /// it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationConfig")]
     pub destination_config: Option<EventSourceMappingDestinationConfig>,
     /// When true, the event source mapping is active. When false, Lambda pauses
@@ -65,9 +68,13 @@ pub struct EventSourceMappingSpec {
     /// 
     ///    * Amazon Simple Queue Service – The ARN of the queue.
     /// 
-    ///    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.
+    ///    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster
+    ///    or the ARN of the VPC connection (for cross-account event source mappings
+    ///    (https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#msk-multi-vpc)).
     /// 
     ///    * Amazon MQ – The ARN of the broker.
+    /// 
+    ///    * Amazon DocumentDB – The ARN of the DocumentDB change stream.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourceARN")]
     pub event_source_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -84,7 +91,7 @@ pub struct EventSourceMappingSpec {
     /// (https://docs.aws.amazon.com/lambda/latest/dg/invocation-eventfiltering.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterCriteria")]
     pub filter_criteria: Option<EventSourceMappingFilterCriteria>,
-    /// The name of the Lambda function.
+    /// The name or ARN of the Lambda function.
     /// 
     /// Name formats
     /// 
@@ -109,37 +116,38 @@ pub struct EventSourceMappingSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionRef")]
     pub function_ref: Option<EventSourceMappingFunctionRef>,
-    /// (Streams and Amazon SQS) A list of current response type enums applied to
-    /// the event source mapping.
+    /// (Kinesis, DynamoDB Streams, and Amazon SQS) A list of current response type
+    /// enums applied to the event source mapping.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionResponseTypes")]
     pub function_response_types: Option<Vec<String>>,
     /// The maximum amount of time, in seconds, that Lambda spends gathering records
     /// before invoking the function. You can configure MaximumBatchingWindowInSeconds
     /// to any value from 0 seconds to 300 seconds in increments of seconds.
     /// 
-    /// For streams and Amazon SQS event sources, the default batching window is
-    /// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
-    /// sources, the default batching window is 500 ms. Note that because you can
-    /// only change MaximumBatchingWindowInSeconds in increments of seconds, you
-    /// cannot revert back to the 500 ms default batching window after you have changed
-    /// it. To restore the default batching window, you must create a new event source
-    /// mapping.
+    /// For Kinesis, DynamoDB, and Amazon SQS event sources, the default batching
+    /// window is 0 seconds. For Amazon MSK, Self-managed Apache Kafka, Amazon MQ,
+    /// and DocumentDB event sources, the default batching window is 500 ms. Note
+    /// that because you can only change MaximumBatchingWindowInSeconds in increments
+    /// of seconds, you cannot revert back to the 500 ms default batching window
+    /// after you have changed it. To restore the default batching window, you must
+    /// create a new event source mapping.
     /// 
-    /// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
-    /// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
-    /// at least 1.
+    /// Related setting: For Kinesis, DynamoDB, and Amazon SQS event sources, when
+    /// you set BatchSize to a value greater than 10, you must set MaximumBatchingWindowInSeconds
+    /// to at least 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumBatchingWindowInSeconds")]
     pub maximum_batching_window_in_seconds: Option<i64>,
-    /// (Streams only) Discard records older than the specified age. The default
-    /// value is infinite (-1).
+    /// (Kinesis and DynamoDB Streams only) Discard records older than the specified
+    /// age. The default value is infinite (-1).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRecordAgeInSeconds")]
     pub maximum_record_age_in_seconds: Option<i64>,
-    /// (Streams only) Discard records after the specified number of retries. The
-    /// default value is infinite (-1). When set to infinite (-1), failed records
-    /// are retried until the record expires.
+    /// (Kinesis and DynamoDB Streams only) Discard records after the specified number
+    /// of retries. The default value is infinite (-1). When set to infinite (-1),
+    /// failed records are retried until the record expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
-    /// (Streams only) The number of batches to process from each shard concurrently.
+    /// (Kinesis and DynamoDB Streams only) The number of batches to process from
+    /// each shard concurrently.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelizationFactor")]
     pub parallelization_factor: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueRefs")]
@@ -163,18 +171,21 @@ pub struct EventSourceMappingSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAccessConfigurations")]
     pub source_access_configurations: Option<Vec<EventSourceMappingSourceAccessConfigurations>>,
     /// The position in a stream from which to start reading. Required for Amazon
-    /// Kinesis, Amazon DynamoDB, and Amazon MSK Streams sources. AT_TIMESTAMP is
-    /// supported only for Amazon Kinesis streams.
+    /// Kinesis and Amazon DynamoDB Stream event sources. AT_TIMESTAMP is supported
+    /// only for Amazon Kinesis streams, Amazon DocumentDB, Amazon MSK, and self-managed
+    /// Apache Kafka.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPosition")]
     pub starting_position: Option<String>,
     /// With StartingPosition set to AT_TIMESTAMP, the time from which to start reading.
+    /// StartingPositionTimestamp cannot be in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingPositionTimestamp")]
     pub starting_position_timestamp: Option<String>,
     /// The name of the Kafka topic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topics: Option<Vec<String>>,
-    /// (Streams only) The duration in seconds of a processing window. The range
-    /// is between 1 second and 900 seconds.
+    /// (Kinesis and DynamoDB Streams only) The duration in seconds of a processing
+    /// window for DynamoDB and Kinesis Streams event sources. A value of 0 seconds
+    /// indicates no tumbling window.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tumblingWindowInSeconds")]
     pub tumbling_window_in_seconds: Option<i64>,
 }
@@ -187,14 +198,19 @@ pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfig {
     pub consumer_group_id: Option<String>,
 }
 
-/// (Streams only) An Amazon SQS queue or Amazon SNS topic destination for discarded
-/// records.
+/// (Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Kafka only) A configuration
+/// object that specifies the destination of an event after Lambda processes
+/// it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfig {
     /// A destination for events that failed processing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailure")]
     pub on_failure: Option<EventSourceMappingDestinationConfigOnFailure>,
     /// A destination for events that were processed successfully.
+    /// 
+    /// To retain records of successful asynchronous invocations (https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),
+    /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
+    /// or Amazon EventBridge event bus as the destination.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSuccess")]
     pub on_success: Option<EventSourceMappingDestinationConfigOnSuccess>,
 }
@@ -207,6 +223,10 @@ pub struct EventSourceMappingDestinationConfigOnFailure {
 }
 
 /// A destination for events that were processed successfully.
+/// 
+/// To retain records of successful asynchronous invocations (https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),
+/// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
+/// or Amazon EventBridge event bus as the destination.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfigOnSuccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]

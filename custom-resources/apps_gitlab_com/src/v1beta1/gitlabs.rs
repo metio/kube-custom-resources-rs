@@ -36,7 +36,8 @@ pub struct GitLabChart {
     pub version: Option<String>,
 }
 
-/// Most recently observed status of the GitLab instance. It is read-only to the user.
+/// Most recently observed status of the GitLab instance.
+/// It is read-only to the user.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitLabStatus {
     pub conditions: Vec<Condition>,

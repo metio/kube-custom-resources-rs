@@ -15,7 +15,8 @@ use self::prelude::*;
 /// Represents a scaling policy to use with Application Auto Scaling.
 /// 
 /// For more information about configuring scaling policies for a specific service,
-/// see Getting started with Application Auto Scaling (https://docs.aws.amazon.com/autoscaling/application/userguide/getting-started.html)
+/// see Amazon Web Services services that you can use with Application Auto Scaling
+/// (https://docs.aws.amazon.com/autoscaling/application/userguide/integrated-services-list.html)
 /// in the Application Auto Scaling User Guide.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "applicationautoscaling.services.k8s.aws", version = "v1alpha1", kind = "ScalingPolicy", plural = "scalingpolicies")]
@@ -26,14 +27,18 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ScalingPolicySpec {
     /// The name of the scaling policy.
+    /// 
+    /// You cannot change the name of a scaling policy, but you can delete the original
+    /// scaling policy and create a new scaling policy with the same settings and
+    /// a different name.
     #[serde(rename = "policyName")]
     pub policy_name: String,
-    /// The policy type. This parameter is required if you are creating a scaling
-    /// policy.
+    /// The scaling policy type. This parameter is required if you are creating a
+    /// scaling policy.
     /// 
     /// The following policy types are supported:
     /// 
-    /// TargetTrackingScaling—Not supported for Amazon EMR
+    /// TargetTrackingScaling—Not supported for Amazon EMR.
     /// 
     /// StepScaling—Not supported for DynamoDB, Amazon Comprehend, Lambda, Amazon
     /// Keyspaces, Amazon MSK, Amazon ElastiCache, or Neptune.
@@ -47,7 +52,7 @@ pub struct ScalingPolicySpec {
     /// consists of the resource type and unique identifier.
     /// 
     ///    * ECS service - The resource type is service and the unique identifier
-    ///    is the cluster name and service name. Example: service/default/sample-webapp.
+    ///    is the cluster name and service name. Example: service/my-cluster/my-service.
     /// 
     ///    * Spot Fleet - The resource type is spot-fleet-request and the unique
     ///    identifier is the Spot Fleet request ID. Example: spot-fleet-request/sfr-73fbd2ce-aa30-494c-8788-1cee4EXAMPLE.
@@ -97,12 +102,21 @@ pub struct ScalingPolicySpec {
     /// 
     ///    * Neptune cluster - The resource type is cluster and the unique identifier
     ///    is the cluster name. Example: cluster:mycluster.
+    /// 
+    ///    * SageMaker serverless endpoint - The resource type is variant and the
+    ///    unique identifier is the resource ID. Example: endpoint/my-end-point/variant/KMeansClustering.
+    /// 
+    ///    * SageMaker inference component - The resource type is inference-component
+    ///    and the unique identifier is the resource ID. Example: inference-component/my-inference-component.
+    /// 
+    ///    * Pool of WorkSpaces - The resource type is workspacespool and the unique
+    ///    identifier is the pool ID. Example: workspacespool/wspool-123456.
     #[serde(rename = "resourceID")]
     pub resource_id: String,
     /// The scalable dimension. This string consists of the service namespace, resource
     /// type, and scaling property.
     /// 
-    ///    * ecs:service:DesiredCount - The desired task count of an ECS service.
+    ///    * ecs:service:DesiredCount - The task count of an ECS service.
     /// 
     ///    * elasticmapreduce:instancegroup:InstanceCount - The instance count of
     ///    an EMR Instance Group.
@@ -110,8 +124,7 @@ pub struct ScalingPolicySpec {
     ///    * ec2:spot-fleet-request:TargetCapacity - The target capacity of a Spot
     ///    Fleet.
     /// 
-    ///    * appstream:fleet:DesiredCapacity - The desired capacity of an AppStream
-    ///    2.0 fleet.
+    ///    * appstream:fleet:DesiredCapacity - The capacity of an AppStream 2.0 fleet.
     /// 
     ///    * dynamodb:table:ReadCapacityUnits - The provisioned read capacity for
     ///    a DynamoDB table.
@@ -130,7 +143,7 @@ pub struct ScalingPolicySpec {
     ///    edition.
     /// 
     ///    * sagemaker:variant:DesiredInstanceCount - The number of EC2 instances
-    ///    for an SageMaker model endpoint variant.
+    ///    for a SageMaker model endpoint variant.
     /// 
     ///    * custom-resource:ResourceType:Property - The scalable dimension for a
     ///    custom resource provided by your own application or service.
@@ -162,6 +175,15 @@ pub struct ScalingPolicySpec {
     /// 
     ///    * neptune:cluster:ReadReplicaCount - The count of read replicas in an
     ///    Amazon Neptune DB cluster.
+    /// 
+    ///    * sagemaker:variant:DesiredProvisionedConcurrency - The provisioned concurrency
+    ///    for a SageMaker serverless endpoint.
+    /// 
+    ///    * sagemaker:inference-component:DesiredCopyCount - The number of copies
+    ///    across an endpoint for a SageMaker inference component.
+    /// 
+    ///    * workspaces:workspacespool:DesiredUserSessions - The number of user sessions
+    ///    for the WorkSpaces in the pool.
     #[serde(rename = "scalableDimension")]
     pub scalable_dimension: String,
     /// The namespace of the Amazon Web Services service that provides the resource.
@@ -210,11 +232,11 @@ pub struct ScalingPolicyStepScalingPolicyConfiguration {
 /// For the following examples, suppose that you have an alarm with a breach
 /// threshold of 50:
 /// 
-///    * To trigger the adjustment when the metric is greater than or equal to
-///    50 and less than 60, specify a lower bound of 0 and an upper bound of
-///    10.
+///    * To initiate the adjustment when the metric is greater than or equal
+///    to 50 and less than 60, specify a lower bound of 0 and an upper bound
+///    of 10.
 /// 
-///    * To trigger the adjustment when the metric is greater than 40 and less
+///    * To initiate the adjustment when the metric is greater than 40 and less
 ///    than or equal to 50, specify a lower bound of -10 and an upper bound of
 ///    0.
 /// 
@@ -252,7 +274,7 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
     /// policy to use with Application Auto Scaling.
     /// 
     /// For information about the available metrics for a service, see Amazon Web
-    /// Services Services That Publish CloudWatch Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html)
+    /// Services services that publish CloudWatch metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html)
     /// in the Amazon CloudWatch User Guide.
     /// 
     /// To create your customized metric specification:
@@ -260,7 +282,7 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
     ///    * Add values for each required parameter from CloudWatch. You can use
     ///    an existing metric, or a new metric that you create. To use your own metric,
     ///    you must first publish the metric to CloudWatch. For more information,
-    ///    see Publish Custom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html)
+    ///    see Publish custom metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html)
     ///    in the Amazon CloudWatch User Guide.
     /// 
     ///    * Choose a metric that changes proportionally with capacity. The value
@@ -268,7 +290,9 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
     ///    number of capacity units. That is, the value of the metric should decrease
     ///    when capacity increases, and increase when capacity decreases.
     /// 
-    /// For more information about CloudWatch, see Amazon CloudWatch Concepts (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html).
+    /// For more information about the CloudWatch terminology below, see Amazon CloudWatch
+    /// concepts (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html)
+    /// in the Amazon CloudWatch User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customizedMetricSpecification")]
     pub customized_metric_specification: Option<ScalingPolicyTargetTrackingScalingPolicyConfigurationCustomizedMetricSpecification>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableScaleIn")]
@@ -276,10 +300,8 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
     /// Represents a predefined metric for a target tracking scaling policy to use
     /// with Application Auto Scaling.
     /// 
-    /// Only the Amazon Web Services that you're using send metrics to Amazon CloudWatch.
-    /// To determine whether a desired metric already exists by looking up its namespace
-    /// and dimension using the CloudWatch metrics dashboard in the console, follow
-    /// the procedure in Building dashboards with CloudWatch (https://docs.aws.amazon.com/autoscaling/application/userguide/monitoring-cloudwatch.html)
+    /// For more information, Predefined metrics for target tracking scaling policies
+    /// (https://docs.aws.amazon.com/autoscaling/application/userguide/monitoring-cloudwatch.html#predefined-metrics)
     /// in the Application Auto Scaling User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "predefinedMetricSpecification")]
     pub predefined_metric_specification: Option<ScalingPolicyTargetTrackingScalingPolicyConfigurationPredefinedMetricSpecification>,
@@ -295,7 +317,7 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
 /// policy to use with Application Auto Scaling.
 /// 
 /// For information about the available metrics for a service, see Amazon Web
-/// Services Services That Publish CloudWatch Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html)
+/// Services services that publish CloudWatch metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-services-cloudwatch-metrics.html)
 /// in the Amazon CloudWatch User Guide.
 /// 
 /// To create your customized metric specification:
@@ -303,7 +325,7 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
 ///    * Add values for each required parameter from CloudWatch. You can use
 ///    an existing metric, or a new metric that you create. To use your own metric,
 ///    you must first publish the metric to CloudWatch. For more information,
-///    see Publish Custom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html)
+///    see Publish custom metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html)
 ///    in the Amazon CloudWatch User Guide.
 /// 
 ///    * Choose a metric that changes proportionally with capacity. The value
@@ -311,7 +333,9 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfiguration {
 ///    number of capacity units. That is, the value of the metric should decrease
 ///    when capacity increases, and increase when capacity decreases.
 /// 
-/// For more information about CloudWatch, see Amazon CloudWatch Concepts (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html).
+/// For more information about the CloudWatch terminology below, see Amazon CloudWatch
+/// concepts (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/cloudwatch_concepts.html)
+/// in the Amazon CloudWatch User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScalingPolicyTargetTrackingScalingPolicyConfigurationCustomizedMetricSpecification {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -338,10 +362,8 @@ pub struct ScalingPolicyTargetTrackingScalingPolicyConfigurationCustomizedMetric
 /// Represents a predefined metric for a target tracking scaling policy to use
 /// with Application Auto Scaling.
 /// 
-/// Only the Amazon Web Services that you're using send metrics to Amazon CloudWatch.
-/// To determine whether a desired metric already exists by looking up its namespace
-/// and dimension using the CloudWatch metrics dashboard in the console, follow
-/// the procedure in Building dashboards with CloudWatch (https://docs.aws.amazon.com/autoscaling/application/userguide/monitoring-cloudwatch.html)
+/// For more information, Predefined metrics for target tracking scaling policies
+/// (https://docs.aws.amazon.com/autoscaling/application/userguide/monitoring-cloudwatch.html#predefined-metrics)
 /// in the Application Auto Scaling User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScalingPolicyTargetTrackingScalingPolicyConfigurationPredefinedMetricSpecification {

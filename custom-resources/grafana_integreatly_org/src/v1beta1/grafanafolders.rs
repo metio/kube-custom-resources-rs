@@ -20,10 +20,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaFolderSpec {
-    /// Enable matching Grafana instances outside the current namespace
+    /// Allow the Operator to match this resource with Grafanas outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
-    /// Selects Grafanas for import
+    /// Selects Grafana instances for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaFolderInstanceSelector,
     /// Reference to an existing GrafanaFolder CR in the same namespace
@@ -35,18 +35,18 @@ pub struct GrafanaFolderSpec {
     /// Raw json with folder permissions, potentially exported from Grafana
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<String>,
-    /// How often the folder is synced, defaults to 5m if not set
+    /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     /// Display name of the folder in Grafana
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Manually specify the UID the Folder is created with
+    /// Manually specify the UID the Folder is created with. Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
 
-/// Selects Grafanas for import
+/// Selects Grafana instances for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -82,13 +82,12 @@ pub struct GrafanaFolderStatus {
     /// The folder instanceSelector can't find matching grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
+    /// Results when synchonizing resource with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
-    /// Last time the folder was resynced
+    /// Last time the resource was synchronized with Grafana instances
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
 }

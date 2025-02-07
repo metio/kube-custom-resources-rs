@@ -18,16 +18,20 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DeviceSpec {
-    /// Data section describe a list of time-series properties which should be processed on edge node.
+    /// Data section describe a list of time-series properties which should be processed
+    /// on edge node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<DeviceData>,
-    /// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
+    /// Required: DeviceModelRef is reference to the device model used as a template
+    /// to create the device instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceModelRef")]
     pub device_model_ref: Option<DeviceDeviceModelRef>,
-    /// NodeSelector indicates the binding preferences between devices and nodes. Refer to k8s.io/kubernetes/pkg/apis/core NodeSelector for more details
+    /// NodeSelector indicates the binding preferences between devices and nodes.
+    /// Refer to k8s.io/kubernetes/pkg/apis/core NodeSelector for more details
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<DeviceNodeSelector>,
-    /// List of property visitors which describe how to access the device properties. PropertyVisitors must unique by propertyVisitor.propertyName.
+    /// List of property visitors which describe how to access the device properties.
+    /// PropertyVisitors must unique by propertyVisitor.propertyName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyVisitors")]
     pub property_visitors: Option<Vec<DevicePropertyVisitors>>,
     /// Required: The protocol configuration used to connect to the device.
@@ -35,13 +39,16 @@ pub struct DeviceSpec {
     pub protocol: Option<DeviceProtocol>,
 }
 
-/// Data section describe a list of time-series properties which should be processed on edge node.
+/// Data section describe a list of time-series properties which should be processed
+/// on edge node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceData {
     /// Required: A list of data properties, which are not required to be processed by edgecore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataProperties")]
     pub data_properties: Option<Vec<DeviceDataDataProperties>>,
-    /// Topic used by mapper, all data collected from dataProperties should be published to this topic, the default value is $ke/events/device/+/data/update
+    /// Topic used by mapper, all data collected from dataProperties
+    /// should be published to this topic,
+    /// the default value is $ke/events/device/+/data/update
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataTopic")]
     pub data_topic: Option<String>,
 }
@@ -52,20 +59,29 @@ pub struct DeviceDataDataProperties {
     /// Additional metadata like timestamp when the value was reported etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
-    /// Required: The property name for which should be processed by external apps. This property should be present in the device model.
+    /// Required: The property name for which should be processed by external apps.
+    /// This property should be present in the device model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
 }
 
-/// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
+/// Required: DeviceModelRef is reference to the device model used as a template
+/// to create the device instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceDeviceModelRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// NodeSelector indicates the binding preferences between devices and nodes. Refer to k8s.io/kubernetes/pkg/apis/core NodeSelector for more details
+/// NodeSelector indicates the binding preferences between devices and nodes.
+/// Refer to k8s.io/kubernetes/pkg/apis/core NodeSelector for more details
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceNodeSelector {
     /// Required. A list of node selector terms. The terms are ORed.
@@ -73,7 +89,9 @@ pub struct DeviceNodeSelector {
     pub node_selector_terms: Vec<DeviceNodeSelectorNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceNodeSelectorNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -84,31 +102,45 @@ pub struct DeviceNodeSelectorNodeSelectorTerms {
     pub match_fields: Option<Vec<DeviceNodeSelectorNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceNodeSelectorNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceNodeSelectorNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// DevicePropertyVisitor describes the specifics of accessing a particular device property. Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device.
+/// DevicePropertyVisitor describes the specifics of accessing a particular device
+/// property. Visitors are intended to be consumed by device mappers which connect to devices
+/// and collect data / perform actions on the device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitors {
     /// Bluetooth represents a set of additional visitor config fields of bluetooth protocol.
@@ -129,7 +161,8 @@ pub struct DevicePropertyVisitors {
     /// Opcua represents a set of additional visitor config fields of opc-ua protocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opcua: Option<DevicePropertyVisitorsOpcua>,
-    /// Required: The device property name to be accessed. This should refer to one of the device properties defined in the device model.
+    /// Required: The device property name to be accessed. This should refer to one of the
+    /// device properties defined in the device model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Define how frequent mapper will report the value.
@@ -146,7 +179,8 @@ pub struct DevicePropertyVisitorsBluetooth {
     /// Responsible for converting the data being read from the bluetooth device into a form that is understandable by the platform
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataConverter")]
     pub data_converter: Option<DevicePropertyVisitorsBluetoothDataConverter>,
-    /// Responsible for converting the data coming from the platform into a form that is understood by the bluetooth device For example: "ON":[1], "OFF":[0]
+    /// Responsible for converting the data coming from the platform into a form that is understood by the bluetooth device
+    /// For example: "ON":[1], "OFF":[0]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataWrite")]
     pub data_write: Option<BTreeMap<String, String>>,
 }
@@ -154,7 +188,8 @@ pub struct DevicePropertyVisitorsBluetooth {
 /// Responsible for converting the data being read from the bluetooth device into a form that is understandable by the platform
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsBluetoothDataConverter {
-    /// Required: Specifies the end index of incoming byte stream to be considered to convert the data the value specified should be inclusive for example if 3 is specified it includes the third index
+    /// Required: Specifies the end index of incoming byte stream to be considered to convert the data
+    /// the value specified should be inclusive for example if 3 is specified it includes the third index
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endIndex")]
     pub end_index: Option<i64>,
     /// Specifies in what order the operations(which are required to be performed to convert incoming data into understandable form) are performed
@@ -166,7 +201,8 @@ pub struct DevicePropertyVisitorsBluetoothDataConverter {
     /// Refers to the number of bits to shift right, if right-shift operation is necessary for conversion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shiftRight")]
     pub shift_right: Option<i64>,
-    /// Required: Specifies the start index of the incoming byte stream to be considered to convert the data. For example: start-index:2, end-index:3 concatenates the value present at second and third index of the incoming byte stream. If we want to reverse the order we can give it as start-index:3, end-index:2
+    /// Required: Specifies the start index of the incoming byte stream to be considered to convert the data.
+    /// For example: start-index:2, end-index:3 concatenates the value present at second and third index of the incoming byte stream. If we want to reverse the order we can give it as start-index:3, end-index:2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startIndex")]
     pub start_index: Option<i64>,
 }
@@ -196,10 +232,12 @@ pub struct DevicePropertyVisitorsCustomizedProtocol {
 /// Modbus represents a set of additional visitor config fields of modbus protocol.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertyVisitorsModbus {
-    /// Indicates whether the high and low register swapped. Defaults to false.
+    /// Indicates whether the high and low register swapped.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRegisterSwap")]
     pub is_register_swap: Option<bool>,
-    /// Indicates whether the high and low byte swapped. Defaults to false.
+    /// Indicates whether the high and low byte swapped.
+    /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isSwap")]
     pub is_swap: Option<bool>,
     /// Required: Limit number of registers to read/write.
@@ -211,7 +249,8 @@ pub struct DevicePropertyVisitorsModbus {
     /// Required: Type of register
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub register: Option<DevicePropertyVisitorsModbusRegister>,
-    /// The scale to convert raw property data into final units. Defaults to 1.0
+    /// The scale to convert raw property data into final units.
+    /// Defaults to 1.0
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scale: Option<f64>,
 }
@@ -406,7 +445,8 @@ pub struct DeviceProtocolCustomizedProtocol {
     /// Any config data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
-    /// Unique protocol name Required.
+    /// Unique protocol name
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
@@ -451,18 +491,26 @@ pub struct DeviceProtocolOpcua {
 /// DeviceStatus reports the device state and the desired/reported values of twin attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatus {
-    /// A list of device twins containing desired/reported desired/reported values of twin properties. Optional: A passive device won't have twin properties and this list could be empty.
+    /// A list of device twins containing desired/reported desired/reported values of twin properties.
+    /// Optional: A passive device won't have twin properties and this list could be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twins: Option<Vec<DeviceStatusTwins>>,
 }
 
-/// Twin provides a logical representation of control properties (writable properties in the device model). The properties can have a Desired state and a Reported state. The cloud configures the `Desired`state of a device property and this configuration update is pushed to the edge node. The mapper sends a command to the device to change this property value as per the desired state . It receives the `Reported` state of the property once the previous operation is complete and sends the reported state to the cloud. Offline device interaction in the edge is possible via twin properties for control/command operations.
+/// Twin provides a logical representation of control properties (writable properties in the
+/// device model). The properties can have a Desired state and a Reported state. The cloud configures
+/// the `Desired`state of a device property and this configuration update is pushed to the edge node.
+/// The mapper sends a command to the device to change this property value as per the desired state .
+/// It receives the `Reported` state of the property once the previous operation is complete and sends
+/// the reported state to the cloud. Offline device interaction in the edge is possible via twin
+/// properties for control/command operations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatusTwins {
     /// Required: the desired property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired: Option<DeviceStatusTwinsDesired>,
-    /// Required: The property name for which the desired/reported values are specified. This property should be present in the device model.
+    /// Required: The property name for which the desired/reported values are specified.
+    /// This property should be present in the device model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Required: the reported property value.

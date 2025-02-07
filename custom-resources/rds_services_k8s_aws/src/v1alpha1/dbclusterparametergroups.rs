@@ -34,11 +34,11 @@ pub struct DBClusterParameterGroupSpec {
     /// 
     /// Aurora MySQL
     /// 
-    /// Example: aurora5.6, aurora-mysql5.7, aurora-mysql8.0
+    /// Example: aurora-mysql5.7, aurora-mysql8.0
     /// 
     /// Aurora PostgreSQL
     /// 
-    /// Example: aurora-postgresql9.6
+    /// Example: aurora-postgresql14
     /// 
     /// RDS for MySQL
     /// 
@@ -46,13 +46,13 @@ pub struct DBClusterParameterGroupSpec {
     /// 
     /// RDS for PostgreSQL
     /// 
-    /// Example: postgres12
+    /// Example: postgres13
     /// 
     /// To list all of the available parameter group families for a DB engine, use
     /// the following command:
     /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
-    /// --engine <engine>
+    /// --engine
     /// 
     /// For example, to list all of the available parameter group families for the
     /// Aurora PostgreSQL DB engine, use the following command:
@@ -64,9 +64,7 @@ pub struct DBClusterParameterGroupSpec {
     /// 
     /// The following are the valid DB engine values:
     /// 
-    ///    * aurora (for MySQL 5.6-compatible Aurora)
-    /// 
-    ///    * aurora-mysql (for MySQL 5.7-compatible and MySQL 8.0-compatible Aurora)
+    ///    * aurora-mysql
     /// 
     ///    * aurora-postgresql
     /// 
@@ -136,8 +134,10 @@ pub struct DBClusterParameterGroupParameters {
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
 /// 
-/// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-/// in the Amazon RDS User Guide.
+/// For more information, see Tagging Amazon RDS resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
+/// in the Amazon RDS User Guide or Tagging Amazon Aurora and Amazon RDS resources
+/// (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html)
+/// in the Amazon Aurora User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBClusterParameterGroupTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]

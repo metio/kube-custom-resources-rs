@@ -33,6 +33,9 @@ pub struct DataDownloadSpec {
     /// If DataMover is "" or "velero", the built-in data mover will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datamover: Option<String>,
+    /// NodeOS is OS of the node where the DataDownload is processed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeOS")]
+    pub node_os: Option<DataDownloadNodeOs>,
     /// OperationTimeout specifies the time used to wait internal operations,
     /// before returning error as timeout.
     #[serde(rename = "operationTimeout")]
@@ -49,6 +52,17 @@ pub struct DataDownloadSpec {
     pub target_volume: DataDownloadTargetVolume,
 }
 
+/// DataDownloadSpec is the specification for a DataDownload.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DataDownloadNodeOs {
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "windows")]
+    Windows,
+}
+
 /// TargetVolume is the information of the target PVC and PV.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataDownloadTargetVolume {
@@ -63,6 +77,13 @@ pub struct DataDownloadTargetVolume {
 /// DataDownloadStatus is the current status of a DataDownload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataDownloadStatus {
+    /// Node is name of the node where the DataUpload is prepared.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedByNode")]
+    pub accepted_by_node: Option<String>,
+    /// AcceptedTimestamp records the time the DataUpload is to be prepared.
+    /// The server's time is used for AcceptedTimestamp
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedTimestamp")]
+    pub accepted_timestamp: Option<String>,
     /// CompletionTimestamp records the time a restore was completed.
     /// Completion time is recorded even on failed restores.
     /// The server's time is used for CompletionTimestamps

@@ -20,6 +20,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TargetGroupBindingSpec {
+    /// IAM Role ARN to assume when calling AWS APIs. Needed to assume a role in another account and prevent the confused deputy problem. https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assumeRoleExternalId")]
+    pub assume_role_external_id: Option<String>,
+    /// IAM Role ARN to assume when calling AWS APIs. Useful if the target group is in a different AWS account
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iamRoleArnToAssume")]
+    pub iam_role_arn_to_assume: Option<String>,
     /// ipAddressType specifies whether the target group is of type IPv4 or IPv6. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<TargetGroupBindingIpAddressType>,
@@ -36,8 +42,11 @@ pub struct TargetGroupBindingSpec {
     #[serde(rename = "serviceRef")]
     pub service_ref: TargetGroupBindingServiceRef,
     /// targetGroupARN is the Amazon Resource Name (ARN) for the TargetGroup.
-    #[serde(rename = "targetGroupARN")]
-    pub target_group_arn: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetGroupARN")]
+    pub target_group_arn: Option<String>,
+    /// targetGroupName is the Name of the TargetGroup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetGroupName")]
+    pub target_group_name: Option<String>,
     /// targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<TargetGroupBindingTargetType>,

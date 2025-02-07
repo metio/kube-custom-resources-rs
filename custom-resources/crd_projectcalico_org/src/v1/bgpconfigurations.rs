@@ -19,7 +19,9 @@ pub struct BGPConfigurationSpec {
     /// ASNumber is the default AS number used by a node. [Default: 64512]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asNumber")]
     pub as_number: Option<i32>,
-    /// BindMode indicates whether to listen for BGP connections on all addresses (None) or only on the node's canonical IP address Node.Spec.BGP.IPvXAddress (NodeIP). Default behaviour is to listen for BGP connections on all addresses.
+    /// BindMode indicates whether to listen for BGP connections on all addresses (None)
+    /// or only on the node's canonical IP address Node.Spec.BGP.IPvXAddress (NodeIP).
+    /// Default behaviour is to listen for BGP connections on all addresses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindMode")]
     pub bind_mode: Option<String>,
     /// Communities is a list of BGP community values and their arbitrary names for tagging routes.
@@ -34,10 +36,13 @@ pub struct BGPConfigurationSpec {
     /// LogSeverityScreen is the log severity above which logs are sent to the stdout. [Default: INFO]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverityScreen")]
     pub log_severity_screen: Option<String>,
-    /// Time to allow for software restart for node-to-mesh peerings.  When specified, this is configured as the graceful restart timeout.  When not specified, the BIRD default of 120s is used. This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
+    /// Time to allow for software restart for node-to-mesh peerings.  When specified, this is configured
+    /// as the graceful restart timeout.  When not specified, the BIRD default of 120s is used.
+    /// This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMeshMaxRestartTime")]
     pub node_mesh_max_restart_time: Option<String>,
-    /// Optional BGP password for full node-to-mesh peerings. This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
+    /// Optional BGP password for full node-to-mesh peerings.
+    /// This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMeshPassword")]
     pub node_mesh_password: Option<BGPConfigurationNodeMeshPassword>,
     /// NodeToNodeMeshEnabled sets whether full node to node BGP mesh is enabled. [Default: true]
@@ -46,13 +51,16 @@ pub struct BGPConfigurationSpec {
     /// PrefixAdvertisements contains per-prefix advertisement configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixAdvertisements")]
     pub prefix_advertisements: Option<Vec<BGPConfigurationPrefixAdvertisements>>,
-    /// ServiceClusterIPs are the CIDR blocks from which service cluster IPs are allocated. If specified, Calico will advertise these blocks, as well as any cluster IPs within them.
+    /// ServiceClusterIPs are the CIDR blocks from which service cluster IPs are allocated.
+    /// If specified, Calico will advertise these blocks, as well as any cluster IPs within them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceClusterIPs")]
     pub service_cluster_i_ps: Option<Vec<BGPConfigurationServiceClusterIPs>>,
-    /// ServiceExternalIPs are the CIDR blocks for Kubernetes Service External IPs. Kubernetes Service ExternalIPs will only be advertised if they are within one of these blocks.
+    /// ServiceExternalIPs are the CIDR blocks for Kubernetes Service External IPs.
+    /// Kubernetes Service ExternalIPs will only be advertised if they are within one of these blocks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceExternalIPs")]
     pub service_external_i_ps: Option<Vec<BGPConfigurationServiceExternalIPs>>,
-    /// ServiceLoadBalancerIPs are the CIDR blocks for Kubernetes Service LoadBalancer IPs. Kubernetes Service status.LoadBalancer.Ingress IPs will only be advertised if they are within one of these blocks.
+    /// ServiceLoadBalancerIPs are the CIDR blocks for Kubernetes Service LoadBalancer IPs.
+    /// Kubernetes Service status.LoadBalancer.Ingress IPs will only be advertised if they are within one of these blocks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLoadBalancerIPs")]
     pub service_load_balancer_i_ps: Option<Vec<BGPConfigurationServiceLoadBalancerIPs>>,
 }
@@ -63,12 +71,16 @@ pub struct BGPConfigurationCommunities {
     /// Name given to community value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Value must be of format `aa:nn` or `aa:nn:mm`. For standard community use `aa:nn` format, where `aa` and `nn` are 16 bit number. For large community use `aa:nn:mm` format, where `aa`, `nn` and `mm` are 32 bit number. Where, `aa` is an AS Number, `nn` and `mm` are per-AS identifier.
+    /// Value must be of format `aa:nn` or `aa:nn:mm`.
+    /// For standard community use `aa:nn` format, where `aa` and `nn` are 16 bit number.
+    /// For large community use `aa:nn:mm` format, where `aa`, `nn` and `mm` are 32 bit number.
+    /// Where, `aa` is an AS Number, `nn` and `mm` are per-AS identifier.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Optional BGP password for full node-to-mesh peerings. This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
+/// Optional BGP password for full node-to-mesh peerings.
+/// This field can only be set on the default BGPConfiguration instance and requires that NodeMesh is enabled
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BGPConfigurationNodeMeshPassword {
     /// Selects a key of a secret in the node pod's namespace.
@@ -81,7 +93,11 @@ pub struct BGPConfigurationNodeMeshPassword {
 pub struct BGPConfigurationNodeMeshPasswordSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
-    /// Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -95,7 +111,10 @@ pub struct BGPConfigurationPrefixAdvertisements {
     /// CIDR for which properties should be advertised.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
-    /// Communities can be list of either community names already defined in `Specs.Communities` or community value of format `aa:nn` or `aa:nn:mm`. For standard community use `aa:nn` format, where `aa` and `nn` are 16 bit number. For large community use `aa:nn:mm` format, where `aa`, `nn` and `mm` are 32 bit number. Where,`aa` is an AS Number, `nn` and `mm` are per-AS identifier.
+    /// Communities can be list of either community names already defined in `Specs.Communities` or community value of format `aa:nn` or `aa:nn:mm`.
+    /// For standard community use `aa:nn` format, where `aa` and `nn` are 16 bit number.
+    /// For large community use `aa:nn:mm` format, where `aa`, `nn` and `mm` are 32 bit number.
+    /// Where,`aa` is an AS Number, `nn` and `mm` are per-AS identifier.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub communities: Option<Vec<String>>,
 }

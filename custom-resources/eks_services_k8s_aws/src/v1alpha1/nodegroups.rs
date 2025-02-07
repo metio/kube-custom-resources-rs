@@ -34,7 +34,7 @@ pub struct NodegroupSpec {
     /// The capacity type for your node group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityType")]
     pub capacity_type: Option<String>,
-    /// A unique, case-sensitive identifier that you provide to ensure the idempotency
+    /// A unique, case-sensitive identifier that you provide to ensurethe idempotency
     /// of the request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
     pub client_request_token: Option<String>,

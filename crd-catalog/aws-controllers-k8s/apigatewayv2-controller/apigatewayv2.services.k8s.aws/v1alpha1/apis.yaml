@@ -30,13 +30,16 @@ spec:
               description: "ApiSpec defines the desired state of Api.\n\nRepresents an API."
               properties:
                 apiKeySelectionExpression:
+                  description: "An API key selection expression. Supported only for WebSocket APIs. See API\nKey Selection Expressions (https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-apikey-selection-expressions)."
                   type: "string"
                 basepath:
+                  description: "Specifies how to interpret the base path of the API during import. Valid\nvalues are ignore, prepend, and split. The default value is ignore. To learn\nmore, see Set the OpenAPI basePath Property (https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-import-api-basePath.html).\nSupported only for HTTP APIs."
                   type: "string"
                 body:
+                  description: "The OpenAPI definition. Supported only for HTTP APIs."
                   type: "string"
                 corsConfiguration:
-                  description: "Represents a CORS configuration. Supported only for HTTP APIs. See Configuring\nCORS (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)\nfor more information."
+                  description: "A CORS configuration. Supported only for HTTP APIs. See Configuring CORS\n(https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-cors.html)\nfor more information."
                   properties:
                     allowCredentials:
                       type: "boolean"
@@ -66,30 +69,42 @@ spec:
                       type: "integer"
                   type: "object"
                 credentialsARN:
+                  description: "This property is part of quick create. It specifies the credentials required\nfor the integration, if any. For a Lambda integration, three options are\navailable. To specify an IAM Role for API Gateway to assume, use the role's\nAmazon Resource Name (ARN). To require that the caller's identity be passed\nthrough from the request, specify arn:aws:iam::*:user/*. To use resource-based\npermissions on supported AWS services, specify null. Currently, this property\nis not used for HTTP integrations. Supported only for HTTP APIs."
                   type: "string"
                 description:
+                  description: "The description of the API."
                   type: "string"
                 disableExecuteAPIEndpoint:
+                  description: "Specifies whether clients can invoke your API by using the default execute-api\nendpoint. By default, clients can invoke your API with the default https://{api_id}.execute-api.{region}.amazonaws.com\nendpoint. To require that clients use a custom domain name to invoke your\nAPI, disable the default endpoint."
                   type: "boolean"
                 disableSchemaValidation:
+                  description: "Avoid validating models when creating a deployment. Supported only for WebSocket\nAPIs."
                   type: "boolean"
                 failOnWarnings:
+                  description: "Specifies whether to rollback the API creation when a warning is encountered.\nBy default, API creation continues if a warning is encountered."
                   type: "boolean"
                 name:
+                  description: "The name of the API."
                   type: "string"
                 protocolType:
+                  description: "The API protocol."
                   type: "string"
                 routeKey:
+                  description: "This property is part of quick create. If you don't specify a routeKey, a\ndefault route of $default is created. The $default route acts as a catch-all\nfor any request made to your API, for a particular stage. The $default route\nkey can't be modified. You can add routes after creating the API, and you\ncan update the route keys of additional routes. Supported only for HTTP APIs."
                   type: "string"
                 routeSelectionExpression:
+                  description: "The route selection expression for the API. For HTTP APIs, the routeSelectionExpression\nmust be ${request.method} ${request.path}. If not provided, this will be\nthe default for HTTP APIs. This property is required for WebSocket APIs."
                   type: "string"
                 tags:
                   additionalProperties:
                     type: "string"
+                  description: "The collection of tags. Each tag element is associated with a given resource."
                   type: "object"
                 target:
+                  description: "This property is part of quick create. Quick create produces an API with\nan integration, a default catch-all route, and a default stage which is configured\nto automatically deploy changes. For HTTP integrations, specify a fully qualified\nURL. For Lambda integrations, specify a function ARN. The type of the integration\nwill be HTTP_PROXY or AWS_PROXY, respectively. Supported only for HTTP APIs."
                   type: "string"
                 version:
+                  description: "A version identifier for the API."
                   type: "string"
               type: "object"
             status:
@@ -112,10 +127,13 @@ spec:
                     - "region"
                   type: "object"
                 apiEndpoint:
+                  description: "The URI of the API, of the form {api-id}.execute-api.{region}.amazonaws.com.\nThe stage name is typically appended to this URI to form a complete path\nto a deployed API stage."
                   type: "string"
                 apiGatewayManaged:
+                  description: "Specifies whether an API is managed by API Gateway. You can't update or delete\na managed API by using API Gateway. A managed API can be deleted only through\nthe tooling or service that created it."
                   type: "boolean"
                 apiID:
+                  description: "The API ID."
                   type: "string"
                 conditions:
                   description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
@@ -144,13 +162,16 @@ spec:
                     type: "object"
                   type: "array"
                 createdDate:
+                  description: "The timestamp when the API was created."
                   format: "date-time"
                   type: "string"
                 importInfo:
+                  description: "The validation information during API import. This may include particular\nproperties of your OpenAPI definition which are ignored during import. Supported\nonly for HTTP APIs."
                   items:
                     type: "string"
                   type: "array"
                 warnings:
+                  description: "The warning messages reported when failonwarnings is turned on during API\nimport."
                   items:
                     type: "string"
                   type: "array"

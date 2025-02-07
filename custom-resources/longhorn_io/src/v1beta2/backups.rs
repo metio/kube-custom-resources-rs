@@ -51,6 +51,9 @@ pub struct BackupStatus {
     /// The snapshot backup upload finished time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCreatedAt")]
     pub backup_created_at: Option<String>,
+    /// The backup target name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTargetName")]
+    pub backup_target_name: Option<String>,
     /// Compression method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMethod")]
     pub compression_method: Option<String>,
@@ -82,8 +85,7 @@ pub struct BackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAddress")]
     pub replica_address: Option<String>,
     /// The snapshot size.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<String>,
+    pub size: String,
     /// The snapshot creation time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCreatedAt")]
     pub snapshot_created_at: Option<String>,

@@ -19,10 +19,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct LoggingConfigurationSpec {
-    /// The ARN of the CW log group to which the vended log data will be published.
+    /// The ARN of the CloudWatch log group to which the vended log data will be
+    /// published. This log group must exist prior to calling this operation.
     #[serde(rename = "logGroupARN")]
     pub log_group_arn: String,
-    /// The ID of the workspace to vend logs to.
+    /// The ID of the workspace to create the logging configuration for.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -75,10 +76,10 @@ pub struct LoggingConfigurationStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Status code of the logging configuration.
+    /// The current status of the logging configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<String>,
-    /// The reason for failure if any.
+    /// If failed, the reason for the failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
 }

@@ -21,7 +21,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
-    /// Cluster network configuration.
+    /// clusterNetwork is the cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
@@ -40,34 +40,36 @@ pub struct ClusterSpec {
     pub paused: Option<bool>,
 }
 
-/// Cluster network configuration.
+/// clusterNetwork is the cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
     /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
-    /// The network ranges from which Pod networks are allocated.
+    /// pods is the network ranges from which Pod networks are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<ClusterClusterNetworkPods>,
-    /// Domain name for services.
+    /// serviceDomain is the domain name for services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDomain")]
     pub service_domain: Option<String>,
-    /// The network ranges from which service VIPs are allocated.
+    /// services is the network ranges from which service VIPs are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<ClusterClusterNetworkServices>,
 }
 
-/// The network ranges from which Pod networks are allocated.
+/// pods is the network ranges from which Pod networks are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkPods {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
 
-/// The network ranges from which service VIPs are allocated.
+/// services is the network ranges from which service VIPs are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkServices {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
@@ -75,9 +77,9 @@ pub struct ClusterClusterNetworkServices {
 /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     pub host: String,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     pub port: i32,
 }
 

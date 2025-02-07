@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.8.0-dev"
+    app.kubernetes.io/version: "v1.9.0-dev"
     longhorn-manager: ""
   name: "instancemanagers.longhorn.io"
 spec:
@@ -85,6 +85,29 @@ spec:
                   type: "integer"
                 apiVersion:
                   type: "integer"
+                backingImages:
+                  additionalProperties:
+                    properties:
+                      currentChecksum:
+                        type: "string"
+                      diskUUID:
+                        type: "string"
+                      message:
+                        type: "string"
+                      name:
+                        type: "string"
+                      progress:
+                        type: "integer"
+                      size:
+                        format: "int64"
+                        type: "integer"
+                      state:
+                        type: "string"
+                      uuid:
+                        type: "string"
+                    type: "object"
+                  nullable: true
+                  type: "object"
                 currentState:
                   type: "string"
                 dataEngineStatus:

@@ -20,10 +20,13 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ProductSpec {
-    /// Application Plans Map: system_name -> Application Plan Spec
+    /// Application Plans
+    /// Map: system_name -> Application Plan Spec
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationPlans")]
     pub application_plans: Option<BTreeMap<String, ProductApplicationPlans>>,
-    /// Backend usage will be a map of Map: system_name -> BackendUsageSpec Having system_name as the index, the structure ensures one backend is not used multiple times.
+    /// Backend usage will be a map of
+    /// Map: system_name -> BackendUsageSpec
+    /// Having system_name as the index, the structure ensures one backend is not used multiple times.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendUsages")]
     pub backend_usages: Option<BTreeMap<String, ProductBackendUsages>>,
     /// Deployment defined 3scale product deployment mode
@@ -32,13 +35,20 @@ pub struct ProductSpec {
     /// Description is a human readable text of the product
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Mapping Rules Array: MappingRule Spec
+    /// Mapping Rules
+    /// Array: MappingRule Spec
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mappingRules")]
     pub mapping_rules: Option<Vec<ProductMappingRules>>,
-    /// Methods Map: system_name -> MethodSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
+    /// Methods
+    /// Map: system_name -> MethodSpec
+    /// system_name attr is unique for all metrics AND methods
+    /// In other words, if metric's system_name is A, there is no metric or method with system_name A.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub methods: Option<BTreeMap<String, ProductMethods>>,
-    /// Metrics Map: system_name -> MetricSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
+    /// Metrics
+    /// Map: system_name -> MetricSpec
+    /// system_name attr is unique for all metrics AND methods
+    /// In other words, if metric's system_name is A, there is no metric or method with system_name A.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<BTreeMap<String, ProductMetrics>>,
     /// Name is human readable name for the product
@@ -49,15 +59,18 @@ pub struct ProductSpec {
     /// ProviderAccountRef references account provider credentials
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountRef")]
     pub provider_account_ref: Option<ProductProviderAccountRef>,
-    /// SystemName identifies uniquely the product within the account provider Default value will be sanitized Name
+    /// SystemName identifies uniquely the product within the account provider
+    /// Default value will be sanitized Name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemName")]
     pub system_name: Option<String>,
 }
 
-/// Application Plans Map: system_name -> Application Plan Spec
+/// Application Plans
+/// Map: system_name -> Application Plan Spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductApplicationPlans {
-    /// Set whether or not applications can be created on demand or if approval is required from you before they are activated.
+    /// Set whether or not applications can be created on demand
+    /// or if approval is required from you before they are activated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appsRequireApproval")]
     pub apps_require_approval: Option<bool>,
     /// Cost per Month (USD)
@@ -71,7 +84,8 @@ pub struct ProductApplicationPlans {
     /// Pricing Rules
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pricingRules")]
     pub pricing_rules: Option<Vec<ProductApplicationPlansPricingRules>>,
-    /// Controls whether the application plan is published. If not specified it is hidden by default
+    /// Controls whether the application plan is published. If not specified it is
+    /// hidden by default
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub published: Option<bool>,
     /// Setup fee (USD)
@@ -82,7 +96,8 @@ pub struct ProductApplicationPlans {
     pub trial_period: Option<i64>,
 }
 
-/// LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources. Once a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract.
+/// LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources.
+/// Once a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProductApplicationPlansLimits {
     /// Metric or Method Reference
@@ -97,7 +112,8 @@ pub struct ProductApplicationPlansLimits {
 /// Metric or Method Reference
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductApplicationPlansLimitsMetricMethodRef {
-    /// BackendSystemName identifies uniquely the backend Backend reference must be used by the product
+    /// BackendSystemName identifies uniquely the backend
+    /// Backend reference must be used by the product
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<String>,
     /// SystemName identifies uniquely the metric or methods
@@ -105,7 +121,8 @@ pub struct ProductApplicationPlansLimitsMetricMethodRef {
     pub system_name: String,
 }
 
-/// LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources. Once a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract.
+/// LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources.
+/// Once a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ProductApplicationPlansLimitsPeriod {
     #[serde(rename = "eternity")]
@@ -124,7 +141,8 @@ pub enum ProductApplicationPlansLimitsPeriod {
     Minute,
 }
 
-/// PricingRuleSpec defines the cost of each operation performed on an API. Multiple pricing rules on the same metric divide up the ranges of when a pricing rule applies.
+/// PricingRuleSpec defines the cost of each operation performed on an API.
+/// Multiple pricing rules on the same metric divide up the ranges of when a pricing rule applies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductApplicationPlansPricingRules {
     /// Range From
@@ -142,7 +160,8 @@ pub struct ProductApplicationPlansPricingRules {
 /// Metric or Method Reference
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductApplicationPlansPricingRulesMetricMethodRef {
-    /// BackendSystemName identifies uniquely the backend Backend reference must be used by the product
+    /// BackendSystemName identifies uniquely the backend
+    /// Backend reference must be used by the product
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<String>,
     /// SystemName identifies uniquely the metric or methods
@@ -150,7 +169,9 @@ pub struct ProductApplicationPlansPricingRulesMetricMethodRef {
     pub system_name: String,
 }
 
-/// Backend usage will be a map of Map: system_name -> BackendUsageSpec Having system_name as the index, the structure ensures one backend is not used multiple times.
+/// Backend usage will be a map of
+/// Map: system_name -> BackendUsageSpec
+/// Having system_name as the index, the structure ensures one backend is not used multiple times.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductBackendUsages {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -199,7 +220,10 @@ pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppId {
     /// AppKey is the name of the parameter that acts of behalf of app key
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appKey")]
     pub app_key: Option<String>,
-    /// CredentialsLoc available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// CredentialsLoc available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppIdCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -268,7 +292,9 @@ pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppIdSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -279,7 +305,10 @@ pub struct ProductDeploymentApicastHostedAuthenticationOidc {
     /// AuthenticationFlow specifies OAuth2.0 authorization grant type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlow")]
     pub authentication_flow: Option<ProductDeploymentApicastHostedAuthenticationOidcAuthenticationFlow>,
-    /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// Credentials Location available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationOidcCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -406,7 +435,9 @@ pub struct ProductDeploymentApicastHostedAuthenticationOidcSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -416,7 +447,10 @@ pub struct ProductDeploymentApicastHostedAuthenticationOidcSecurity {
 pub struct ProductDeploymentApicastHostedAuthenticationUserkey {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUserKey")]
     pub auth_user_key: Option<String>,
-    /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// Credentials Location available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationUserkeyCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -485,7 +519,9 @@ pub struct ProductDeploymentApicastHostedAuthenticationUserkeySecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -525,7 +561,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppId {
     /// AppKey is the name of the parameter that acts of behalf of app key
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appKey")]
     pub app_key: Option<String>,
-    /// CredentialsLoc available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// CredentialsLoc available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -594,7 +633,9 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdSecurity 
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -605,7 +646,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationOidc {
     /// AuthenticationFlow specifies OAuth2.0 authorization grant type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlow")]
     pub authentication_flow: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcAuthenticationFlow>,
-    /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// Credentials Location available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -732,7 +776,9 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationOidcSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -742,7 +788,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationOidcSecurity {
 pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkey {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUserKey")]
     pub auth_user_key: Option<String>,
-    /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
+    /// Credentials Location available options:
+    /// headers: As HTTP Headers
+    /// query: As query parameters (GET) or body parameters (POST/PUT/DELETE)
+    /// authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationUserkeyCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
@@ -811,7 +860,9 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkeySecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
-    /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
+    /// SecretToken Enables you to block any direct developer requests to your API backend;
+    /// each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.
+    /// The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
@@ -852,7 +903,10 @@ pub enum ProductMappingRulesHttpMethod {
     Connect,
 }
 
-/// Methods Map: system_name -> MethodSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
+/// Methods
+/// Map: system_name -> MethodSpec
+/// system_name attr is unique for all metrics AND methods
+/// In other words, if metric's system_name is A, there is no metric or method with system_name A.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductMethods {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -861,7 +915,10 @@ pub struct ProductMethods {
     pub friendly_name: Option<String>,
 }
 
-/// Metrics Map: system_name -> MetricSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
+/// Metrics
+/// Map: system_name -> MetricSpec
+/// system_name attr is unique for all metrics AND methods
+/// In other words, if metric's system_name is A, there is no metric or method with system_name A.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -903,7 +960,9 @@ pub struct ProductPoliciesConfigurationRef {
 /// ProviderAccountRef references account provider credentials
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductProviderAccountRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -911,7 +970,8 @@ pub struct ProductProviderAccountRef {
 /// ProductStatus defines the observed state of Product
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductStatus {
-    /// Current state of the 3scale product. Conditions represent the latest available observations of an object's state
+    /// Current state of the 3scale product.
+    /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed Product Spec.

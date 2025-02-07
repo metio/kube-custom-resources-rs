@@ -35,6 +35,9 @@ pub struct NodeModulesConfigModules {
     pub namespace: String,
     #[serde(rename = "serviceAccountName")]
     pub service_account_name: String,
+    /// tolerations define which tolerations should be added for every load/unload pod running on the node
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<NodeModulesConfigModulesTolerations>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -42,8 +45,8 @@ pub struct NodeModulesConfigModulesConfig {
     #[serde(rename = "containerImage")]
     pub container_image: String,
     /// PullPolicy describes a policy for if/when to pull a container image
-    #[serde(rename = "imagePullPolicy")]
-    pub image_pull_policy: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
@@ -136,6 +139,36 @@ pub struct NodeModulesConfigModulesImageRepoSecret {
     pub name: Option<String>,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeModulesConfigModulesTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// NodeModuleConfigStatus is the most recently observed status of the KMM modules on node.
 /// It is populated by the system and is read-only.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
@@ -160,6 +193,9 @@ pub struct NodeModulesConfigStatusModules {
     pub namespace: String,
     #[serde(rename = "serviceAccountName")]
     pub service_account_name: String,
+    /// tolerations define which tolerations should be added for every load/unload pod running on the node
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<NodeModulesConfigStatusModulesTolerations>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -167,8 +203,8 @@ pub struct NodeModulesConfigStatusModulesConfig {
     #[serde(rename = "containerImage")]
     pub container_image: String,
     /// PullPolicy describes a policy for if/when to pull a container image
-    #[serde(rename = "imagePullPolicy")]
-    pub image_pull_policy: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
@@ -259,5 +295,35 @@ pub struct NodeModulesConfigStatusModulesImageRepoSecret {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeModulesConfigStatusModulesTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 

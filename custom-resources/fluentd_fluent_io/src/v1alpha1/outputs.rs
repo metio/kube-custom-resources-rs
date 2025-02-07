@@ -648,6 +648,9 @@ pub struct OutputOutputsElasticsearch {
     /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
     pub reconnect_on_error: Option<bool>,
+    /// Optional, When ReloadConnections true, this is the integer number of operations after which the plugin will reload the connections. The default value is 10000.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadAfter")]
+    pub reload_after: Option<i32>,
     /// Optional, Automatically reload connection after 10000 documents (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
     pub reload_connections: Option<bool>,
@@ -660,6 +663,9 @@ pub struct OutputOutputsElasticsearch {
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+    /// Optional, Provide a different sniffer class name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snifferClassName")]
+    pub sniffer_class_name: Option<String>,
     /// Optional, Force certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,
@@ -929,6 +935,9 @@ pub struct OutputOutputsElasticsearchDataStream {
     /// Optional, Indicates that the plugin should reset connection on any error (reconnect on next send) (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconnectOnError")]
     pub reconnect_on_error: Option<bool>,
+    /// Optional, When ReloadConnections true, this is the integer number of operations after which the plugin will reload the connections. The default value is 10000.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadAfter")]
+    pub reload_after: Option<i32>,
     /// Optional, Automatically reload connection after 10000 documents (default: true)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadConnections")]
     pub reload_connections: Option<bool>,
@@ -941,6 +950,9 @@ pub struct OutputOutputsElasticsearchDataStream {
     /// Specify https if your Elasticsearch endpoint supports SSL (default: http).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+    /// Optional, Provide a different sniffer class name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snifferClassName")]
+    pub sniffer_class_name: Option<String>,
     /// Optional, Force certificate validation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslVerify")]
     pub ssl_verify: Option<bool>,

@@ -21,12 +21,12 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct RuleGroupsNamespaceSpec {
     pub configuration: String,
-    /// The rule groups namespace name.
+    /// The name for the new rule groups namespace.
     pub name: String,
-    /// Optional, user-provided tags for this rule groups namespace.
+    /// The list of tag keys and values to associate with the rule groups namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
-    /// The ID of the workspace in which to create the rule group namespace.
+    /// The ID of the workspace to add the rule groups namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -79,7 +79,7 @@ pub struct RuleGroupsNamespaceStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The status of rule groups namespace.
+    /// A structure that returns the current status of the rule groups namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<RuleGroupsNamespaceStatusStatus>,
 }
@@ -106,7 +106,7 @@ pub struct RuleGroupsNamespaceStatusAckResourceMetadata {
     pub region: String,
 }
 
-/// The status of rule groups namespace.
+/// A structure that returns the current status of the rule groups namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuleGroupsNamespaceStatusStatus {
     /// State of a namespace.

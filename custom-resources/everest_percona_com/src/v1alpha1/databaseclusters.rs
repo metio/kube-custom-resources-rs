@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct DatabaseClusterSpec {
     /// AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use.
+    /// 
+    /// Deprecated: AllowUnsafeConfiguration will not be supported in the future releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUnsafeConfiguration")]
     pub allow_unsafe_configuration: Option<bool>,
     /// Backup is the backup specification

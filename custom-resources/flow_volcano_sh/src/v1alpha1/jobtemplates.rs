@@ -50,13 +50,29 @@ pub struct JobTemplatePolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub event: Option<String>,
+    pub event: Option<JobTemplatePoliciesEvent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCode")]
     pub exit_code: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobTemplatePoliciesEvent {
+    #[serde(rename = "*")]
+    KopiumVariant0,
+    PodPending,
+    PodRunning,
+    PodFailed,
+    PodEvicted,
+    Unknown,
+    TaskCompleted,
+    OutOfSync,
+    CommandIssued,
+    JobUpdated,
+    TaskFailed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -76,7 +92,7 @@ pub struct JobTemplateTasks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<JobTemplateTasksTemplate>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyPolicy")]
-    pub topology_policy: Option<String>,
+    pub topology_policy: Option<JobTemplateTasksTopologyPolicy>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -92,13 +108,29 @@ pub struct JobTemplateTasksPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub event: Option<String>,
+    pub event: Option<JobTemplateTasksPoliciesEvent>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub events: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exitCode")]
     pub exit_code: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobTemplateTasksPoliciesEvent {
+    #[serde(rename = "*")]
+    KopiumVariant0,
+    PodPending,
+    PodRunning,
+    PodFailed,
+    PodEvicted,
+    Unknown,
+    TaskCompleted,
+    OutOfSync,
+    CommandIssued,
+    JobUpdated,
+    TaskFailed,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3098,6 +3130,18 @@ pub struct JobTemplateTasksTemplateSpecVolumesVsphereVolume {
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobTemplateTasksTopologyPolicy {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "best-effort")]
+    BestEffort,
+    #[serde(rename = "restricted")]
+    Restricted,
+    #[serde(rename = "single-numa-node")]
+    SingleNumaNode,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

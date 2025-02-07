@@ -52,6 +52,24 @@ spec:
                 firewallPolicyChangeProtection:
                   description: "A setting indicating whether the firewall is protected against a change to\nthe firewall policy association. Use this setting to protect against accidentally\nmodifying the firewall policy for a firewall that is in use. When you create\na firewall, the operation initializes this setting to TRUE."
                   type: "boolean"
+                loggingConfiguration:
+                  description: "Defines how Network Firewall performs logging for a firewall. If you omit\nthis setting, Network Firewall disables logging for the firewall."
+                  properties:
+                    logDestinationConfigs:
+                      items:
+                        description: "Defines where Network Firewall sends logs for the firewall for one log type.\nThis is used in LoggingConfiguration. You can send each type of log to an\nAmazon S3 bucket, a CloudWatch log group, or a Firehose delivery stream.\n\nNetwork Firewall generates logs for stateful rule groups. You can save alert,\nflow, and TLS log types."
+                        properties:
+                          logDestination:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          logDestinationType:
+                            type: "string"
+                          logType:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
                 subnetChangeProtection:
                   description: "A setting indicating whether the firewall is protected against changes to\nthe subnet associations. Use this setting to protect against accidentally\nmodifying the subnet associations for a firewall that is in use. When you\ncreate a firewall, the operation initializes this setting to TRUE."
                   type: "boolean"

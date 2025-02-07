@@ -105,7 +105,8 @@ pub struct ClusterClassControlPlane {
 /// referenced above is Machine based and supports setting replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheck {
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
+    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
@@ -136,8 +137,9 @@ pub struct ClusterClassControlPlaneMachineHealthCheck {
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
@@ -192,8 +194,14 @@ pub struct ClusterClassControlPlaneMachineHealthCheckRemediationTemplate {
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions {
+    /// status of the condition, one of True, False, Unknown.
     pub status: String,
+    /// timeout is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
     pub timeout: String,
+    /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -264,7 +272,7 @@ pub struct ClusterClassControlPlaneMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -563,7 +571,7 @@ pub struct ClusterClassVariablesMetadata {
     /// They are not queryable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -837,7 +845,7 @@ pub struct ClusterClassVariablesSchemaOpenApiv3SchemaXMetadata {
     /// They are not queryable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -874,7 +882,7 @@ pub struct ClusterClassWorkersMachineDeployments {
     /// machineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterClassWorkersMachineDeploymentsMachineHealthCheck>,
-    /// Minimum number of seconds for which a newly created machine should
+    /// minReadySeconds is the minimum number of seconds for which a newly created machine should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
@@ -901,7 +909,7 @@ pub struct ClusterClassWorkersMachineDeployments {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// The deployment strategy to use to replace existing machines with
+    /// strategy is the deployment strategy to use to replace existing machines with
     /// new ones.
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -914,7 +922,8 @@ pub struct ClusterClassWorkersMachineDeployments {
 /// machineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
+    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
@@ -945,8 +954,9 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
@@ -1001,8 +1011,14 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTem
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+    /// status of the condition, one of True, False, Unknown.
     pub status: String,
+    /// timeout is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
     pub timeout: String,
+    /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -1022,7 +1038,7 @@ pub struct ClusterClassWorkersMachineDeploymentsNamingStrategy {
     pub template: Option<String>,
 }
 
-/// The deployment strategy to use to replace existing machines with
+/// strategy is the deployment strategy to use to replace existing machines with
 /// new ones.
 /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1031,7 +1047,7 @@ pub struct ClusterClassWorkersMachineDeploymentsStrategy {
     /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<ClusterClassWorkersMachineDeploymentsStrategyRemediation>,
-    /// Rolling update config params. Present only if
+    /// rollingUpdate is the rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate>,
@@ -1063,7 +1079,7 @@ pub struct ClusterClassWorkersMachineDeploymentsStrategyRemediation {
     pub max_in_flight: Option<IntOrString>,
 }
 
-/// Rolling update config params. Present only if
+/// rollingUpdate is the rolling update config params. Present only if
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate {
@@ -1072,7 +1088,7 @@ pub struct ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate {
     /// When no value is supplied, the default DeletePolicy of MachineSet is used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
-    /// The maximum number of machines that can be scheduled above the
+    /// maxSurge is the maximum number of machines that can be scheduled above the
     /// desired number of machines.
     /// Value can be an absolute number (ex: 5) or a percentage of
     /// desired machines (ex: 10%).
@@ -1087,7 +1103,7 @@ pub struct ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate {
     /// at any time during the update is at most 130% of desired machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    /// The maximum number of machines that can be unavailable during the update.
+    /// maxUnavailable is the maximum number of machines that can be unavailable during the update.
     /// Value can be an absolute number (ex: 5) or a percentage of desired
     /// machines (ex: 10%).
     /// Absolute number is calculated from percentage by rounding down.
@@ -1103,7 +1119,7 @@ pub struct ClusterClassWorkersMachineDeploymentsStrategyRollingUpdate {
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// Rolling update config params. Present only if
+/// rollingUpdate is the rolling update config params. Present only if
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy {
@@ -1112,7 +1128,7 @@ pub enum ClusterClassWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy 
     Oldest,
 }
 
-/// The deployment strategy to use to replace existing machines with
+/// strategy is the deployment strategy to use to replace existing machines with
 /// new ones.
 /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -1243,7 +1259,7 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -1264,7 +1280,7 @@ pub struct ClusterClassWorkersMachinePools {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
-    /// Minimum number of seconds for which a newly created machine pool should
+    /// minReadySeconds is the minimum number of seconds for which a newly created machine pool should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
@@ -1433,7 +1449,7 @@ pub struct ClusterClassWorkersMachinePoolsTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -1514,7 +1530,7 @@ pub struct ClusterClassStatusVariablesDefinitionsMetadata {
     /// They are not queryable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -1788,7 +1804,7 @@ pub struct ClusterClassStatusVariablesDefinitionsSchemaOpenApiv3SchemaXMetadata 
     /// They are not queryable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

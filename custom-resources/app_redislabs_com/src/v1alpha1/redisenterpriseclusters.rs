@@ -336,6 +336,8 @@ pub struct RedisEnterpriseClusterLdap {
     pub ca_certificate_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTTLSeconds")]
     pub cache_ttl_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryTimeoutSeconds")]
+    pub directory_timeout_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledForControlPlane")]
     pub enabled_for_control_plane: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledForDataPlane")]
@@ -6543,6 +6545,8 @@ pub struct RedisEnterpriseClusterVolumesVsphereVolume {
 pub struct RedisEnterpriseClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bundledDatabaseVersions")]
     pub bundled_database_versions: Option<Vec<RedisEnterpriseClusterStatusBundledDatabaseVersions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesStatus")]
+    pub certificates_status: Option<RedisEnterpriseClusterStatusCertificatesStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressOrRouteMethodStatus")]
     pub ingress_or_route_method_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseStatus")]
@@ -6570,6 +6574,14 @@ pub struct RedisEnterpriseClusterStatusBundledDatabaseVersions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub major: Option<bool>,
     pub version: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterStatusCertificatesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -22,7 +22,8 @@ pub struct BackupSpec {
     /// Specified name for the backup.
     #[serde(rename = "backupName")]
     pub backup_name: String,
-    /// The name of the table.
+    /// The name of the table. You can also provide the Amazon Resource Name (ARN)
+    /// of the table in this parameter.
     #[serde(rename = "tableName")]
     pub table_name: String,
 }

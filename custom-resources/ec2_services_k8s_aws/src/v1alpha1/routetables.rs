@@ -226,7 +226,7 @@ pub struct RouteTableStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RouteTableStatusAckResourceMetadata>,
-    /// The associations between the route table and one or more subnets or a gateway.
+    /// The associations between the route table and your subnets or gateways.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub associations: Option<Vec<RouteTableStatusAssociations>>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that

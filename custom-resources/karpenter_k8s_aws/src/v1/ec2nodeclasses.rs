@@ -134,7 +134,7 @@ pub struct EC2NodeClassAmiSelectorTerms {
     /// You can specify a combination of AWS account IDs, "self", "amazon", and "aws-marketplace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
-    /// Tags is a map of key/value tags used to select subnets
+    /// Tags is a map of key/value tags used to select amis.
     /// Specifying '*' for a value selects all values for a given tag key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
@@ -429,7 +429,7 @@ pub struct EC2NodeClassSecurityGroupSelectorTerms {
     /// This value is the name field, which is different from the name tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Tags is a map of key/value tags used to select subnets
+    /// Tags is a map of key/value tags used to select security groups.
     /// Specifying '*' for a value selects all values for a given tag key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
@@ -461,11 +461,11 @@ pub struct EC2NodeClassStatus {
     /// InstanceProfile contains the resolved instance profile for the role
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceProfile")]
     pub instance_profile: Option<String>,
-    /// SecurityGroups contains the current Security Groups values that are available to the
+    /// SecurityGroups contains the current security group values that are available to the
     /// cluster under the SecurityGroups selectors.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<EC2NodeClassStatusSecurityGroups>>,
-    /// Subnets contains the current Subnet values that are available to the
+    /// Subnets contains the current subnet values that are available to the
     /// cluster under the subnet selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<EC2NodeClassStatusSubnets>>,
@@ -474,6 +474,9 @@ pub struct EC2NodeClassStatus {
 /// AMI contains resolved AMI selector values utilized for node launch
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EC2NodeClassStatusAmis {
+    /// Deprecation status of the AMI
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<bool>,
     /// ID of the AMI
     pub id: String,
     /// Name of the AMI

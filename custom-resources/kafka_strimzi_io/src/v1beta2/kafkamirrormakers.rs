@@ -1399,6 +1399,9 @@ pub struct KafkaMirrorMakerTemplatePodVolumes {
     /// ConfigMap to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaMirrorMakerTemplatePodVolumesConfigMap>,
+    /// CSIVolumeSource object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<KafkaMirrorMakerTemplatePodVolumesCsi>,
     /// EmptyDir to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaMirrorMakerTemplatePodVolumesEmptyDir>,
@@ -1434,6 +1437,27 @@ pub struct KafkaMirrorMakerTemplatePodVolumesConfigMapItems {
     pub mode: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
+}
+
+/// CSIVolumeSource object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplatePodVolumesCsi {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<KafkaMirrorMakerTemplatePodVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplatePodVolumesCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// EmptyDir to use to populate the volume.

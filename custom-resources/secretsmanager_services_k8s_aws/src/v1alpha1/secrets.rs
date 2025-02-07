@@ -64,6 +64,10 @@ pub struct SecretSpec {
     /// Manager puts the protected secret text in only the SecretString parameter.
     /// The Secrets Manager console stores the information as a JSON structure of
     /// key/value pairs that a Lambda rotation function can parse.
+    /// 
+    /// Sensitive: This field contains sensitive information, so the service does
+    /// not include it in CloudTrail log entries. If you create your own log entries,
+    /// you must also avoid logging the information in this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretString")]
     pub secret_string: Option<SecretSecretString>,
     /// A list of tags to attach to the secret. Each tag is a key and value pair
@@ -111,6 +115,10 @@ pub struct SecretReplicaRegions {
 /// Manager puts the protected secret text in only the SecretString parameter.
 /// The Secrets Manager console stores the information as a JSON structure of
 /// key/value pairs that a Lambda rotation function can parse.
+/// 
+/// Sensitive: This field contains sensitive information, so the service does
+/// not include it in CloudTrail log entries. If you create your own log entries,
+/// you must also avoid logging the information in this field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretSecretString {
     /// Key is the key within the secret

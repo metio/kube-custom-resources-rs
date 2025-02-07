@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.2.0"
+    gateway.networking.k8s.io/bundle-version: "v1.2.1"
     gateway.networking.k8s.io/channel: "experimental"
   labels:
     gateway.networking.k8s.io/policy: "Direct"
@@ -53,7 +53,7 @@ spec:
                       properties:
                         lifetimeType:
                           default: "Session"
-                          description: "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type"
+                          description: "LifetimeType specifies whether the cookie has a permanent or\nsession-based lifetime. A permanent cookie persists until its\nspecified expiry time, defined by the Expires or Max-Age cookie\nattributes, while a session cookie is deleted when the current\nsession ends.\n\nWhen set to \"Permanent\", AbsoluteTimeout indicates the\ncookie's lifetime via the Expires or Max-Age cookie attributes\nand is required.\n\nWhen set to \"Session\", AbsoluteTimeout indicates the\nabsolute lifetime of the cookie tracked by the gateway and\nis optional.\n\nDefaults to \"Session\".\n\nSupport: Core for \"Session\" type\n\nSupport: Extended for \"Permanent\" type"
                           enum:
                             - "Permanent"
                             - "Session"

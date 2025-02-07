@@ -87,9 +87,11 @@ pub struct DNSRecordHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalHeadersRef")]
     pub additional_headers_ref: Option<DNSRecordHealthCheckAdditionalHeadersRef>,
     /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
+    /// Defaults to 5
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     /// Interval defines how frequently this probe should execute
+    /// Defaults to 5 minutes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Path is the path to append to the host to reach the expected health check.
@@ -97,9 +99,11 @@ pub struct DNSRecordHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Port to connect to the host on. Must be either 80, 443 or 1024-49151
+    /// Defaults to port 443
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// Protocol to use when connecting to the host, valid values are "HTTP" or "HTTPS"
+    /// Defaults to HTTPS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }

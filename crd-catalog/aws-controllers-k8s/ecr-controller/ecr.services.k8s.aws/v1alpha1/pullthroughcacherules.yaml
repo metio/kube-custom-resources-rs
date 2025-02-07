@@ -36,7 +36,7 @@ spec:
                   description: "The Amazon Web Services account ID associated with the registry to create\nthe pull through cache rule for. If you do not specify a registry, the default\nregistry is assumed."
                   type: "string"
                 upstreamRegistryURL:
-                  description: "The registry URL of the upstream public registry to use as the source for\nthe pull through cache rule."
+                  description: "The registry URL of the upstream public registry to use as the source for\nthe pull through cache rule. The following is the syntax to use for each\nsupported upstream registry.\n\n   * Amazon ECR Public (ecr-public) - public.ecr.aws\n\n   * Docker Hub (docker-hub) - registry-1.docker.io\n\n   * Quay (quay) - quay.io\n\n   * Kubernetes (k8s) - registry.k8s.io\n\n   * GitHub Container Registry (github-container-registry) - ghcr.io\n\n   * Microsoft Azure Container Registry (azure-container-registry) - .azurecr.io"
                   type: "string"
               required:
                 - "ecrRepositoryPrefix"

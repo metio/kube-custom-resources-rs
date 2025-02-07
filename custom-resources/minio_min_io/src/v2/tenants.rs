@@ -150,6 +150,8 @@ pub struct TenantAdditionalVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<TenantAdditionalVolumesHostPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<TenantAdditionalVolumesImage>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<TenantAdditionalVolumesIscsi>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -502,6 +504,14 @@ pub struct TenantAdditionalVolumesHostPath {
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantAdditionalVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1358,6 +1368,8 @@ pub struct TenantInitContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantInitContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2032,6 +2044,8 @@ pub struct TenantKesResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantKesResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2054,6 +2068,8 @@ pub struct TenantKesSecurityContext {
     pub seccomp_profile: Option<TenantKesSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<TenantKesSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2754,6 +2770,8 @@ pub struct TenantPoolsResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantPoolsResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2776,6 +2794,8 @@ pub struct TenantPoolsSecurityContext {
     pub seccomp_profile: Option<TenantPoolsSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<TenantPoolsSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -3496,6 +3516,8 @@ pub struct TenantSideCarsContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3674,6 +3696,8 @@ pub struct TenantSideCarsResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantSideCarsResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3831,6 +3855,8 @@ pub struct TenantSideCarsVolumes {
     pub glusterfs: Option<TenantSideCarsVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<TenantSideCarsVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<TenantSideCarsVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<TenantSideCarsVolumesIscsi>,
     pub name: String,
@@ -4184,6 +4210,14 @@ pub struct TenantSideCarsVolumesHostPath {
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantSideCarsVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

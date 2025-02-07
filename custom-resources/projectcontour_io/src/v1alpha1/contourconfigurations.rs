@@ -1056,13 +1056,6 @@ pub struct ContourConfigurationXdsServer {
     /// Contour's default is { caFile: "/certs/ca.crt", certFile: "/certs/tls.cert", keyFile: "/certs/tls.key", insecure: false }.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ContourConfigurationXdsServerTls>,
-    /// Defines the XDSServer to use for `contour serve`.
-    /// Values: `envoy` (default), `contour (deprecated)`.
-    /// Other values will produce an error.
-    /// Deprecated: this field will be removed in a future release when
-    /// the `contour` xDS server implementation is removed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
 }
 
 /// TLS holds TLS file config details.

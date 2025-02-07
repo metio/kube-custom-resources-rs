@@ -40,7 +40,7 @@ pub struct NATGatewaySpec {
     /// The default is public connectivity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectivityType")]
     pub connectivity_type: Option<String>,
-    /// The subnet in which to create the NAT gateway.
+    /// The ID of the subnet in which to create the NAT gateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -173,8 +173,8 @@ pub struct NATGatewayStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "natGatewayID")]
     pub nat_gateway_id: Option<String>,
     /// Reserved. If you need to sustain traffic greater than the documented limits
-    /// (https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html),
-    /// contact us through the Support Center (https://console.aws.amazon.com/support/home?).
+    /// (https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-gateways),
+    /// contact Amazon Web Services Support.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedBandwidth")]
     pub provisioned_bandwidth: Option<NATGatewayStatusProvisionedBandwidth>,
     /// The state of the NAT gateway.
@@ -237,8 +237,8 @@ pub struct NATGatewayStatusNatGatewayAddresses {
 }
 
 /// Reserved. If you need to sustain traffic greater than the documented limits
-/// (https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html),
-/// contact us through the Support Center (https://console.aws.amazon.com/support/home?).
+/// (https://docs.aws.amazon.com/vpc/latest/userguide/amazon-vpc-limits.html#vpc-limits-gateways),
+/// contact Amazon Web Services Support.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NATGatewayStatusProvisionedBandwidth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionTime")]

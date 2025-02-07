@@ -720,6 +720,10 @@ pub struct ClusterInputTail {
     /// Specify one or Multiline Parser definition to apply to the content.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineParser")]
     pub multiline_parser: Option<String>,
+    /// If enabled, Fluent Bit appends the offset of the current monitored file as part of the record.
+    /// The value assigned becomes the key in the map
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offsetKey")]
+    pub offset_key: Option<String>,
     /// Specify the name of a parser to interpret the entry as a structured message.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parser: Option<String>,
@@ -770,6 +774,9 @@ pub struct ClusterInputTail {
     /// Set a regex to exctract fields from the file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagRegex")]
     pub tag_regex: Option<String>,
+    /// Threaded mechanism allows input plugin to run in a separate thread which helps to desaturate the main pipeline.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub threaded: Option<String>,
 }
 
 /// Tail defines Tail Input configuration.

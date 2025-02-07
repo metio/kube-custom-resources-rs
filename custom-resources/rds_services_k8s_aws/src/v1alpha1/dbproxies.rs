@@ -25,9 +25,9 @@ use self::prelude::*;
 pub struct DBProxySpec {
     /// The authorization mechanism that the proxy uses.
     pub auth: Vec<DBProxyAuth>,
-    /// Whether the proxy includes detailed information about SQL statements in its
-    /// logs. This information helps you to debug issues involving SQL behavior or
-    /// the performance and scalability of the proxy connections. The debug information
+    /// Specifies whether the proxy includes detailed information about SQL statements
+    /// in its logs. This information helps you to debug issues involving SQL behavior
+    /// or the performance and scalability of the proxy connections. The debug information
     /// includes the text of SQL statements that you submit through the proxy. Thus,
     /// only enable this setting when needed for debugging, and only when you have
     /// security measures in place to safeguard any sensitive information that appears
@@ -53,9 +53,9 @@ pub struct DBProxySpec {
     /// letters, digits, and hyphens; it can't end with a hyphen or contain two consecutive
     /// hyphens.
     pub name: String,
-    /// A Boolean parameter that specifies whether Transport Layer Security (TLS)
-    /// encryption is required for connections to the proxy. By enabling this setting,
-    /// you can enforce encrypted TLS connections to the proxy.
+    /// Specifies whether Transport Layer Security (TLS) encryption is required for
+    /// connections to the proxy. By enabling this setting, you can enforce encrypted
+    /// TLS connections to the proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireTLS")]
     pub require_tls: Option<bool>,
     /// The Amazon Resource Name (ARN) of the IAM role that the proxy uses to access
@@ -94,8 +94,10 @@ pub struct DBProxyAuth {
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
 /// 
-/// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-/// in the Amazon RDS User Guide.
+/// For more information, see Tagging Amazon RDS resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
+/// in the Amazon RDS User Guide or Tagging Amazon Aurora and Amazon RDS resources
+/// (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html)
+/// in the Amazon Aurora User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBProxyTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]

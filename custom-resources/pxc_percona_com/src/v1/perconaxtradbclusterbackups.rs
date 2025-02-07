@@ -19,10 +19,14 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PerconaXtraDBClusterBackupSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOptions")]
     pub container_options: Option<PerconaXtraDBClusterBackupContainerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pxcCluster")]
     pub pxc_cluster: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
+    pub starting_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
 }
@@ -111,6 +115,8 @@ pub struct PerconaXtraDBClusterBackupStatus {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

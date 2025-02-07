@@ -44,7 +44,7 @@ spec:
                               type: "string"
                           type: "object"
                         onSuccess:
-                          description: "A destination for events that were processed successfully."
+                          description: "A destination for events that were processed successfully.\n\nTo retain records of successful asynchronous invocations (https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),\nyou can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,\nor Amazon EventBridge event bus as the destination."
                           properties:
                             destination:
                               type: "string"
@@ -62,7 +62,7 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"

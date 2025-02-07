@@ -35,7 +35,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Connection/ association to the Active-Active database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeActive")]
     pub active_active: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsActiveActive>,
-    /// Settings for database alerts
+    /// Settings for database alerts. Note - Alert settings are not supported for Active-Active database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertSettings")]
     pub alert_settings: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings>,
     /// Target for automatic database backups.
@@ -86,7 +86,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// Connection to Redis Enterprise Cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseCluster")]
     pub redis_enterprise_cluster: Option<RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsRedisEnterpriseCluster>,
-    /// Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'
+    /// Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'. Note - Specifying Redis version is currently not supported for Active-Active database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisVersion")]
     pub redis_version: Option<String>,
     /// What databases to replicate from
@@ -134,7 +134,7 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsActiveActive {
     pub participating_cluster_name: String,
 }
 
-/// Settings for database alerts
+/// Settings for database alerts. Note - Alert settings are not supported for Active-Active database.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurationsAlertSettings {
     /// Periodic backup has been delayed for longer than specified threshold value [minutes]
@@ -524,6 +524,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseRedisEnterpriseCluster {
 /// RedisEnterpriseActiveActiveDatabaseStatus defines the observed state of RedisEnterpriseActiveActiveDatabase
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseActiveActiveDatabaseStatus {
+    /// Versions of the cluster's Proxy and Syncer certificates. In Active-Active databases, these are used to detect updates to the certificates, and trigger synchronization across the participating clusters. .
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCertificatesGeneration")]
+    pub cluster_certificates_generation: Option<i64>,
     /// The active-active database corresponding GUID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub guid: Option<String>,

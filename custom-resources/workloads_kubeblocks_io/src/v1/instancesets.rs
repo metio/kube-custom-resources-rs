@@ -125,10 +125,7 @@ pub struct InstanceSetSpec {
     /// Defaults to 1 if unspecified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Provides method to probe role.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
-    pub role_probe: Option<InstanceSetRoleProbe>,
-    /// A list of roles defined in the system.
+    /// A list of roles defined in the system. Instanceset obtains role through pods' role label `kubeblocks.io/role`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<InstanceSetRoles>>,
     /// Represents a label query over pods that should match the desired replica count indicated by the `replica` field.
@@ -137,6 +134,9 @@ pub struct InstanceSetSpec {
     pub selector: InstanceSetSelector,
     /// PodTemplateSpec describes the data a pod should have when created from a template
     pub template: InstanceSetTemplate,
+    /// Provides variables which are used to call Actions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateVars")]
+    pub template_vars: Option<BTreeMap<String, String>>,
     /// Indicates the StatefulSetUpdateStrategy that will be
     /// employed to update Pods in the InstanceSet when a revision is made to
     /// Template.
@@ -375,10 +375,7 @@ pub struct InstanceSetDefaultTemplateOrdinalsRanges {
     pub start: i32,
 }
 
-/// InstanceTemplate allows customization of individual replica configurations within a Component,
-/// without altering the base component template defined in ClusterComponentSpec.
-/// It enables the application of distinct settings to specific instances (replicas),
-/// providing flexibility while maintaining a common configuration baseline.
+/// InstanceTemplate allows customization of individual replica configurations in a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetInstances {
     /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations.
@@ -389,7 +386,7 @@ pub struct InstanceSetInstances {
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<InstanceSetInstancesEnv>>,
-    /// Specifies an override for the first container's image in the pod.
+    /// Specifies an override for the first container's image in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels.
@@ -397,7 +394,7 @@ pub struct InstanceSetInstances {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate.
-    /// This name is constructed by concatenating the component's name, the template's name, and the instance's ordinal
+    /// This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
@@ -412,7 +409,7 @@ pub struct InstanceSetInstances {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ordinals: Option<InstanceSetInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
-    /// This field allows setting how many replicated instances of the component,
+    /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
     /// The default value is 1. A value of 0 disables instance creation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -429,7 +426,7 @@ pub struct InstanceSetInstances {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<InstanceSetInstancesVolumeClaimTemplates>>,
     /// Defines VolumeMounts to override.
-    /// Add new or override existing volume mounts of the first container in the pod.
+    /// Add new or override existing volume mounts of the first container in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<InstanceSetInstancesVolumeMounts>>,
     /// Defines Volumes to override.
@@ -1516,200 +1513,64 @@ pub struct InstanceSetInstancesSchedulingPolicyTopologySpreadConstraintsLabelSel
     pub values: Option<Vec<String>>,
 }
 
-/// PersistentVolumeClaim is a user's request for and claim to a persistent volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetInstancesVolumeClaimTemplates {
-    /// APIVersion defines the versioned schema of this representation of an object.
-    /// Servers should convert recognized schemas to the latest internal value, and
-    /// may reject unrecognized values.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Kind is a string value representing the REST resource this object represents.
-    /// Servers may infer this from the endpoint the client submits requests to.
-    /// Cannot be updated.
-    /// In CamelCase.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Standard object's metadata.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<InstanceSetInstancesVolumeClaimTemplatesMetadata>,
-    /// spec defines the desired characteristics of a volume requested by a pod author.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// Refers to the name of a volumeMount defined in either:
+    /// 
+    /// 
+    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
+    /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
+    /// 
+    /// 
+    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
+    pub name: String,
+    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+    /// with the mount name specified in the `name` field.
+    /// 
+    /// 
+    /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
+    /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<InstanceSetInstancesVolumeClaimTemplatesSpec>,
-    /// status represents the current information/status of a persistent volume claim.
-    /// Read-only.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<InstanceSetInstancesVolumeClaimTemplatesStatus>,
 }
 
-/// Standard object's metadata.
-/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesMetadata {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub finalizers: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// spec defines the desired characteristics of a volume requested by a pod author.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+/// with the mount name specified in the `name` field.
+/// 
+/// 
+/// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
+/// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetInstancesVolumeClaimTemplatesSpec {
-    /// accessModes contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// Contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either:
-    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-    /// * An existing PVC (PersistentVolumeClaim)
-    /// If the provisioner or an external controller can support the specified data source,
-    /// it will create a new volume based on the contents of the specified data source.
-    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<InstanceSetInstancesVolumeClaimTemplatesSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-    /// volume is desired. This may be any object from a non-empty API group (non
-    /// core object) or a PersistentVolumeClaim object.
-    /// When this field is specified, volume binding will only succeed if the type of
-    /// the specified object matches some installed volume populator or dynamic
-    /// provisioner.
-    /// This field will replace the functionality of the dataSource field and as such
-    /// if both fields are non-empty, they must have the same value. For backwards
-    /// compatibility, when namespace isn't specified in dataSourceRef,
-    /// both fields (dataSource and dataSourceRef) will be set to the same
-    /// value automatically if one of them is empty and the other is non-empty.
-    /// When namespace is specified in dataSourceRef,
-    /// dataSource isn't set to the same value and must be empty.
-    /// There are three important differences between dataSource and dataSourceRef:
-    /// * While dataSource only allows two specific types of objects, dataSourceRef
-    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
-    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-    ///   preserves all values, and generates an error if a disallowed value is
-    ///   specified.
-    /// * While dataSource only allows local objects, dataSourceRef allows objects
-    ///   in any namespaces.
-    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<InstanceSetInstancesVolumeClaimTemplatesSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-    /// that are lower than previous value but must still be higher than capacity recorded in the
-    /// status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// Represents the minimum resources the volume should have.
+    /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
+    /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<InstanceSetInstancesVolumeClaimTemplatesSpecResources>,
-    /// selector is a label query over volumes to consider for binding.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<InstanceSetInstancesVolumeClaimTemplatesSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// The name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// If specified, the CSI driver will create or update the volume with the attributes defined
-    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
-    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
-    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
-    /// exists.
+    /// 
+    /// 
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
-    /// Value of Filesystem is implied when not included in claim spec.
+    /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
-    /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either:
-/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-/// * An existing PVC (PersistentVolumeClaim)
-/// If the provisioner or an external controller can support the specified data source,
-/// it will create a new volume based on the contents of the specified data source.
-/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesSpecDataSource {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-}
-
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-/// volume is desired. This may be any object from a non-empty API group (non
-/// core object) or a PersistentVolumeClaim object.
-/// When this field is specified, volume binding will only succeed if the type of
-/// the specified object matches some installed volume populator or dynamic
-/// provisioner.
-/// This field will replace the functionality of the dataSource field and as such
-/// if both fields are non-empty, they must have the same value. For backwards
-/// compatibility, when namespace isn't specified in dataSourceRef,
-/// both fields (dataSource and dataSourceRef) will be set to the same
-/// value automatically if one of them is empty and the other is non-empty.
-/// When namespace is specified in dataSourceRef,
-/// dataSource isn't set to the same value and must be empty.
-/// There are three important differences between dataSource and dataSourceRef:
-/// * While dataSource only allows two specific types of objects, dataSourceRef
-///   allows any non-core object, as well as PersistentVolumeClaim objects.
-/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-///   preserves all values, and generates an error if a disallowed value is
-///   specified.
-/// * While dataSource only allows local objects, dataSourceRef allows objects
-///   in any namespaces.
-/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-    /// Namespace is the namespace of resource being referenced
-    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
-    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-/// that are lower than previous value but must still be higher than capacity recorded in the
-/// status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// Represents the minimum resources the volume should have.
+/// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
+/// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetInstancesVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
@@ -1722,155 +1583,6 @@ pub struct InstanceSetInstancesVolumeClaimTemplatesSpecResources {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// selector is a label query over volumes to consider for binding.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesSpecSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<InstanceSetInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// status represents the current information/status of a persistent volume claim.
-/// Read-only.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesStatus {
-    /// accessModes contains the actual access modes the volume backing the PVC has.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    /// allocatedResourceStatuses stores status of resource being resized for the given PVC.
-    /// Key names follow standard Kubernetes label syntax. Valid values are either:
-    /// 	* Un-prefixed keys:
-    /// 		- storage - the capacity of the volume.
-    /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
-    /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
-    /// reserved and hence may not be used.
-    /// 
-    /// 
-    /// ClaimResourceStatus can be in any of following states:
-    /// 	- ControllerResizeInProgress:
-    /// 		State set when resize controller starts resizing the volume in control-plane.
-    /// 	- ControllerResizeFailed:
-    /// 		State set when resize has failed in resize controller with a terminal error.
-    /// 	- NodeResizePending:
-    /// 		State set when resize controller has finished resizing the volume but further resizing of
-    /// 		volume is needed on the node.
-    /// 	- NodeResizeInProgress:
-    /// 		State set when kubelet starts resizing the volume.
-    /// 	- NodeResizeFailed:
-    /// 		State set when resizing has failed in kubelet with a terminal error. Transient errors don't set
-    /// 		NodeResizeFailed.
-    /// For example: if expanding a PVC for more capacity - this field can be one of the following states:
-    /// 	- pvc.status.allocatedResourceStatus['storage'] = "ControllerResizeInProgress"
-    ///      - pvc.status.allocatedResourceStatus['storage'] = "ControllerResizeFailed"
-    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizePending"
-    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeInProgress"
-    ///      - pvc.status.allocatedResourceStatus['storage'] = "NodeResizeFailed"
-    /// When this field is not set, it means that no resize operation is in progress for the given PVC.
-    /// 
-    /// 
-    /// A controller that receives PVC update with previously unknown resourceName or ClaimResourceStatus
-    /// should ignore the update for the purpose it was designed. For example - a controller that
-    /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
-    /// resources associated with PVC.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourceStatuses")]
-    pub allocated_resource_statuses: Option<BTreeMap<String, String>>,
-    /// allocatedResources tracks the resources allocated to a PVC including its capacity.
-    /// Key names follow standard Kubernetes label syntax. Valid values are either:
-    /// 	* Un-prefixed keys:
-    /// 		- storage - the capacity of the volume.
-    /// 	* Custom resources must use implementation-defined prefixed names such as "example.com/my-custom-resource"
-    /// Apart from above values - keys that are unprefixed or have kubernetes.io prefix are considered
-    /// reserved and hence may not be used.
-    /// 
-    /// 
-    /// Capacity reported here may be larger than the actual capacity when a volume expansion operation
-    /// is requested.
-    /// For storage quota, the larger value from allocatedResources and PVC.spec.resources is used.
-    /// If allocatedResources is not set, PVC.spec.resources alone is used for quota calculation.
-    /// If a volume expansion capacity request is lowered, allocatedResources is only
-    /// lowered if there are no expansion operations in progress and if the actual volume capacity
-    /// is equal or lower than the requested capacity.
-    /// 
-    /// 
-    /// A controller that receives PVC update with previously unknown resourceName
-    /// should ignore the update for the purpose it was designed. For example - a controller that
-    /// only is responsible for resizing capacity of the volume, should ignore PVC updates that change other valid
-    /// resources associated with PVC.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling RecoverVolumeExpansionFailure feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
-    pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
-    /// capacity represents the actual resources of the underlying volume.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capacity: Option<BTreeMap<String, IntOrString>>,
-    /// conditions is the current Condition of persistent volume claim. If underlying persistent volume is being
-    /// resized then the Condition will be set to 'ResizeStarted'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    /// currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
-    /// When unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVolumeAttributesClassName")]
-    pub current_volume_attributes_class_name: Option<String>,
-    /// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
-    /// When this is unset, there is no ModifyVolume operation being attempted.
-    /// This is an alpha field and requires enabling VolumeAttributesClass feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifyVolumeStatus")]
-    pub modify_volume_status: Option<InstanceSetInstancesVolumeClaimTemplatesStatusModifyVolumeStatus>,
-    /// phase represents the current phase of PersistentVolumeClaim.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
-}
-
-/// ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.
-/// When this is unset, there is no ModifyVolume operation being attempted.
-/// This is an alpha field and requires enabling VolumeAttributesClass feature.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetInstancesVolumeClaimTemplatesStatusModifyVolumeStatus {
-    /// status is the status of the ControllerModifyVolume operation. It can be in any of following states:
-    ///  - Pending
-    ///    Pending indicates that the PersistentVolumeClaim cannot be modified due to unmet requirements, such as
-    ///    the specified VolumeAttributesClass not existing.
-    ///  - InProgress
-    ///    InProgress indicates that the volume is being modified.
-    ///  - Infeasible
-    ///   Infeasible indicates that the request has been rejected as invalid by the CSI driver. To
-    /// 	  resolve the error, a valid VolumeAttributesClass needs to be specified.
-    /// Note: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately.
-    pub status: String,
-    /// targetVolumeAttributesClassName is the name of the VolumeAttributesClass the PVC currently being reconciled
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumeAttributesClassName")]
-    pub target_volume_attributes_class_name: Option<String>,
 }
 
 /// VolumeMount describes a mounting of a Volume within a container.
@@ -3528,6 +3240,9 @@ pub struct InstanceSetMembershipReconfiguration {
     /// If the Image is not configured, the Image from the previous non-nil action will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAction")]
     pub promote_action: Option<InstanceSetMembershipReconfigurationPromoteAction>,
+    /// Defines the procedure for a controlled transition of a role to a new replica.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub switchover: Option<InstanceSetMembershipReconfigurationSwitchover>,
     /// Specifies the environment variables that can be used in all following Actions:
     /// - KB_ITS_USERNAME: Represents the username part of the credential
     /// - KB_ITS_PASSWORD: Represents the password part of the credential
@@ -3598,6 +3313,262 @@ pub struct InstanceSetMembershipReconfigurationPromoteAction {
     pub image: Option<String>,
 }
 
+/// Defines the procedure for a controlled transition of a role to a new replica.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchover {
+    /// Defines the command to run.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<InstanceSetMembershipReconfigurationSwitchoverExec>,
+    /// Specifies the state that the cluster must reach before the Action is executed.
+    /// Currently, this is only applicable to the `postProvision` action.
+    /// 
+    /// 
+    /// The conditions are as follows:
+    /// 
+    /// 
+    /// - `Immediately`: Executed right after the Component object is created.
+    ///   The readiness of the Component and its resources is not guaranteed at this stage.
+    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
+    ///   runtime resources (e.g. Pods) are in a ready state.
+    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
+    ///   This process does not affect the readiness state of the Component or the Cluster.
+    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
+    ///   This execution does not alter the Component or the Cluster's state of readiness.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
+    pub pre_condition: Option<String>,
+    /// Defines the strategy to be taken when retrying the Action after a failure.
+    /// 
+    /// 
+    /// It specifies the conditions under which the Action should be retried and the limits to apply,
+    /// such as the maximum number of retries and backoff strategy.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<InstanceSetMembershipReconfigurationSwitchoverRetryPolicy>,
+    /// Specifies the maximum duration in seconds that the Action is allowed to run.
+    /// 
+    /// 
+    /// If the Action does not complete within this time frame, it will be terminated.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExec {
+    /// Args represents the arguments that are passed to the `command` for execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Specifies the command to be executed inside the container.
+    /// The working directory for this command is the container's root directory('/').
+    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
+    /// If the shell is required, it must be explicitly invoked in the command.
+    /// 
+    /// 
+    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
+    /// 
+    /// 
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<String>,
+    /// Represents a list of environment variables that will be injected into the container.
+    /// These variables enable the container to adapt its behavior based on the environment it's running in.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<InstanceSetMembershipReconfigurationSwitchoverExecEnv>>,
+    /// Specifies the container image to be used for running the Action.
+    /// 
+    /// 
+    /// When specified, a dedicated container will be created using this image to execute the Action.
+    /// All actions with same image will share the same container.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<InstanceSetMembershipReconfigurationSwitchoverExecTargetPodSelector>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverExecEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstanceSetMembershipReconfigurationSwitchoverExecTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+/// Defines the strategy to be taken when retrying the Action after a failure.
+/// 
+/// 
+/// It specifies the conditions under which the Action should be retried and the limits to apply,
+/// such as the maximum number of retries and backoff strategy.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSetMembershipReconfigurationSwitchoverRetryPolicy {
+    /// Defines the maximum number of retry attempts that should be made for a given Action.
+    /// This value is set to 0 by default, indicating that no retries will be made.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Indicates the duration of time to wait between each retry attempt.
+    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<i64>,
+}
+
 /// Specifies the environment variables that can be used in all following Actions:
 /// - KB_ITS_USERNAME: Represents the username part of the credential
 /// - KB_ITS_PASSWORD: Represents the password part of the credential
@@ -3620,79 +3591,53 @@ pub struct InstanceSetMembershipReconfigurationSwitchoverAction {
     pub image: Option<String>,
 }
 
-/// Provides method to probe role.
+/// ReplicaRole represents a role that can be assigned to a component instance, defining its behavior and responsibilities.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetRoleProbe {
-    /// Defines a custom method for role probing.
-    /// Actions defined here are executed in series.
-    /// Upon completion of all actions, the final output should be a single string representing the role name defined in spec.Roles.
-    /// The latest [BusyBox](https://busybox.net/) image will be used if Image is not configured.
-    /// Environment variables can be used in Command:
-    /// - v_KB_ITS_LAST_STDOUT: stdout from the last action, watch for 'v_' prefix
-    /// - KB_ITS_USERNAME: username part of the credential
-    /// - KB_ITS_PASSWORD: password part of the credential
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customHandler")]
-    pub custom_handler: Option<Vec<InstanceSetRoleProbeCustomHandler>>,
-    /// Specifies the minimum number of consecutive failures for the probe to be considered failed after having succeeded.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// Specifies the number of seconds to wait after the container has started before initiating role probing.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// Specifies the frequency (in seconds) of probe execution.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Specifies the method for updating the pod role label.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleUpdateMechanism")]
-    pub role_update_mechanism: Option<InstanceSetRoleProbeRoleUpdateMechanism>,
-    /// Specifies the minimum number of consecutive successes for the probe to be considered successful after having failed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// Specifies the number of seconds after which the probe times out.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstanceSetRoleProbeCustomHandler {
-    /// Additional parameters used to perform specific statements. This field is optional.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// A set of instructions that will be executed within the Container to retrieve or process role information. This field is required.
-    pub command: Vec<String>,
-    /// Refers to the utility image that contains the command which can be utilized to retrieve or process role information.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
-}
-
-/// Provides method to probe role.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum InstanceSetRoleProbeRoleUpdateMechanism {
-    ReadinessProbeEventUpdate,
-    #[serde(rename = "DirectAPIServerEventUpdate")]
-    DirectApiServerEventUpdate,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstanceSetRoles {
-    /// Specifies the service capabilities of this member.
-    #[serde(rename = "accessMode")]
-    pub access_mode: InstanceSetRolesAccessMode,
-    /// Indicates if this member has voting rights.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
-    pub can_vote: Option<bool>,
-    /// Determines if this member is the leader.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
-    pub is_leader: Option<bool>,
-    /// Defines the role name of the replica.
+    /// Name defines the role's unique identifier. This value is used to set the "apps.kubeblocks.io/role" label
+    /// on the corresponding object to identify its role.
+    /// 
+    /// 
+    /// For example, common role names include:
+    /// - "leader": The primary/master instance that handles write operations
+    /// - "follower": Secondary/replica instances that replicate data from the leader
+    /// - "learner": Read-only instances that don't participate in elections
+    /// 
+    /// 
+    /// This field is immutable once set.
     pub name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum InstanceSetRolesAccessMode {
-    None,
-    Readonly,
-    ReadWrite,
+    /// ParticipatesInQuorum indicates if pods with this role are counted when determining quorum.
+    /// This affects update strategies that need to maintain quorum for availability. Roles participate
+    /// in quorum should have higher update priority than roles do not participate in quorum.
+    /// The default value is false.
+    /// 
+    /// 
+    /// For example, in a 5-pod component where:
+    /// - 2 learner pods (participatesInQuorum=false)
+    /// - 2 follower pods (participatesInQuorum=true)
+    /// - 1 leader pod (participatesInQuorum=true)
+    /// The quorum size would be 3 (based on the 3 participating pods), allowing parallel updates
+    /// of 2 learners and 1 follower while maintaining quorum.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "participatesInQuorum")]
+    pub participates_in_quorum: Option<bool>,
+    /// UpdatePriority determines the order in which pods with different roles are updated.
+    /// Pods are sorted by this priority (higher numbers = higher priority) and updated accordingly.
+    /// Roles with the highest priority will be updated last.
+    /// The default priority is 0.
+    /// 
+    /// 
+    /// For example:
+    /// - Leader role may have priority 2 (updated last)
+    /// - Follower role may have priority 1 (updated before leader)
+    /// - Learner role may have priority 0 (updated first)
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePriority")]
+    pub update_priority: Option<i64>,
 }
 
 /// Represents a label query over pods that should match the desired replica count indicated by the `replica` field.
@@ -10717,9 +10662,6 @@ pub struct InstanceSetStatus {
     /// readyReplicas is the number of instances created for this InstanceSet with a Ready Condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
-    /// Indicates whether it is required for the InstanceSet to have at least one primary instance ready.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyWithoutPrimary")]
-    pub ready_without_primary: Option<bool>,
     /// replicas is the number of instances created by the InstanceSet controller.
     pub replicas: i32,
     /// TemplatesStatus represents status of each instance generated by InstanceTemplates
@@ -10750,27 +10692,52 @@ pub struct InstanceSetStatusMembersStatus {
 }
 
 /// Defines the role of the replica in the cluster.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetStatusMembersStatusRole {
-    /// Specifies the service capabilities of this member.
-    #[serde(rename = "accessMode")]
-    pub access_mode: InstanceSetStatusMembersStatusRoleAccessMode,
-    /// Indicates if this member has voting rights.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canVote")]
-    pub can_vote: Option<bool>,
-    /// Determines if this member is the leader.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isLeader")]
-    pub is_leader: Option<bool>,
-    /// Defines the role name of the replica.
+    /// Name defines the role's unique identifier. This value is used to set the "apps.kubeblocks.io/role" label
+    /// on the corresponding object to identify its role.
+    /// 
+    /// 
+    /// For example, common role names include:
+    /// - "leader": The primary/master instance that handles write operations
+    /// - "follower": Secondary/replica instances that replicate data from the leader
+    /// - "learner": Read-only instances that don't participate in elections
+    /// 
+    /// 
+    /// This field is immutable once set.
     pub name: String,
-}
-
-/// Defines the role of the replica in the cluster.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum InstanceSetStatusMembersStatusRoleAccessMode {
-    None,
-    Readonly,
-    ReadWrite,
+    /// ParticipatesInQuorum indicates if pods with this role are counted when determining quorum.
+    /// This affects update strategies that need to maintain quorum for availability. Roles participate
+    /// in quorum should have higher update priority than roles do not participate in quorum.
+    /// The default value is false.
+    /// 
+    /// 
+    /// For example, in a 5-pod component where:
+    /// - 2 learner pods (participatesInQuorum=false)
+    /// - 2 follower pods (participatesInQuorum=true)
+    /// - 1 leader pod (participatesInQuorum=true)
+    /// The quorum size would be 3 (based on the 3 participating pods), allowing parallel updates
+    /// of 2 learners and 1 follower while maintaining quorum.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "participatesInQuorum")]
+    pub participates_in_quorum: Option<bool>,
+    /// UpdatePriority determines the order in which pods with different roles are updated.
+    /// Pods are sorted by this priority (higher numbers = higher priority) and updated accordingly.
+    /// Roles with the highest priority will be updated last.
+    /// The default priority is 0.
+    /// 
+    /// 
+    /// For example:
+    /// - Leader role may have priority 2 (updated last)
+    /// - Follower role may have priority 1 (updated before leader)
+    /// - Learner role may have priority 0 (updated first)
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePriority")]
+    pub update_priority: Option<i64>,
 }
 
 /// InstanceTemplateStatus aggregates the status of replicas for each InstanceTemplate

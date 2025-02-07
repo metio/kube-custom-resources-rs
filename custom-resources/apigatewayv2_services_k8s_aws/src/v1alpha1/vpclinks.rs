@@ -22,11 +22,15 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VPCLinkSpec {
+    /// The name of the VPC link.
     pub name: String,
+    /// A list of security group IDs for the VPC link.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
+    /// A list of subnet IDs to include in the VPC link.
     #[serde(rename = "subnetIDs")]
     pub subnet_i_ds: Vec<String>,
+    /// A list of tags.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
 }
@@ -45,14 +49,19 @@ pub struct VPCLinkStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// The timestamp when the VPC link was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
+    /// The ID of the VPC link.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkID")]
     pub vpc_link_id: Option<String>,
+    /// The status of the VPC link.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkStatus")]
     pub vpc_link_status: Option<String>,
+    /// A message summarizing the cause of the status of the VPC link.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkStatusMessage")]
     pub vpc_link_status_message: Option<String>,
+    /// The version of the VPC link.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcLinkVersion")]
     pub vpc_link_version: Option<String>,
 }

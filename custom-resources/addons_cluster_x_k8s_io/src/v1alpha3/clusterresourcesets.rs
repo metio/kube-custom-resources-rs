@@ -20,7 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterResourceSetSpec {
-    /// Label selector for Clusters. The Clusters that are
+    /// clusterSelector is the label selector for Clusters. The Clusters that are
     /// selected by this will be the ones affected by this ClusterResourceSet.
     /// It must match the Cluster labels. This field is immutable.
     #[serde(rename = "clusterSelector")]
@@ -33,7 +33,7 @@ pub struct ClusterResourceSetSpec {
     pub strategy: Option<ClusterResourceSetStrategy>,
 }
 
-/// Label selector for Clusters. The Clusters that are
+/// clusterSelector is the label selector for Clusters. The Clusters that are
 /// selected by this will be the ones affected by this ClusterResourceSet.
 /// It must match the Cluster labels. This field is immutable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

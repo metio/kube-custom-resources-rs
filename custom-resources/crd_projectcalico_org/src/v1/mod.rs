@@ -14,3 +14,6 @@ pub mod ipreservations;
 pub mod kubecontrollersconfigurations;
 pub mod networksets;
 pub mod tiers;
+pub mod stagedglobalnetworkpolicies;
+pub mod stagedkubernetesnetworkpolicies;
+pub mod stagednetworkpolicies;

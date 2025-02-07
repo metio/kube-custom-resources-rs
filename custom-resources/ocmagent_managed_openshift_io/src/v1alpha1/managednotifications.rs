@@ -54,6 +54,8 @@ pub enum ManagedNotificationNotificationsSeverity {
     Warning,
     Major,
     Critical,
+    Error,
+    Fatal,
 }
 
 /// ManagedNotificationStatus defines the observed state of ManagedNotification

@@ -47,7 +47,7 @@ spec:
               description: "FargateProfileSpec defines the desired state of FargateProfile.\n\nAn object representing an Fargate profile."
               properties:
                 clientRequestToken:
-                  description: "A unique, case-sensitive identifier that you provide to ensure the idempotency\nof the request."
+                  description: "A unique, case-sensitive identifier that you provide to ensurethe idempotency\nof the request."
                   type: "string"
                 clusterName:
                   description: "The name of your cluster."

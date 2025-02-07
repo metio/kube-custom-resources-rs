@@ -230,6 +230,11 @@ pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecContainersResour
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// EKSLogForwarderDeploymentInitContainer is a EKSLogForwarder Deployment init container.
@@ -283,6 +288,11 @@ pub struct LogCollectorEksLogForwarderDeploymentSpecTemplateSpecInitContainersRe
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// FluentdDaemonSet configures the Fluentd DaemonSet.
@@ -375,6 +385,11 @@ pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecContainersResourcesClaims
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// FluentdDaemonSetInitContainer is a Fluentd DaemonSet init container.
@@ -428,6 +443,11 @@ pub struct LogCollectorFluentdDaemonSetSpecTemplateSpecInitContainersResourcesCl
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Most recently observed state for Tigera log collection.

@@ -171,6 +171,8 @@ pub enum TriggerAuthenticationAwsSecretManagerPodIdentityProvider {
 pub struct TriggerAuthenticationAwsSecretManagerSecrets {
     pub name: String,
     pub parameter: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
+    pub secret_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionId")]
     pub version_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionStage")]

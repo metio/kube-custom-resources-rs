@@ -38,15 +38,15 @@ spec:
                 configuration:
                   type: "string"
                 name:
-                  description: "The rule groups namespace name."
+                  description: "The name for the new rule groups namespace."
                   type: "string"
                 tags:
                   additionalProperties:
                     type: "string"
-                  description: "Optional, user-provided tags for this rule groups namespace."
+                  description: "The list of tag keys and values to associate with the rule groups namespace."
                   type: "object"
                 workspaceID:
-                  description: "The ID of the workspace in which to create the rule group namespace."
+                  description: "The ID of the workspace to add the rule groups namespace."
                   type: "string"
                 workspaceRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -110,7 +110,7 @@ spec:
                     type: "object"
                   type: "array"
                 status:
-                  description: "The status of rule groups namespace."
+                  description: "A structure that returns the current status of the rule groups namespace."
                   properties:
                     statusCode:
                       description: "State of a namespace."

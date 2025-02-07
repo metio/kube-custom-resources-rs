@@ -288,9 +288,11 @@ pub enum AerospikeClusterAerospikeNetworkPolicyTlsFabric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AerospikeClusterOperations {
+    /// ID is the unique identifier for the operation. It is used by the operator to track the operation.
     pub id: String,
     /// Kind is the type of operation to be performed on the Aerospike cluster.
     pub kind: AerospikeClusterOperationsKind,
+    /// PodList is the list of pods on which the operation is to be performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podList")]
     pub pod_list: Option<Vec<String>>,
 }
@@ -400,7 +402,6 @@ pub struct AerospikeClusterPodSpec {
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
     /// 
-    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
@@ -447,10 +448,8 @@ pub struct AerospikeClusterPodSpecAerospikeContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -474,6 +473,11 @@ pub struct AerospikeClusterPodSpecAerospikeContainerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext that will be added to aerospike-server container created by operator.
@@ -488,6 +492,11 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -500,7 +509,7 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -554,6 +563,26 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     pub windows_options: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -602,7 +631,6 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContextSeccompProfil
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -671,10 +699,8 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -698,6 +724,11 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext that will be added to aerospike-init container created by operator.
@@ -712,6 +743,11 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -724,7 +760,7 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -778,6 +814,26 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     pub windows_options: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -826,7 +882,6 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeccompPr
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -1063,24 +1118,24 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIg
     pub label_selector: Option<AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1184,24 +1239,24 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgn
     pub label_selector: Option<AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1336,24 +1391,24 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringScheduli
     pub label_selector: Option<AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1457,24 +1512,24 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulin
     pub label_selector: Option<AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1601,8 +1656,10 @@ pub struct AerospikeClusterPodSpecDnsConfigOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecImagePullSecrets {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -1820,8 +1877,10 @@ pub struct AerospikeClusterPodSpecInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1861,8 +1920,10 @@ pub struct AerospikeClusterPodSpecInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1888,8 +1949,10 @@ pub struct AerospikeClusterPodSpecInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -1901,8 +1964,10 @@ pub struct AerospikeClusterPodSpecInitContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvFromSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -2187,7 +2252,6 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2338,7 +2402,6 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2410,10 +2473,8 @@ pub struct AerospikeClusterPodSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2437,6 +2498,11 @@ pub struct AerospikeClusterPodSpecInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -2453,6 +2519,11 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterPodSpecInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2465,7 +2536,7 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2519,6 +2590,26 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     pub windows_options: Option<AerospikeClusterPodSpecInitContainersSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodSpecInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -2567,7 +2658,6 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -2680,7 +2770,6 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2752,6 +2841,8 @@ pub struct AerospikeClusterPodSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -2760,6 +2851,24 @@ pub struct AerospikeClusterPodSpecInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -2787,15 +2896,17 @@ pub struct AerospikeClusterPodSpecMetadata {
 /// Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterPodSpecSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2846,15 +2957,24 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterPodSpecSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2866,6 +2986,25 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterPodSpecSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodSpecSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -2902,7 +3041,6 @@ pub struct AerospikeClusterPodSpecSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -3161,8 +3299,10 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -3202,8 +3342,10 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -3229,8 +3371,10 @@ pub struct AerospikeClusterPodSpecSidecarsEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvFromConfigMapRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -3242,8 +3386,10 @@ pub struct AerospikeClusterPodSpecSidecarsEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvFromSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -3528,7 +3674,6 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3679,7 +3824,6 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3751,10 +3895,8 @@ pub struct AerospikeClusterPodSpecSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3778,6 +3920,11 @@ pub struct AerospikeClusterPodSpecSidecarsResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -3794,6 +3941,11 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterPodSpecSidecarsSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3806,7 +3958,7 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -3860,6 +4012,26 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     pub windows_options: Option<AerospikeClusterPodSpecSidecarsSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodSpecSidecarsSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -3908,7 +4080,6 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -4021,7 +4192,6 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4093,6 +4263,8 @@ pub struct AerospikeClusterPodSpecSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -4101,6 +4273,24 @@ pub struct AerospikeClusterPodSpecSidecarsVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -4425,24 +4615,24 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPre
     pub label_selector: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4546,24 +4736,24 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityReq
     pub label_selector: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4698,24 +4888,24 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
     pub label_selector: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -4819,24 +5009,24 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
     pub label_selector: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5330,7 +5520,6 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -5360,8 +5549,10 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -5472,7 +5663,6 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersisten
 }
 
 /// Adapts a Secret into a volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
@@ -5752,24 +5942,24 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDur
     pub label_selector: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5873,24 +6063,24 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuri
     pub label_selector: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -6025,24 +6215,24 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferre
     pub label_selector: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -6146,24 +6336,24 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequired
     pub label_selector: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -6657,7 +6847,6 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -6687,8 +6876,10 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterRackConfigRacksStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -6799,7 +6990,6 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSe
 }
 
 /// Adapts a Secret into a volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
@@ -7282,7 +7472,6 @@ pub struct AerospikeClusterStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -7312,8 +7501,10 @@ pub struct AerospikeClusterStorageVolumesSourceConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -7424,7 +7615,6 @@ pub struct AerospikeClusterStorageVolumesSourcePersistentVolumeSelectorMatchExpr
 }
 
 /// Adapts a Secret into a volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
@@ -7544,7 +7734,6 @@ pub struct AerospikeClusterStatus {
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
     /// 
-    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
@@ -7586,6 +7775,9 @@ pub struct AerospikeClusterStatus {
     /// SeedsFinderServices describes services which are used for seeding Aerospike nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seedsFinderServices")]
     pub seeds_finder_services: Option<AerospikeClusterStatusSeedsFinderServices>,
+    /// Selector specifies the label selector for the Aerospike pods.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
     /// Aerospike cluster size
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i32>,
@@ -7804,9 +7996,11 @@ pub enum AerospikeClusterStatusAerospikeNetworkPolicyTlsFabric {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AerospikeClusterStatusOperations {
+    /// ID is the unique identifier for the operation. It is used by the operator to track the operation.
     pub id: String,
     /// Kind is the type of operation to be performed on the Aerospike cluster.
     pub kind: AerospikeClusterStatusOperationsKind,
+    /// PodList is the list of pods on which the operation is to be performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podList")]
     pub pod_list: Option<Vec<String>>,
 }
@@ -7924,7 +8118,6 @@ pub struct AerospikeClusterStatusPodSpec {
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
     /// 
-    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
@@ -7971,10 +8164,8 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7998,6 +8189,11 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext that will be added to aerospike-server container created by operator.
@@ -8012,6 +8208,11 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8024,7 +8225,7 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8078,6 +8279,26 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     pub windows_options: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -8126,7 +8347,6 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeccomp
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -8195,10 +8415,8 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8222,6 +8440,11 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext that will be added to aerospike-init container created by operator.
@@ -8236,6 +8459,11 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8248,7 +8476,7 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -8302,6 +8530,26 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     pub windows_options: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -8350,7 +8598,6 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSec
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -8587,24 +8834,24 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedu
     pub label_selector: Option<AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -8708,24 +8955,24 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedul
     pub label_selector: Option<AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -8860,24 +9107,24 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSc
     pub label_selector: Option<AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -8981,24 +9228,24 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSch
     pub label_selector: Option<AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -9125,8 +9372,10 @@ pub struct AerospikeClusterStatusPodSpecDnsConfigOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecImagePullSecrets {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9344,8 +9593,10 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromConfigMapKeyRe
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -9385,8 +9636,10 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -9412,8 +9665,10 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvFromConfigMapRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -9425,8 +9680,10 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvFromSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -9711,7 +9968,6 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9862,7 +10118,6 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9934,10 +10189,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9961,6 +10214,11 @@ pub struct AerospikeClusterStatusPodSpecInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -9977,6 +10235,11 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -9989,7 +10252,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -10043,6 +10306,26 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     pub windows_options: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -10091,7 +10374,6 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContextSeccompProf
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -10204,7 +10486,6 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10276,6 +10557,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -10284,6 +10567,24 @@ pub struct AerospikeClusterStatusPodSpecInitContainersVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -10311,15 +10612,17 @@ pub struct AerospikeClusterStatusPodSpecMetadata {
 /// Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSecurityContext {
+    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterStatusPodSpecSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -10370,15 +10673,24 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterStatusPodSpecSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in addition
-    /// to the container's primary GID, the fsGroup (if specified), and group memberships
-    /// defined in the container image for the uid of the container process. If unspecified,
-    /// no additional groups are added to any container. Note that group memberships
-    /// defined in the container image for the uid of the container process are still effective,
-    /// even if they are not included in this list.
+    /// A list of groups applied to the first process run in each container, in
+    /// addition to the container's primary GID and fsGroup (if specified).  If
+    /// the SupplementalGroupsPolicy feature is enabled, the
+    /// supplementalGroupsPolicy field determines whether these are in addition
+    /// to or instead of any group memberships defined in the container image.
+    /// If unspecified, no additional groups are added, though group memberships
+    /// defined in the container image may still be used, depending on the
+    /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    /// Defines how supplemental groups of the first container processes are calculated.
+    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
+    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
+    /// and the container runtime must implement support for this feature.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -10390,6 +10702,25 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterStatusPodSpecSecurityContextWindowsOptions>,
+}
+
+/// appArmorProfile is the AppArmor options to use by the containers in this pod.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodSpecSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -10426,7 +10757,6 @@ pub struct AerospikeClusterStatusPodSpecSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -10685,8 +11015,10 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -10726,8 +11058,10 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -10753,8 +11087,10 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvFromConfigMapRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -10766,8 +11102,10 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvFromSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -11052,7 +11390,6 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11203,7 +11540,6 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11275,10 +11611,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11302,6 +11636,11 @@ pub struct AerospikeClusterStatusPodSpecSidecarsResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -11318,6 +11657,11 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -11330,7 +11674,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -11384,6 +11728,26 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     pub windows_options: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -11432,7 +11796,6 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContextSeccompProfile {
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    /// 
     /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
@@ -11545,7 +11908,6 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11617,6 +11979,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -11625,6 +11989,24 @@ pub struct AerospikeClusterStatusPodSpecSidecarsVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -12042,24 +12424,24 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -12163,24 +12545,24 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -12315,24 +12697,24 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -12436,24 +12818,24 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -12947,7 +13329,6 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -12977,8 +13358,10 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceCon
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -13089,7 +13472,6 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePer
 }
 
 /// Adapts a Secret into a volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
@@ -13369,24 +13751,24 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPrefer
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -13490,24 +13872,24 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequir
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -13642,24 +14024,24 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPr
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -13763,24 +14145,24 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRe
     pub label_selector: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
-    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -14274,7 +14656,6 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -14304,8 +14685,10 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterStatusRackConfigRacksStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -14417,7 +14800,6 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVo
 
 /// Adapts a Secret into a volume.
 /// 
-/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -14491,10 +14873,8 @@ pub struct AerospikeClusterStatusResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14518,6 +14898,11 @@ pub struct AerospikeClusterStatusResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SeedsFinderServices describes services which are used for seeding Aerospike nodes.
@@ -14936,7 +15321,6 @@ pub struct AerospikeClusterStatusStorageVolumesSource {
     pub persistent_volume: Option<AerospikeClusterStatusStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
     /// 
-    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -14966,8 +15350,10 @@ pub struct AerospikeClusterStatusStorageVolumesSourceConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AerospikeClusterStatusStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -15078,7 +15464,6 @@ pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolumeSelectorMat
 }
 
 /// Adapts a Secret into a volume.
-/// 
 /// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.

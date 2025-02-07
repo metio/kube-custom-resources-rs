@@ -264,7 +264,7 @@ spec:
                   description: "The descriptive name of the rule group. You can't change the name of a rule\ngroup after you create it."
                   type: "string"
                 rules:
-                  description: "A string containing stateful rule group rules specifications in Suricata\nflat format, with one rule per line. Use this to import your existing Suricata\ncompatible rule groups.\n\nYou must provide either this rules setting or a populated RuleGroup setting,\nbut not both.\n\nYou can provide your rule group specification in Suricata flat format through\nthis setting when you create or update your rule group. The call response\nreturns a RuleGroup object that Network Firewall has populated from your\nstring."
+                  description: "A string containing stateful rule group rules specifications in Suricata\nflat format, with one ruleper line. Use this to import your existing Suricata\ncompatible rule groups.\n\nYou must provide either this rules setting or a populated RuleGroup setting,\nbut not both.\n\nYou can provide your rule group specification in Suricata flat format through\nthis setting when you create or update your rule group. The callresponse\nreturns a RuleGroup object that Network Firewall has populated from your\nstring."
                   type: "string"
                 sourceMetadata:
                   description: "A complex type that contains metadata about the rule group that your own\nrule group is copied from. You can use the metadata to keep track of updates\nmade to the originating rule group."
@@ -286,7 +286,7 @@ spec:
                     type: "object"
                   type: "array"
                 type_:
-                  description: "Indicates whether the rule group is stateless or stateful. If the rule group\nis stateless, it contains stateless rules. If it is stateful, it contains\nstateful rules."
+                  description: "Indicates whether the rule group is stateless or stateful. If the rule group\nis stateless, it containsstateless rules. If it is stateful, it contains\nstateful rules."
                   type: "string"
               required:
                 - "capacity"

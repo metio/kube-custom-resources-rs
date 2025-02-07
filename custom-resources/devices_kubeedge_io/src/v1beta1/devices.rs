@@ -18,16 +18,21 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DeviceSpec {
-    /// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
+    /// Required: DeviceModelRef is reference to the device model used as a template
+    /// to create the device instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceModelRef")]
     pub device_model_ref: Option<DeviceDeviceModelRef>,
-    /// List of methods of device. methods list item must be unique by method.Name.
+    /// List of methods of device.
+    /// methods list item must be unique by method.Name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub methods: Option<Vec<DeviceMethods>>,
-    /// NodeName is a request to schedule this device onto a specific node. If it is non-empty, the scheduler simply schedules this device onto that node, assuming that it fits resource requirements.
+    /// NodeName is a request to schedule this device onto a specific node. If it is non-empty,
+    /// the scheduler simply schedules this device onto that node, assuming that it fits
+    /// resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    /// List of properties which describe the device properties. properties list item must be unique by properties.Name.
+    /// List of properties which describe the device properties.
+    /// properties list item must be unique by properties.Name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<Vec<DeviceProperties>>,
     /// Required: The protocol configuration used to connect to the device.
@@ -35,10 +40,17 @@ pub struct DeviceSpec {
     pub protocol: Option<DeviceProtocol>,
 }
 
-/// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
+/// Required: DeviceModelRef is reference to the device model used as a template
+/// to create the device instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceDeviceModelRef {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -52,7 +64,8 @@ pub struct DeviceMethods {
     /// Required: The device method name to be accessed. It must be unique.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// PropertyNames are list of device properties that device methods can control. Required: A device method can control multiple device properties.
+    /// PropertyNames are list of device properties that device methods can control.
+    /// Required: A device method can control multiple device properties.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyNames")]
     pub property_names: Option<Vec<String>>,
 }
@@ -66,10 +79,12 @@ pub struct DeviceProperties {
     /// The desired property value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub desired: Option<DevicePropertiesDesired>,
-    /// Required: The device property name to be accessed. It must be unique. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
+    /// Required: The device property name to be accessed. It must be unique.
+    /// Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address.
+    /// PushMethod represents the protocol used to push data,
+    /// please ensure that the mapper can access the destination address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushMethod")]
     pub push_method: Option<DevicePropertiesPushMethod>,
     /// Define how frequent mapper will report the value.
@@ -78,7 +93,9 @@ pub struct DeviceProperties {
     /// whether be reported to the cloud
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
     pub report_to_cloud: Option<bool>,
-    /// Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property.
+    /// Visitors are intended to be consumed by device mappers which connect to devices
+    /// and collect data / perform actions on the device.
+    /// Required: Protocol relevant config details about the how to access the device property.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub visitors: Option<DevicePropertiesVisitors>,
 }
@@ -93,10 +110,12 @@ pub struct DevicePropertiesDesired {
     pub value: String,
 }
 
-/// PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address.
+/// PushMethod represents the protocol used to push data,
+/// please ensure that the mapper can access the destination address.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethod {
-    /// DBMethod represents the method used to push data to database, please ensure that the mapper can access the destination address.
+    /// DBMethod represents the method used to push data to database,
+    /// please ensure that the mapper can access the destination address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbMethod")]
     pub db_method: Option<DevicePropertiesPushMethodDbMethod>,
     /// HTTP Push method configuration for http
@@ -110,7 +129,8 @@ pub struct DevicePropertiesPushMethod {
     pub otel: Option<DevicePropertiesPushMethodOtel>,
 }
 
-/// DBMethod represents the method used to push data to database, please ensure that the mapper can access the destination address.
+/// DBMethod represents the method used to push data to database,
+/// please ensure that the mapper can access the destination address.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesPushMethodDbMethod {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "TDEngine")]
@@ -262,7 +282,9 @@ pub struct DevicePropertiesPushMethodOtel {
     pub endpoint_url: Option<String>,
 }
 
-/// Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property.
+/// Visitors are intended to be consumed by device mappers which connect to devices
+/// and collect data / perform actions on the device.
+/// Required: Protocol relevant config details about the how to access the device property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesVisitors {
     /// Required: The configData of customized protocol
@@ -279,7 +301,8 @@ pub struct DeviceProtocol {
     /// Any config data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configData")]
     pub config_data: Option<BTreeMap<String, serde_json::Value>>,
-    /// Unique protocol name Required.
+    /// Unique protocol name
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolName")]
     pub protocol_name: Option<String>,
 }
@@ -299,18 +322,30 @@ pub struct DeviceStatus {
     /// Optional: The state of the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    /// A list of device twins containing desired/reported desired/reported values of twin properties. Optional: A passive device won't have twin properties and this list could be empty.
+    /// A list of device twins containing desired/reported desired/reported values of twin properties.
+    /// Optional: A passive device won't have twin properties and this list could be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub twins: Option<Vec<DeviceStatusTwins>>,
 }
 
-/// Twin provides a logical representation of control properties (writable properties in the device model). The properties can have a Desired state and a Reported state. The cloud configures the `Desired`state of a device property and this configuration update is pushed to the edge node. The mapper sends a command to the device to change this property value as per the desired state . It receives the `Reported` state of the property once the previous operation is complete and sends the reported state to the cloud. Offline device interaction in the edge is possible via twin properties for control/command operations.
+/// Twin provides a logical representation of control properties (writable properties in the
+/// device model). The properties can have a Desired state and a Reported state. The cloud configures
+/// the `Desired`state of a device property and this configuration update is pushed to the edge node.
+/// The mapper sends a command to the device to change this property value as per the desired state .
+/// It receives the `Reported` state of the property once the previous operation is complete and sends
+/// the reported state to the cloud. Offline device interaction in the edge is possible via twin
+/// properties for control/command operations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatusTwins {
-    /// The meaning of here is to indicate desired value of `deviceProperty.Desired` that the mapper has received in current cycle. Useful in cases that people want to check whether the mapper is working appropriately and its internal status is up-to-date. This value should be only updated by devicecontroller upstream.
+    /// The meaning of here is to indicate desired value of `deviceProperty.Desired`
+    /// that the mapper has received in current cycle.
+    /// Useful in cases that people want to check whether the mapper is working
+    /// appropriately and its internal status is up-to-date.
+    /// This value should be only updated by devicecontroller upstream.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedDesired")]
     pub observed_desired: Option<DeviceStatusTwinsObservedDesired>,
-    /// Required: The property name for which the desired/reported values are specified. This property should be present in the device model.
+    /// Required: The property name for which the desired/reported values are specified.
+    /// This property should be present in the device model.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyName")]
     pub property_name: Option<String>,
     /// Required: the reported property value.
@@ -318,7 +353,11 @@ pub struct DeviceStatusTwins {
     pub reported: Option<DeviceStatusTwinsReported>,
 }
 
-/// The meaning of here is to indicate desired value of `deviceProperty.Desired` that the mapper has received in current cycle. Useful in cases that people want to check whether the mapper is working appropriately and its internal status is up-to-date. This value should be only updated by devicecontroller upstream.
+/// The meaning of here is to indicate desired value of `deviceProperty.Desired`
+/// that the mapper has received in current cycle.
+/// Useful in cases that people want to check whether the mapper is working
+/// appropriately and its internal status is up-to-date.
+/// This value should be only updated by devicecontroller upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceStatusTwinsObservedDesired {
     /// Additional metadata like timestamp when the value was reported etc.

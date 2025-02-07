@@ -179,6 +179,9 @@ pub struct ConfigurationErrorCatchCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ConfigurationErrorCatchCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -582,6 +585,9 @@ pub struct ConfigurationErrorCatchScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<ConfigurationErrorCatchScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,

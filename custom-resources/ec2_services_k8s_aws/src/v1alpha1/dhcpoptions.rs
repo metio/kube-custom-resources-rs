@@ -12,7 +12,7 @@ use self::prelude::*;
 
 /// DhcpOptionsSpec defines the desired state of DhcpOptions.
 /// 
-/// Describes a set of DHCP options.
+/// The set of DHCP options.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "DHCPOptions", plural = "dhcpoptions")]
 #[kube(namespaced)]
@@ -35,6 +35,7 @@ pub struct DHCPOptionsSpec {
     pub vpc_refs: Option<Vec<DHCPOptionsVpcRefs>>,
 }
 
+/// Describes a DHCP configuration option.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DHCPOptionsDhcpConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]

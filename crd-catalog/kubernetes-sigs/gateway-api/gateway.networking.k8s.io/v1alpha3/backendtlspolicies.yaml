@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.2.0"
+    gateway.networking.k8s.io/bundle-version: "v1.2.1"
     gateway.networking.k8s.io/channel: "experimental"
   labels:
     gateway.networking.k8s.io/policy: "Direct"
@@ -51,7 +51,7 @@ spec:
                   maxProperties: 16
                   type: "object"
                 targetRefs:
-                  description: "TargetRefs identifies an API object to apply the policy to.\nOnly Services have Extended support. Implementations MAY support\nadditional objects, with Implementation Specific support.\nNote that this config applies to the entire referenced resource\nby default, but this default may change in the future to provide\na more granular application of the policy.\n\nSupport: Extended for Kubernetes Service\n\nSupport: Implementation-specific for any other resource"
+                  description: "TargetRefs identifies an API object to apply the policy to.\nOnly Services have Extended support. Implementations MAY support\nadditional objects, with Implementation Specific support.\nNote that this config applies to the entire referenced resource\nby default, but this default may change in the future to provide\na more granular application of the policy.\n\nTargetRefs must be _distinct_. This means either that:\n\n* They select different targets. If this is the case, then targetRef\n  entries are distinct. In terms of fields, this means that the\n  multi-part key defined by `group`, `kind`, and `name` must\n  be unique across all targetRef entries in the BackendTLSPolicy.\n* They select different sectionNames in the same target.\n\nSupport: Extended for Kubernetes Service\n\nSupport: Implementation-specific for any other resource"
                   items:
                     description: "LocalPolicyTargetReferenceWithSectionName identifies an API object to apply a\ndirect policy to. This should be used as part of Policy resources that can\ntarget single resources. For more information on how this policy attachment\nmode works, and a sample Policy resource, refer to the policy attachment\ndocumentation for Gateway API.\n\nNote: This should only be used for direct policy attachment when references\nto SectionName are actually needed. In all other cases,\nLocalPolicyTargetReference should be used."
                     properties:
@@ -85,6 +85,11 @@ spec:
                   maxItems: 16
                   minItems: 1
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "sectionName must be specified when targetRefs includes 2 or more references to the same target"
+                      rule: "self.all(p1, self.all(p2, p1.group == p2.group && p1.kind == p2.kind && p1.name == p2.name ? ((!has(p1.sectionName) || p1.sectionName == '') == (!has(p2.sectionName) || p2.sectionName == '')) : true))"
+                    - message: "sectionName must be unique when targetRefs includes 2 or more references to the same target"
+                      rule: "self.all(p1, self.exists_one(p2, p1.group == p2.group && p1.kind == p2.kind && p1.name == p2.name && (((!has(p1.sectionName) || p1.sectionName == '') && (!has(p2.sectionName) || p2.sectionName == '')) || (has(p1.sectionName) && has(p2.sectionName) && p1.sectionName == p2.sectionName))))"
                 validation:
                   description: "Validation contains backend TLS validation configuration."
                   properties:

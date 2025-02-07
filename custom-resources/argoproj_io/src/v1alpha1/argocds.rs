@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -1544,7 +1545,9 @@ pub struct ArgoCDRepo {
     /// ServiceAccount defines the ServiceAccount user that you would like the Repo server to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serviceaccount: Option<String>,
-    /// SidecarContainers defines the list of sidecar containers for the repo server deployment
+    /// SidecarContainers defines the list of sidecar containers for the repo
+    /// server deployment. If the image field is omitted from a SidecarContainer,
+    /// the image for the repo server will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<ArgoCDRepoSidecarContainers>>,
     /// VerifyTLS defines whether repo server API should be accessed using strict TLS validation
@@ -6227,6 +6230,9 @@ pub struct ArgoCDStatus {
     /// Unknown: The state of the Argo CD applicationSet controller component could not be obtained.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationSetController")]
     pub application_set_controller: Option<String>,
+    /// Conditions is an array of the ArgoCD's status conditions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Host is the hostname of the Ingress.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,

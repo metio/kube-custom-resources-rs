@@ -80,6 +80,7 @@ pub enum MeshLoadBalancingStrategyTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -243,6 +244,7 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesQuery
 pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesType {
     Header,
     Cookie,
+    Connection,
     #[serde(rename = "SourceIP")]
     SourceIp,
     QueryParameter,
@@ -361,6 +363,7 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesQue
 pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesType {
     Header,
     Cookie,
+    Connection,
     #[serde(rename = "SourceIP")]
     SourceIp,
     QueryParameter,
@@ -530,5 +533,6 @@ pub enum MeshLoadBalancingStrategyToTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

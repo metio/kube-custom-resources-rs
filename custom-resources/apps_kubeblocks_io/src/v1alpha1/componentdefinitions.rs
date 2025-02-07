@@ -1087,7 +1087,7 @@ pub struct ComponentDefinitionLifecycleActionsAccountProvision {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -1497,7 +1497,7 @@ pub struct ComponentDefinitionLifecycleActionsDataDump {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -1906,7 +1906,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoad {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -2342,7 +2342,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoin {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -2778,7 +2778,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberLeave {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -3209,7 +3209,7 @@ pub struct ComponentDefinitionLifecycleActionsPostProvision {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -3647,7 +3647,7 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminate {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -4059,7 +4059,7 @@ pub struct ComponentDefinitionLifecycleActionsReadonly {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -4473,7 +4473,7 @@ pub struct ComponentDefinitionLifecycleActionsReadwrite {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -4871,7 +4871,7 @@ pub struct ComponentDefinitionLifecycleActionsReconfigure {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler
@@ -5294,7 +5294,7 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbe {
     /// Lorry, as a sidecar agent co-located with the database container in the same Pod,
     /// includes a suite of built-in action implementations that are tailored to different database engines.
     /// These are known as "builtin" handlers, includes: `mysql`, `redis`, `mongodb`, `etcd`,
-    /// `postgresql`, `official-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
+    /// `postgresql`, `vanilla-postgresql`, `apecloud-postgresql`, `wesql`, `oceanbase`, `polardbx`.
     /// 
     /// 
     /// If the `builtinHandler` field is specified, it instructs Lorry to utilize its internal built-in action handler

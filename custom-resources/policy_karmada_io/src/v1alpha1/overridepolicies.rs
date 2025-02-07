@@ -23,7 +23,6 @@ pub struct OverridePolicySpec {
     pub override_rules: Option<Vec<OverridePolicyOverrideRules>>,
     /// Overriders represents the override rules that would apply on resources
     /// 
-    /// 
     /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overriders: Option<OverridePolicyOverriders>,
@@ -34,7 +33,6 @@ pub struct OverridePolicySpec {
     /// TargetCluster defines restrictions on this override policy
     /// that only applies to resources propagated to the matching clusters.
     /// nil means matching all clusters.
-    /// 
     /// 
     /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCluster")]
@@ -91,8 +89,7 @@ pub struct OverridePolicyOverrideRulesOverridersAnnotationsOverrider {
     /// Items in Value which will be appended after annotations/labels when Operator is 'add'.
     /// Items in Value which match in annotations/labels will be deleted when Operator is 'remove'.
     /// Items in Value which match in annotations/labels will be replaced when Operator is 'replace'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<BTreeMap<String, String>>,
+    pub value: BTreeMap<String, String>,
 }
 
 /// LabelAnnotationOverrider represents the rules dedicated to handling workload labels/annotations
@@ -250,7 +247,6 @@ pub struct OverridePolicyOverrideRulesOverridersImageOverrider {
     pub operator: OverridePolicyOverrideRulesOverridersImageOverriderOperator,
     /// Predicate filters images before applying the rule.
     /// 
-    /// 
     /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
     /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
     ///   - Pod: /spec/containers/<N>/image
@@ -260,7 +256,6 @@ pub struct OverridePolicyOverrideRulesOverridersImageOverrider {
     ///   - StatefulSet: /spec/template/spec/containers/<N>/image
     ///   - Job: /spec/template/spec/containers/<N>/image
     /// In addition, all images will be processed if the resource object has more than one container.
-    /// 
     /// 
     /// If not nil, only images matches the filters will be processed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -293,7 +288,6 @@ pub enum OverridePolicyOverrideRulesOverridersImageOverriderOperator {
 
 /// Predicate filters images before applying the rule.
 /// 
-/// 
 /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
 /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
 ///   - Pod: /spec/containers/<N>/image
@@ -303,7 +297,6 @@ pub enum OverridePolicyOverrideRulesOverridersImageOverriderOperator {
 ///   - StatefulSet: /spec/template/spec/containers/<N>/image
 ///   - Job: /spec/template/spec/containers/<N>/image
 /// In addition, all images will be processed if the resource object has more than one container.
-/// 
 /// 
 /// If not nil, only images matches the filters will be processed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -321,8 +314,7 @@ pub struct OverridePolicyOverrideRulesOverridersLabelsOverrider {
     /// Items in Value which will be appended after annotations/labels when Operator is 'add'.
     /// Items in Value which match in annotations/labels will be deleted when Operator is 'remove'.
     /// Items in Value which match in annotations/labels will be replaced when Operator is 'replace'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<BTreeMap<String, String>>,
+    pub value: BTreeMap<String, String>,
 }
 
 /// LabelAnnotationOverrider represents the rules dedicated to handling workload labels/annotations
@@ -448,7 +440,6 @@ pub struct OverridePolicyOverrideRulesTargetClusterLabelSelectorMatchExpressions
 
 /// Overriders represents the override rules that would apply on resources
 /// 
-/// 
 /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OverridePolicyOverriders {
@@ -487,8 +478,7 @@ pub struct OverridePolicyOverridersAnnotationsOverrider {
     /// Items in Value which will be appended after annotations/labels when Operator is 'add'.
     /// Items in Value which match in annotations/labels will be deleted when Operator is 'remove'.
     /// Items in Value which match in annotations/labels will be replaced when Operator is 'replace'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<BTreeMap<String, String>>,
+    pub value: BTreeMap<String, String>,
 }
 
 /// LabelAnnotationOverrider represents the rules dedicated to handling workload labels/annotations
@@ -646,7 +636,6 @@ pub struct OverridePolicyOverridersImageOverrider {
     pub operator: OverridePolicyOverridersImageOverriderOperator,
     /// Predicate filters images before applying the rule.
     /// 
-    /// 
     /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
     /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
     ///   - Pod: /spec/containers/<N>/image
@@ -656,7 +645,6 @@ pub struct OverridePolicyOverridersImageOverrider {
     ///   - StatefulSet: /spec/template/spec/containers/<N>/image
     ///   - Job: /spec/template/spec/containers/<N>/image
     /// In addition, all images will be processed if the resource object has more than one container.
-    /// 
     /// 
     /// If not nil, only images matches the filters will be processed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -689,7 +677,6 @@ pub enum OverridePolicyOverridersImageOverriderOperator {
 
 /// Predicate filters images before applying the rule.
 /// 
-/// 
 /// Defaults to nil, in that case, the system will automatically detect image fields if the resource type is
 /// Pod, ReplicaSet, Deployment, StatefulSet, DaemonSet or Job by following rule:
 ///   - Pod: /spec/containers/<N>/image
@@ -699,7 +686,6 @@ pub enum OverridePolicyOverridersImageOverriderOperator {
 ///   - StatefulSet: /spec/template/spec/containers/<N>/image
 ///   - Job: /spec/template/spec/containers/<N>/image
 /// In addition, all images will be processed if the resource object has more than one container.
-/// 
 /// 
 /// If not nil, only images matches the filters will be processed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -717,8 +703,7 @@ pub struct OverridePolicyOverridersLabelsOverrider {
     /// Items in Value which will be appended after annotations/labels when Operator is 'add'.
     /// Items in Value which match in annotations/labels will be deleted when Operator is 'remove'.
     /// Items in Value which match in annotations/labels will be replaced when Operator is 'replace'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<BTreeMap<String, String>>,
+    pub value: BTreeMap<String, String>,
 }
 
 /// LabelAnnotationOverrider represents the rules dedicated to handling workload labels/annotations
@@ -815,7 +800,6 @@ pub struct OverridePolicyResourceSelectorsLabelSelectorMatchExpressions {
 /// TargetCluster defines restrictions on this override policy
 /// that only applies to resources propagated to the matching clusters.
 /// nil means matching all clusters.
-/// 
 /// 
 /// Deprecated: This filed is deprecated in v1.0 and please use the OverrideRules instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

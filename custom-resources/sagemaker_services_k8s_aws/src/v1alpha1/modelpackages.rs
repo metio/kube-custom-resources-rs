@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// ModelPackageSpec defines the desired state of ModelPackage.
 /// 
-/// 
 /// A versioned model that can be deployed for SageMaker inference.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackage", plural = "modelpackages")]
@@ -33,7 +32,6 @@ pub struct ModelPackageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvalDescription")]
     pub approval_description: Option<String>,
     /// Whether to certify the model package for listing on Amazon Web Services Marketplace.
-    /// 
     /// 
     /// This parameter is optional for unversioned models, and does not apply to
     /// versioned models.
@@ -55,17 +53,14 @@ pub struct ModelPackageSpec {
     /// in the Amazon SageMaker Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "driftCheckBaselines")]
     pub drift_check_baselines: Option<ModelPackageDriftCheckBaselines>,
-    /// Specifies details about inference jobs that can be run with models based
-    /// on this model package, including the following:
-    /// 
+    /// Specifies details about inference jobs that you can run with models based
+    /// on this model package, including the following information:
     /// 
     ///    * The Amazon ECR paths of containers that contain the inference code and
     ///    model artifacts.
     /// 
-    /// 
     ///    * The instance types that the model package supports for transform jobs
     ///    and real-time endpoints used for inference.
-    /// 
     /// 
     ///    * The input and output content formats that the model package supports
     ///    for inference.
@@ -76,10 +71,8 @@ pub struct ModelPackageSpec {
     pub metadata_properties: Option<ModelPackageMetadataProperties>,
     /// Whether the model is approved for deployment.
     /// 
-    /// 
     /// This parameter is optional for versioned models, and does not apply to unversioned
     /// models.
-    /// 
     /// 
     /// For versioned models, the value of this parameter must be set to Approved
     /// to deploy the model.
@@ -94,14 +87,12 @@ pub struct ModelPackageSpec {
     /// The name or Amazon Resource Name (ARN) of the model package group that this
     /// model version belongs to.
     /// 
-    /// 
     /// This parameter is required for versioned models, and does not apply to unversioned
     /// models.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupName")]
     pub model_package_group_name: Option<String>,
     /// The name of the model package. The name must have 1 to 63 characters. Valid
     /// characters are a-z, A-Z, 0-9, and - (hyphen).
-    /// 
     /// 
     /// This parameter is required for unversioned models. It is not applicable to
     /// versioned models.
@@ -125,7 +116,6 @@ pub struct ModelPackageSpec {
     /// see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
     /// in the Amazon Web Services General Reference Guide.
     /// 
-    /// 
     /// If you supply ModelPackageGroupName, your model package belongs to the model
     /// group you specify and uses the tags associated with the model group. In this
     /// case, you cannot supply a tag argument.
@@ -136,7 +126,6 @@ pub struct ModelPackageSpec {
     /// tasks are supported by Inference Recommender: "IMAGE_CLASSIFICATION" | "OBJECT_DETECTION"
     /// | "TEXT_GENERATION" |"IMAGE_SEGMENTATION" | "FILL_MASK" | "CLASSIFICATION"
     /// | "REGRESSION" | "OTHER".
-    /// 
     /// 
     /// Specify "OTHER" if none of the tasks listed fit your use case.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -391,17 +380,14 @@ pub struct ModelPackageDriftCheckBaselinesModelQualityStatistics {
     pub s3_uri: Option<String>,
 }
 
-/// Specifies details about inference jobs that can be run with models based
-/// on this model package, including the following:
-/// 
+/// Specifies details about inference jobs that you can run with models based
+/// on this model package, including the following information:
 /// 
 ///    * The Amazon ECR paths of containers that contain the inference code and
 ///    model artifacts.
 /// 
-/// 
 ///    * The instance types that the model package supports for transform jobs
 ///    and real-time endpoints used for inference.
-/// 
 /// 
 ///    * The input and output content formats that the model package supports
 ///    for inference.
@@ -651,12 +637,10 @@ pub struct ModelPackageSourceAlgorithmSpecificationSourceAlgorithms {
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -683,7 +667,6 @@ pub struct ModelPackageValidationSpecification {
 
 /// Contains data, such as the inputs and targeted instance types that are used
 /// in the process of validating the model package.
-/// 
 /// 
 /// The data provided in the validation profile is made available to your buyers
 /// on Amazon Web Services Marketplace.
@@ -818,7 +801,6 @@ pub struct ModelPackageStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -30,18 +30,22 @@ spec:
               description: "VpcLinkSpec defines the desired state of VpcLink.\n\nRepresents a VPC link."
               properties:
                 name:
+                  description: "The name of the VPC link."
                   type: "string"
                 securityGroupIDs:
+                  description: "A list of security group IDs for the VPC link."
                   items:
                     type: "string"
                   type: "array"
                 subnetIDs:
+                  description: "A list of subnet IDs to include in the VPC link."
                   items:
                     type: "string"
                   type: "array"
                 tags:
                   additionalProperties:
                     type: "string"
+                  description: "A list of tags."
                   type: "object"
               required:
                 - "name"
@@ -93,15 +97,20 @@ spec:
                     type: "object"
                   type: "array"
                 createdDate:
+                  description: "The timestamp when the VPC link was created."
                   format: "date-time"
                   type: "string"
                 vpcLinkID:
+                  description: "The ID of the VPC link."
                   type: "string"
                 vpcLinkStatus:
+                  description: "The status of the VPC link."
                   type: "string"
                 vpcLinkStatusMessage:
+                  description: "A message summarizing the cause of the status of the VPC link."
                   type: "string"
                 vpcLinkVersion:
+                  description: "The version of the VPC link."
                   type: "string"
               type: "object"
           type: "object"

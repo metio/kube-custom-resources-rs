@@ -83,10 +83,6 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
-              required:
-                - "executionRoleARN"
-                - "jobDriver"
-                - "releaseLabel"
               type: "object"
             status:
               description: "JobRunStatus defines the observed state of JobRun"

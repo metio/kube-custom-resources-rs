@@ -107,6 +107,7 @@ pub enum MeshTrafficPermissionFromTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.
@@ -160,5 +161,6 @@ pub enum MeshTrafficPermissionTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

@@ -21,6 +21,8 @@ use self::prelude::*;
 pub struct BackingImageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<BackingImageDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskFileSpecMap")]
     pub disk_file_spec_map: Option<BTreeMap<String, BackingImageDiskFileSpecMap>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSelector")]
@@ -42,10 +44,29 @@ pub struct BackingImageSpec {
     pub source_type: Option<BackingImageSourceType>,
 }
 
+/// BackingImageSpec defines the desired state of the Longhorn backing image
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackingImageDataEngine {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackingImageDiskFileSpecMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<BackingImageDiskFileSpecMapDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackingImageDiskFileSpecMapDataEngine {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
 }
 
 /// BackingImageSpec defines the desired state of the Longhorn backing image
@@ -81,6 +102,11 @@ pub struct BackingImageStatus {
     pub size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uuid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "v2FirstCopyDisk")]
+    pub v2_first_copy_disk: Option<String>,
+    /// It is pending -> in-progress -> ready/failed
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "v2FirstCopyStatus")]
+    pub v2_first_copy_status: Option<String>,
     /// Virtual size of image in bytes, which may be larger than physical size. Will be zero until known (e.g. while a backing image is uploading)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualSize")]
     pub virtual_size: Option<i64>,
@@ -88,6 +114,8 @@ pub struct BackingImageStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackingImageStatusDiskFileStatusMap {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<BackingImageStatusDiskFileStatusMapDataEngine>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastStateTransitionTime")]
     pub last_state_transition_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -96,5 +124,13 @@ pub struct BackingImageStatusDiskFileStatusMap {
     pub progress: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackingImageStatusDiskFileStatusMapDataEngine {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
 }
 

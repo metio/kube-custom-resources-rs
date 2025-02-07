@@ -20,6 +20,12 @@ pub struct TinkerbellDatacenterConfigSpec {
     /// HookImagesURLPath can be used to override the default Hook images path to pull from a local server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookImagesURLPath")]
     pub hook_images_url_path: Option<String>,
+    /// HookIsoURL is the URL of ISO image that will one time boot. It can be used to override the default Hook OS ISO image to pull from a local server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookIsoURL")]
+    pub hook_iso_url: Option<String>,
+    /// IsoBoot can be used to indicate that the hardware must boot using an ISO.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoBoot")]
+    pub iso_boot: Option<bool>,
     /// LoadBalancerInterface can be used to configure a load balancer interface for the Tinkerbell stack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerInterface")]
     pub load_balancer_interface: Option<String>,

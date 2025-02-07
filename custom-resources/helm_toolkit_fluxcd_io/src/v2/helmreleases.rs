@@ -412,6 +412,10 @@ pub struct HelmReleaseInstall {
     /// the values against the JSON Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSchemaValidation")]
     pub disable_schema_validation: Option<bool>,
+    /// DisableTakeOwnership disables taking ownership of existing resources
+    /// during the Helm install action. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTakeOwnership")]
+    pub disable_take_ownership: Option<bool>,
     /// DisableWait disables the waiting for resources to be ready after a Helm
     /// install has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]
@@ -728,6 +732,10 @@ pub struct HelmReleaseUpgrade {
     /// the values against the JSON Schema.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSchemaValidation")]
     pub disable_schema_validation: Option<bool>,
+    /// DisableTakeOwnership disables taking ownership of existing resources
+    /// during the Helm upgrade action. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTakeOwnership")]
+    pub disable_take_ownership: Option<bool>,
     /// DisableWait disables the waiting for resources to be ready after a Helm
     /// upgrade has been performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWait")]

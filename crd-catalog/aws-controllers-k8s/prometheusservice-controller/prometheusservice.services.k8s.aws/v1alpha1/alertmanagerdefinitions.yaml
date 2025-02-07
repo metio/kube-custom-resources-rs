@@ -36,7 +36,7 @@ spec:
                 configuration:
                   type: "string"
                 workspaceID:
-                  description: "The ID of the workspace in which to create the alert manager definition."
+                  description: "The ID of the workspace to add the alert manager definition to."
                   type: "string"
                 workspaceRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -99,10 +99,10 @@ spec:
                     type: "object"
                   type: "array"
                 statusCode:
-                  description: "Status code of this definition."
+                  description: "The current status of the alert manager."
                   type: "string"
                 statusReason:
-                  description: "The reason for failure if any."
+                  description: "If there is a failure, the reason for the failure."
                   type: "string"
               type: "object"
           type: "object"

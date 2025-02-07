@@ -241,6 +241,9 @@ pub struct CanaryAnalysisSessionAffinity {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAnalysisWebhooks {
+    /// Disable TLS verification for this webhook
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTLS")]
+    pub disable_tls: Option<bool>,
     /// Metadata (key-value pairs) for this webhook
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<BTreeMap<String, String>>,
@@ -307,9 +310,9 @@ pub enum CanaryAutoscalerRefKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CanaryAutoscalerRefPrimaryScalerReplicas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
-    pub max_replicas: Option<f64>,
+    pub max_replicas: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
-    pub min_replicas: Option<f64>,
+    pub min_replicas: Option<i64>,
 }
 
 /// Ingress selector
@@ -372,6 +375,9 @@ pub struct CanaryService {
     /// Headers operations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<CanaryServiceHeaders>,
+    /// Headless if set to true, generates headless Kubernetes services.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headless: Option<bool>,
     /// The list of host names for this service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,

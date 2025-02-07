@@ -339,9 +339,7 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -384,9 +382,7 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -400,10 +396,8 @@ pub struct PulpAdminPasswordJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -427,6 +421,11 @@ pub struct PulpAdminPasswordJobContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Api defines desired state of pulpcore-api resources
@@ -690,7 +689,7 @@ pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -701,7 +700,7 @@ pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -811,7 +810,7 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -822,7 +821,7 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -963,7 +962,7 @@ pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -974,7 +973,7 @@ pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1084,7 +1083,7 @@ pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1095,7 +1094,7 @@ pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1234,9 +1233,7 @@ pub struct PulpApiEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1279,9 +1276,7 @@ pub struct PulpApiEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1354,9 +1349,7 @@ pub struct PulpApiInitContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1399,9 +1392,7 @@ pub struct PulpApiInitContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1415,10 +1406,8 @@ pub struct PulpApiInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1442,6 +1431,11 @@ pub struct PulpApiInitContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Periodic probe of container liveness.
@@ -1514,7 +1508,6 @@ pub struct PulpApiLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
     /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1591,17 +1584,14 @@ pub struct PulpApiPdb {
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
     /// 
-    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    /// 
     /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    /// 
     /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
@@ -1609,11 +1599,9 @@ pub struct PulpApiPdb {
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
     /// 
-    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    /// 
     /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -1725,7 +1713,6 @@ pub struct PulpApiReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1782,10 +1769,8 @@ pub struct PulpApiResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1809,6 +1794,11 @@ pub struct PulpApiResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The deployment strategy to use to replace existing pods with new ones.
@@ -1816,9 +1806,6 @@ pub struct PulpApiResourceRequirementsClaims {
 pub struct PulpApiStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpApiStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -1828,9 +1815,6 @@ pub struct PulpApiStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -1907,7 +1891,6 @@ pub struct PulpApiTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -1941,7 +1924,6 @@ pub struct PulpApiTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -1957,7 +1939,6 @@ pub struct PulpApiTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -1967,7 +1948,6 @@ pub struct PulpApiTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -2298,7 +2278,7 @@ pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2309,7 +2289,7 @@ pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2419,7 +2399,7 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2430,7 +2410,7 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2571,7 +2551,7 @@ pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2582,7 +2562,7 @@ pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2692,7 +2672,7 @@ pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -2703,7 +2683,7 @@ pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2864,7 +2844,6 @@ pub struct PulpCacheLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2986,7 +2965,6 @@ pub struct PulpCacheReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3043,10 +3021,8 @@ pub struct PulpCacheRedisResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3070,6 +3046,11 @@ pub struct PulpCacheRedisResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The deployment strategy to use to replace existing pods with new ones.
@@ -3077,9 +3058,6 @@ pub struct PulpCacheRedisResourceRequirementsClaims {
 pub struct PulpCacheStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpCacheStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -3089,9 +3067,6 @@ pub struct PulpCacheStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpCacheStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -3412,7 +3387,7 @@ pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3423,7 +3398,7 @@ pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3533,7 +3508,7 @@ pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3544,7 +3519,7 @@ pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3685,7 +3660,7 @@ pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3696,7 +3671,7 @@ pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3806,7 +3781,7 @@ pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -3817,7 +3792,7 @@ pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -3956,9 +3931,7 @@ pub struct PulpContentEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4001,9 +3974,7 @@ pub struct PulpContentEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4076,9 +4047,7 @@ pub struct PulpContentInitContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -4121,9 +4090,7 @@ pub struct PulpContentInitContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -4137,10 +4104,8 @@ pub struct PulpContentInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4164,6 +4129,11 @@ pub struct PulpContentInitContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Periodic probe of container liveness.
@@ -4236,7 +4206,6 @@ pub struct PulpContentLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
     /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4313,17 +4282,14 @@ pub struct PulpContentPdb {
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
     /// 
-    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    /// 
     /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    /// 
     /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
@@ -4331,11 +4297,9 @@ pub struct PulpContentPdb {
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
     /// 
-    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    /// 
     /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -4447,7 +4411,6 @@ pub struct PulpContentReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4504,10 +4467,8 @@ pub struct PulpContentResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4531,6 +4492,11 @@ pub struct PulpContentResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The deployment strategy to use to replace existing pods with new ones.
@@ -4538,9 +4504,6 @@ pub struct PulpContentResourceRequirementsClaims {
 pub struct PulpContentStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpContentStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -4550,9 +4513,6 @@ pub struct PulpContentStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -4629,7 +4589,6 @@ pub struct PulpContentTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -4663,7 +4622,6 @@ pub struct PulpContentTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -4679,7 +4637,6 @@ pub struct PulpContentTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -4689,7 +4646,6 @@ pub struct PulpContentTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -5038,7 +4994,7 @@ pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5049,7 +5005,7 @@ pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5159,7 +5115,7 @@ pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5170,7 +5126,7 @@ pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5311,7 +5267,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5322,7 +5278,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5432,7 +5388,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -5443,7 +5399,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -5604,7 +5560,6 @@ pub struct PulpDatabaseLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5661,10 +5616,8 @@ pub struct PulpDatabasePostgresResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5688,6 +5641,11 @@ pub struct PulpDatabasePostgresResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Periodic probe of container service readiness.
@@ -5760,7 +5718,6 @@ pub struct PulpDatabaseReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
     /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5978,9 +5935,7 @@ pub struct PulpMigrationJobContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6023,9 +5978,7 @@ pub struct PulpMigrationJobContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6039,10 +5992,8 @@ pub struct PulpMigrationJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6066,6 +6017,11 @@ pub struct PulpMigrationJobContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Job to store signing metadata scripts
@@ -6141,9 +6097,7 @@ pub struct PulpSigningJobContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6186,9 +6140,7 @@ pub struct PulpSigningJobContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6202,10 +6154,8 @@ pub struct PulpSigningJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6229,6 +6179,11 @@ pub struct PulpSigningJobContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Telemetry defines the OpenTelemetry configuration
@@ -6259,10 +6214,8 @@ pub struct PulpTelemetryResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6286,6 +6239,11 @@ pub struct PulpTelemetryResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Web defines desired state of pulpcore-web (reverse-proxy) resources
@@ -6379,9 +6337,7 @@ pub struct PulpWebEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6424,9 +6380,7 @@ pub struct PulpWebEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6505,7 +6459,6 @@ pub struct PulpWebLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6581,17 +6534,14 @@ pub struct PulpWebPdb {
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
     /// 
-    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    /// 
     /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    /// 
     /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
@@ -6599,11 +6549,9 @@ pub struct PulpWebPdb {
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
     /// 
-    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    /// 
     /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -6715,7 +6663,6 @@ pub struct PulpWebReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6772,10 +6719,8 @@ pub struct PulpWebResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6799,6 +6744,11 @@ pub struct PulpWebResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The deployment strategy to use to replace existing pods with new ones.
@@ -6806,9 +6756,6 @@ pub struct PulpWebResourceRequirementsClaims {
 pub struct PulpWebStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpWebStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -6818,9 +6765,6 @@ pub struct PulpWebStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWebStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -7116,7 +7060,7 @@ pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7127,7 +7071,7 @@ pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7237,7 +7181,7 @@ pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7248,7 +7192,7 @@ pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7389,7 +7333,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7400,7 +7344,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7510,7 +7454,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7521,7 +7465,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7660,9 +7604,7 @@ pub struct PulpWorkerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7705,9 +7647,7 @@ pub struct PulpWorkerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7780,9 +7720,7 @@ pub struct PulpWorkerInitContainerEnvVarsValueFromConfigMapKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -7825,9 +7763,7 @@ pub struct PulpWorkerInitContainerEnvVarsValueFromSecretKeyRef {
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -7841,10 +7777,8 @@ pub struct PulpWorkerInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7868,6 +7802,11 @@ pub struct PulpWorkerInitContainerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Periodic probe of container liveness.
@@ -7940,7 +7879,6 @@ pub struct PulpWorkerLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
     /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8017,17 +7955,14 @@ pub struct PulpWorkerPdb {
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
     /// 
-    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    /// 
     /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    /// 
     /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
@@ -8035,11 +7970,9 @@ pub struct PulpWorkerPdb {
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
     /// 
-    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    /// 
     /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
@@ -8151,7 +8084,6 @@ pub struct PulpWorkerReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -8208,10 +8140,8 @@ pub struct PulpWorkerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8235,6 +8165,11 @@ pub struct PulpWorkerResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// The deployment strategy to use to replace existing pods with new ones.
@@ -8242,9 +8177,6 @@ pub struct PulpWorkerResourceRequirementsClaims {
 pub struct PulpWorkerStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    /// ---
-    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
-    /// to be.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpWorkerStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
@@ -8254,9 +8186,6 @@ pub struct PulpWorkerStrategy {
 
 /// Rolling update config params. Present only if DeploymentStrategyType =
 /// RollingUpdate.
-/// ---
-/// TODO: Update this to follow our convention for oneOf, whatever we decide it
-/// to be.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerStrategyRollingUpdate {
     /// The maximum number of pods that can be scheduled above the desired number of
@@ -8333,7 +8262,6 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -8367,7 +8295,6 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -8383,7 +8310,6 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -8393,7 +8319,6 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.

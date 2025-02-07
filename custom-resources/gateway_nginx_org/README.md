@@ -16,3 +16,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `NginxGateway`
 - `NginxProxy`
 - `ObservabilityPolicy`
+### gateway.nginx.org/v1alpha2
+- `ObservabilityPolicy`

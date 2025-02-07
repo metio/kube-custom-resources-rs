@@ -98,6 +98,8 @@ pub struct BackendLBPolicySessionPersistenceCookieConfig {
     /// absolute lifetime of the cookie tracked by the gateway and
     /// is optional.
     /// 
+    /// Defaults to "Session".
+    /// 
     /// Support: Core for "Session" type
     /// 
     /// Support: Extended for "Permanent" type

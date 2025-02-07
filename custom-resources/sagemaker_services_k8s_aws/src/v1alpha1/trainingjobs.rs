@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// TrainingJobSpec defines the desired state of TrainingJob.
 /// 
-/// 
 /// Contains information about a training job.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "TrainingJob", plural = "trainingjobs")]
@@ -59,7 +58,6 @@ pub struct TrainingJobSpec {
     /// learning models. this option is useful when training jobs can be interrupted
     /// and when there is flexibility when the training job is run.
     /// 
-    /// 
     /// The complete and intermediate results of jobs are stored in an Amazon S3
     /// bucket, and can be used as a starting point to train models incrementally.
     /// Amazon SageMaker provides metrics and logs in CloudWatch. They can be used
@@ -81,12 +79,9 @@ pub struct TrainingJobSpec {
     /// Associates a SageMaker job as a trial component with an experiment and trial.
     /// Specified when you call the following APIs:
     /// 
-    /// 
     ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
     /// 
-    /// 
     ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-    /// 
     /// 
     ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentConfig")]
@@ -96,11 +91,9 @@ pub struct TrainingJobSpec {
     /// hyperparameters for each training algorithm provided by SageMaker, see Algorithms
     /// (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// You can specify a maximum of 100 hyperparameters. Each hyperparameter is
     /// a key-value pair. Each key and value is limited to 256 characters, as specified
     /// by the Length Constraint.
-    /// 
     /// 
     /// Do not include any security-sensitive information including account access
     /// IDs, secrets or tokens in any hyperparameter field. If the use of security-sensitive
@@ -115,7 +108,6 @@ pub struct TrainingJobSpec {
     /// An array of Channel objects. Each channel is a named input source. InputDataConfig
     /// describes the input data and its location.
     /// 
-    /// 
     /// Algorithms can accept input data from one or more channels. For example,
     /// an algorithm might have two channels of input data, training_data and validation_data.
     /// The configuration for each channel provides the S3, EFS, or FSx location
@@ -123,13 +115,11 @@ pub struct TrainingJobSpec {
     /// data: the MIME type, compression method, and whether the data is wrapped
     /// in RecordIO format.
     /// 
-    /// 
     /// Depending on the input mode that the algorithm supports, SageMaker either
     /// copies input data files from an S3 bucket to a local directory in the Docker
     /// container, or makes it available as input streams. For example, if you specify
     /// an EFS location, input data files are available as input streams. They do
     /// not need to be downloaded.
-    /// 
     /// 
     /// Your input must be in the same Amazon Web Services region as your training
     /// job.
@@ -155,7 +145,6 @@ pub struct TrainingJobSpec {
     /// The resources, including the ML compute instances and ML storage volumes,
     /// to use for model training.
     /// 
-    /// 
     /// ML storage volumes store model artifacts and incremental states. Training
     /// algorithms might also use ML storage volumes for scratch space. If you want
     /// SageMaker to use the ML storage volume to store the training data, choose
@@ -169,13 +158,11 @@ pub struct TrainingJobSpec {
     /// The Amazon Resource Name (ARN) of an IAM role that SageMaker can assume to
     /// perform tasks on your behalf.
     /// 
-    /// 
     /// During model training, SageMaker needs your permission to read input data
     /// from an S3 bucket, download a Docker image that contains training code, write
     /// model artifacts to an S3 bucket, write logs to Amazon CloudWatch Logs, and
     /// publish metrics to Amazon CloudWatch. You grant permissions for all of these
     /// tasks to an IAM role. For more information, see SageMaker Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).
-    /// 
     /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
@@ -185,7 +172,6 @@ pub struct TrainingJobSpec {
     /// how long a managed Spot training job has to complete. When the job reaches
     /// the time limit, SageMaker ends the training job. Use this API to cap model
     /// training costs.
-    /// 
     /// 
     /// To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays
     /// job termination for 120 seconds. Algorithms can use this 120-second window
@@ -233,27 +219,21 @@ pub struct TrainingJobAlgorithmSpecification {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -262,15 +242,12 @@ pub struct TrainingJobAlgorithmSpecification {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -356,12 +333,9 @@ pub struct TrainingJobDebugRuleConfigurations {
 /// Associates a SageMaker job as a trial component with an experiment and trial.
 /// Specified when you call the following APIs:
 /// 
-/// 
 ///    * CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
 /// 
-/// 
 ///    * CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-/// 
 /// 
 ///    * CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -397,27 +371,21 @@ pub struct TrainingJobInputDataConfig {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -426,15 +394,12 @@ pub struct TrainingJobInputDataConfig {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -449,7 +414,6 @@ pub struct TrainingJobInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    /// 
     /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
@@ -469,7 +433,6 @@ pub struct TrainingJobInputDataConfigDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<TrainingJobInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    /// 
     /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
@@ -491,7 +454,6 @@ pub struct TrainingJobInputDataConfigDataSourceFileSystemDataSource {
 }
 
 /// Describes the S3 data source.
-/// 
 /// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
@@ -515,7 +477,6 @@ pub struct TrainingJobInputDataConfigDataSourceS3DataSource {
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-/// 
 /// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
@@ -585,7 +546,6 @@ pub struct TrainingJobRemoteDebugConfig {
 /// The resources, including the ML compute instances and ML storage volumes,
 /// to use for model training.
 /// 
-/// 
 /// ML storage volumes store model artifacts and incremental states. Training
 /// algorithms might also use ML storage volumes for scratch space. If you want
 /// SageMaker to use the ML storage volume to store the training data, choose
@@ -634,7 +594,6 @@ pub struct TrainingJobRetryStrategy {
 /// the time limit, SageMaker ends the training job. Use this API to cap model
 /// training costs.
 /// 
-/// 
 /// To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays
 /// job termination for 120 seconds. Algorithms can use this 120-second window
 /// to save the model artifacts, so the results of training are not lost.
@@ -652,12 +611,10 @@ pub struct TrainingJobStoppingCondition {
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -737,103 +694,74 @@ pub struct TrainingJobStatus {
     /// information on the secondary status of the training job, see StatusMessage
     /// under SecondaryStatusTransition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html).
     /// 
-    /// 
     /// SageMaker provides primary statuses and secondary statuses that apply to
     /// each of them:
     /// 
-    /// 
     /// InProgress
     /// 
-    /// 
     ///    * Starting - Starting the training job.
-    /// 
     /// 
     ///    * Downloading - An optional stage for algorithms that support File training
     ///    input mode. It indicates that data is being downloaded to the ML storage
     ///    volumes.
     /// 
-    /// 
     ///    * Training - Training is in progress.
-    /// 
     /// 
     ///    * Interrupted - The job stopped because the managed spot training instances
     ///    were interrupted.
     /// 
-    /// 
     ///    * Uploading - Training is complete and the model artifacts are being uploaded
     ///    to the S3 location.
     /// 
-    /// 
     /// Completed
-    /// 
     /// 
     ///    * Completed - The training job has completed.
     /// 
-    /// 
     /// Failed
-    /// 
     /// 
     ///    * Failed - The training job has failed. The reason for the failure is
     ///    returned in the FailureReason field of DescribeTrainingJobResponse.
     /// 
-    /// 
     /// Stopped
-    /// 
     /// 
     ///    * MaxRuntimeExceeded - The job stopped because it exceeded the maximum
     ///    allowed runtime.
     /// 
-    /// 
     ///    * MaxWaitTimeExceeded - The job stopped because it exceeded the maximum
     ///    allowed wait time.
     /// 
-    /// 
     ///    * Stopped - The training job has stopped.
-    /// 
     /// 
     /// Stopping
     /// 
-    /// 
     ///    * Stopping - Stopping the training job.
-    /// 
     /// 
     /// Valid values for SecondaryStatus are subject to change.
     /// 
-    /// 
     /// We no longer support the following secondary statuses:
-    /// 
     /// 
     ///    * LaunchingMLInstances
     /// 
-    /// 
     ///    * PreparingTraining
-    /// 
     /// 
     ///    * DownloadingTrainingImage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryStatus")]
     pub secondary_status: Option<String>,
     /// The status of the training job.
     /// 
-    /// 
     /// SageMaker provides the following training job statuses:
-    /// 
     /// 
     ///    * InProgress - The training is in progress.
     /// 
-    /// 
     ///    * Completed - The training job has completed.
-    /// 
     /// 
     ///    * Failed - The training job has failed. To see the reason for the failure,
     ///    see the FailureReason field in the response to a DescribeTrainingJobResponse
     ///    call.
     /// 
-    /// 
     ///    * Stopping - The training job is stopping.
     /// 
-    /// 
     ///    * Stopped - The training job has stopped.
-    /// 
     /// 
     /// For more detailed information, see SecondaryStatus.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobStatus")]
@@ -854,7 +782,6 @@ pub struct TrainingJobStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

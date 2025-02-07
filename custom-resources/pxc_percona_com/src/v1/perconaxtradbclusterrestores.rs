@@ -45,6 +45,8 @@ pub struct PerconaXtraDBClusterRestoreBackupSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lastscheduled: Option<String>,
@@ -188,6 +190,8 @@ pub struct PerconaXtraDBClusterRestorePitrBackupSource {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
