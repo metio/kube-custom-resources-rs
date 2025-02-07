@@ -165,6 +165,7 @@ members = [
     "custom-resources/hiveinternal_openshift_io",
     "custom-resources/hnc_x_k8s_io",
     "custom-resources/hyperfoil_io",
+    "custom-resources/hyperspike_io",
     "custom-resources/iam_services_k8s_aws",
     "custom-resources/ibmcloud_ibm_com",
     "custom-resources/image_toolkit_fluxcd_io",
