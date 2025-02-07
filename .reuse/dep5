@@ -643,6 +643,10 @@ Files: crd-catalog/jaegertracing/jaeger-operator/*
 Copyright: The jaegertracing/jaeger-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/jenkinsci/kubernetes-operator/*
+Copyright: The jenkinsci/kubernetes-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/k8gb-io/k8gb/*
 Copyright: The k8gb-io/k8gb Authors
 License: Apache-2.0

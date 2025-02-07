@@ -223,6 +223,7 @@ The following groups are available:
 - [ipam.metal3.io](https://crates.io/crates/kcr_ipam_metal3_io)
 - [isindir.github.com](https://crates.io/crates/kcr_isindir_github_com)
 - [jaegertracing.io](https://crates.io/crates/kcr_jaegertracing_io)
+- [jenkins.io](https://crates.io/crates/kcr_jenkins_io)
 - [jobset.x-k8s.io](https://crates.io/crates/kcr_jobset_x_k8s_io)
 - [jobsmanager.raczylo.com](https://crates.io/crates/kcr_jobsmanager_raczylo_com)
 - [k6.io](https://crates.io/crates/kcr_k6_io)

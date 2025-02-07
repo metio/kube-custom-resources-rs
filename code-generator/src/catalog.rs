@@ -1766,6 +1766,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "jenkinsci/kubernetes-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/jenkinsci/kubernetes-operator/blob/master/config/crd/bases/jenkins.io_jenkins.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "k8gb-io/k8gb",
         license: APACHE_V2,
         urls: &[

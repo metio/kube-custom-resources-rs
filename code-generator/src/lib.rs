@@ -44,7 +44,7 @@ pub fn read_all_existing_custom_resources(
         match entry {
             Ok(path) => {
                 let content = fs::read_to_string(path).expect("should be able to read file");
-                let crd = serde_yml::from_str::<CustomResourceDefinition>(&content)
+                let crd = serde_yaml_ng::from_str::<CustomResourceDefinition>(&content)
                     .expect("should be able to parse YAML");
 
                 let group = &crd.spec.group;
