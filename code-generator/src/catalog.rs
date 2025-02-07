@@ -1696,6 +1696,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "hyperspike/valkey-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/hyperspike/valkey-operator/blob/main/config/crd/bases/hyperspike.io_valkeys.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "IBM/varnish-operator",
         license: APACHE_V2,
         urls: &[

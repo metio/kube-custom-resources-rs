@@ -205,6 +205,7 @@ The following groups are available:
 - [hiveinternal.openshift.io](https://crates.io/crates/kcr_hiveinternal_openshift_io)
 - [hnc.x-k8s.io](https://crates.io/crates/kcr_hnc_x_k8s_io)
 - [hyperfoil.io](https://crates.io/crates/kcr_hyperfoil_io)
+- [hyperspike.io](https://crates.io/crates/kcr_hyperspike_io)
 - [iam.services.k8s.aws](https://crates.io/crates/kcr_iam_services_k8s_aws)
 - [ibmcloud.ibm.com](https://crates.io/crates/kcr_ibmcloud_ibm_com)
 - [image.toolkit.fluxcd.io](https://crates.io/crates/kcr_image_toolkit_fluxcd_io)

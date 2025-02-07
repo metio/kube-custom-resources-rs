@@ -611,6 +611,10 @@ Files: crd-catalog/Hyperfoil/hyperfoil-operator/*
 Copyright: The Hyperfoil/hyperfoil-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/hyperspike/valkey-operator/*
+Copyright: The hyperspike/valkey-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/IBM/varnish-operator/*
 Copyright: The IBM/varnish-operator Authors
 License: Apache-2.0
