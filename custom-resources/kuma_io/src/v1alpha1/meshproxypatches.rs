@@ -532,5 +532,6 @@ pub enum MeshProxyPatchTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

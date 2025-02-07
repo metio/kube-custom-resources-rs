@@ -36,6 +36,9 @@ pub struct CephFilesystemSpec {
     /// Preserve the fs in the cluster on CephFilesystem CR deletion. Setting this to true automatically implies PreservePoolsOnDelete is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveFilesystemOnDelete")]
     pub preserve_filesystem_on_delete: Option<bool>,
+    /// Preserve pool names as specified
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolNames")]
+    pub preserve_pool_names: Option<bool>,
     /// Preserve pools on filesystem deletion
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
@@ -264,6 +267,9 @@ pub struct CephFilesystemMetadataPool {
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirroring: Option<CephFilesystemMetadataPoolMirroring>,
+    /// Name of the pool
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Parameters is a list of properties to enable on a given pool
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
@@ -465,17 +471,17 @@ pub struct CephFilesystemMetadataServerLivenessProbe {
 /// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephFilesystemMetadataServerLivenessProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CephFilesystemMetadataServerLivenessProbeProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephFilesystemMetadataServerLivenessProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -490,7 +496,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephFilesystemMetadataServerLivenessProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
@@ -502,7 +508,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -514,7 +520,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -527,7 +533,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -560,7 +566,7 @@ pub struct CephFilesystemMetadataServerLivenessProbeProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerLivenessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -980,17 +986,17 @@ pub struct CephFilesystemMetadataServerStartupProbe {
 /// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephFilesystemMetadataServerStartupProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CephFilesystemMetadataServerStartupProbeProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephFilesystemMetadataServerStartupProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1005,7 +1011,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephFilesystemMetadataServerStartupProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
@@ -1017,7 +1023,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1029,7 +1035,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1042,7 +1048,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1075,7 +1081,7 @@ pub struct CephFilesystemMetadataServerStartupProbeProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemMetadataServerStartupProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.

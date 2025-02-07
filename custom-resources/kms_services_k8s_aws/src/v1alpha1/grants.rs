@@ -22,19 +22,13 @@ use self::prelude::*;
 pub struct GrantSpec {
     /// Specifies a grant constraint.
     /// 
-    /// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
-    /// constraints. Each constraint value can include up to 8 encryption context
-    /// pairs. The encryption context value in each constraint cannot exceed 384
-    /// characters. For information about grant constraints, see Using grant constraints
-    /// (https://docs.aws.amazon.com/kms/latest/developerguide/create-grant-overview.html#grant-constraints)
-    /// in the Key Management Service Developer Guide. For more information about
-    /// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
-    /// in the Key Management Service Developer Guide .
+    /// Do not include confidential or sensitive information in this field. This
+    /// field may be displayed in plaintext in CloudTrail logs and other output.
     /// 
-    /// The encryption context grant constraints allow the permissions in the grant
-    /// only when the encryption context in the request matches (EncryptionContextEquals)
-    /// or includes (EncryptionContextSubset) the encryption context specified in
-    /// this structure.
+    /// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
+    /// constraints, which allow the permissions in the grant only when the encryption
+    /// context in the request matches (EncryptionContextEquals) or includes (EncryptionContextSubset)
+    /// the encryption context specified in the constraint.
     /// 
     /// The encryption context grant constraints are supported only on grant operations
     /// (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#terms-grant-operations)
@@ -46,8 +40,15 @@ pub struct GrantSpec {
     /// permission have an equally strict or stricter encryption context constraint.
     /// 
     /// You cannot use an encryption context grant constraint for cryptographic operations
-    /// with asymmetric KMS keys or HMAC KMS keys. These keys don't support an encryption
-    /// context.
+    /// with asymmetric KMS keys or HMAC KMS keys. Operations with these keys don't
+    /// support an encryption context.
+    /// 
+    /// Each constraint value can include up to 8 encryption context pairs. The encryption
+    /// context value in each constraint cannot exceed 384 characters. For information
+    /// about grant constraints, see Using grant constraints (https://docs.aws.amazon.com/kms/latest/developerguide/create-grant-overview.html#grant-constraints)
+    /// in the Key Management Service Developer Guide. For more information about
+    /// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
+    /// in the Key Management Service Developer Guide .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub constraints: Option<GrantConstraints>,
     /// A list of grant tokens.
@@ -61,19 +62,17 @@ pub struct GrantSpec {
     pub grant_tokens: Option<Vec<String>>,
     /// The identity that gets the permissions specified in the grant.
     /// 
-    /// To specify the principal, use the Amazon Resource Name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-    /// of an Amazon Web Services principal. Valid Amazon Web Services principals
-    /// include Amazon Web Services accounts (root), IAM users, IAM roles, federated
-    /// users, and assumed role users. For examples of the ARN syntax to use for
-    /// specifying a principal, see Amazon Web Services Identity and Access Management
-    /// (IAM) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-iam)
-    /// in the Example ARNs section of the Amazon Web Services General Reference.
+    /// To specify the grantee principal, use the Amazon Resource Name (ARN) of an
+    /// Amazon Web Services principal. Valid principals include Amazon Web Services
+    /// accounts, IAM users, IAM roles, federated users, and assumed role users.
+    /// For help with the ARN syntax for a principal, see IAM ARNs (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns)
+    /// in the Identity and Access Management User Guide .
     #[serde(rename = "granteePrincipal")]
     pub grantee_principal: String,
     /// Identifies the KMS key for the grant. The grant gives principals permission
     /// to use this KMS key.
     /// 
-    /// Specify the key ID or key ARN of the KMS key. To specify a KMS key in a different
+    /// Specify the key ID or key ARN of the KMS key. To specify a KMS key in adifferent
     /// Amazon Web Services account, you must use the key ARN.
     /// 
     /// For example:
@@ -96,6 +95,9 @@ pub struct GrantSpec {
     pub key_ref: Option<GrantKeyRef>,
     /// A friendly name for the grant. Use this value to prevent the unintended creation
     /// of duplicate grants when retrying this request.
+    /// 
+    /// Do not include confidential or sensitive information in this field. This
+    /// field may be displayed in plaintext in CloudTrail logs and other output.
     /// 
     /// When this value is absent, all CreateGrant requests result in a new grant
     /// with a unique GrantId even if all the supplied parameters are identical.
@@ -122,12 +124,10 @@ pub struct GrantSpec {
     /// the grant.
     /// 
     /// To specify the principal, use the Amazon Resource Name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-    /// of an Amazon Web Services principal. Valid Amazon Web Services principals
-    /// include Amazon Web Services accounts (root), IAM users, federated users,
-    /// and assumed role users. For examples of the ARN syntax to use for specifying
-    /// a principal, see Amazon Web Services Identity and Access Management (IAM)
-    /// (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html#arn-syntax-iam)
-    /// in the Example ARNs section of the Amazon Web Services General Reference.
+    /// of an Amazon Web Services principal. Valid principals include Amazon Web
+    /// Services accounts, IAM users, IAM roles, federated users, and assumed role
+    /// users. For help with the ARN syntax for a principal, see IAM ARNs (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns)
+    /// in the Identity and Access Management User Guide .
     /// 
     /// The grant determines the retiring principal. Other principals might have
     /// permission to retire the grant or revoke the grant. For details, see RevokeGrant
@@ -139,19 +139,13 @@ pub struct GrantSpec {
 
 /// Specifies a grant constraint.
 /// 
-/// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
-/// constraints. Each constraint value can include up to 8 encryption context
-/// pairs. The encryption context value in each constraint cannot exceed 384
-/// characters. For information about grant constraints, see Using grant constraints
-/// (https://docs.aws.amazon.com/kms/latest/developerguide/create-grant-overview.html#grant-constraints)
-/// in the Key Management Service Developer Guide. For more information about
-/// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
-/// in the Key Management Service Developer Guide .
+/// Do not include confidential or sensitive information in this field. This
+/// field may be displayed in plaintext in CloudTrail logs and other output.
 /// 
-/// The encryption context grant constraints allow the permissions in the grant
-/// only when the encryption context in the request matches (EncryptionContextEquals)
-/// or includes (EncryptionContextSubset) the encryption context specified in
-/// this structure.
+/// KMS supports the EncryptionContextEquals and EncryptionContextSubset grant
+/// constraints, which allow the permissions in the grant only when the encryption
+/// context in the request matches (EncryptionContextEquals) or includes (EncryptionContextSubset)
+/// the encryption context specified in the constraint.
 /// 
 /// The encryption context grant constraints are supported only on grant operations
 /// (https://docs.aws.amazon.com/kms/latest/developerguide/grants.html#terms-grant-operations)
@@ -163,8 +157,15 @@ pub struct GrantSpec {
 /// permission have an equally strict or stricter encryption context constraint.
 /// 
 /// You cannot use an encryption context grant constraint for cryptographic operations
-/// with asymmetric KMS keys or HMAC KMS keys. These keys don't support an encryption
-/// context.
+/// with asymmetric KMS keys or HMAC KMS keys. Operations with these keys don't
+/// support an encryption context.
+/// 
+/// Each constraint value can include up to 8 encryption context pairs. The encryption
+/// context value in each constraint cannot exceed 384 characters. For information
+/// about grant constraints, see Using grant constraints (https://docs.aws.amazon.com/kms/latest/developerguide/create-grant-overview.html#grant-constraints)
+/// in the Key Management Service Developer Guide. For more information about
+/// encryption context, see Encryption context (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context)
+/// in the Key Management Service Developer Guide .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrantConstraints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionContextEquals")]

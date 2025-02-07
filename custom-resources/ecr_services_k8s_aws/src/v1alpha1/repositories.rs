@@ -41,6 +41,9 @@ pub struct RepositorySpec {
     /// The name to use for the repository. The repository name may be specified
     /// on its own (such as nginx-web-app) or it can be prepended with a namespace
     /// to group the repository into a category (such as project-a/nginx-web-app).
+    /// 
+    /// The repository name must start with a letter and can only contain lowercase
+    /// letters, numbers, hyphens, underscores, and forward slashes.
     pub name: String,
     /// The JSON repository policy text to apply to the repository. For more information,
     /// see Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)

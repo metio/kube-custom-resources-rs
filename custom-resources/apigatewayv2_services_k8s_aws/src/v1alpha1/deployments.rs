@@ -22,6 +22,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DeploymentSpec {
+    /// The API identifier.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -33,8 +34,10 @@ pub struct DeploymentSpec {
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
     pub api_ref: Option<DeploymentApiRef>,
+    /// The description for the deployment resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// The name of the Stage resource for the Deployment resource to create.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stageName")]
     pub stage_name: Option<String>,
 }
@@ -72,6 +75,7 @@ pub struct DeploymentStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DeploymentStatusAckResourceMetadata>,
+    /// Specifies whether a deployment was automatically released.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDeployed")]
     pub auto_deployed: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
@@ -80,12 +84,16 @@ pub struct DeploymentStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// The date and time when the Deployment resource was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
+    /// The identifier for the deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentID")]
     pub deployment_id: Option<String>,
+    /// The status of the deployment: PENDING, FAILED, or SUCCEEDED.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatus")]
     pub deployment_status: Option<String>,
+    /// May contain additional feedback on the status of an API deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatusMessage")]
     pub deployment_status_message: Option<String>,
 }

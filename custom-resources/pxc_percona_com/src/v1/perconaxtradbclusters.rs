@@ -68,12 +68,16 @@ pub struct PerconaXtraDBClusterSpec {
     pub update_strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeOptions")]
     pub upgrade_options: Option<PerconaXtraDBClusterUpgradeOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub users: Option<Vec<PerconaXtraDBClusterUsers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecretName")]
     pub vault_secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterBackup {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
+    pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowParallel")]
     pub allow_parallel: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -92,6 +96,8 @@ pub struct PerconaXtraDBClusterBackup {
     pub schedule: Option<Vec<PerconaXtraDBClusterBackupSchedule>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
+    pub starting_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storages: Option<BTreeMap<String, PerconaXtraDBClusterBackupStorages>>,
 }
@@ -659,6 +665,8 @@ pub struct PerconaXtraDBClusterBackupStoragesPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaXtraDBClusterBackupStoragesPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -1622,6 +1630,8 @@ pub struct PerconaXtraDBClusterHaproxyPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaXtraDBClusterHaproxyPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -3523,10 +3533,14 @@ pub struct PerconaXtraDBClusterPmm {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
+    pub liveness_probes: Option<PerconaXtraDBClusterPmmLivenessProbes>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxysqlParams")]
     pub proxysql_params: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pxcParams")]
     pub pxc_params: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbes")]
+    pub readiness_probes: Option<PerconaXtraDBClusterPmmReadinessProbes>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaXtraDBClusterPmmResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -3611,6 +3625,132 @@ pub struct PerconaXtraDBClusterPmmContainerSecurityContextWindowsOptions {
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbes {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<PerconaXtraDBClusterPmmLivenessProbesExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<PerconaXtraDBClusterPmmLivenessProbesGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<PerconaXtraDBClusterPmmLivenessProbesHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<PerconaXtraDBClusterPmmLivenessProbesTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbesExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbesGrpc {
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbesHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PerconaXtraDBClusterPmmLivenessProbesHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbesHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmLivenessProbesTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbes {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<PerconaXtraDBClusterPmmReadinessProbesExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<PerconaXtraDBClusterPmmReadinessProbesGrpc>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<PerconaXtraDBClusterPmmReadinessProbesHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<PerconaXtraDBClusterPmmReadinessProbesTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbesExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbesGrpc {
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbesHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<PerconaXtraDBClusterPmmReadinessProbesHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbesHttpGetHttpHeaders {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterPmmReadinessProbesTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4333,6 +4473,8 @@ pub struct PerconaXtraDBClusterProxysqlPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaXtraDBClusterProxysqlPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -6715,6 +6857,8 @@ pub struct PerconaXtraDBClusterPxcPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PerconaXtraDBClusterPxcPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
@@ -8465,6 +8609,30 @@ pub struct PerconaXtraDBClusterUpgradeOptions {
     pub schedule: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionServiceEndpoint")]
     pub version_service_endpoint: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterUsers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dbs: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grants: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hosts: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretRef")]
+    pub password_secret_ref: Option<PerconaXtraDBClusterUsersPasswordSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withGrantOption")]
+    pub with_grant_option: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterUsersPasswordSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

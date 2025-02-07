@@ -3,6 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   labels:
     app: "strimzi"
+    component: "kafkanodepools.kafka.strimzi.io-crd"
     strimzi.io/crd-install: "true"
   name: "kafkanodepools.kafka.strimzi.io"
 spec:
@@ -1095,6 +1096,7 @@ spec:
                             oneOf:
                               - properties:
                                   configMap: {}
+                                  csi: {}
                                   emptyDir: {}
                                   persistentVolumeClaim: {}
                                   secret: {}
@@ -1119,6 +1121,25 @@ spec:
                                     type: "string"
                                   optional:
                                     type: "boolean"
+                                type: "object"
+                              csi:
+                                description: "CSIVolumeSource object to use to populate the volume."
+                                properties:
+                                  driver:
+                                    type: "string"
+                                  fsType:
+                                    type: "string"
+                                  nodePublishSecretRef:
+                                    properties:
+                                      name:
+                                        type: "string"
+                                    type: "object"
+                                  readOnly:
+                                    type: "boolean"
+                                  volumeAttributes:
+                                    additionalProperties:
+                                      type: "string"
+                                    type: "object"
                                 type: "object"
                               emptyDir:
                                 description: "EmptyDir to use to populate the volume."

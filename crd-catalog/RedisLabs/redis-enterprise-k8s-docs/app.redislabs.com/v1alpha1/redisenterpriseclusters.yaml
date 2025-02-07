@@ -320,6 +320,8 @@ spec:
                       type: "string"
                     cacheTTLSeconds:
                       type: "integer"
+                    directoryTimeoutSeconds:
+                      type: "integer"
                     enabledForControlPlane:
                       type: "boolean"
                     enabledForDataPlane:
@@ -7162,6 +7164,14 @@ spec:
                       - "version"
                     type: "object"
                   type: "array"
+                certificatesStatus:
+                  properties:
+                    generation:
+                      format: "int64"
+                      type: "integer"
+                    updateStatus:
+                      type: "string"
+                  type: "object"
                 ingressOrRouteMethodStatus:
                   type: "string"
                 licenseStatus:

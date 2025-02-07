@@ -23,11 +23,9 @@ pub struct HyperParameterTuningJobSpec {
     /// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
     /// parameters for the following fields:
     /// 
-    /// 
     ///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
     ///    The names and ranges of parameters that a hyperparameter tuning job can
     ///    optimize.
-    /// 
     /// 
     ///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
     ///    The maximum resources that can be used for a training job. These resources
@@ -35,20 +33,16 @@ pub struct HyperParameterTuningJobSpec {
     ///    tuning job, and the maximum number of training jobs to run at the same
     ///    time.
     /// 
-    /// 
     ///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
     ///    A flag that specifies whether or not to use early stopping for training
     ///    jobs launched by a hyperparameter tuning job.
     /// 
-    /// 
     ///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
     ///    The number of times to retry a training job.
-    /// 
     /// 
     ///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
     ///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
     ///    values to use for the training jobs that it launches.
-    /// 
     /// 
     ///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
     ///    A flag to indicate that Automatic model tuning (AMT) has detected model
@@ -74,7 +68,6 @@ pub struct HyperParameterTuningJobSpec {
     /// environment. For more information, see Tagging Amazon Web Services Resources
     /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
     /// 
-    /// 
     /// Tags that you specify for the tuning job are also added to all training jobs
     /// that the tuning job launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -94,7 +87,6 @@ pub struct HyperParameterTuningJobSpec {
     /// tuning jobs are used to inform which combinations of hyperparameters to search
     /// over in the new tuning job.
     /// 
-    /// 
     /// All training jobs launched by the new hyperparameter tuning job are evaluated
     /// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
     /// as the WarmStartType value for the warm start configuration, the training
@@ -102,7 +94,6 @@ pub struct HyperParameterTuningJobSpec {
     /// training jobs from the parent tuning jobs. From these, the training job that
     /// performs the best as measured by the objective metric is returned as the
     /// overall best training job.
-    /// 
     /// 
     /// All training jobs launched by parent hyperparameter tuning jobs and the new
     /// hyperparameter tuning jobs count against the limit of training jobs for the
@@ -114,11 +105,9 @@ pub struct HyperParameterTuningJobSpec {
 /// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
 /// parameters for the following fields:
 /// 
-/// 
 ///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
 ///    The names and ranges of parameters that a hyperparameter tuning job can
 ///    optimize.
-/// 
 /// 
 ///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
 ///    The maximum resources that can be used for a training job. These resources
@@ -126,20 +115,16 @@ pub struct HyperParameterTuningJobSpec {
 ///    tuning job, and the maximum number of training jobs to run at the same
 ///    time.
 /// 
-/// 
 ///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
 ///    A flag that specifies whether or not to use early stopping for training
 ///    jobs launched by a hyperparameter tuning job.
 /// 
-/// 
 ///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
 ///    The number of times to retry a training job.
-/// 
 /// 
 ///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
 ///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
 ///    values to use for the training jobs that it launches.
-/// 
 /// 
 ///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
 ///    A flag to indicate that Automatic model tuning (AMT) has detected model
@@ -171,7 +156,6 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
     /// find the combination of values that result in the training job with the best
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
-    /// 
     /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
@@ -214,7 +198,6 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTun
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-/// 
 /// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
@@ -300,12 +283,10 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompleti
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -349,7 +330,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
     /// 
-    /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
     /// tuning job itself. That is, the sum of the number of hyperparameters for
@@ -375,16 +355,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     pub role_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
-    /// Specifies a limit to how long a model training job or model compilation job
-    /// can run. It also specifies how long a managed spot training job has to complete.
-    /// When the job reaches the time limit, SageMaker ends the training or compilation
-    /// job. Use this API to cap model training costs.
-    /// 
+    /// Specifies a limit to how long a job can run. When the job reaches the time
+    /// limit, SageMaker ends the job. Use this API to cap costs.
     /// 
     /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
     /// which delays job termination for 120 seconds. Algorithms can use this 120-second
     /// window to save the model artifacts, so the results of training are not lost.
-    /// 
     /// 
     /// The training algorithms provided by SageMaker automatically save the intermediate
     /// results of a model training job when possible. This attempt to save artifacts
@@ -392,7 +368,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// can be saved. For example, if training has just started, the model might
     /// not be ready to save. When saved, this intermediate data is a valid model
     /// artifact. You can use it to create a model with CreateModel.
-    /// 
     /// 
     /// The Neural Topic Model (NTM) currently does not support saving intermediate
     /// model artifacts. When training NTMs, make sure that the maximum runtime is
@@ -428,27 +403,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -457,15 +426,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -505,7 +471,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig {
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-/// 
 /// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
@@ -586,27 +551,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -615,15 +574,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -638,7 +594,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    /// 
     /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
@@ -658,7 +613,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    /// 
     /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
@@ -680,7 +634,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
 }
 
 /// Describes the S3 data source.
-/// 
 /// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
@@ -704,7 +657,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-/// 
 /// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
@@ -773,16 +725,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
     pub maximum_retry_attempts: Option<i64>,
 }
 
-/// Specifies a limit to how long a model training job or model compilation job
-/// can run. It also specifies how long a managed spot training job has to complete.
-/// When the job reaches the time limit, SageMaker ends the training or compilation
-/// job. Use this API to cap model training costs.
-/// 
+/// Specifies a limit to how long a job can run. When the job reaches the time
+/// limit, SageMaker ends the job. Use this API to cap costs.
 /// 
 /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
 /// which delays job termination for 120 seconds. Algorithms can use this 120-second
 /// window to save the model artifacts, so the results of training are not lost.
-/// 
 /// 
 /// The training algorithms provided by SageMaker automatically save the intermediate
 /// results of a model training job when possible. This attempt to save artifacts
@@ -790,7 +738,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
 /// can be saved. For example, if training has just started, the model might
 /// not be ready to save. When saved, this intermediate data is a valid model
 /// artifact. You can use it to create a model with CreateModel.
-/// 
 /// 
 /// The Neural Topic Model (NTM) currently does not support saving intermediate
 /// model artifacts. When training NTMs, make sure that the maximum runtime is
@@ -858,7 +805,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
     /// 
-    /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
     /// tuning job itself. That is, the sum of the number of hyperparameters for
@@ -884,16 +830,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     pub role_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
-    /// Specifies a limit to how long a model training job or model compilation job
-    /// can run. It also specifies how long a managed spot training job has to complete.
-    /// When the job reaches the time limit, SageMaker ends the training or compilation
-    /// job. Use this API to cap model training costs.
-    /// 
+    /// Specifies a limit to how long a job can run. When the job reaches the time
+    /// limit, SageMaker ends the job. Use this API to cap costs.
     /// 
     /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
     /// which delays job termination for 120 seconds. Algorithms can use this 120-second
     /// window to save the model artifacts, so the results of training are not lost.
-    /// 
     /// 
     /// The training algorithms provided by SageMaker automatically save the intermediate
     /// results of a model training job when possible. This attempt to save artifacts
@@ -901,7 +843,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// can be saved. For example, if training has just started, the model might
     /// not be ready to save. When saved, this intermediate data is a valid model
     /// artifact. You can use it to create a model with CreateModel.
-    /// 
     /// 
     /// The Neural Topic Model (NTM) currently does not support saving intermediate
     /// model artifacts. When training NTMs, make sure that the maximum runtime is
@@ -937,27 +878,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -966,15 +901,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -1014,7 +946,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig {
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-/// 
 /// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
@@ -1095,27 +1026,21 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
     /// 
-    /// 
     /// Pipe mode
-    /// 
     /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
     /// 
-    /// 
     /// File mode
-    /// 
     /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
     /// 
-    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    /// 
     /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
@@ -1124,15 +1049,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
     /// 
-    /// 
     /// FastFile mode
-    /// 
     /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    /// 
     /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
@@ -1147,7 +1069,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    /// 
     /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
@@ -1167,7 +1088,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
     pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    /// 
     /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
@@ -1189,7 +1109,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
 }
 
 /// Describes the S3 data source.
-/// 
 /// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
@@ -1213,7 +1132,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-/// 
 /// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
@@ -1282,16 +1200,12 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
     pub maximum_retry_attempts: Option<i64>,
 }
 
-/// Specifies a limit to how long a model training job or model compilation job
-/// can run. It also specifies how long a managed spot training job has to complete.
-/// When the job reaches the time limit, SageMaker ends the training or compilation
-/// job. Use this API to cap model training costs.
-/// 
+/// Specifies a limit to how long a job can run. When the job reaches the time
+/// limit, SageMaker ends the job. Use this API to cap costs.
 /// 
 /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
 /// which delays job termination for 120 seconds. Algorithms can use this 120-second
 /// window to save the model artifacts, so the results of training are not lost.
-/// 
 /// 
 /// The training algorithms provided by SageMaker automatically save the intermediate
 /// results of a model training job when possible. This attempt to save artifacts
@@ -1299,7 +1213,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
 /// can be saved. For example, if training has just started, the model might
 /// not be ready to save. When saved, this intermediate data is a valid model
 /// artifact. You can use it to create a model with CreateModel.
-/// 
 /// 
 /// The Neural Topic Model (NTM) currently does not support saving intermediate
 /// model artifacts. When training NTMs, make sure that the maximum runtime is
@@ -1346,7 +1259,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
 /// tuning jobs are used to inform which combinations of hyperparameters to search
 /// over in the new tuning job.
 /// 
-/// 
 /// All training jobs launched by the new hyperparameter tuning job are evaluated
 /// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
 /// as the WarmStartType value for the warm start configuration, the training
@@ -1354,7 +1266,6 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
 /// training jobs from the parent tuning jobs. From these, the training job that
 /// performs the best as measured by the objective metric is returned as the
 /// overall best training job.
-/// 
 /// 
 /// All training jobs launched by parent hyperparameter tuning jobs and the new
 /// hyperparameter tuning jobs count against the limit of training jobs for the
@@ -1420,7 +1331,6 @@ pub struct HyperParameterTuningJobStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

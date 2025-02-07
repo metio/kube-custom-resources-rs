@@ -57,7 +57,6 @@ pub struct IBMVPCMachineTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNetworkInterface")]
     pub primary_network_interface: Option<IBMVPCMachineTemplateTemplateSpecPrimaryNetworkInterface>,
     /// Profile indicates the flavor of instance. Example: bx2-8x32	means 8 vCPUs	32 GB RAM	16 Gbps
-    /// TODO: add a reference link of profile
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
     /// ProviderID is the unique identifier as specified by the cloud provider.
@@ -68,7 +67,6 @@ pub struct IBMVPCMachineTemplateTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeys")]
     pub ssh_keys: Option<Vec<IBMVPCMachineTemplateTemplateSpecSshKeys>>,
     /// Zone is the place where the instance should be created. Example: us-south-3
-    /// TODO: Actually zone is transparent to user. The field user can access is location. Example: Dallas 2
     pub zone: String,
 }
 

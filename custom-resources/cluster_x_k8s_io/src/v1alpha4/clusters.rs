@@ -21,7 +21,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
-    /// Cluster network configuration.
+    /// clusterNetwork is the cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
@@ -38,7 +38,7 @@ pub struct ClusterSpec {
     /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// This encapsulates the topology for the cluster.
+    /// topology encapsulates the topology for the cluster.
     /// NOTE: It is required to enable the ClusterTopology
     /// feature gate flag to activate managed topologies support;
     /// this feature is highly experimental, and parts of it might still be not implemented.
@@ -46,34 +46,36 @@ pub struct ClusterSpec {
     pub topology: Option<ClusterTopology>,
 }
 
-/// Cluster network configuration.
+/// clusterNetwork is the cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
     /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
-    /// The network ranges from which Pod networks are allocated.
+    /// pods is the network ranges from which Pod networks are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<ClusterClusterNetworkPods>,
-    /// Domain name for services.
+    /// serviceDomain is the domain name for services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDomain")]
     pub service_domain: Option<String>,
-    /// The network ranges from which service VIPs are allocated.
+    /// services is the network ranges from which service VIPs are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<ClusterClusterNetworkServices>,
 }
 
-/// The network ranges from which Pod networks are allocated.
+/// pods is the network ranges from which Pod networks are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkPods {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
 
-/// The network ranges from which service VIPs are allocated.
+/// services is the network ranges from which service VIPs are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkServices {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
@@ -81,9 +83,9 @@ pub struct ClusterClusterNetworkServices {
 /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     pub host: String,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     pub port: i32,
 }
 
@@ -163,13 +165,13 @@ pub struct ClusterInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// This encapsulates the topology for the cluster.
+/// topology encapsulates the topology for the cluster.
 /// NOTE: It is required to enable the ClusterTopology
 /// feature gate flag to activate managed topologies support;
 /// this feature is highly experimental, and parts of it might still be not implemented.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopology {
-    /// The name of the ClusterClass object to create the topology.
+    /// class is the name of the ClusterClass object to create the topology.
     pub class: String,
     /// controlPlane describes the cluster control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
@@ -178,7 +180,7 @@ pub struct ClusterTopology {
     /// control plane first and then machine deployments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
-    /// The Kubernetes version of the cluster.
+    /// version is the Kubernetes version of the cluster.
     pub version: String,
     /// workers encapsulates the different constructs that form the worker nodes
     /// for the cluster.
@@ -217,7 +219,7 @@ pub struct ClusterTopologyControlPlaneMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -269,7 +271,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels

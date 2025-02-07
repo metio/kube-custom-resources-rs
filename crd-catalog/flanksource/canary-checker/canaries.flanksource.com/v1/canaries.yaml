@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "canaries.canaries.flanksource.com"
 spec:
   group: "canaries.flanksource.com"
@@ -1668,6 +1668,9 @@ spec:
                               type: "string"
                             fieldSelector:
                               type: "string"
+                            health:
+                              description: "Health filters resources by the health.\nMultiple healths can be provided separated by comma."
+                              type: "string"
                             id:
                               type: "string"
                             includeDeleted:
@@ -1686,14 +1689,14 @@ spec:
                               description: "Search query that applies to the resource name, tag & labels."
                               type: "string"
                             statuses:
-                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
+                              description: "Statuses filter resources by the status"
                               items:
                                 type: "string"
                               type: "array"
                             tagSelector:
                               type: "string"
                             types:
-                              description: "StringArray represents a one-dimensional array of the PostgreSQL character types."
+                              description: "Types filter resources by the type"
                               items:
                                 type: "string"
                               type: "array"
@@ -4321,7 +4324,8 @@ spec:
                             description: "The key to select."
                             type: "string"
                           name:
-                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           optional:
                             description: "Specify whether the ConfigMap or its key must be defined"
@@ -4350,7 +4354,8 @@ spec:
                             description: "The key of the secret to select from.  Must be a valid secret key."
                             type: "string"
                           name:
-                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                           optional:
                             description: "Specify whether the Secret or its key must be defined"
@@ -4371,7 +4376,6 @@ spec:
                         items:
                           properties:
                             path:
-                              description: "Path to the artifact on the check runner.\nSpecial paths: /dev/stdout & /dev/stdin"
                               type: "string"
                           required:
                             - "path"
@@ -4380,6 +4384,8 @@ spec:
                       checkout:
                         description: "Checkout details the git repository that should be mounted to the process"
                         properties:
+                          branch:
+                            type: "string"
                           certificate:
                             properties:
                               name:
@@ -4467,6 +4473,9 @@ spec:
                                     type: "string"
                                 type: "object"
                             type: "object"
+                          type:
+                            description: "Type of connection e.g. github, gitlab"
+                            type: "string"
                           url:
                             type: "string"
                           username:
@@ -4740,6 +4749,11 @@ spec:
                               tenantID:
                                 type: "string"
                             type: "object"
+                          eksPodIdentity:
+                            description: "EKSPodIdentity when enabled will allow access to AWS_* env vars"
+                            type: "boolean"
+                          fromConfigItem:
+                            type: "string"
                           gcp:
                             properties:
                               connection:
@@ -4792,6 +4806,55 @@ spec:
                                 description: "Skip TLS verify"
                                 type: "boolean"
                             type: "object"
+                          kubernetes:
+                            properties:
+                              connection:
+                                type: "string"
+                              kubeconfig:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  value:
+                                    type: "string"
+                                  valueFrom:
+                                    properties:
+                                      configMapKeyRef:
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      helmRef:
+                                        properties:
+                                          key:
+                                            description: "Key is a JSONPath expression used to fetch the key from the merged JSON."
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      secretKeyRef:
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                        required:
+                                          - "key"
+                                        type: "object"
+                                      serviceAccount:
+                                        description: "ServiceAccount specifies the service account whose token should be fetched"
+                                        type: "string"
+                                    type: "object"
+                                type: "object"
+                            type: "object"
+                          serviceAccount:
+                            description: "ServiceAccount when enabled will allow access to KUBERNETES env vars"
+                            type: "boolean"
                         type: "object"
                       description:
                         description: "Description for the check"

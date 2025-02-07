@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// FeatureGroupSpec defines the desired state of FeatureGroup.
 /// 
-/// 
 /// Amazon SageMaker Feature Store stores features in a collection called Feature
 /// Group. A Feature Group can be visualized as a table which has rows, with
 /// a unique identifier for each row where each column in the table is a feature.
@@ -30,17 +29,13 @@ pub struct FeatureGroupSpec {
     pub description: Option<String>,
     /// The name of the feature that stores the EventTime of a Record in a FeatureGroup.
     /// 
-    /// 
     /// An EventTime is a point in time when a new event occurs that corresponds
     /// to the creation or update of a Record in a FeatureGroup. All Records in the
     /// FeatureGroup must have a corresponding EventTime.
     /// 
-    /// 
     /// An EventTime can be a String or Fractional.
     /// 
-    /// 
     ///    * Fractional: EventTime feature values must be a Unix timestamp in seconds.
-    /// 
     /// 
     ///    * String: EventTime feature values must be an ISO-8601 string in the format.
     ///    The following formats are supported yyyy-MM-dd'T'HH:mm:ssZ and yyyy-MM-dd'T'HH:mm:ss.SSSZ
@@ -51,37 +46,31 @@ pub struct FeatureGroupSpec {
     pub event_time_feature_name: String,
     /// A list of Feature names and types. Name and Type is compulsory per Feature.
     /// 
-    /// 
     /// Valid feature FeatureTypes are Integral, Fractional and String.
     /// 
-    /// 
     /// FeatureNames cannot be any of the following: is_deleted, write_time, api_invocation_time
-    /// 
     /// 
     /// You can create up to 2,500 FeatureDefinitions per FeatureGroup.
     #[serde(rename = "featureDefinitions")]
     pub feature_definitions: Vec<FeatureGroupFeatureDefinitions>,
     /// The name of the FeatureGroup. The name must be unique within an Amazon Web
-    /// Services Region in an Amazon Web Services account. The name:
+    /// Services Region in an Amazon Web Services account.
     /// 
+    /// The name:
     /// 
-    ///    * Must start and end with an alphanumeric character.
+    ///    * Must start with an alphanumeric character.
     /// 
-    /// 
-    ///    * Can only contain alphanumeric character and hyphens. Spaces are not
-    ///    allowed.
+    ///    * Can only include alphanumeric characters, underscores, and hyphens.
+    ///    Spaces are not allowed.
     #[serde(rename = "featureGroupName")]
     pub feature_group_name: String,
     /// Use this to configure an OfflineFeatureStore. This parameter allows you to
     /// specify:
     /// 
-    /// 
     ///    * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore.
-    /// 
     /// 
     ///    * A configuration for an Amazon Web Services Glue or Amazon Web Services
     ///    Hive data catalog.
-    /// 
     /// 
     ///    * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore.
     ///    If KMS encryption key is not specified, by default we encrypt all data
@@ -90,10 +79,8 @@ pub struct FeatureGroupSpec {
     ///    for SSE, you can reduce Amazon Web Services KMS requests costs by up to
     ///    99 percent.
     /// 
-    /// 
     ///    * Format for the offline store table. Supported formats are Glue (Default)
     ///    and Apache Iceberg (https://iceberg.apache.org/).
-    /// 
     /// 
     /// To learn more about this parameter, see OfflineStoreConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineStoreConfig")]
@@ -101,10 +88,8 @@ pub struct FeatureGroupSpec {
     /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
     /// flag in OnlineStoreConfig.
     /// 
-    /// 
     /// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
     /// encryption of the OnlineStore.
-    /// 
     /// 
     /// The default value is False.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineStoreConfig")]
@@ -114,15 +99,11 @@ pub struct FeatureGroupSpec {
     /// stored in the OnlineStore. RecordIdentifierFeatureName must be one of feature
     /// definitions' names.
     /// 
-    /// 
     /// You use the RecordIdentifierFeatureName to access data in a FeatureStore.
-    /// 
     /// 
     /// This name:
     /// 
-    /// 
-    ///    * Must start and end with an alphanumeric character.
-    /// 
+    ///    * Must start with an alphanumeric character.
     /// 
     ///    * Can only contains alphanumeric characters, hyphens, underscores. Spaces
     ///    are not allowed.
@@ -144,7 +125,6 @@ pub struct FeatureGroupSpec {
     /// you specify the read and write capacity per second that you expect your application
     /// to require, and you are billed based on those limits. Exceeding provisioned
     /// throughput will result in your requests being throttled.
-    /// 
     /// 
     /// Note: PROVISIONED throughput mode is supported only for feature groups that
     /// are offline-only, or use the Standard (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType)
@@ -186,13 +166,10 @@ pub struct FeatureGroupFeatureDefinitionsCollectionConfigVectorConfig {
 /// Use this to configure an OfflineFeatureStore. This parameter allows you to
 /// specify:
 /// 
-/// 
 ///    * The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore.
-/// 
 /// 
 ///    * A configuration for an Amazon Web Services Glue or Amazon Web Services
 ///    Hive data catalog.
-/// 
 /// 
 ///    * An KMS encryption key to encrypt the Amazon S3 location used for OfflineStore.
 ///    If KMS encryption key is not specified, by default we encrypt all data
@@ -201,10 +178,8 @@ pub struct FeatureGroupFeatureDefinitionsCollectionConfigVectorConfig {
 ///    for SSE, you can reduce Amazon Web Services KMS requests costs by up to
 ///    99 percent.
 /// 
-/// 
 ///    * Format for the offline store table. Supported formats are Glue (Default)
 ///    and Apache Iceberg (https://iceberg.apache.org/).
-/// 
 /// 
 /// To learn more about this parameter, see OfflineStoreConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -214,7 +189,7 @@ pub struct FeatureGroupOfflineStoreConfig {
     pub data_catalog_config: Option<FeatureGroupOfflineStoreConfigDataCatalogConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableGlueTableCreation")]
     pub disable_glue_table_creation: Option<bool>,
-    /// The Amazon Simple Storage (Amazon S3) location and and security configuration
+    /// The Amazon Simple Storage (Amazon S3) location and security configuration
     /// for OfflineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3StorageConfig")]
     pub s3_storage_config: Option<FeatureGroupOfflineStoreConfigS3StorageConfig>,
@@ -231,7 +206,7 @@ pub struct FeatureGroupOfflineStoreConfigDataCatalogConfig {
     pub table_name: Option<String>,
 }
 
-/// The Amazon Simple Storage (Amazon S3) location and and security configuration
+/// The Amazon Simple Storage (Amazon S3) location and security configuration
 /// for OfflineStore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FeatureGroupOfflineStoreConfigS3StorageConfig {
@@ -246,10 +221,8 @@ pub struct FeatureGroupOfflineStoreConfigS3StorageConfig {
 /// You can turn the OnlineStore on or off by specifying True for the EnableOnlineStore
 /// flag in OnlineStoreConfig.
 /// 
-/// 
 /// You can also include an Amazon Web Services KMS key ID (KMSKeyId) for at-rest
 /// encryption of the OnlineStore.
-/// 
 /// 
 /// The default value is False.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -291,12 +264,10 @@ pub struct FeatureGroupOnlineStoreConfigTtlDuration {
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -320,7 +291,6 @@ pub struct FeatureGroupTags {
 /// you specify the read and write capacity per second that you expect your application
 /// to require, and you are billed based on those limits. Exceeding provisioned
 /// throughput will result in your requests being throttled.
-/// 
 /// 
 /// Note: PROVISIONED throughput mode is supported only for feature groups that
 /// are offline-only, or use the Standard (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType)
@@ -352,9 +322,7 @@ pub struct FeatureGroupStatus {
     /// The reason that the FeatureGroup failed to be replicated in the OfflineStore.
     /// This is failure can occur because:
     /// 
-    /// 
     ///    * The FeatureGroup could not be created in the OfflineStore.
-    /// 
     /// 
     ///    * The FeatureGroup could not be deleted from the OfflineStore.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
@@ -375,7 +343,6 @@ pub struct FeatureGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

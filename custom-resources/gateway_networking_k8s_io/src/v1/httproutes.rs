@@ -124,18 +124,9 @@ pub struct HTTPRouteSpec {
     /// allowed by something in the namespace they are referring to. For example,
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable other kinds of cross-namespace reference.
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<HTTPRouteParentRefs>>,
     /// Rules are a list of HTTP matchers, filters and actions.
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<HTTPRouteRules>>,
 }
@@ -185,8 +176,6 @@ pub struct HTTPRouteParentRefs {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -200,8 +189,6 @@ pub struct HTTPRouteParentRefs {
     /// as opposed to a listener(s) whose port(s) may be changed. When both Port
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
-    /// 
-    /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly
@@ -397,24 +384,6 @@ pub struct HTTPRouteRules {
 /// ReferenceGrant object is required in the referent namespace to allow that
 /// namespace's owner to accept the reference. See the ReferenceGrant
 /// documentation for details.
-/// 
-/// <gateway:experimental:description>
-/// 
-/// When the BackendRef points to a Kubernetes Service, implementations SHOULD
-/// honor the appProtocol field if it is set for the target Service Port.
-/// 
-/// Implementations supporting appProtocol SHOULD recognize the Kubernetes
-/// Standard Application Protocols defined in KEP-3726.
-/// 
-/// If a Service appProtocol isn't specified, an implementation MAY infer the
-/// backend protocol through its own means. Implementations MAY infer the
-/// protocol from the Route type referring to the backend Service.
-/// 
-/// If a Route is not able to send traffic to the backend using the specified
-/// protocol then the backend is considered invalid. Implementations MUST set the
-/// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
-/// 
-/// </gateway:experimental:description>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefs {
     /// Filters defined at this level should be executed if and only if the
@@ -514,8 +483,6 @@ pub struct HTTPRouteRulesBackendRefsFilters {
     /// backends.
     /// 
     /// Support: Extended
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<HTTPRouteRulesBackendRefsFiltersRequestMirror>,
     /// RequestRedirect defines a schema for a filter that responds to the
@@ -693,8 +660,6 @@ pub struct HTTPRouteRulesBackendRefsFiltersRequestHeaderModifierSet {
 /// backends.
 /// 
 /// Support: Extended
-/// 
-/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefsFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -1153,8 +1118,6 @@ pub struct HTTPRouteRulesFilters {
     /// backends.
     /// 
     /// Support: Extended
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestMirror")]
     pub request_mirror: Option<HTTPRouteRulesFiltersRequestMirror>,
     /// RequestRedirect defines a schema for a filter that responds to the
@@ -1332,8 +1295,6 @@ pub struct HTTPRouteRulesFiltersRequestHeaderModifierSet {
 /// backends.
 /// 
 /// Support: Extended
-/// 
-/// 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesFiltersRequestMirror {
     /// BackendRef references a resource where mirrored requests are sent.
@@ -2109,8 +2070,6 @@ pub struct HTTPRouteStatusParentsParentRef {
     /// Gateway has the AllowedRoutes field, and ReferenceGrant provides a
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
-    /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -2124,8 +2083,6 @@ pub struct HTTPRouteStatusParentsParentRef {
     /// as opposed to a listener(s) whose port(s) may be changed. When both Port
     /// and SectionName are specified, the name and port of the selected listener
     /// must match both specified values.
-    /// 
-    /// 
     /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly

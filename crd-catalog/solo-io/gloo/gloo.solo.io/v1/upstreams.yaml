@@ -5,6 +5,8 @@ metadata:
 spec:
   group: "gloo.solo.io"
   names:
+    categories:
+      - "gloo-gateway"
     kind: "Upstream"
     listKind: "UpstreamList"
     plural: "upstreams"
@@ -742,6 +744,14 @@ spec:
                                     x-kubernetes-int-or-string: true
                                   passthrough:
                                     type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "object"
                           type: "object"
@@ -1400,6 +1410,14 @@ spec:
                                     x-kubernetes-int-or-string: true
                                   passthrough:
                                     type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "object"
                           type: "object"
@@ -1766,6 +1784,14 @@ spec:
                                     x-kubernetes-int-or-string: true
                                   passthrough:
                                     type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "object"
                           type: "object"
@@ -2080,6 +2106,14 @@ spec:
                                     type: "string"
                                     x-kubernetes-int-or-string: true
                                   passthrough:
+                                    type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
                                     type: "object"
                                 type: "object"
                               type: "object"

@@ -76,8 +76,10 @@ pub struct DBSubnetGroupSubnetRefsFrom {
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
 /// 
-/// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-/// in the Amazon RDS User Guide.
+/// For more information, see Tagging Amazon RDS resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
+/// in the Amazon RDS User Guide or Tagging Amazon Aurora and Amazon RDS resources
+/// (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html)
+/// in the Amazon Aurora User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]

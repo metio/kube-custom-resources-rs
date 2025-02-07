@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "sleepinfos.kube-green.com"
 spec:
   group: "kube-green.com"
@@ -97,7 +97,7 @@ spec:
                     type: "object"
                   type: "array"
                 sleepAt:
-                  description: "Hours:Minutes\n\n\nAccept cron schedule for both hour and minute.\nFor example, *:*/2 is set to configure a run every even minute."
+                  description: "Hours:Minutes\n\nAccept cron schedule for both hour and minute.\nFor example, *:*/2 is set to configure a run every even minute."
                   type: "string"
                 suspendCronJobs:
                   description: "If SuspendCronjobs is set to true, on sleep the cronjobs of the namespace will be suspended."
@@ -105,17 +105,17 @@ spec:
                 suspendDeployments:
                   description: "If SuspendDeployments is set to false, on sleep the deployment of the namespace will not be suspended. By default Deployment will be suspended."
                   type: "boolean"
-                suspendStatefulsets:
+                suspendStatefulSets:
                   description: "If SuspendStatefulSets is set to false, on sleep the statefulset of the namespace will not be suspended. By default StatefulSet will be suspended."
                   type: "boolean"
                 timeZone:
                   description: "Time zone to set the schedule, in IANA time zone identifier.\nIt is not required, default to UTC.\nFor example, for the Italy time zone set Europe/Rome."
                   type: "string"
                 wakeUpAt:
-                  description: "Hours:Minutes\n\n\nAccept cron schedule for both hour and minute.\nFor example, *:*/2 is set to configure a run every even minute.\nIt is not required."
+                  description: "Hours:Minutes\n\nAccept cron schedule for both hour and minute.\nFor example, *:*/2 is set to configure a run every even minute.\nIt is not required."
                   type: "string"
                 weekdays:
-                  description: "Weekdays are in cron notation.\n\n\nFor example, to configure a schedule from monday to friday, set it to \"1-5\""
+                  description: "Weekdays are in cron notation.\n\nFor example, to configure a schedule from monday to friday, set it to \"1-5\""
                   type: "string"
               required:
                 - "sleepAt"

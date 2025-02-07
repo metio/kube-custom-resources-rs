@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "ibmvpcmachines.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -225,7 +225,7 @@ spec:
                       type: "string"
                   type: "object"
                 profile:
-                  description: "Profile indicates the flavor of instance. Example: bx2-8x32\tmeans 8 vCPUs\t32 GB RAM\t16 Gbps\nTODO: add a reference link of profile"
+                  description: "Profile indicates the flavor of instance. Example: bx2-8x32\tmeans 8 vCPUs\t32 GB RAM\t16 Gbps"
                   type: "string"
                 providerID:
                   description: "ProviderID is the unique identifier as specified by the cloud provider."
@@ -246,7 +246,7 @@ spec:
                     type: "object"
                   type: "array"
                 zone:
-                  description: "Zone is the place where the instance should be created. Example: us-south-3\nTODO: Actually zone is transparent to user. The field user can access is location. Example: Dallas 2"
+                  description: "Zone is the place where the instance should be created. Example: us-south-3"
                   type: "string"
               required:
                 - "image"
@@ -284,16 +284,16 @@ spec:
                         description: "A human readable message indicating details about the transition.\nThis field may be empty."
                         type: "string"
                       reason:
-                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
+                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "lastTransitionTime"

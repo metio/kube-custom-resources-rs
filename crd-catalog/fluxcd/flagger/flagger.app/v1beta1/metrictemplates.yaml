@@ -68,6 +68,7 @@ spec:
                         - "graphite"
                         - "dynatrace"
                         - "keptn"
+                        - "splunk"
                       type: "string"
                   required:
                     - "type"

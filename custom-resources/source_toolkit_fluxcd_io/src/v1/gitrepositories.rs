@@ -34,7 +34,7 @@ pub struct GitRepositorySpec {
     /// This interval is approximate and may be subject to jitter to ensure
     /// efficient use of resources.
     pub interval: String,
-    /// Provider used for authentication, can be 'azure', 'generic'.
+    /// Provider used for authentication, can be 'azure', 'github', 'generic'.
     /// When not specified, defaults to 'generic'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<GitRepositoryProvider>,
@@ -106,6 +106,8 @@ pub enum GitRepositoryProvider {
     Generic,
     #[serde(rename = "azure")]
     Azure,
+    #[serde(rename = "github")]
+    Github,
 }
 
 /// ProxySecretRef specifies the Secret containing the proxy configuration

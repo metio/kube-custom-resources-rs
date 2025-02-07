@@ -37,10 +37,10 @@ spec:
               description: "LoggingConfigurationSpec defines the desired state of LoggingConfiguration."
               properties:
                 logGroupARN:
-                  description: "The ARN of the CW log group to which the vended log data will be published."
+                  description: "The ARN of the CloudWatch log group to which the vended log data will be\npublished. This log group must exist prior to calling this operation."
                   type: "string"
                 workspaceID:
-                  description: "The ID of the workspace to vend logs to."
+                  description: "The ID of the workspace to create the logging configuration for."
                   type: "string"
                 workspaceRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -103,10 +103,10 @@ spec:
                     type: "object"
                   type: "array"
                 statusCode:
-                  description: "Status code of the logging configuration."
+                  description: "The current status of the logging configuration."
                   type: "string"
                 statusReason:
-                  description: "The reason for failure if any."
+                  description: "If failed, the reason for the failure."
                   type: "string"
               type: "object"
           type: "object"

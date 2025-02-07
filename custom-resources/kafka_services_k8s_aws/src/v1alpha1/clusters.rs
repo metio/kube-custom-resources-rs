@@ -13,8 +13,7 @@ use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 /// 
-/// Returns information about a cluster of either the provisioned or the serverless
-/// type.
+/// Returns information about a cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kafka.services.k8s.aws", version = "v1alpha1", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
@@ -27,13 +26,14 @@ pub struct ClusterSpec {
     pub associated_scram_secret_refs: Option<Vec<ClusterAssociatedScramSecretRefs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "associatedSCRAMSecrets")]
     pub associated_scram_secrets: Option<Vec<String>>,
-    /// Information about the brokers.
+    /// Information about the broker nodes in the cluster.
     #[serde(rename = "brokerNodeGroupInfo")]
     pub broker_node_group_info: ClusterBrokerNodeGroupInfo,
     /// Includes all client authentication related information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthentication")]
     pub client_authentication: Option<ClusterClientAuthentication>,
-    /// Represents the configuration that you want MSK to use for the cluster.
+    /// Represents the configuration that you want MSK to use for the brokers in
+    /// a cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationInfo")]
     pub configuration_info: Option<ClusterConfigurationInfo>,
     /// Includes all encryption-related information.
@@ -46,12 +46,11 @@ pub struct ClusterSpec {
     /// The version of Apache Kafka.
     #[serde(rename = "kafkaVersion")]
     pub kafka_version: String,
-    /// LoggingInfo details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingInfo")]
     pub logging_info: Option<ClusterLoggingInfo>,
     /// The name of the cluster.
     pub name: String,
-    /// The number of Apache Kafka broker nodes in the Amazon MSK cluster.
+    /// The number of broker nodes in the cluster.
     #[serde(rename = "numberOfBrokerNodes")]
     pub number_of_broker_nodes: i64,
     /// The settings for open monitoring.
@@ -90,13 +89,16 @@ pub struct ClusterAssociatedScramSecretRefsFrom {
     pub namespace: Option<String>,
 }
 
-/// Information about the brokers.
+/// Information about the broker nodes in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBrokerNodeGroupInfo {
-    /// The distribution of broker nodes across Availability Zones. By default, broker
-    /// nodes are distributed among the Availability Zones of your Region. Currently,
-    /// the only supported value is DEFAULT. You can either specify this value explicitly
-    /// or leave it out.
+    /// The distribution of broker nodes across Availability Zones. This is an optional
+    /// parameter. If you don't specify it, Amazon MSK gives it the value DEFAULT.
+    /// You can also explicitly set this parameter to the value DEFAULT. No other
+    /// values are currently allowed.
+    /// 
+    /// Amazon MSK distributes the broker nodes evenly across the Availability Zones
+    /// that correspond to the subnets you provide when you create the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerAZDistribution")]
     pub broker_az_distribution: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSubnets")]
@@ -116,12 +118,12 @@ pub struct ClusterBrokerNodeGroupInfo {
 /// Information about the broker access configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBrokerNodeGroupInfoConnectivityInfo {
-    /// Broker public access control.
+    /// Public access control for brokers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicAccess")]
     pub public_access: Option<ClusterBrokerNodeGroupInfoConnectivityInfoPublicAccess>,
 }
 
-/// Broker public access control.
+/// Public access control for brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBrokerNodeGroupInfoConnectivityInfoPublicAccess {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -162,30 +164,35 @@ pub struct ClusterBrokerNodeGroupInfoStorageInfoEbsStorageInfoProvisionedThrough
 /// Includes all client authentication related information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClientAuthentication {
+    /// Details for client authentication using SASL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sasl: Option<ClusterClientAuthenticationSasl>,
     /// Details for client authentication using TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterClientAuthenticationTls>,
-    /// Contains information about unauthenticated traffic to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unauthenticated: Option<ClusterClientAuthenticationUnauthenticated>,
 }
 
+/// Details for client authentication using SASL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClientAuthenticationSasl {
+    /// Details for IAM access control.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iam: Option<ClusterClientAuthenticationSaslIam>,
+    /// Details for SASL/SCRAM client authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scram: Option<ClusterClientAuthenticationSaslScram>,
 }
 
+/// Details for IAM access control.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClientAuthenticationSaslIam {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
 
+/// Details for SASL/SCRAM client authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClientAuthenticationSaslScram {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -201,14 +208,14 @@ pub struct ClusterClientAuthenticationTls {
     pub enabled: Option<bool>,
 }
 
-/// Contains information about unauthenticated traffic to the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClientAuthenticationUnauthenticated {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
 
-/// Represents the configuration that you want MSK to use for the cluster.
+/// Represents the configuration that you want MSK to use for the brokers in
+/// a cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterConfigurationInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -245,29 +252,22 @@ pub struct ClusterEncryptionInfoEncryptionInTransit {
     pub in_cluster: Option<bool>,
 }
 
-/// LoggingInfo details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterLoggingInfo {
-    /// The broker logs configuration for this MSK cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerLogs")]
     pub broker_logs: Option<ClusterLoggingInfoBrokerLogs>,
 }
 
-/// The broker logs configuration for this MSK cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterLoggingInfoBrokerLogs {
-    /// Details of the CloudWatch Logs destination for broker logs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogs")]
     pub cloud_watch_logs: Option<ClusterLoggingInfoBrokerLogsCloudWatchLogs>,
-    /// Firehose details for BrokerLogs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub firehose: Option<ClusterLoggingInfoBrokerLogsFirehose>,
-    /// The details of the Amazon S3 destination for broker logs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<ClusterLoggingInfoBrokerLogsS3>,
 }
 
-/// Details of the CloudWatch Logs destination for broker logs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterLoggingInfoBrokerLogsCloudWatchLogs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -276,7 +276,6 @@ pub struct ClusterLoggingInfoBrokerLogsCloudWatchLogs {
     pub log_group: Option<String>,
 }
 
-/// Firehose details for BrokerLogs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterLoggingInfoBrokerLogsFirehose {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deliveryStream")]
@@ -285,7 +284,6 @@ pub struct ClusterLoggingInfoBrokerLogsFirehose {
     pub enabled: Option<bool>,
 }
 
-/// The details of the Amazon S3 destination for broker logs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterLoggingInfoBrokerLogsS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -307,22 +305,22 @@ pub struct ClusterOpenMonitoring {
 /// Prometheus settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOpenMonitoringPrometheus {
-    /// Indicates whether you want to enable or disable the JMX Exporter.
+    /// Indicates whether you want to turn on or turn off the JMX Exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jmxExporter")]
     pub jmx_exporter: Option<ClusterOpenMonitoringPrometheusJmxExporter>,
-    /// Indicates whether you want to enable or disable the Node Exporter.
+    /// Indicates whether you want to turn on or turn off the Node Exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeExporter")]
     pub node_exporter: Option<ClusterOpenMonitoringPrometheusNodeExporter>,
 }
 
-/// Indicates whether you want to enable or disable the JMX Exporter.
+/// Indicates whether you want to turn on or turn off the JMX Exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOpenMonitoringPrometheusJmxExporter {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledInBroker")]
     pub enabled_in_broker: Option<bool>,
 }
 
-/// Indicates whether you want to enable or disable the Node Exporter.
+/// Indicates whether you want to turn on or turn off the Node Exporter.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOpenMonitoringPrometheusNodeExporter {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledInBroker")]

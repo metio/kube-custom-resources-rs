@@ -69,6 +69,13 @@ pub struct DataUploadCsiSnapshot {
 /// DataUploadStatus is the current status of a DataUpload.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataUploadStatus {
+    /// AcceptedByNode is name of the node where the DataUpload is prepared.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedByNode")]
+    pub accepted_by_node: Option<String>,
+    /// AcceptedTimestamp records the time the DataUpload is to be prepared.
+    /// The server's time is used for AcceptedTimestamp
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedTimestamp")]
+    pub accepted_timestamp: Option<String>,
     /// CompletionTimestamp records the time a backup was completed.
     /// Completion time is recorded even on failed backups.
     /// Completion time is recorded before uploading the backup object.
@@ -84,6 +91,9 @@ pub struct DataUploadStatus {
     /// Node is name of the node where the DataUpload is processed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<String>,
+    /// NodeOS is OS of the node where the DataUpload is processed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeOS")]
+    pub node_os: Option<DataUploadStatusNodeOs>,
     /// Path is the full path of the snapshot volume being backed up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -104,6 +114,17 @@ pub struct DataUploadStatus {
     /// The server's time is used for StartTimestamps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
     pub start_timestamp: Option<String>,
+}
+
+/// DataUploadStatus is the current status of a DataUpload.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DataUploadStatusNodeOs {
+    #[serde(rename = "auto")]
+    Auto,
+    #[serde(rename = "linux")]
+    Linux,
+    #[serde(rename = "windows")]
+    Windows,
 }
 
 /// DataUploadStatus is the current status of a DataUpload.

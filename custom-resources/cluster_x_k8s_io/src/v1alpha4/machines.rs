@@ -231,9 +231,9 @@ pub struct MachineStatus {
 /// MachineAddress contains information for the node's address.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatusAddresses {
-    /// The machine address.
+    /// address is the machine address.
     pub address: String,
-    /// Machine address type, one of Hostname, ExternalIP or InternalIP.
+    /// type is the machine address type, one of Hostname, ExternalIP or InternalIP.
     #[serde(rename = "type")]
     pub r#type: String,
 }

@@ -112,7 +112,7 @@ spec:
                   description: "Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.\n\nConsult the [Product image selection documentation](https://docs.stackable.tech/home/nightly/concepts/product_image_selection) for details."
                   properties:
                     custom:
-                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `docker.stackable.tech/stackable/superset:1.4.1-stackable2.1.0`"
+                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`"
                       type: "string"
                     productVersion:
                       description: "Version of the product, e.g. `1.4.1`."
@@ -139,7 +139,7 @@ spec:
                       nullable: true
                       type: "array"
                     repo:
-                      description: "Name of the docker repo, e.g. `docker.stackable.tech/stackable`"
+                      description: "Name of the docker repo, e.g. `oci.stackable.tech/sdp`"
                       nullable: true
                       type: "string"
                     stackableVersion:
@@ -191,9 +191,6 @@ spec:
                           type: "object"
                         gracefulShutdownTimeout:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
-                          nullable: true
-                          type: "string"
-                        hbaseOpts:
                           nullable: true
                           type: "string"
                         hbaseRootdir:
@@ -283,6 +280,10 @@ spec:
                               nullable: true
                               type: "boolean"
                           type: "object"
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -335,6 +336,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -409,9 +436,6 @@ spec:
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
-                                nullable: true
-                                type: "string"
-                              hbaseOpts:
                                 nullable: true
                                 type: "string"
                               hbaseRootdir:
@@ -501,6 +525,10 @@ spec:
                                     nullable: true
                                     type: "boolean"
                                 type: "object"
+                              requestedSecretLifetime:
+                                description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                                nullable: true
+                                type: "string"
                               resources:
                                 default:
                                   cpu:
@@ -553,6 +581,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}
@@ -615,9 +669,6 @@ spec:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
                           nullable: true
                           type: "string"
-                        hbaseOpts:
-                          nullable: true
-                          type: "string"
                         hbaseRootdir:
                           nullable: true
                           type: "string"
@@ -705,6 +756,38 @@ spec:
                               nullable: true
                               type: "boolean"
                           type: "object"
+                        regionMover:
+                          default:
+                            ack: null
+                            maxThreads: null
+                            runBeforeShutdown: null
+                          description: "Before terminating a region server pod, the RegionMover tool can be invoked to transfer local regions to other servers. This may cause a lot of network traffic in the Kubernetes cluster if the entire HBase stacklet is being restarted. The operator will compute a timeout period for the region move that will not exceed the graceful shutdown timeout."
+                          properties:
+                            ack:
+                              description: "If enabled (default), the region mover will confirm that regions are available on the source as well as the target pods before and after the move."
+                              nullable: true
+                              type: "boolean"
+                            additionalMoverOptions:
+                              default: []
+                              description: "Additional options to pass to the region mover."
+                              items:
+                                type: "string"
+                              type: "array"
+                            maxThreads:
+                              description: "Maximum number of threads to use for moving regions."
+                              format: "uint16"
+                              minimum: 0.0
+                              nullable: true
+                              type: "integer"
+                            runBeforeShutdown:
+                              description: "Move local regions to other servers before terminating a region server's pod."
+                              nullable: true
+                              type: "boolean"
+                          type: "object"
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -757,6 +840,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -831,9 +940,6 @@ spec:
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
-                                nullable: true
-                                type: "string"
-                              hbaseOpts:
                                 nullable: true
                                 type: "string"
                               hbaseRootdir:
@@ -923,6 +1029,38 @@ spec:
                                     nullable: true
                                     type: "boolean"
                                 type: "object"
+                              regionMover:
+                                default:
+                                  ack: null
+                                  maxThreads: null
+                                  runBeforeShutdown: null
+                                description: "Before terminating a region server pod, the RegionMover tool can be invoked to transfer local regions to other servers. This may cause a lot of network traffic in the Kubernetes cluster if the entire HBase stacklet is being restarted. The operator will compute a timeout period for the region move that will not exceed the graceful shutdown timeout."
+                                properties:
+                                  ack:
+                                    description: "If enabled (default), the region mover will confirm that regions are available on the source as well as the target pods before and after the move."
+                                    nullable: true
+                                    type: "boolean"
+                                  additionalMoverOptions:
+                                    default: []
+                                    description: "Additional options to pass to the region mover."
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  maxThreads:
+                                    description: "Maximum number of threads to use for moving regions."
+                                    format: "uint16"
+                                    minimum: 0.0
+                                    nullable: true
+                                    type: "integer"
+                                  runBeforeShutdown:
+                                    description: "Move local regions to other servers before terminating a region server's pod."
+                                    nullable: true
+                                    type: "boolean"
+                                type: "object"
+                              requestedSecretLifetime:
+                                description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                                nullable: true
+                                type: "string"
                               resources:
                                 default:
                                   cpu:
@@ -975,6 +1113,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}
@@ -1037,9 +1201,6 @@ spec:
                           description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
                           nullable: true
                           type: "string"
-                        hbaseOpts:
-                          nullable: true
-                          type: "string"
                         hbaseRootdir:
                           nullable: true
                           type: "string"
@@ -1127,6 +1288,10 @@ spec:
                               nullable: true
                               type: "boolean"
                           type: "object"
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -1179,6 +1344,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -1253,9 +1444,6 @@ spec:
                                 type: "object"
                               gracefulShutdownTimeout:
                                 description: "Time period Pods have to gracefully shut down, e.g. `30m`, `1h` or `2d`. Consult the operator documentation for details."
-                                nullable: true
-                                type: "string"
-                              hbaseOpts:
                                 nullable: true
                                 type: "string"
                               hbaseRootdir:
@@ -1345,6 +1533,10 @@ spec:
                                     nullable: true
                                     type: "boolean"
                                 type: "object"
+                              requestedSecretLifetime:
+                                description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. Please note that this can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                                nullable: true
+                                type: "string"
                               resources:
                                 default:
                                   cpu:
@@ -1397,6 +1589,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}

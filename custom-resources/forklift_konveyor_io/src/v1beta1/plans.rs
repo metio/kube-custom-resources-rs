@@ -27,8 +27,16 @@ pub struct PlanSpec {
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Specify the disk bus which will be applied to all VMs disks in plan.
+    /// Possible options 'scsi', 'sata' and 'virtio'.
+    /// Defaults to 'virtio'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskBus")]
+    pub disk_bus: Option<String>,
     /// Resource mapping.
     pub map: PlanMap,
+    /// Determines if the plan should migrate shared disks.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrateSharedDisks")]
+    pub migrate_shared_disks: Option<bool>,
     /// Preserve the CPU model and flags the VM runs with in its oVirt cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveClusterCpuModel")]
     pub preserve_cluster_cpu_model: Option<bool>,
@@ -782,11 +790,24 @@ pub struct PlanStatusMigrationVmsWarm {
 /// Precopy durations
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanStatusMigrationVmsWarmPrecopies {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTaskId")]
+    pub create_task_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deltas: Option<Vec<PlanStatusMigrationVmsWarmPrecopiesDeltas>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeTaskId")]
+    pub remove_task_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PlanStatusMigrationVmsWarmPrecopiesDeltas {
+    #[serde(rename = "deltaId")]
+    pub delta_id: String,
+    pub disk: String,
 }
 

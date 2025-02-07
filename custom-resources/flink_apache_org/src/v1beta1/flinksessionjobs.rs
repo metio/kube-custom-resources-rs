@@ -34,6 +34,8 @@ pub struct FlinkSessionJobJob {
     pub allow_non_restored_state: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalerResetNonce")]
+    pub autoscaler_reset_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointTriggerNonce")]
     pub checkpoint_trigger_nonce: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryClass")]
@@ -320,6 +322,10 @@ pub enum FlinkSessionJobStatusJobStatusState {
 pub enum FlinkSessionJobStatusLifecycleState {
     #[serde(rename = "CREATED")]
     Created,
+    #[serde(rename = "DELETED")]
+    Deleted,
+    #[serde(rename = "DELETING")]
+    Deleting,
     #[serde(rename = "DEPLOYED")]
     Deployed,
     #[serde(rename = "FAILED")]

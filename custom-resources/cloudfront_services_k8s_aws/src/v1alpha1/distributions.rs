@@ -67,7 +67,16 @@ pub struct DistributionDistributionConfig {
     pub http_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isIPV6Enabled")]
     pub is_ipv6_enabled: Option<bool>,
-    /// A complex type that controls whether access logs are written for the distribution.
+    /// A complex type that specifies whether access logs are written for the distribution.
+    /// 
+    /// If you already enabled standard logging (legacy) and you want to enable standard
+    /// logging (v2) to send your access logs to Amazon S3, we recommend that you
+    /// specify a different Amazon S3 bucket or use a separate path in the same bucket
+    /// (for example, use a log prefix or partitioning). This helps you keep track
+    /// of which log files are associated with which logging subscription and prevents
+    /// log files from overwriting each other. For more information, see Standard
+    /// logging (access logs) (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html)
+    /// in the Amazon CloudFront Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<DistributionDistributionConfigLogging>,
     /// A complex data type for the origin groups specified for a distribution.
@@ -158,7 +167,8 @@ pub struct DistributionDistributionConfigCacheBehaviors {
 /// in the Amazon CloudFront Developer Guide.
 /// 
 /// If you don't want to specify any cache behaviors, include only an empty CacheBehaviors
-/// element. Don't include an empty CacheBehavior element because this is invalid.
+/// element. Don't specify an empty individual CacheBehavior element, because
+/// this is invalid. For more information, see CacheBehaviors (https://docs.aws.amazon.com/cloudfront/latest/APIReference/API_CacheBehaviors.html).
 /// 
 /// To delete all cache behaviors in an existing distribution, update the distribution
 /// configuration and include only an empty CacheBehaviors element.
@@ -213,8 +223,8 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardedValues")]
     pub forwarded_values: Option<DistributionDistributionConfigCacheBehaviorsItemsForwardedValues>,
     /// A list of CloudFront functions that are associated with a cache behavior
-    /// in a CloudFront distribution. CloudFront functions must be published to the
-    /// LIVE stage to associate them with a cache behavior.
+    /// in a CloudFront distribution. Your functions must be published to the LIVE
+    /// stage to associate them with a cache behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionAssociations")]
     pub function_associations: Option<DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations>,
     /// A complex type that specifies a list of Lambda@Edge functions associations
@@ -412,8 +422,8 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesQuery
 }
 
 /// A list of CloudFront functions that are associated with a cache behavior
-/// in a CloudFront distribution. CloudFront functions must be published to the
-/// LIVE stage to associate them with a cache behavior.
+/// in a CloudFront distribution. Your functions must be published to the LIVE
+/// stage to associate them with a cache behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -564,8 +574,8 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardedValues")]
     pub forwarded_values: Option<DistributionDistributionConfigDefaultCacheBehaviorForwardedValues>,
     /// A list of CloudFront functions that are associated with a cache behavior
-    /// in a CloudFront distribution. CloudFront functions must be published to the
-    /// LIVE stage to associate them with a cache behavior.
+    /// in a CloudFront distribution. Your functions must be published to the LIVE
+    /// stage to associate them with a cache behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionAssociations")]
     pub function_associations: Option<DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociations>,
     /// A complex type that specifies a list of Lambda@Edge functions associations
@@ -761,8 +771,8 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesQuer
 }
 
 /// A list of CloudFront functions that are associated with a cache behavior
-/// in a CloudFront distribution. CloudFront functions must be published to the
-/// LIVE stage to associate them with a cache behavior.
+/// in a CloudFront distribution. Your functions must be published to the LIVE
+/// stage to associate them with a cache behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -827,7 +837,16 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorTrustedSigners {
     pub items: Option<Vec<String>>,
 }
 
-/// A complex type that controls whether access logs are written for the distribution.
+/// A complex type that specifies whether access logs are written for the distribution.
+/// 
+/// If you already enabled standard logging (legacy) and you want to enable standard
+/// logging (v2) to send your access logs to Amazon S3, we recommend that you
+/// specify a different Amazon S3 bucket or use a separate path in the same bucket
+/// (for example, use a log prefix or partitioning). This helps you keep track
+/// of which log files are associated with which logging subscription and prevents
+/// log files from overwriting each other. For more information, see Standard
+/// logging (access logs) (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/AccessLogs.html)
+/// in the Amazon CloudFront Developer Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigLogging {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -848,12 +867,15 @@ pub struct DistributionDistributionConfigOriginGroups {
     pub items: Option<Vec<DistributionDistributionConfigOriginGroupsItems>>,
 }
 
-/// An origin group includes two origins (a primary origin and a second origin
+/// An origin group includes two origins (a primary origin and a secondary origin
 /// to failover to) and a failover criteria that you specify. You create an origin
 /// group to support origin failover in CloudFront. When you create or update
-/// a distribution, you can specifiy the origin group instead of a single origin,
-/// and CloudFront will failover from the primary origin to the second origin
+/// a distribution, you can specify the origin group instead of a single origin,
+/// and CloudFront will failover from the primary origin to the secondary origin
 /// under the failover conditions that you've chosen.
+/// 
+/// Optionally, you can choose selection criteria for your origin group to specify
+/// how your origins are selected when your distribution routes viewer requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionDistributionConfigOriginGroupsItems {
     /// A complex data type that includes information about the failover criteria
@@ -920,9 +942,9 @@ pub struct DistributionDistributionConfigOrigins {
 /// 
 ///    * Use CustomOriginConfig to specify all other kinds of origins, including:
 ///    An Amazon S3 bucket that is configured with static website hosting An
-///    Elastic Load Balancing load balancer An AWS Elemental MediaPackage endpoint
-///    An AWS Elemental MediaStore container Any other HTTP server, running on
-///    an Amazon EC2 instance or any other kind of host
+///    Elastic Load Balancing load balancer An Elemental MediaPackage endpoint
+///    An Elemental MediaStore container Any other HTTP server, running on an
+///    Amazon EC2 instance or any other kind of host
 /// 
 /// For the current maximum number of origins that you can specify per distribution,
 /// see General Quotas on Web Distributions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions)

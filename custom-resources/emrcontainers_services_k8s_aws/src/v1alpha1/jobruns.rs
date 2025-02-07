@@ -27,17 +27,17 @@ pub struct JobRunSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationOverrides")]
     pub configuration_overrides: Option<String>,
     /// The execution role ARN for the job run.
-    #[serde(rename = "executionRoleARN")]
-    pub execution_role_arn: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
+    pub execution_role_arn: Option<String>,
     /// The job driver for the job run.
-    #[serde(rename = "jobDriver")]
-    pub job_driver: JobRunJobDriver,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobDriver")]
+    pub job_driver: Option<JobRunJobDriver>,
     /// The name of the job run.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The Amazon EMR release version to use for the job run.
-    #[serde(rename = "releaseLabel")]
-    pub release_label: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseLabel")]
+    pub release_label: Option<String>,
     /// The tags assigned to job runs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,

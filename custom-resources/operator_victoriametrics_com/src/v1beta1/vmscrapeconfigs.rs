@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -301,6 +302,10 @@ pub struct VMScrapeConfigConsulSdConfigs {
     /// Consul Datacenter name, if not provided it will use the local Consul Agent Datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
+    /// Filter defines filter for /v1/catalog/services requests
+    /// See https://developer.hashicorp.com/consul/api-docs/features/filtering
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filter: Option<String>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// If unset, use its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
@@ -1535,7 +1540,7 @@ pub struct VMScrapeConfigGceSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// The zone of the scrape targets. If you need multiple zones use multiple GCESDConfigs.
-    pub zone: String,
+    pub zone: serde_json::Value,
 }
 
 /// HTTPSDConfig defines a HTTP service discovery configuration.
@@ -3075,6 +3080,10 @@ pub enum VMScrapeConfigScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
+    #[serde(rename = "HTTP")]
+    HttpX,
 }
 
 /// StaticConfig defines a static configuration.
@@ -3484,11 +3493,18 @@ pub struct VMScrapeConfigVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
 /// ScrapeObjectStatus defines the observed state of ScrapeObjects
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigStatus {
-    /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
-    pub last_sync_error: Option<String>,
-    /// Status defines update status of resource
+    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Reason defines human readable error reason
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+    /// UpdateStatus defines a status for update rollout
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 

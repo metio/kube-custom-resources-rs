@@ -73,6 +73,9 @@ pub struct ApplicationOperationRetryBackoff {
 /// Sync contains parameters for the operation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSync {
+    /// SelfHealAttemptsCount contains the number of auto-heal attempts
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoHealAttemptsCount")]
+    pub auto_heal_attempts_count: Option<i64>,
     /// DryRun specifies to perform a `kubectl apply --dry-run` without actually performing the sync
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
     pub dry_run: Option<bool>,
@@ -207,12 +210,23 @@ pub struct ApplicationOperationSyncSourceDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationOperationSyncSourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationOperationSyncSourceHelmParameters>>,
@@ -267,6 +281,10 @@ pub struct ApplicationOperationSyncSourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -288,6 +306,10 @@ pub struct ApplicationOperationSyncSourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -472,12 +494,23 @@ pub struct ApplicationOperationSyncSourcesDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationOperationSyncSourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationOperationSyncSourcesHelmParameters>>,
@@ -532,6 +565,10 @@ pub struct ApplicationOperationSyncSourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationOperationSyncSourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -553,6 +590,10 @@ pub struct ApplicationOperationSyncSourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -846,12 +887,23 @@ pub struct ApplicationSourceDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationSourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationSourceHelmParameters>>,
@@ -906,6 +958,10 @@ pub struct ApplicationSourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -927,6 +983,10 @@ pub struct ApplicationSourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1111,12 +1171,23 @@ pub struct ApplicationSourcesDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationSourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationSourcesHelmParameters>>,
@@ -1171,6 +1242,10 @@ pub struct ApplicationSourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -1192,6 +1267,10 @@ pub struct ApplicationSourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1549,12 +1628,23 @@ pub struct ApplicationStatusHistorySourceDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusHistorySourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusHistorySourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusHistorySourceHelmParameters>>,
@@ -1609,6 +1699,10 @@ pub struct ApplicationStatusHistorySourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusHistorySourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -1630,6 +1724,10 @@ pub struct ApplicationStatusHistorySourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1814,12 +1912,23 @@ pub struct ApplicationStatusHistorySourcesDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusHistorySourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusHistorySourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusHistorySourcesHelmParameters>>,
@@ -1874,6 +1983,10 @@ pub struct ApplicationStatusHistorySourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusHistorySourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -1895,6 +2008,10 @@ pub struct ApplicationStatusHistorySourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2079,6 +2196,9 @@ pub struct ApplicationStatusOperationStateOperationRetryBackoff {
 /// Sync contains parameters for the operation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSync {
+    /// SelfHealAttemptsCount contains the number of auto-heal attempts
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoHealAttemptsCount")]
+    pub auto_heal_attempts_count: Option<i64>,
     /// DryRun specifies to perform a `kubectl apply --dry-run` without actually performing the sync
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
     pub dry_run: Option<bool>,
@@ -2213,12 +2333,23 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceDirectoryJsonnetTla
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusOperationStateOperationSyncSourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusOperationStateOperationSyncSourceHelmParameters>>,
@@ -2273,6 +2404,10 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -2294,6 +2429,10 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2478,12 +2617,23 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesDirectoryJsonnetTl
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusOperationStateOperationSyncSourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusOperationStateOperationSyncSourcesHelmParameters>>,
@@ -2538,6 +2688,10 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -2559,6 +2713,10 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2836,12 +2994,23 @@ pub struct ApplicationStatusOperationStateSyncResultSourceDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateSyncResultSourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusOperationStateSyncResultSourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusOperationStateSyncResultSourceHelmParameters>>,
@@ -2896,6 +3065,10 @@ pub struct ApplicationStatusOperationStateSyncResultSourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -2917,6 +3090,10 @@ pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3101,12 +3278,23 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesDirectoryJsonnetTlas 
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateSyncResultSourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusOperationStateSyncResultSourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusOperationStateSyncResultSourcesHelmParameters>>,
@@ -3161,6 +3349,10 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -3182,6 +3374,10 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3483,12 +3679,23 @@ pub struct ApplicationStatusSyncComparedToSourceDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSyncComparedToSourceHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusSyncComparedToSourceHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusSyncComparedToSourceHelmParameters>>,
@@ -3543,6 +3750,10 @@ pub struct ApplicationStatusSyncComparedToSourceHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSyncComparedToSourceKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -3564,6 +3775,10 @@ pub struct ApplicationStatusSyncComparedToSourceKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3748,12 +3963,23 @@ pub struct ApplicationStatusSyncComparedToSourcesDirectoryJsonnetTlas {
 /// Helm holds helm specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSyncComparedToSourcesHelm {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// FileParameters are file parameters to the helm template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileParameters")]
     pub file_parameters: Option<Vec<ApplicationStatusSyncComparedToSourcesHelmFileParameters>>,
     /// IgnoreMissingValueFiles prevents helm template from failing when valueFiles do not exist locally by not appending them to helm template --values
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingValueFiles")]
     pub ignore_missing_value_files: Option<bool>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
+    /// Namespace is an optional namespace to template with. If left empty, defaults to the app's destination namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Parameters is a list of Helm parameters which are passed to the helm template command upon manifest generation
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<Vec<ApplicationStatusSyncComparedToSourcesHelmParameters>>,
@@ -3808,6 +4034,10 @@ pub struct ApplicationStatusSyncComparedToSourcesHelmParameters {
 /// Kustomize holds kustomize specific options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusSyncComparedToSourcesKustomize {
+    /// APIVersions specifies the Kubernetes resource API versions to pass to Helm when templating manifests. By default,
+    /// Argo CD uses the API versions of the target cluster. The format is [group/]version/kind.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersions")]
+    pub api_versions: Option<Vec<String>>,
     /// CommonAnnotations is a list of additional annotations to add to rendered manifests
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonAnnotations")]
     pub common_annotations: Option<BTreeMap<String, String>>,
@@ -3829,6 +4059,10 @@ pub struct ApplicationStatusSyncComparedToSourcesKustomize {
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
+    /// KubeVersion specifies the Kubernetes API version to pass to Helm when templating manifests. By default, Argo CD
+    /// uses the Kubernetes version of the target cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
+    pub kube_version: Option<String>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,

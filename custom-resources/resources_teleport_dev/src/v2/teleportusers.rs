@@ -48,6 +48,9 @@ pub struct TeleportUserGithubIdentities {
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
+    /// UserID is the ID of the identity. Some connectors like GitHub have an unique ID apart from the username.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -61,6 +64,9 @@ pub struct TeleportUserOidcIdentities {
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
+    /// UserID is the ID of the identity. Some connectors like GitHub have an unique ID apart from the username.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -74,6 +80,9 @@ pub struct TeleportUserSamlIdentities {
     /// SAMLSingleLogoutURL is the SAML Single log-out URL to initiate SAML SLO (single log-out), if applicable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samlSingleLogoutUrl")]
     pub saml_single_logout_url: Option<String>,
+    /// UserID is the ID of the identity. Some connectors like GitHub have an unique ID apart from the username.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_id: Option<String>,
     /// Username is username supplied by external identity provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,

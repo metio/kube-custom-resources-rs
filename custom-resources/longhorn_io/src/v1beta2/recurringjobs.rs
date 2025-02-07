@@ -35,14 +35,14 @@ pub struct RecurringJobSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The parameters of the snapshot/backup.
-    /// Support parameters: "full-backup-interval".
+    /// Support parameters: "full-backup-interval", "volume-backup-policy".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
     /// The retain count of the snapshot/backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retain: Option<i64>,
     /// The recurring job task.
-    /// Can be "snapshot", "snapshot-force-create", "snapshot-cleanup", "snapshot-delete", "backup", "backup-force-create" or "filesystem-trim"
+    /// Can be "snapshot", "snapshot-force-create", "snapshot-cleanup", "snapshot-delete", "backup", "backup-force-create", "filesystem-trim" or "system-backup".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task: Option<RecurringJobTask>,
 }
@@ -64,6 +64,8 @@ pub enum RecurringJobTask {
     BackupForceCreate,
     #[serde(rename = "filesystem-trim")]
     FilesystemTrim,
+    #[serde(rename = "system-backup")]
+    SystemBackup,
 }
 
 /// RecurringJobStatus defines the observed state of the Longhorn recurring job

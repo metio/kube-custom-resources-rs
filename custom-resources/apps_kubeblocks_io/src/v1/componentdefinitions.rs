@@ -97,7 +97,7 @@ pub struct ComponentDefinitionSpec {
     ///     `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
     ///   - `preTerminate`: Defines the hook to be executed before terminating a Component.
     ///   - `roleProbe`: Defines the procedure which is invoked regularly to assess the role of replicas.
-    ///   - `switchover`: Defines the procedure for a controlled transition of leadership from the current leader to a new replica.
+    ///   - `switchover`: Defines the procedure for a controlled transition of a role to a new replica.
     ///     This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
     ///     such as before planned maintenance or upgrades on the current leader node.
     ///   - `memberJoin`: Defines the procedure to add a new replica to the replication group.
@@ -170,9 +170,6 @@ pub struct ComponentDefinitionSpec {
     /// This ensures that the Pods in the Component has appropriate permissions to function.
     /// 
     /// 
-    /// Note: This field is currently non-functional and is reserved for future implementation.
-    /// 
-    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRules")]
     pub policy_rules: Option<Vec<ComponentDefinitionPolicyRules>>,
@@ -201,9 +198,9 @@ pub struct ComponentDefinitionSpec {
     /// Enumerate all possible roles assigned to each replica of the Component, influencing its behavior.
     /// 
     /// 
-    /// A replica can have zero to multiple roles.
-    /// KubeBlocks operator determines the roles of each replica by invoking the `lifecycleActions.roleProbe` method.
-    /// This action returns a list of roles for each replica, and the returned roles must be predefined in the `roles` field.
+    /// A replica can have zero or one role.
+    /// KubeBlocks operator determines the role of each replica by invoking the `lifecycleActions.roleProbe` method.
+    /// This action returns the role for each replica, and the returned role must be predefined here.
     /// 
     /// 
     /// The roles assigned to a replica can influence various aspects of the Component's behavior, such as:
@@ -390,6 +387,12 @@ pub struct ComponentDefinitionSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
     pub system_accounts: Option<Vec<ComponentDefinitionSystemAccounts>>,
+    /// Specifies the TLS configuration for the Component.
+    /// 
+    /// 
+    /// This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<ComponentDefinitionTls>,
     /// Specifies the concurrency strategy for updating multiple instances of the Component.
     /// Available strategies:
     /// 
@@ -5216,21 +5219,6 @@ pub struct ComponentDefinitionConfigs {
     /// and ConfigConstraint applies to all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keys: Option<Vec<String>>,
-    /// Specifies the secondary rendered config spec for pod-specific customization.
-    /// 
-    /// 
-    /// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
-    /// template's render result to generate the final configuration file.
-    /// 
-    /// 
-    /// This field is intended to handle scenarios where different pods within the same Component have
-    /// varying configurations. It allows for pod-specific customization of the configuration.
-    /// 
-    /// 
-    /// Note: This field will be deprecated in future versions, and the functionality will be moved to
-    /// `cluster.spec.componentSpecs[*].instances[*]`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "legacyRenderedConfigSpec")]
-    pub legacy_rendered_config_spec: Option<ComponentDefinitionConfigsLegacyRenderedConfigSpec>,
     /// Specifies the name of the configuration template.
     pub name: String,
     /// Specifies the namespace of the referenced configuration template ConfigMap object.
@@ -5257,56 +5245,6 @@ pub struct ComponentDefinitionConfigs {
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-}
-
-/// Specifies the secondary rendered config spec for pod-specific customization.
-/// 
-/// 
-/// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
-/// template's render result to generate the final configuration file.
-/// 
-/// 
-/// This field is intended to handle scenarios where different pods within the same Component have
-/// varying configurations. It allows for pod-specific customization of the configuration.
-/// 
-/// 
-/// Note: This field will be deprecated in future versions, and the functionality will be moved to
-/// `cluster.spec.componentSpecs[*].instances[*]`.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionConfigsLegacyRenderedConfigSpec {
-    /// Specifies the namespace of the referenced configuration template ConfigMap object.
-    /// An empty namespace is equivalent to the "default" namespace.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Defines the strategy for merging externally imported templates into component templates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub policy: Option<ComponentDefinitionConfigsLegacyRenderedConfigSpecPolicy>,
-    /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(rename = "templateRef")]
-    pub template_ref: String,
-}
-
-/// Specifies the secondary rendered config spec for pod-specific customization.
-/// 
-/// 
-/// The template is rendered inside the pod (by the "config-manager" sidecar container) and merged with the main
-/// template's render result to generate the final configuration file.
-/// 
-/// 
-/// This field is intended to handle scenarios where different pods within the same Component have
-/// varying configurations. It allows for pod-specific customization of the configuration.
-/// 
-/// 
-/// Note: This field will be deprecated in future versions, and the functionality will be moved to
-/// `cluster.spec.componentSpecs[*].instances[*]`.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ComponentDefinitionConfigsLegacyRenderedConfigSpecPolicy {
-    #[serde(rename = "patch")]
-    Patch,
-    #[serde(rename = "replace")]
-    Replace,
-    #[serde(rename = "none")]
-    None,
 }
 
 /// Defines the built-in metrics exporter container.
@@ -5382,7 +5320,7 @@ pub struct ComponentDefinitionHostNetworkContainerPorts {
 ///     `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.
 ///   - `preTerminate`: Defines the hook to be executed before terminating a Component.
 ///   - `roleProbe`: Defines the procedure which is invoked regularly to assess the role of replicas.
-///   - `switchover`: Defines the procedure for a controlled transition of leadership from the current leader to a new replica.
+///   - `switchover`: Defines the procedure for a controlled transition of a role to a new replica.
 ///     This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
 ///     such as before planned maintenance or upgrades on the current leader node.
 ///   - `memberJoin`: Defines the procedure to add a new replica to the replication group.
@@ -5409,9 +5347,9 @@ pub struct ComponentDefinitionLifecycleActions {
     /// The container executing this action has access to following variables:
     /// 
     /// 
-    /// - KB_ACCOUNT_NAME: The name of the system account to be created.
-    /// - KB_ACCOUNT_PASSWORD: The password for the system account.  // TODO: how to pass the password securely?
-    /// - KB_ACCOUNT_STATEMENT: The statement used to create the system account.
+    /// - KB_ACCOUNT_NAME: The name of the system account to be manipulated.
+    /// - KB_ACCOUNT_PASSWORD: The password for the system account.
+    /// - KB_ACCOUNT_STATEMENT: The statement used to manipulate the system account.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -5439,6 +5377,12 @@ pub struct ComponentDefinitionLifecycleActions {
     /// 
     /// The output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure
     /// that only the necessary data is exported for import into the new replica.
+    /// 
+    /// 
+    /// The container executing this action has access to following environment variables:
+    /// 
+    /// 
+    /// - KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -5652,17 +5596,22 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleProbe")]
     pub role_probe: Option<ComponentDefinitionLifecycleActionsRoleProbe>,
-    /// Defines the procedure for a controlled transition of leadership from the current leader to a new replica.
-    /// This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
-    /// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations
-    /// involving the current leader node.
+    /// Defines the procedure for a controlled transition of a role to a new replica.
+    /// This approach aims to minimize downtime and maintain availability
+    /// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations.
+    /// In a typical consensus system, this action is used to transfer leader role to another replica.
     /// 
     /// 
     /// The container executing this action has access to following variables:
     /// 
     /// 
-    /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
-    /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
+    /// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod of the new role's candidate, which may not be specified (empty).
+    /// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the pod of the new role's candidate, which may not be specified (empty).
+    /// - KB_SWITCHOVER_CURRENT_NAME: The name of the pod of the current role.
+    /// - KB_SWITCHOVER_CURRENT_FQDN: The FQDN of the pod of the current role.
+    /// - KB_SWITCHOVER_ROLE: The role that will be transferred to another replica.
+    ///   This variable can be empty if, for example, role probe does not succeed.
+    ///   It depends on the addon implementation what to do under such cases.
     /// 
     /// 
     /// Note: This field is immutable once it has been set.
@@ -5681,9 +5630,9 @@ pub struct ComponentDefinitionLifecycleActions {
 /// The container executing this action has access to following variables:
 /// 
 /// 
-/// - KB_ACCOUNT_NAME: The name of the system account to be created.
-/// - KB_ACCOUNT_PASSWORD: The password for the system account.  // TODO: how to pass the password securely?
-/// - KB_ACCOUNT_STATEMENT: The statement used to create the system account.
+/// - KB_ACCOUNT_NAME: The name of the system account to be manipulated.
+/// - KB_ACCOUNT_PASSWORD: The password for the system account.
+/// - KB_ACCOUNT_STATEMENT: The statement used to manipulate the system account.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -6233,6 +6182,12 @@ pub struct ComponentDefinitionLifecycleActionsAvailableProbeRetryPolicy {
 /// 
 /// The output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure
 /// that only the necessary data is exported for import into the new replica.
+/// 
+/// 
+/// The container executing this action has access to following environment variables:
+/// 
+/// 
+/// - KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -8992,17 +8947,22 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbeRetryPolicy {
     pub retry_interval: Option<i64>,
 }
 
-/// Defines the procedure for a controlled transition of leadership from the current leader to a new replica.
-/// This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,
-/// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations
-/// involving the current leader node.
+/// Defines the procedure for a controlled transition of a role to a new replica.
+/// This approach aims to minimize downtime and maintain availability
+/// during events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations.
+/// In a typical consensus system, this action is used to transfer leader role to another replica.
 /// 
 /// 
 /// The container executing this action has access to following variables:
 /// 
 /// 
-/// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).
-/// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).
+/// - KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod of the new role's candidate, which may not be specified (empty).
+/// - KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the pod of the new role's candidate, which may not be specified (empty).
+/// - KB_SWITCHOVER_CURRENT_NAME: The name of the pod of the current role.
+/// - KB_SWITCHOVER_CURRENT_FQDN: The FQDN of the pod of the current role.
+/// - KB_SWITCHOVER_ROLE: The role that will be transferred to another replica.
+///   This variable can be empty if, for example, role probe does not succeed.
+///   It depends on the addon implementation what to do under such cases.
 /// 
 /// 
 /// Note: This field is immutable once it has been set.
@@ -9320,36 +9280,53 @@ pub struct ComponentDefinitionReplicasLimit {
     pub min_replicas: i32,
 }
 
-/// ReplicaRole represents a role that can be assumed by a component instance.
+/// ReplicaRole represents a role that can be assigned to a component instance, defining its behavior and responsibilities.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionRoles {
-    /// Defines the role's identifier. It is used to set the "apps.kubeblocks.io/role" label value
-    /// on the corresponding object.
+    /// Name defines the role's unique identifier. This value is used to set the "apps.kubeblocks.io/role" label
+    /// on the corresponding object to identify its role.
+    /// 
+    /// 
+    /// For example, common role names include:
+    /// - "leader": The primary/master instance that handles write operations
+    /// - "follower": Secondary/replica instances that replicate data from the leader
+    /// - "learner": Read-only instances that don't participate in elections
     /// 
     /// 
     /// This field is immutable once set.
     pub name: String,
-    /// Indicates whether a replica assigned this role is capable of providing services.
+    /// ParticipatesInQuorum indicates if pods with this role are counted when determining quorum.
+    /// This affects update strategies that need to maintain quorum for availability. Roles participate
+    /// in quorum should have higher update priority than roles do not participate in quorum.
+    /// The default value is false.
+    /// 
+    /// 
+    /// For example, in a 5-pod component where:
+    /// - 2 learner pods (participatesInQuorum=false)
+    /// - 2 follower pods (participatesInQuorum=true)
+    /// - 1 leader pod (participatesInQuorum=true)
+    /// The quorum size would be 3 (based on the 3 participating pods), allowing parallel updates
+    /// of 2 learners and 1 follower while maintaining quorum.
     /// 
     /// 
     /// This field is immutable once set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub serviceable: Option<bool>,
-    /// Specifies whether a replica with this role has voting rights.
-    /// In distributed systems, this typically means the replica can participate in consensus decisions,
-    /// configuration changes, or other processes that require a quorum.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "participatesInQuorum")]
+    pub participates_in_quorum: Option<bool>,
+    /// UpdatePriority determines the order in which pods with different roles are updated.
+    /// Pods are sorted by this priority (higher numbers = higher priority) and updated accordingly.
+    /// Roles with the highest priority will be updated last.
+    /// The default priority is 0.
+    /// 
+    /// 
+    /// For example:
+    /// - Leader role may have priority 2 (updated last)
+    /// - Follower role may have priority 1 (updated before leader)
+    /// - Learner role may have priority 0 (updated first)
     /// 
     /// 
     /// This field is immutable once set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub votable: Option<bool>,
-    /// Determines if a replica in this role has the authority to perform write operations.
-    /// A writable replica can modify data, handle update operations.
-    /// 
-    /// 
-    /// This field is immutable once set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub writable: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePriority")]
+    pub update_priority: Option<i64>,
 }
 
 /// Specifies the PodSpec template used in the Component.
@@ -16401,18 +16378,12 @@ pub struct ComponentDefinitionSystemAccounts {
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordGenerationPolicy")]
     pub password_generation_policy: Option<ComponentDefinitionSystemAccountsPasswordGenerationPolicy>,
-    /// Refers to the secret from which data will be copied to create the new account.
-    /// 
-    /// 
-    /// This field is immutable once set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ComponentDefinitionSystemAccountsSecretRef>,
-    /// Defines the statement used to create the account with the necessary privileges.
+    /// Defines the statements used to create, delete, and update the account.
     /// 
     /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub statement: Option<String>,
+    pub statement: Option<ComponentDefinitionSystemAccountsStatement>,
 }
 
 /// Specifies the policy for generating the account's password.
@@ -16450,16 +16421,76 @@ pub enum ComponentDefinitionSystemAccountsPasswordGenerationPolicyLetterCase {
     MixedCases,
 }
 
-/// Refers to the secret from which data will be copied to create the new account.
+/// Defines the statements used to create, delete, and update the account.
 /// 
 /// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ComponentDefinitionSystemAccountsSecretRef {
-    /// The unique identifier of the secret.
-    pub name: String,
-    /// The namespace where the secret is located.
-    pub namespace: String,
+pub struct ComponentDefinitionSystemAccountsStatement {
+    /// The statement to create a new account with the necessary privileges.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub create: Option<String>,
+    /// The statement to delete a account.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delete: Option<String>,
+    /// The statement to update an existing account.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub update: Option<String>,
+}
+
+/// Specifies the TLS configuration for the Component.
+/// 
+/// 
+/// This field is immutable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionTls {
+    /// The CA file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// The certificate file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// The permissions for the mounted path. Defaults to 0600.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// The key file of the TLS.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Specifies the mount path for the TLS secret to be mounted.
+    /// Similar to the volume, the controller will mount the created volume to the specified path within containers when the TLS is enabled.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// Specifies the volume name for the TLS secret.
+    /// The controller will create a volume object with the specified name and add it to the pod when the TLS is enabled.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(rename = "volumeName")]
+    pub volume_name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -16540,6 +16571,9 @@ pub struct ComponentDefinitionVarsValueFrom {
     /// Selects a defined var of a Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVarRef")]
     pub service_var_ref: Option<ComponentDefinitionVarsValueFromServiceVarRef>,
+    /// Selects a defined var of the TLS.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsVarRef")]
+    pub tls_var_ref: Option<ComponentDefinitionVarsValueFromTlsVarRef>,
 }
 
 /// Selects a defined var of a Cluster.
@@ -16639,6 +16673,10 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectO
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -16798,6 +16836,10 @@ pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObject
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -16914,6 +16956,10 @@ pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjec
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -17033,6 +17079,10 @@ pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObject
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -17166,6 +17216,10 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOpt
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -17238,6 +17292,92 @@ pub enum ComponentDefinitionVarsValueFromServiceVarRefPortOption {
 pub enum ComponentDefinitionVarsValueFromServiceVarRefServiceType {
     Required,
     Optional,
+}
+
+/// Selects a defined var of the TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRef {
+    /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
+    /// custom resource (CR) used by the component that the referent object resident in.
+    /// 
+    /// 
+    /// If not specified, the component itself will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<ComponentDefinitionVarsValueFromTlsVarRefEnabled>,
+    /// This option defines the behavior when multiple component objects match the specified @CompDef.
+    /// If not provided, an error will be raised when handling multiple matches.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOption>,
+    /// Name of the referent object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the object must be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a defined var of the TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromTlsVarRefEnabled {
+    Required,
+    Optional,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOption {
+    /// Define the options for handling combined variables.
+    /// Valid only when the strategy is set to "combined".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
+    /// Define the strategy for handling multiple cluster objects.
+    pub strategy: ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionStrategy,
+}
+
+/// Define the options for handling combined variables.
+/// Valid only when the strategy is set to "combined".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOption {
+    /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenFormat")]
+    pub flatten_format: Option<ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat>,
+    /// If set, the existing variable will be kept, and a new variable will be defined with the specified suffix
+    /// in pattern: $(var.name)_$(suffix).
+    /// The new variable will be auto-created and placed behind the existing one.
+    /// If not set, the existing variable will be reused with the value format defined below.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newVarSuffix")]
+    pub new_var_suffix: Option<String>,
+    /// The format of the value that the operator will use to compose values from multiple components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFormat")]
+    pub value_format: Option<String>,
+}
+
+/// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
+    /// Pair delimiter.
+    pub delimiter: String,
+    /// Key-value delimiter.
+    #[serde(rename = "keyValueDelimiter")]
+    pub key_value_delimiter: String,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromTlsVarRefMultipleClusterObjectOptionStrategy {
+    #[serde(rename = "individual")]
+    Individual,
+    #[serde(rename = "combined")]
+    Combined,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

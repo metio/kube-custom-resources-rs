@@ -57,7 +57,7 @@ spec:
                   description: "The version of the add-on. The version must match one of the versions returned\nby DescribeAddonVersions (https://docs.aws.amazon.com/eks/latest/APIReference/API_DescribeAddonVersions.html)."
                   type: "string"
                 clientRequestToken:
-                  description: "A unique, case-sensitive identifier that you provide to ensure the idempotency\nof the request."
+                  description: "A unique, case-sensitive identifier that you provide to ensurethe idempotency\nof the request."
                   type: "string"
                 clusterName:
                   description: "The name of your cluster."

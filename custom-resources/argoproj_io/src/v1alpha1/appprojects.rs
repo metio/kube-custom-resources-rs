@@ -27,6 +27,9 @@ pub struct AppProjectSpec {
     /// Description contains optional project description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// DestinationServiceAccounts holds information about the service accounts to be impersonated for the application sync operation for each destination.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationServiceAccounts")]
+    pub destination_service_accounts: Option<Vec<AppProjectDestinationServiceAccounts>>,
     /// Destinations contains list of destinations available for deployment
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destinations: Option<Vec<AppProjectDestinations>>,
@@ -73,6 +76,19 @@ pub struct AppProjectClusterResourceBlacklist {
 pub struct AppProjectClusterResourceWhitelist {
     pub group: String,
     pub kind: String,
+}
+
+/// ApplicationDestinationServiceAccount holds information about the service account to be impersonated for the application sync operation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppProjectDestinationServiceAccounts {
+    /// DefaultServiceAccount to be used for impersonation during the sync operation
+    #[serde(rename = "defaultServiceAccount")]
+    pub default_service_account: String,
+    /// Namespace specifies the target namespace for the application's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Server specifies the URL of the target cluster's Kubernetes control plane API.
+    pub server: String,
 }
 
 /// ApplicationDestination holds information about the application's destination

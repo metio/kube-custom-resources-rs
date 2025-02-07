@@ -34,8 +34,8 @@ pub struct ResolverRuleSpec {
     /// specify in TargetIps. If a query matches multiple Resolver rules (example.com
     /// and www.example.com), outbound DNS queries are routed using the Resolver
     /// rule that contains the most specific domain name (www.example.com).
-    #[serde(rename = "domainName")]
-    pub domain_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
+    pub domain_name: Option<String>,
     /// A friendly name that lets you easily find a rule in the Resolver dashboard
     /// in the Route 53 console.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,7 +64,8 @@ pub struct ResolverRuleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<ResolverRuleTags>>,
     /// The IPs that you want Resolver to forward DNS queries to. You can specify
-    /// only IPv4 addresses. Separate IP addresses with a space.
+    /// either Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP
+    /// addresses with a space.
     /// 
     /// TargetIps is available only when the value of Rule type is FORWARD.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetIPs")]

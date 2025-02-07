@@ -885,7 +885,7 @@ pub struct CheClusterComponentsDevfileRegistryDeploymentTolerations {
 /// External devfile registries configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterComponentsDevfileRegistryExternalDevfileRegistries {
-    /// The public UR of the devfile registry that serves sample ready-to-use devfiles.
+    /// The public URL of the devfile registry that serves sample ready-to-use devfiles.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }

@@ -19,8 +19,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ElasticIPAddressSpec {
-    /// [EC2-VPC] The Elastic IP address to recover or an IPv4 address from an address
-    /// pool.
+    /// The Elastic IP address to recover or an IPv4 address from an address pool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// The ID of a customer-owned address pool. Use this parameter to let Amazon
@@ -32,12 +31,6 @@ pub struct ElasticIPAddressSpec {
     /// which Amazon Web Services advertises IP addresses. Use this parameter to
     /// limit the IP address to this location. IP addresses cannot move between network
     /// border groups.
-    /// 
-    /// Use DescribeAvailabilityZones (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_DescribeAvailabilityZones.html)
-    /// to view the network border groups.
-    /// 
-    /// You cannot use a network border group with EC2 Classic. If you attempt this
-    /// operation on EC2 Classic, you receive an InvalidParameterCombination error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkBorderGroup")]
     pub network_border_group: Option<String>,
     /// The ID of an address pool that you own. Use this parameter to let Amazon
@@ -69,12 +62,11 @@ pub struct ElasticIPAddressStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ElasticIPAddressStatusAckResourceMetadata>,
-    /// [EC2-VPC] The ID that Amazon Web Services assigns to represent the allocation
-    /// of the Elastic IP address for use with instances in a VPC.
+    /// The ID that represents the allocation of the Elastic IP address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationID")]
     pub allocation_id: Option<String>,
     /// The carrier IP address. This option is only available for network interfaces
-    /// which reside in a subnet in a Wavelength Zone (for example an EC2 instance).
+    /// that reside in a subnet in a Wavelength Zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "carrierIP")]
     pub carrier_ip: Option<String>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that

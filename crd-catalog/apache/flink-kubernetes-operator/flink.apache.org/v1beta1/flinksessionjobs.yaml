@@ -43,6 +43,8 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    autoscalerResetNonce:
+                      type: "integer"
                     checkpointTriggerNonce:
                       type: "integer"
                     entryClass:
@@ -216,6 +218,8 @@ spec:
                 lifecycleState:
                   enum:
                     - "CREATED"
+                    - "DELETED"
+                    - "DELETING"
                     - "DEPLOYED"
                     - "FAILED"
                     - "ROLLED_BACK"

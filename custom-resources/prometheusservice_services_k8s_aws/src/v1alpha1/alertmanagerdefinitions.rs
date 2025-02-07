@@ -20,7 +20,7 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct AlertManagerDefinitionSpec {
     pub configuration: String,
-    /// The ID of the workspace in which to create the alert manager definition.
+    /// The ID of the workspace to add the alert manager definition to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -73,10 +73,10 @@ pub struct AlertManagerDefinitionStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Status code of this definition.
+    /// The current status of the alert manager.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<String>,
-    /// The reason for failure if any.
+    /// If there is a failure, the reason for the failure.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
 }

@@ -26,6 +26,9 @@ pub struct ConstraintTemplatePodStatusStatus {
     /// intent and helps make sure that UIDs and names do not get conflated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateUID")]
     pub template_uid: Option<String>,
+    /// VAPGenerationStatus represents the status of VAP generation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vapGenerationStatus")]
+    pub vap_generation_status: Option<ConstraintTemplatePodStatusStatusVapGenerationStatus>,
 }
 
 /// CreateCRDError represents a single error caught during parsing, compiling, etc.
@@ -35,5 +38,16 @@ pub struct ConstraintTemplatePodStatusStatusErrors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
     pub message: String,
+}
+
+/// VAPGenerationStatus represents the status of VAP generation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConstraintTemplatePodStatusStatusVapGenerationStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub warning: Option<String>,
 }
 

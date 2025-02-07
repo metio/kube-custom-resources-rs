@@ -3,6 +3,9 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
+## kuadrant.io/v1
+- `AuthPolicy`
+- `RateLimitPolicy`
 ## kuadrant.io/v1alpha1
 - `DNSRecord`
 - `ManagedZone`
@@ -13,6 +16,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## kuadrant.io/v1beta3
 - `RateLimitPolicy`
 */
+#[cfg(feature = "v1")]
+pub mod v1;
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
 #[cfg(feature = "v1beta1")]

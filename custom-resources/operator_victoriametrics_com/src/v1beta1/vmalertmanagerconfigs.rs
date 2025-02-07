@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -1993,6 +1994,9 @@ pub struct VMAlertmanagerConfigReceiversTelegramConfigs {
     /// Message is templated message
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// MessageThreadID defines ID of the message thread where to send the messages.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// ParseMode for telegram message,
     /// supported values are MarkdownV2, Markdown, Markdown and empty string for plain text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3331,16 +3335,20 @@ pub struct VMAlertmanagerConfigTimeIntervalsTimeIntervalsTimes {
 /// VMAlertmanagerConfigStatus defines the observed state of VMAlertmanagerConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMAlertmanagerConfigStatus {
+    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastErrorParentAlertmanagerName")]
     pub last_error_parent_alertmanager_name: Option<String>,
-    /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
-    pub last_sync_error: Option<String>,
-    /// LastSyncErrorTimestamp defines time when error occured
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncErrorTimestamp")]
-    pub last_sync_error_timestamp: Option<i64>,
-    /// Status defines CRD processing status
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Reason defines human readable error reason
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub reason: Option<String>,
+    /// UpdateStatus defines a status for update rollout
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 

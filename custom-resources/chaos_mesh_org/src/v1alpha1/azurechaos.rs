@@ -16,15 +16,19 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct AzureChaosSpec {
-    /// Action defines the specific azure chaos action. Supported action: vm-stop / vm-restart / disk-detach Default action: vm-stop
+    /// Action defines the specific azure chaos action.
+    /// Supported action: vm-stop / vm-restart / disk-detach
+    /// Default action: vm-stop
     pub action: AzureChaosAction,
-    /// DiskName indicates the name of the disk. Needed in disk-detach.
+    /// DiskName indicates the name of the disk.
+    /// Needed in disk-detach.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// LUN indicates the Logical Unit Number of the data disk. Needed in disk-detach.
+    /// LUN indicates the Logical Unit Number of the data disk.
+    /// Needed in disk-detach.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed

@@ -382,6 +382,9 @@ spec:
                     cacheTTLSeconds:
                       description: "The maximum TTL of cached entries."
                       type: "integer"
+                    directoryTimeoutSeconds:
+                      description: "The connection timeout to the LDAP server when authenticating a user, in seconds"
+                      type: "integer"
                     enabledForControlPlane:
                       description: "Whether to enable LDAP for control plane access. Disabled by default."
                       type: "boolean"
@@ -7324,6 +7327,17 @@ spec:
                       - "version"
                     type: "object"
                   type: "array"
+                certificatesStatus:
+                  description: "Stores information about cluster certificates and their update process. In Active-Active databases, this is used to detect updates to the certificates, and trigger synchronization across the participating clusters."
+                  properties:
+                    generation:
+                      description: "Generation stores the version of the cluster's Proxy and Syncer certificate secrets. In Active-Active databases, when a user updates the proxy or syncer certificate, a crdb-update command needs to be triggered to avoid potential sync issues. This helps the REAADB controller detect a change in a certificate and trigger a crdb-update. The version of the cluster's Proxy certificate secret."
+                      format: "int64"
+                      type: "integer"
+                    updateStatus:
+                      description: "The status of the cluster's certificates update"
+                      type: "string"
+                  type: "object"
                 ingressOrRouteMethodStatus:
                   description: "The ingressOrRouteSpec/ActiveActive spec method that exist"
                   type: "string"

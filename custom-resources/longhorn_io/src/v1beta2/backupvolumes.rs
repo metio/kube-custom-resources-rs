@@ -19,9 +19,15 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BackupVolumeSpec {
+    /// The backup target name that the backup volume was synced.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTargetName")]
+    pub backup_target_name: Option<String>,
     /// The time to request run sync the remote backup volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncRequestedAt")]
     pub sync_requested_at: Option<String>,
+    /// The volume name that the backup volume was used to backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
 }
 
 /// BackupVolumeStatus defines the observed state of the Longhorn backup volume

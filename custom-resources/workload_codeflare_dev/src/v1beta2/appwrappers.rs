@@ -112,9 +112,7 @@ pub struct AppWrapperStatus {
     pub component_status: Option<Vec<AppWrapperStatusComponentStatus>>,
     /// Conditions hold the latest available observations of the AppWrapper current state.
     /// 
-    /// 
     /// The type of the condition could be:
-    /// 
     /// 
     /// - QuotaReserved: The AppWrapper was admitted by Kueue and has quota allocated to it
     /// - ResourcesDeployed: The contained resources are deployed (or being deployed) on the cluster
@@ -139,9 +137,7 @@ pub struct AppWrapperStatusComponentStatus {
     pub api_version: String,
     /// Conditions hold the latest available observations of the Component's current state.
     /// 
-    /// 
     /// The type of the condition could be:
-    /// 
     /// 
     /// - ResourcesDeployed: The component is deployed on the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]

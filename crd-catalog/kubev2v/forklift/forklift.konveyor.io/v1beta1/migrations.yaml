@@ -453,8 +453,24 @@ spec:
                             items:
                               description: "Precopy durations"
                               properties:
+                                createTaskId:
+                                  type: "string"
+                                deltas:
+                                  items:
+                                    properties:
+                                      deltaId:
+                                        type: "string"
+                                      disk:
+                                        type: "string"
+                                    required:
+                                      - "deltaId"
+                                      - "disk"
+                                    type: "object"
+                                  type: "array"
                                 end:
                                   format: "date-time"
+                                  type: "string"
+                                removeTaskId:
                                   type: "string"
                                 snapshot:
                                   type: "string"

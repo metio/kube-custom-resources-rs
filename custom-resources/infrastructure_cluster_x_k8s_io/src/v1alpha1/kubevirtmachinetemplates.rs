@@ -63,7 +63,6 @@ pub struct KubevirtMachineTemplateTemplateSpecInfraClusterSecretRef {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -136,10 +135,14 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpec {
     pub run_strategy: Option<String>,
     /// Running controls whether the associatied VirtualMachineInstance is created or not
     /// Mutually exclusive with RunStrategy
+    /// Deprecated: VirtualMachineInstance field "Running" is now deprecated, please use RunStrategy instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running: Option<bool>,
     /// Template is the direct specification of VirtualMachineInstance
     pub template: KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate,
+    /// UpdateVolumesStrategy is the strategy to apply on volumes updates
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateVolumesStrategy")]
+    pub update_volumes_strategy: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -284,7 +287,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
     /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
@@ -665,17 +668,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -686,15 +678,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolu
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecDataVolumeTemplatesSpecStorageResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// A label query over volumes to consider for binding.
@@ -1222,7 +1205,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1233,7 +1216,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1343,7 +1326,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1354,7 +1337,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1495,7 +1478,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1506,7 +1489,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1616,7 +1599,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1627,7 +1610,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1743,9 +1726,11 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 /// PodDNSConfigOption defines DNS resolver options of a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDnsConfigOptions {
+    /// Name is this DNS resolver option's name.
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -2323,22 +2308,25 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Interface MAC address. For example: de:ad:00:00:be:af or DE-AD-00-00-BE-AF.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "macAddress")]
     pub mac_address: Option<String>,
-    /// Deprecated, please refer to Kubevirt user guide for alternatives.
+    /// DeprecatedMacvtap is an alias to the deprecated Macvtap interface,
+    /// please refer to Kubevirt user guide for alternatives.
+    /// Deprecated: Removed in v1.3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub macvtap: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMacvtap>,
     /// InterfaceMasquerade connects to a given network using netfilter rules to nat the traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub masquerade: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMasquerade>,
     /// Interface model.
-    /// One of: e1000, e1000e, ne2k_pci, pcnet, rtl8139, virtio.
+    /// One of: e1000, e1000e, igb, ne2k_pci, pcnet, rtl8139, virtio.
     /// Defaults to virtio.
-    /// TODO:(ihar) switch to enums once opengen-api supports them. See: https://github.com/kubernetes/kube-openapi/issues/51
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub model: Option<String>,
     /// Logical name of the interface as well as a reference to the associated networks.
     /// Must match the Name of a Network.
     pub name: String,
-    /// Deprecated, please refer to Kubevirt user guide for alternatives.
+    /// DeprecatedPasst is an alias to the deprecated Passt interface,
+    /// please refer to Kubevirt user guide for alternatives.
+    /// Deprecated: Removed in v1.3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passt: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPasst>,
     /// If specified, the virtual network interface will be placed on the guests pci address with the specified PCI address. For example: 0000:81:01.10
@@ -2347,7 +2335,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// List of ports to be forwarded to the virtual machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPorts>>,
-    /// InterfaceSlirp connects to a given network using QEMU user networking mode.
+    /// DeprecatedSlirp is an alias to the deprecated Slirp interface
+    /// Deprecated: Removed in v1.3
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slirp: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSlirp>,
     /// InterfaceSRIOV connects to a given network by passing-through an SR-IOV PCI device via vfio.
@@ -2405,7 +2394,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     pub value: String,
 }
 
-/// Deprecated, please refer to Kubevirt user guide for alternatives.
+/// DeprecatedMacvtap is an alias to the deprecated Macvtap interface,
+/// please refer to Kubevirt user guide for alternatives.
+/// Deprecated: Removed in v1.3
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMacvtap {
 }
@@ -2415,7 +2406,9 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesMasquerade {
 }
 
-/// Deprecated, please refer to Kubevirt user guide for alternatives.
+/// DeprecatedPasst is an alias to the deprecated Passt interface,
+/// please refer to Kubevirt user guide for alternatives.
+/// Deprecated: Removed in v1.3
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesPasst {
 }
@@ -2439,7 +2432,8 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     pub protocol: Option<String>,
 }
 
-/// InterfaceSlirp connects to a given network using QEMU user networking mode.
+/// DeprecatedSlirp is an alias to the deprecated Slirp interface
+/// Deprecated: Removed in v1.3
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainDevicesInterfacesSlirp {
 }
@@ -2507,6 +2501,12 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Defaults to the machine type setting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hyperv: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHyperv>,
+    /// This enables all supported hyperv flags automatically.
+    /// Bear in mind that if this enabled hyperV features cannot
+    /// be enabled explicitly. In addition, a Virtual Machine
+    /// using it will be non-migratable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hypervPassthrough")]
+    pub hyperv_passthrough: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervPassthrough>,
     /// Configure how KVM presence is exposed to the guest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kvm: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesKvm>,
@@ -2757,6 +2757,16 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervVpindex {
     /// Enabled determines if the feature should be enabled or disabled on the guest.
     /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// This enables all supported hyperv flags automatically.
+/// Bear in mind that if this enabled hyperV features cannot
+/// be enabled explicitly. In addition, a Virtual Machine
+/// using it will be non-migratable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecDomainFeaturesHypervPassthrough {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
 }
@@ -3016,7 +3026,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     /// TCP hooks not yet supported
-    /// TODO: implement a realistic TCP lifecycle hook
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeTcpSocket>,
     /// Number of seconds after which the probe times out.
@@ -3084,7 +3093,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// TCPSocket specifies an action involving a TCP port.
 /// TCP hooks not yet supported
-/// TODO: implement a realistic TCP lifecycle hook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3173,7 +3181,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     /// TCP hooks not yet supported
-    /// TODO: implement a realistic TCP lifecycle hook
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeTcpSocket>,
     /// Number of seconds after which the probe times out.
@@ -3241,7 +3248,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
 
 /// TCPSocket specifies an action involving a TCP port.
 /// TCP hooks not yet supported
-/// TODO: implement a realistic TCP lifecycle hook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplateSpecReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3300,7 +3306,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// 
-    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
@@ -3334,7 +3339,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
     /// 
-    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -3350,7 +3354,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
-    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
@@ -3360,7 +3363,6 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
@@ -3532,9 +3534,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3546,9 +3546,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3585,9 +3583,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3599,9 +3595,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3614,9 +3608,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or it's keys must be defined
@@ -3859,9 +3851,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -3873,9 +3863,7 @@ pub struct KubevirtMachineTemplateTemplateSpecVirtualMachineTemplateSpecTemplate
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
     /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

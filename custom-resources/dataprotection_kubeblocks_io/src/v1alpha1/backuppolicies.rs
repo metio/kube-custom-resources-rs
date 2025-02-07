@@ -70,6 +70,9 @@ pub struct BackupPolicyBackupMethods {
     /// will use the CSI volume snapshotter to create the snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionSetName")]
     pub action_set_name: Option<String>,
+    /// The name of the compatible full backup method, used by incremental backups.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compatibleMethod")]
+    pub compatible_method: Option<String>,
     /// Specifies the environment variables for the backup workload.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<BackupPolicyBackupMethodsEnv>>,

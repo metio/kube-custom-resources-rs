@@ -127,6 +127,11 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecContainersRes
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceBenchmarkerDaemonSetInitContainer is a Compliance Benchmarker DaemonSet init container.
@@ -180,6 +185,11 @@ pub struct ComplianceComplianceBenchmarkerDaemonSetSpecTemplateSpecInitContainer
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceControllerDeployment configures the Compliance Controller Deployment.
@@ -272,6 +282,11 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecContainersRes
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceControllerDeploymentInitContainer is a compliance controller Deployment init container.
@@ -325,6 +340,11 @@ pub struct ComplianceComplianceControllerDeploymentSpecTemplateSpecInitContainer
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceReporterPodTemplate configures the Compliance Reporter PodTemplate.
@@ -409,6 +429,11 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecContainersResource
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceReporterPodTemplateInitContainer is a ComplianceServer Deployment init container.
@@ -462,6 +487,11 @@ pub struct ComplianceComplianceReporterPodTemplateTemplateSpecInitContainersReso
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceServerDeployment configures the Compliance Server Deployment.
@@ -554,6 +584,11 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecContainersResourc
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceServerDeploymentInitContainer is a ComplianceServer Deployment init container.
@@ -607,6 +642,11 @@ pub struct ComplianceComplianceServerDeploymentSpecTemplateSpecInitContainersRes
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceSnapshotterDeployment configures the Compliance Snapshotter Deployment.
@@ -699,6 +739,11 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecContainersRe
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ComplianceSnapshotterDeploymentInitContainer is a compliance snapshotter Deployment init container.
@@ -752,6 +797,11 @@ pub struct ComplianceComplianceSnapshotterDeploymentSpecTemplateSpecInitContaine
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Most recently observed state for Tigera compliance reporting.

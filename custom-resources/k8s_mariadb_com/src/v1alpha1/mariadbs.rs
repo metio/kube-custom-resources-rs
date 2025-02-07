@@ -173,6 +173,9 @@ pub struct MariaDBSpec {
     /// SidecarContainers to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarContainers")]
     pub sidecar_containers: Option<Vec<MariaDBSidecarContainers>>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MariaDBStartupProbe>,
     /// Storage defines the storage options to be used for provisioning the PVCs mounted by MariaDB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<MariaDBStorage>,
@@ -183,6 +186,9 @@ pub struct MariaDBSpec {
     /// TimeZone sets the default timezone. If not provided, it defaults to SYSTEM and the timezone data is not loaded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
+    /// TLS defines the PKI to be used with MariaDB.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MariaDBTls>,
     /// Tolerations to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<MariaDBTolerations>>,
@@ -192,7 +198,7 @@ pub struct MariaDBSpec {
     /// UpdateStrategy defines how a MariaDB resource is updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MariaDBUpdateStrategy>,
-    /// Username is the initial username to be created by the operator once MariaDB is ready. It has all privileges on the initial database.
+    /// Username is the initial username to be created by the operator once MariaDB is ready.
     /// The initial User will have ALL PRIVILEGES in the initial Database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -635,8 +641,8 @@ pub struct MariaDBBootstrapFromRestoreJobResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromS3 {
     /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
-    #[serde(rename = "accessKeyIdSecretKeyRef")]
-    pub access_key_id_secret_key_ref: MariaDBBootstrapFromS3AccessKeyIdSecretKeyRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyIdSecretKeyRef")]
+    pub access_key_id_secret_key_ref: Option<MariaDBBootstrapFromS3AccessKeyIdSecretKeyRef>,
     /// Bucket is the name Name of the bucket to store backups.
     pub bucket: String,
     /// Endpoint is the S3 API endpoint without scheme.
@@ -648,8 +654,8 @@ pub struct MariaDBBootstrapFromS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 secret key.
-    #[serde(rename = "secretAccessKeySecretKeyRef")]
-    pub secret_access_key_secret_key_ref: MariaDBBootstrapFromS3SecretAccessKeySecretKeyRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKeySecretKeyRef")]
+    pub secret_access_key_secret_key_ref: Option<MariaDBBootstrapFromS3SecretAccessKeySecretKeyRef>,
     /// SessionTokenSecretKeyRef is a reference to a Secret key containing the S3 session token.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionTokenSecretKeyRef")]
     pub session_token_secret_key_ref: Option<MariaDBBootstrapFromS3SessionTokenSecretKeyRef>,
@@ -1146,9 +1152,12 @@ pub struct MariaDBGaleraAgent {
     /// LivenessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<MariaDBGaleraAgentLivenessProbe>,
-    /// Port where the agent will be listening for connections.
+    /// Port where the agent will be listening for API connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// Port where the agent will be listening for probe connections.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "probePort")]
+    pub probe_port: Option<i32>,
     /// ReadinessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBGaleraAgentReadinessProbe>,
@@ -1158,6 +1167,9 @@ pub struct MariaDBGaleraAgent {
     /// SecurityContext holds security configuration that will be applied to a container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBGaleraAgentSecurityContext>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MariaDBGaleraAgentStartupProbe>,
     /// VolumeMounts to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBGaleraAgentVolumeMounts>>,
@@ -1303,6 +1315,9 @@ pub struct MariaDBGaleraAgentLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraAgentLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1327,6 +1342,14 @@ pub struct MariaDBGaleraAgentLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentReadinessProbe {
@@ -1344,6 +1367,9 @@ pub struct MariaDBGaleraAgentReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraAgentReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1366,6 +1392,14 @@ pub struct MariaDBGaleraAgentReadinessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Resouces describes the compute resource requirements.
@@ -1408,6 +1442,58 @@ pub struct MariaDBGaleraAgentSecurityContextCapabilities {
     /// Removed capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop: Option<Vec<String>>,
+}
+
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentStartupProbe {
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDBGaleraAgentStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDBGaleraAgentStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraAgentStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraAgentStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volumemount-v1-core.
@@ -1545,6 +1631,9 @@ pub struct MariaDBGaleraInitContainer {
     /// SecurityContext holds security configuration that will be applied to a container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MariaDBGaleraInitContainerSecurityContext>,
+    /// StartupProbe to be used in the Container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<MariaDBGaleraInitContainerStartupProbe>,
     /// VolumeMounts to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<MariaDBGaleraInitContainerVolumeMounts>>,
@@ -1653,6 +1742,9 @@ pub struct MariaDBGaleraInitContainerLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraInitContainerLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1677,6 +1769,14 @@ pub struct MariaDBGaleraInitContainerLivenessProbeHttpGet {
     pub scheme: Option<String>,
 }
 
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
 /// ReadinessProbe to be used in the Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerReadinessProbe {
@@ -1694,6 +1794,9 @@ pub struct MariaDBGaleraInitContainerReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraInitContainerReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -1716,6 +1819,14 @@ pub struct MariaDBGaleraInitContainerReadinessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Resouces describes the compute resource requirements.
@@ -1758,6 +1869,58 @@ pub struct MariaDBGaleraInitContainerSecurityContextCapabilities {
     /// Removed capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop: Option<Vec<String>>,
+}
+
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerStartupProbe {
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDBGaleraInitContainerStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDBGaleraInitContainerStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBGaleraInitContainerStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBGaleraInitContainerStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#volumemount-v1-core.
@@ -2064,6 +2227,9 @@ pub struct MariaDBLivenessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBLivenessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -2086,6 +2252,14 @@ pub struct MariaDBLivenessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBLivenessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// MaxScale is the MaxScale specification that defines the MaxScale resource to be used with the current MariaDB.
@@ -2138,6 +2312,9 @@ pub struct MariaDBMaxScale {
     /// Services define how the traffic is forwarded to the MariaDB servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MariaDBMaxScaleServices>>,
+    /// TLS defines the PKI to be used with MaxScale.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MariaDBMaxScaleTls>,
     /// UpdateStrategy defines the update strategy for the StatefulSet object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<MariaDBMaxScaleUpdateStrategy>,
@@ -3117,6 +3294,150 @@ pub enum MariaDBMaxScaleServicesRouter {
     Readconnroute,
 }
 
+/// TLS defines the PKI to be used with MaxScale.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTls {
+    /// AdminCASecretRef is a reference to a Secret containing the admin certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's administrative REST API and GUI.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either adminCertSecretRef or adminCertIssuerRef fields must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCASecretRef")]
+    pub admin_ca_secret_ref: Option<MariaDBMaxScaleTlsAdminCaSecretRef>,
+    /// AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with adminCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCertIssuerRef")]
+    pub admin_cert_issuer_ref: Option<MariaDBMaxScaleTlsAdminCertIssuerRef>,
+    /// AdminCertSecretRef is a reference to a TLS Secret used by the MaxScale's administrative REST API and GUI.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminCertSecretRef")]
+    pub admin_cert_secret_ref: Option<MariaDBMaxScaleTlsAdminCertSecretRef>,
+    /// Enabled indicates whether TLS is enabled, determining if certificates should be issued and mounted to the MaxScale instance.
+    /// It is enabled by default when the referred MariaDB instance (via mariaDbRef) has TLS enabled and enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// ListenerCASecretRef is a reference to a Secret containing the listener certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's listeners.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either listenerCertSecretRef or listenerCertIssuerRef fields must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the listener certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCASecretRef")]
+    pub listener_ca_secret_ref: Option<MariaDBMaxScaleTlsListenerCaSecretRef>,
+    /// ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with listenerCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCertIssuerRef")]
+    pub listener_cert_issuer_ref: Option<MariaDBMaxScaleTlsListenerCertIssuerRef>,
+    /// ListenerCertSecretRef is a reference to a TLS Secret used by the MaxScale's listeners.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerCertSecretRef")]
+    pub listener_cert_secret_ref: Option<MariaDBMaxScaleTlsListenerCertSecretRef>,
+    /// ReplicationSSLEnabled specifies whether the replication SSL is enabled. If enabled, the SSL options will be added to the server configuration.
+    /// It is enabled by default when the referred MariaDB instance (via mariaDbRef) has replication enabled.
+    /// If the MariaDB servers are manually provided by the user via the 'servers' field, this must be set by the user as well.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSSLEnabled")]
+    pub replication_ssl_enabled: Option<bool>,
+    /// ServerCASecretRef is a reference to a Secret containing the MariaDB server CA certificates. It is used to establish trust with MariaDB servers.
+    /// The Secret should contain a 'ca.crt' key in order to establish trust.
+    /// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB CA bundle.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCASecretRef")]
+    pub server_ca_secret_ref: Option<MariaDBMaxScaleTlsServerCaSecretRef>,
+    /// ServerCertSecretRef is a reference to a TLS Secret used by MaxScale to connect to the MariaDB servers.
+    /// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB client certificate (clientCertSecretRef).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertSecretRef")]
+    pub server_cert_secret_ref: Option<MariaDBMaxScaleTlsServerCertSecretRef>,
+    /// VerifyPeerCertificate specifies whether the peer certificate's signature should be validated against the CA.
+    /// It is disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyPeerCertificate")]
+    pub verify_peer_certificate: Option<bool>,
+    /// VerifyPeerHost specifies whether the peer certificate's SANs should match the peer host.
+    /// It is disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyPeerHost")]
+    pub verify_peer_host: Option<bool>,
+}
+
+/// AdminCASecretRef is a reference to a Secret containing the admin certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's administrative REST API and GUI.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either adminCertSecretRef or adminCertIssuerRef fields must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsAdminCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// AdminCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's administrative REST API and GUI certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with adminCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via adminCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsAdminCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// AdminCertSecretRef is a reference to a TLS Secret used by the MaxScale's administrative REST API and GUI.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsAdminCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ListenerCASecretRef is a reference to a Secret containing the listener certificate authority keypair. It is used to establish trust and issue certificates for the MaxScale's listeners.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either listenerCertSecretRef or listenerCertIssuerRef fields must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the listener certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsListenerCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ListenerCertIssuerRef is a reference to a cert-manager issuer object used to issue the MaxScale's listeners certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with listenerCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via listenerCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsListenerCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// ListenerCertSecretRef is a reference to a TLS Secret used by the MaxScale's listeners.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsListenerCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCASecretRef is a reference to a Secret containing the MariaDB server CA certificates. It is used to establish trust with MariaDB servers.
+/// The Secret should contain a 'ca.crt' key in order to establish trust.
+/// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB CA bundle.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsServerCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCertSecretRef is a reference to a TLS Secret used by MaxScale to connect to the MariaDB servers.
+/// If not provided, and the reference to a MariaDB resource is set (mariaDbRef), it will be defaulted to the referred MariaDB client certificate (clientCertSecretRef).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBMaxScaleTlsServerCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// UpdateStrategy defines the update strategy for the StatefulSet object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleUpdateStrategy {
@@ -3920,6 +4241,9 @@ pub struct MariaDBReadinessProbe {
     pub period_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBReadinessProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -3942,6 +4266,14 @@ pub struct MariaDBReadinessProbeHttpGet {
     /// URIScheme identifies the scheme used for connection to a host for Get actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBReadinessProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
 }
 
 /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
@@ -4372,6 +4704,58 @@ pub struct MariaDBSidecarContainersVolumeMounts {
     pub sub_path: Option<String>,
 }
 
+/// StartupProbe to be used in the Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStartupProbe {
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<MariaDBStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<MariaDBStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<MariaDBStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#execaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStartupProbeExec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#httpgetaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStartupProbeHttpGet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    pub port: IntOrString,
+    /// URIScheme identifies the scheme used for connection to a host for Get actions
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#tcpsocketaction-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStartupProbeTcpSocket {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    pub port: IntOrString,
+}
+
 /// Storage defines the storage options to be used for provisioning the PVCs mounted by MariaDB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBStorage {
@@ -4474,6 +4858,124 @@ pub struct MariaDBStorageVolumeClaimTemplateSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// TLS defines the PKI to be used with MariaDB.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTls {
+    /// ClientCASecretRef is a reference to a Secret containing the client certificate authority keypair. It is used to establish trust and issue client certificates.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either clientCertSecretRef or clientCertIssuerRef fields must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the client certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCASecretRef")]
+    pub client_ca_secret_ref: Option<MariaDBTlsClientCaSecretRef>,
+    /// ClientCertIssuerRef is a reference to a cert-manager issuer object used to issue the client certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with clientCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via clientCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertIssuerRef")]
+    pub client_cert_issuer_ref: Option<MariaDBTlsClientCertIssuerRef>,
+    /// ClientCertSecretRef is a reference to a TLS Secret containing the client certificate.
+    /// It is mutually exclusive with clientCertIssuerRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecretRef")]
+    pub client_cert_secret_ref: Option<MariaDBTlsClientCertSecretRef>,
+    /// Enabled indicates whether TLS is enabled, determining if certificates should be issued and mounted to the MariaDB instance.
+    /// It is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// GaleraSSTEnabled determines whether Galera SST connections should use TLS.
+    /// It disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraSSTEnabled")]
+    pub galera_sst_enabled: Option<bool>,
+    /// Required specifies whether TLS must be enforced for all connections.
+    /// User TLS requirements take precedence over this.
+    /// It disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    /// ServerCASecretRef is a reference to a Secret containing the server certificate authority keypair. It is used to establish trust and issue server certificates.
+    /// One of:
+    /// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+    /// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either serverCertSecretRef or serverCertIssuerRef must be provided.
+    /// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCASecretRef")]
+    pub server_ca_secret_ref: Option<MariaDBTlsServerCaSecretRef>,
+    /// ServerCertIssuerRef is a reference to a cert-manager issuer object used to issue the server certificate. cert-manager must be installed previously in the cluster.
+    /// It is mutually exclusive with serverCertSecretRef.
+    /// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via serverCASecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertIssuerRef")]
+    pub server_cert_issuer_ref: Option<MariaDBTlsServerCertIssuerRef>,
+    /// ServerCertSecretRef is a reference to a TLS Secret containing the server certificate.
+    /// It is mutually exclusive with serverCertIssuerRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCertSecretRef")]
+    pub server_cert_secret_ref: Option<MariaDBTlsServerCertSecretRef>,
+}
+
+/// ClientCASecretRef is a reference to a Secret containing the client certificate authority keypair. It is used to establish trust and issue client certificates.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either clientCertSecretRef or clientCertIssuerRef fields must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the client certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsClientCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ClientCertIssuerRef is a reference to a cert-manager issuer object used to issue the client certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with clientCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via clientCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsClientCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// ClientCertSecretRef is a reference to a TLS Secret containing the client certificate.
+/// It is mutually exclusive with clientCertIssuerRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsClientCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCASecretRef is a reference to a Secret containing the server certificate authority keypair. It is used to establish trust and issue server certificates.
+/// One of:
+/// - Secret containing both the 'ca.crt' and 'ca.key' keys. This allows you to bring your own CA to Kubernetes to issue certificates.
+/// - Secret containing only the 'ca.crt' in order to establish trust. In this case, either serverCertSecretRef or serverCertIssuerRef must be provided.
+/// If not provided, a self-signed CA will be provisioned to issue the server certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsServerCaSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// ServerCertIssuerRef is a reference to a cert-manager issuer object used to issue the server certificate. cert-manager must be installed previously in the cluster.
+/// It is mutually exclusive with serverCertSecretRef.
+/// By default, the Secret field 'ca.crt' provisioned by cert-manager will be added to the trust chain. A custom trust bundle may be specified via serverCASecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsServerCertIssuerRef {
+    /// Group of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the resource being referred to.
+    pub name: String,
+}
+
+/// ServerCertSecretRef is a reference to a TLS Secret containing the server certificate.
+/// It is mutually exclusive with serverCertIssuerRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBTlsServerCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
@@ -4725,6 +5227,11 @@ pub struct MariaDBStatus {
     /// CurrentPrimaryPodIndex is the primary Pod index.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimaryPodIndex")]
     pub current_primary_pod_index: Option<i64>,
+    /// DefaultVersion is the MariaDB version used by the operator when it cannot infer the version
+    /// from spec.image. This can happen if the image uses a digest (e.g. sha256) instead
+    /// of a version tag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVersion")]
+    pub default_version: Option<String>,
     /// GaleraRecovery is the Galera recovery current state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "galeraRecovery")]
     pub galera_recovery: Option<MariaDBStatusGaleraRecovery>,
@@ -4734,6 +5241,9 @@ pub struct MariaDBStatus {
     /// ReplicationStatus is the replication current state for each Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
     pub replication_status: Option<BTreeMap<String, String>>,
+    /// TLS aggregates the status of the certificates used by the MariaDB instance.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<MariaDBStatusTls>,
 }
 
 /// GaleraRecovery is the Galera recovery current state.
@@ -4782,5 +5292,64 @@ pub struct MariaDBStatusGaleraRecoveryState {
     pub uuid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// TLS aggregates the status of the certificates used by the MariaDB instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStatusTls {
+    /// CABundle is the status of the Certificate Authority bundle.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<Vec<MariaDBStatusTlsCaBundle>>,
+    /// ClientCert is the status of the client certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCert")]
+    pub client_cert: Option<MariaDBStatusTlsClientCert>,
+    /// ServerCert is the status of the server certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverCert")]
+    pub server_cert: Option<MariaDBStatusTlsServerCert>,
+}
+
+/// CertificateStatus represents the current status of a TLS certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStatusTlsCaBundle {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
+}
+
+/// ClientCert is the status of the client certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStatusTlsClientCert {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
+}
+
+/// ServerCert is the status of the server certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBStatusTlsServerCert {
+    /// Issuer is the issuer of the current certificate.
+    pub issuer: String,
+    /// NotAfter indicates that the certificate is not valid after the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
+    pub not_after: Option<String>,
+    /// NotBefore indicates that the certificate is not valid before the given date.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
+    pub not_before: Option<String>,
+    /// Subject is the subject of the current certificate.
+    pub subject: String,
 }
 

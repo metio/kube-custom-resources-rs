@@ -19,22 +19,27 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VpcAssociationPolicySpec {
-    /// AssociateWithVpc indicates whether the VpcServiceNetworkAssociation should be created for the current VPC of k8s cluster. 
-    ///  This value will be considered true by default.
+    /// AssociateWithVpc indicates whether the VpcServiceNetworkAssociation should be created for the current VPC of k8s cluster.
+    /// 
+    /// This value will be considered true by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "associateWithVpc")]
     pub associate_with_vpc: Option<bool>,
-    /// SecurityGroupIds defines the security groups enforced on the VpcServiceNetworkAssociation. Security groups does not take effect if AssociateWithVpc is set to false. 
-    ///  For more details, please check the VPC Lattice documentation https://docs.aws.amazon.com/vpc-lattice/latest/ug/security-groups.html
+    /// SecurityGroupIds defines the security groups enforced on the VpcServiceNetworkAssociation.
+    /// Security groups does not take effect if AssociateWithVpc is set to false.
+    /// 
+    /// For more details, please check the VPC Lattice documentation https://docs.aws.amazon.com/vpc-lattice/latest/ug/security-groups.html
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIds")]
     pub security_group_ids: Option<Vec<String>>,
-    /// TargetRef points to the kubernetes Gateway resource that will have this policy attached. 
-    ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
+    /// TargetRef points to the kubernetes Gateway resource that will have this policy attached.
+    /// 
+    /// This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: VpcAssociationPolicyTargetRef,
 }
 
-/// TargetRef points to the kubernetes Gateway resource that will have this policy attached. 
-///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
+/// TargetRef points to the kubernetes Gateway resource that will have this policy attached.
+/// 
+/// This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VpcAssociationPolicyTargetRef {
     /// Group is the group of the target resource.
@@ -43,7 +48,10 @@ pub struct VpcAssociationPolicyTargetRef {
     pub kind: String,
     /// Name is the name of the target resource.
     pub name: String,
-    /// Namespace is the namespace of the referent. When unspecified, the local namespace is inferred. Even when policy targets a resource in a different namespace, it MUST only apply to traffic originating from the same namespace as the policy.
+    /// Namespace is the namespace of the referent. When unspecified, the local
+    /// namespace is inferred. Even when policy targets a resource in a different
+    /// namespace, it MUST only apply to traffic originating from the same
+    /// namespace as the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -51,10 +59,16 @@ pub struct VpcAssociationPolicyTargetRef {
 /// VpcAssociationPolicyStatus defines the observed state of VpcAssociationPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VpcAssociationPolicyStatus {
-    /// Conditions describe the current conditions of the VpcAssociationPolicy. 
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe VpcAssociationPolicy state. 
-    ///  Known condition types are: 
-    ///  * "Accepted"
+    /// Conditions describe the current conditions of the VpcAssociationPolicy.
+    /// 
+    /// Implementations should prefer to express Policy conditions
+    /// using the `PolicyConditionType` and `PolicyConditionReason`
+    /// constants so that operators and tools can converge on a common
+    /// vocabulary to describe VpcAssociationPolicy state.
+    /// 
+    /// Known condition types are:
+    /// 
+    /// * "Accepted"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

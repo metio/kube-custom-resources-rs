@@ -30,6 +30,9 @@ pub struct ClusterFilterSpec {
     /// Use this option if you want to use the full regex syntax.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchRegex")]
     pub match_regex: Option<String>,
+    /// An ordinal to influence filter ordering
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinal: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

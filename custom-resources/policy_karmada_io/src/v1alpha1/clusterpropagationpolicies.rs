@@ -20,11 +20,9 @@ pub struct ClusterPropagationPolicySpec {
     /// ActivationPreference indicates how the referencing resource template will
     /// be propagated, in case of policy changes.
     /// 
-    /// 
     /// If empty, the resource template will respond to policy changes
     /// immediately, in other words, any policy changes will drive the resource
     /// template to be propagated immediately as per the current propagation rules.
-    /// 
     /// 
     /// If the value is 'Lazy' means the policy changes will not take effect for now
     /// but defer to the resource template changes, in other words, the resource
@@ -46,7 +44,6 @@ pub struct ClusterPropagationPolicySpec {
     /// ConflictResolution declares how potential conflict should be handled when
     /// a resource that is being propagated already exists in the target cluster.
     /// 
-    /// 
     /// It defaults to "Abort" which means stop propagating to avoid unexpected
     /// overwrites. The "Overwrite" might be useful when migrating legacy cluster
     /// resources to Karmada, in which case conflict is predictable and can be
@@ -56,11 +53,9 @@ pub struct ClusterPropagationPolicySpec {
     /// DependentOverrides represents the list of overrides(OverridePolicy)
     /// which must present before the current PropagationPolicy takes effect.
     /// 
-    /// 
     /// It used to explicitly specify overrides which current PropagationPolicy rely on.
     /// A typical scenario is the users create OverridePolicy(ies) and resources at the same time,
     /// they want to ensure the new-created policies would be adopted.
-    /// 
     /// 
     /// Note: For the overrides, OverridePolicy(ies) in current namespace and ClusterOverridePolicy(ies),
     /// which not present in this list will still be applied if they matches the resources.
@@ -82,15 +77,12 @@ pub struct ClusterPropagationPolicySpec {
     /// If set to true, resources will be preserved on the member clusters.
     /// Default is false, which means resources will be deleted along with the resource template.
     /// 
-    /// 
     /// This setting is particularly useful during workload migration scenarios to ensure
     /// that rollback can occur quickly without affecting the workloads running on the
     /// member clusters.
     /// 
-    /// 
     /// Additionally, this setting applies uniformly across all member clusters and will not
     /// selectively control preservation on only some clusters.
-    /// 
     /// 
     /// Note: This setting does not apply to the deletion of the policy itself.
     /// When the policy is deleted, the resource templates and their corresponding
@@ -105,7 +97,6 @@ pub struct ClusterPropagationPolicySpec {
     /// not be preempted by following policies even with a higher priority.
     /// See Preemption for more details.
     /// 
-    /// 
     /// In case of two policies have the same priority, the one with a more precise
     /// matching rules in ResourceSelectors wins:
     /// - matching by name(resourceSelector.name) has higher priority than
@@ -115,7 +106,6 @@ pub struct ClusterPropagationPolicySpec {
     /// If there is still no winner at this point, the one with the lower alphabetic
     /// order wins, e.g. policy 'bar' has higher priority than 'foo'.
     /// 
-    /// 
     /// The higher the value, the higher the priority. Defaults to zero.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
@@ -124,7 +114,6 @@ pub struct ClusterPropagationPolicySpec {
     /// the referencing resources could be omitted(for saving config effort) from 'resourceSelectors' as they will be
     /// propagated along with the Deployment. In addition to the propagating process, the referencing resources will be
     /// migrated along with the Deployment in the fail-over scenario.
-    /// 
     /// 
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagateDeps")]
@@ -197,6 +186,22 @@ pub struct ClusterPropagationPolicyFailoverApplication {
     /// Defaults to "Graciously".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeMode")]
     pub purge_mode: Option<ClusterPropagationPolicyFailoverApplicationPurgeMode>,
+    /// StatePreservation defines the policy for preserving and restoring state data
+    /// during failover events for stateful applications.
+    /// 
+    /// When an application fails over from one cluster to another, this policy enables
+    /// the extraction of critical data from the original resource configuration.
+    /// Upon successful migration, the extracted data is then re-injected into the new
+    /// resource, ensuring that the application can resume operation with its previous
+    /// state intact.
+    /// This is particularly useful for stateful applications where maintaining data
+    /// consistency across failover events is crucial.
+    /// If not specified, means no state data will be preserved.
+    /// 
+    /// Note: This requires the StatefulFailoverInjection feature gate to be enabled,
+    /// which is alpha.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statePreservation")]
+    pub state_preservation: Option<ClusterPropagationPolicyFailoverApplicationStatePreservation>,
 }
 
 /// DecisionConditions indicates the decision conditions of performing the failover process.
@@ -224,12 +229,58 @@ pub enum ClusterPropagationPolicyFailoverApplicationPurgeMode {
     Never,
 }
 
+/// StatePreservation defines the policy for preserving and restoring state data
+/// during failover events for stateful applications.
+/// 
+/// When an application fails over from one cluster to another, this policy enables
+/// the extraction of critical data from the original resource configuration.
+/// Upon successful migration, the extracted data is then re-injected into the new
+/// resource, ensuring that the application can resume operation with its previous
+/// state intact.
+/// This is particularly useful for stateful applications where maintaining data
+/// consistency across failover events is crucial.
+/// If not specified, means no state data will be preserved.
+/// 
+/// Note: This requires the StatefulFailoverInjection feature gate to be enabled,
+/// which is alpha.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicyFailoverApplicationStatePreservation {
+    /// Rules contains a list of StatePreservationRule configurations.
+    /// Each rule specifies a JSONPath expression targeting specific pieces of
+    /// state data to be preserved during failover events. An AliasLabelName is associated
+    /// with each rule, serving as a label key when the preserved data is passed
+    /// to the new cluster.
+    pub rules: Vec<ClusterPropagationPolicyFailoverApplicationStatePreservationRules>,
+}
+
+/// StatePreservationRule defines a single rule for state preservation.
+/// It includes a JSONPath expression and an alias name that will be used
+/// as a label key when passing state information to the new cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPropagationPolicyFailoverApplicationStatePreservationRules {
+    /// AliasLabelName is the name that will be used as a label key when the preserved
+    /// data is passed to the new cluster. This facilitates the injection of the
+    /// preserved state back into the application resources during recovery.
+    #[serde(rename = "aliasLabelName")]
+    pub alias_label_name: String,
+    /// JSONPath is the JSONPath template used to identify the state data
+    /// to be preserved from the original resource configuration.
+    /// The JSONPath syntax follows the Kubernetes specification:
+    /// https://kubernetes.io/docs/reference/kubectl/jsonpath/
+    /// 
+    /// Note: The JSONPath expression will start searching from the "status" field of
+    /// the API resource object by default. For example, to extract the "availableReplicas"
+    /// from a Deployment, the JSONPath expression should be "{.availableReplicas}", not
+    /// "{.status.availableReplicas}".
+    #[serde(rename = "jsonPath")]
+    pub json_path: String,
+}
+
 /// Placement represents the rule for select clusters to propagate resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPropagationPolicyPlacement {
     /// ClusterAffinities represents scheduling restrictions to multiple cluster
     /// groups that indicated by ClusterAffinityTerm.
-    /// 
     /// 
     /// The scheduler will evaluate these groups one by one in the order they
     /// appear in the spec, the group that does not satisfy scheduling restrictions
@@ -237,16 +288,13 @@ pub struct ClusterPropagationPolicyPlacement {
     /// unless it also belongs to the next group(a cluster could belong to multiple
     /// groups).
     /// 
-    /// 
     /// If none of the groups satisfy the scheduling restrictions, then scheduling
     /// fails, which means no cluster will be selected.
-    /// 
     /// 
     /// Note:
     ///   1. ClusterAffinities can not co-exist with ClusterAffinity.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    /// 
     /// 
     /// Potential use case 1:
     /// The private clusters in the local data center could be the main group, and
@@ -254,7 +302,6 @@ pub struct ClusterPropagationPolicyPlacement {
     /// group. So that the Karmada scheduler would prefer to schedule workloads
     /// to the main group and the second group will only be considered in case of
     /// the main group does not satisfy restrictions(like, lack of resources).
-    /// 
     /// 
     /// Potential use case 2:
     /// For the disaster recovery scenario, the clusters could be organized to

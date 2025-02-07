@@ -5,6 +5,8 @@ metadata:
 spec:
   group: "gloo.solo.io"
   names:
+    categories:
+      - "gloo-gateway"
     kind: "Proxy"
     listKind: "ProxyList"
     plural: "proxies"
@@ -456,6 +458,9 @@ spec:
                                   x-kubernetes-int-or-string: true
                               type: "object"
                             type: "array"
+                          tcpStats:
+                            nullable: true
+                            type: "boolean"
                         type: "object"
                       routeOptions:
                         properties:

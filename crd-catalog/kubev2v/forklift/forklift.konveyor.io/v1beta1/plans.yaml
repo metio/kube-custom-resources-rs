@@ -50,6 +50,9 @@ spec:
                 description:
                   description: "Description"
                   type: "string"
+                diskBus:
+                  description: "Specify the disk bus which will be applied to all VMs disks in plan.\nPossible options 'scsi', 'sata' and 'virtio'.\nDefaults to 'virtio'."
+                  type: "string"
                 map:
                   description: "Resource mapping."
                   properties:
@@ -109,6 +112,10 @@ spec:
                     - "network"
                     - "storage"
                   type: "object"
+                migrateSharedDisks:
+                  default: true
+                  description: "Determines if the plan should migrate shared disks."
+                  type: "boolean"
                 preserveClusterCpuModel:
                   description: "Preserve the CPU model and flags the VM runs with in its oVirt cluster."
                   type: "boolean"
@@ -837,8 +844,24 @@ spec:
                                 items:
                                   description: "Precopy durations"
                                   properties:
+                                    createTaskId:
+                                      type: "string"
+                                    deltas:
+                                      items:
+                                        properties:
+                                          deltaId:
+                                            type: "string"
+                                          disk:
+                                            type: "string"
+                                        required:
+                                          - "deltaId"
+                                          - "disk"
+                                        type: "object"
+                                      type: "array"
                                     end:
                                       format: "date-time"
+                                      type: "string"
+                                    removeTaskId:
                                       type: "string"
                                     snapshot:
                                       type: "string"

@@ -381,11 +381,24 @@ pub struct MigrationStatusVmsWarm {
 /// Precopy durations
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MigrationStatusVmsWarmPrecopies {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTaskId")]
+    pub create_task_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deltas: Option<Vec<MigrationStatusVmsWarmPrecopiesDeltas>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeTaskId")]
+    pub remove_task_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MigrationStatusVmsWarmPrecopiesDeltas {
+    #[serde(rename = "deltaId")]
+    pub delta_id: String,
+    pub disk: String,
 }
 

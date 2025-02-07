@@ -206,6 +206,9 @@ spec:
                             - "sku"
                             - "version"
                           type: "object"
+                        outboundType:
+                          description: "OutboundType is a strategy for how egress from cluster is achieved. When not specified default is \"Loadbalancer\"."
+                          type: "string"
                         type:
                           description: "InstanceType defines the azure instance type.\neg. Standard_DS_V2"
                           type: "string"
@@ -358,7 +361,7 @@ spec:
                       description: "OpenStack is the configuration used when installing on OpenStack."
                       properties:
                         additionalSecurityGroupIDs:
-                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the format sg-xxxx."
+                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the UUID format."
                           items:
                             type: "string"
                           type: "array"

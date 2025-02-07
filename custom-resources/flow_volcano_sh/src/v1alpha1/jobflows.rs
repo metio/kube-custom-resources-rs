@@ -21,7 +21,7 @@ pub struct JobFlowSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flows: Option<Vec<JobFlowFlows>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobRetainPolicy")]
-    pub job_retain_policy: Option<String>,
+    pub job_retain_policy: Option<JobFlowJobRetainPolicy>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -80,6 +80,14 @@ pub struct JobFlowFlowsDependsOnProbeTcpSocketList {
     pub port: i64,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskName")]
     pub task_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobFlowJobRetainPolicy {
+    #[serde(rename = "retain")]
+    Retain,
+    #[serde(rename = "delete")]
+    Delete,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

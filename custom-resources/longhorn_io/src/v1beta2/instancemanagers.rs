@@ -61,6 +61,8 @@ pub struct InstanceManagerStatus {
     pub api_min_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImages")]
+    pub backing_images: Option<BTreeMap<String, InstanceManagerStatusBackingImages>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngineStatus")]
@@ -80,6 +82,26 @@ pub struct InstanceManagerStatus {
     pub proxy_api_min_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyApiVersion")]
     pub proxy_api_version: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceManagerStatusBackingImages {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentChecksum")]
+    pub current_checksum: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskUUID")]
+    pub disk_uuid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub progress: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

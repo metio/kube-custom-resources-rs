@@ -44,6 +44,8 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub destination: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filesystem: Option<PerconaServerMongoDBRestoreBackupSourceFilesystem>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
@@ -78,6 +80,11 @@ pub struct PerconaServerMongoDBRestoreBackupSourceAzure {
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDBRestoreBackupSourceFilesystem {
+    pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

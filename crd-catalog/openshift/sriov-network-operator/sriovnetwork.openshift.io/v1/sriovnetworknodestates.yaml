@@ -82,6 +82,9 @@ spec:
                                         type: "string"
                                       description: "external_ids field in the Interface table in OVSDB"
                                       type: "object"
+                                    mtuRequest:
+                                      description: "mtu_request field in the Interface table in OVSDB"
+                                      type: "integer"
                                     options:
                                       additionalProperties:
                                         type: "string"
@@ -151,6 +154,15 @@ spec:
                       - "pciAddress"
                     type: "object"
                   type: "array"
+                system:
+                  properties:
+                    rdmaMode:
+                      description: "RDMA subsystem. Allowed value \"shared\", \"exclusive\"."
+                      enum:
+                        - "shared"
+                        - "exclusive"
+                      type: "string"
+                  type: "object"
               type: "object"
             status:
               description: "SriovNetworkNodeStateStatus defines the observed state of SriovNetworkNodeState"
@@ -195,6 +207,9 @@ spec:
                                         type: "string"
                                       description: "external_ids field in the Interface table in OVSDB"
                                       type: "object"
+                                    mtuRequest:
+                                      description: "mtu_request field in the Interface table in OVSDB"
+                                      type: "integer"
                                     options:
                                       additionalProperties:
                                         type: "string"
@@ -299,6 +314,15 @@ spec:
                   type: "string"
                 syncStatus:
                   type: "string"
+                system:
+                  properties:
+                    rdmaMode:
+                      description: "RDMA subsystem. Allowed value \"shared\", \"exclusive\"."
+                      enum:
+                        - "shared"
+                        - "exclusive"
+                      type: "string"
+                  type: "object"
               type: "object"
           type: "object"
       served: true
