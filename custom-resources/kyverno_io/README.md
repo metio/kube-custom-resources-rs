@@ -31,10 +31,12 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `PolicyException`
 - `UpdateRequest`
 ### kyverno.io/v2alpha1
+- `CELPolicyException`
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`
 - `GlobalContextEntry`
 - `PolicyException`
+- `ValidatingPolicy`
 ### kyverno.io/v2beta1
 - `CleanupPolicy`
 - `ClusterCleanupPolicy`

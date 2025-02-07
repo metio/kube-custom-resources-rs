@@ -41,7 +41,7 @@ pub struct ClusterClassSpec {
 /// for provisioning the Control Plane for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlane {
-    /// MachineTemplate defines the metadata and infrastructure information
+    /// machineInfrastructure defines the metadata and infrastructure information
     /// for control plane machines.
     /// 
     /// This field is supported if and only if the control plane provider template
@@ -61,7 +61,7 @@ pub struct ClusterClassControlPlane {
     pub r#ref: ObjectReference,
 }
 
-/// MachineTemplate defines the metadata and infrastructure information
+/// machineInfrastructure defines the metadata and infrastructure information
 /// for control plane machines.
 /// 
 /// This field is supported if and only if the control plane provider template
@@ -125,7 +125,7 @@ pub struct ClusterClassControlPlaneMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -368,7 +368,7 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels

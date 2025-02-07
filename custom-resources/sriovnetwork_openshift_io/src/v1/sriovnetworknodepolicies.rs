@@ -114,6 +114,9 @@ pub struct SriovNetworkNodePolicyBridgeOvsUplinkInterface {
     /// external_ids field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
+    /// mtu_request field in the Interface table in OVSDB
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mtuRequest")]
+    pub mtu_request: Option<i64>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,

@@ -16,18 +16,21 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CalicoNodeStatusSpec {
-    /// Classes declares the types of information to monitor for this calico/node, and allows for selective status reporting about certain subsets of information.
+    /// Classes declares the types of information to monitor for this calico/node,
+    /// and allows for selective status reporting about certain subsets of information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classes: Option<Vec<String>>,
     /// The node name identifies the Calico node instance for node status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<String>,
-    /// UpdatePeriodSeconds is the period at which CalicoNodeStatus should be updated. Set to 0 to disable CalicoNodeStatus refresh. Maximum update period is one day.
+    /// UpdatePeriodSeconds is the period at which CalicoNodeStatus should be updated.
+    /// Set to 0 to disable CalicoNodeStatus refresh. Maximum update period is one day.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatePeriodSeconds")]
     pub update_period_seconds: Option<i32>,
 }
 
-/// CalicoNodeStatusStatus defines the observed state of CalicoNodeStatus. No validation needed for status since it is updated by Calico.
+/// CalicoNodeStatusStatus defines the observed state of CalicoNodeStatus.
+/// No validation needed for status since it is updated by Calico.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CalicoNodeStatusStatus {
     /// Agent holds agent status on the node.
@@ -36,7 +39,8 @@ pub struct CalicoNodeStatusStatus {
     /// BGP holds node BGP status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bgp: Option<CalicoNodeStatusStatusBgp>,
-    /// LastUpdated is a timestamp representing the server time when CalicoNodeStatus object last updated. It is represented in RFC3339 form and is in UTC.
+    /// LastUpdated is a timestamp representing the server time when CalicoNodeStatus object
+    /// last updated. It is represented in RFC3339 form and is in UTC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// Routes reports routes known to the Calico BGP daemon on the node.
@@ -130,7 +134,8 @@ pub struct CalicoNodeStatusStatusBgpPeersV4 {
     /// State is the BGP session state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    /// Type indicates whether this peer is configured via the node-to-node mesh, or via en explicit global or per-node BGPPeer object.
+    /// Type indicates whether this peer is configured via the node-to-node mesh,
+    /// or via en explicit global or per-node BGPPeer object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -147,7 +152,8 @@ pub struct CalicoNodeStatusStatusBgpPeersV6 {
     /// State is the BGP session state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    /// Type indicates whether this peer is configured via the node-to-node mesh, or via en explicit global or per-node BGPPeer object.
+    /// Type indicates whether this peer is configured via the node-to-node mesh,
+    /// or via en explicit global or per-node BGPPeer object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

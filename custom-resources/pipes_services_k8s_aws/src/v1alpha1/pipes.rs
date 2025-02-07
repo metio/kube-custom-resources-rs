@@ -52,6 +52,10 @@ pub struct PipeSpec {
     /// The ARN of the target resource.
     pub target: String,
     /// The parameters required to set up a target for your pipe.
+    /// 
+    /// For more information about pipe target parameters, including how to use dynamic
+    /// path parameters, see Target parameters (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html)
+    /// in the Amazon EventBridge User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetParameters")]
     pub target_parameters: Option<PipeTargetParameters>,
 }
@@ -92,8 +96,12 @@ pub struct PipeSourceParameters {
     /// The parameters for using a DynamoDB stream as a source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamoDBStreamParameters")]
     pub dynamo_db_stream_parameters: Option<PipeSourceParametersDynamoDbStreamParameters>,
-    /// The collection of event patterns used to filter events. For more information,
-    /// see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)
+    /// The collection of event patterns used to filter events.
+    /// 
+    /// To remove a filter, specify a FilterCriteria object with an empty array of
+    /// Filter objects.
+    /// 
+    /// For more information, see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)
     /// in the Amazon EventBridge User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterCriteria")]
     pub filter_criteria: Option<PipeSourceParametersFilterCriteria>,
@@ -107,6 +115,13 @@ pub struct PipeSourceParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rabbitMQBrokerParameters")]
     pub rabbit_mq_broker_parameters: Option<PipeSourceParametersRabbitMqBrokerParameters>,
     /// The parameters for using a self-managed Apache Kafka stream as a source.
+    /// 
+    /// A self managed cluster refers to any Apache Kafka cluster not hosted by Amazon
+    /// Web Services. This includes both clusters you manage yourself, as well as
+    /// those hosted by a third-party provider, such as Confluent Cloud (https://www.confluent.io/),
+    /// CloudKarafka (https://www.cloudkarafka.com/), or Redpanda (https://redpanda.com/).
+    /// For more information, see Apache Kafka streams as a source (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html)
+    /// in the Amazon EventBridge User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfManagedKafkaParameters")]
     pub self_managed_kafka_parameters: Option<PipeSourceParametersSelfManagedKafkaParameters>,
     /// The parameters for using a Amazon SQS stream as a source.
@@ -167,8 +182,12 @@ pub struct PipeSourceParametersDynamoDbStreamParametersDeadLetterConfig {
     pub arn: Option<String>,
 }
 
-/// The collection of event patterns used to filter events. For more information,
-/// see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)
+/// The collection of event patterns used to filter events.
+/// 
+/// To remove a filter, specify a FilterCriteria object with an empty array of
+/// Filter objects.
+/// 
+/// For more information, see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)
 /// in the Amazon EventBridge User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParametersFilterCriteria {
@@ -272,6 +291,13 @@ pub struct PipeSourceParametersRabbitMqBrokerParametersCredentials {
 }
 
 /// The parameters for using a self-managed Apache Kafka stream as a source.
+/// 
+/// A self managed cluster refers to any Apache Kafka cluster not hosted by Amazon
+/// Web Services. This includes both clusters you manage yourself, as well as
+/// those hosted by a third-party provider, such as Confluent Cloud (https://www.confluent.io/),
+/// CloudKarafka (https://www.cloudkarafka.com/), or Redpanda (https://redpanda.com/).
+/// For more information, see Apache Kafka streams as a source (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html)
+/// in the Amazon EventBridge User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeSourceParametersSelfManagedKafkaParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalBootstrapServers")]
@@ -337,6 +363,10 @@ pub struct PipeSourceParametersSqsQueueParameters {
 }
 
 /// The parameters required to set up a target for your pipe.
+/// 
+/// For more information about pipe target parameters, including how to use dynamic
+/// path parameters, see Target parameters (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html)
+/// in the Amazon EventBridge User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParameters {
     /// The parameters for using an Batch job as a target.
@@ -357,20 +387,20 @@ pub struct PipeTargetParameters {
     pub http_parameters: Option<PipeTargetParametersHttpParameters>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputTemplate")]
     pub input_template: Option<String>,
-    /// The parameters for using a Kinesis stream as a source.
+    /// The parameters for using a Kinesis stream as a target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisStreamParameters")]
     pub kinesis_stream_parameters: Option<PipeTargetParametersKinesisStreamParameters>,
     /// The parameters for using a Lambda function as a target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionParameters")]
     pub lambda_function_parameters: Option<PipeTargetParametersLambdaFunctionParameters>,
     /// These are custom parameters to be used when the target is a Amazon Redshift
-    /// cluster to invoke the Amazon Redshift Data API ExecuteStatement.
+    /// cluster to invoke the Amazon Redshift Data API BatchExecuteStatement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redshiftDataParameters")]
     pub redshift_data_parameters: Option<PipeTargetParametersRedshiftDataParameters>,
     /// The parameters for using a SageMaker pipeline as a target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerPipelineParameters")]
     pub sage_maker_pipeline_parameters: Option<PipeTargetParametersSageMakerPipelineParameters>,
-    /// The parameters for using a Amazon SQS stream as a source.
+    /// The parameters for using a Amazon SQS stream as a target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqsQueueParameters")]
     pub sqs_queue_parameters: Option<PipeTargetParametersSqsQueueParameters>,
     /// The parameters for using a Step Functions state machine as a target.
@@ -745,7 +775,7 @@ pub struct PipeTargetParametersHttpParameters {
     pub query_string_parameters: Option<BTreeMap<String, String>>,
 }
 
-/// The parameters for using a Kinesis stream as a source.
+/// The parameters for using a Kinesis stream as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersKinesisStreamParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "partitionKey")]
@@ -760,7 +790,7 @@ pub struct PipeTargetParametersLambdaFunctionParameters {
 }
 
 /// These are custom parameters to be used when the target is a Amazon Redshift
-/// cluster to invoke the Amazon Redshift Data API ExecuteStatement.
+/// cluster to invoke the Amazon Redshift Data API BatchExecuteStatement.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersRedshiftDataParameters {
     /// // Redshift Database
@@ -775,7 +805,7 @@ pub struct PipeTargetParametersRedshiftDataParameters {
     /// // A list of SQLs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sqls: Option<Vec<String>>,
-    /// // A name for Redshift DataAPI statement which can be used as filter of //
+    /// // A name for Redshift DataAPI statement which can be used as filter of//
     /// ListStatement.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statementName")]
     pub statement_name: Option<String>,
@@ -800,7 +830,7 @@ pub struct PipeTargetParametersSageMakerPipelineParametersPipelineParameterList 
     pub value: Option<String>,
 }
 
-/// The parameters for using a Amazon SQS stream as a source.
+/// The parameters for using a Amazon SQS stream as a target.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PipeTargetParametersSqsQueueParameters {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageDeduplicationID")]

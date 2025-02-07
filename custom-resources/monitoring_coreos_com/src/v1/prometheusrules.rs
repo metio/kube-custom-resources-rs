@@ -30,6 +30,13 @@ pub struct PrometheusRuleGroups {
     /// Interval determines how often rules in the group are evaluated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
+    /// Labels to add or overwrite before storing the result for its rules.
+    /// The labels defined at the rule level take precedence.
+    /// 
+    /// It requires Prometheus >= 3.0.0.
+    /// The field is ignored for Thanos Ruler.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Limit the number of alerts an alerting rule and series a recording
     /// rule can produce.
     /// Limit is supported starting with Prometheus >= 2.31 and Thanos Ruler >= 0.24.

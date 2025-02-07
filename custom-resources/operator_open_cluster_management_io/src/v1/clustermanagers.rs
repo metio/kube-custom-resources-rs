@@ -205,6 +205,10 @@ pub struct ClusterManagerRegistrationConfiguration {
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<ClusterManagerRegistrationConfigurationFeatureGates>>,
+    /// RegistrationDrivers represent the list of hub registration drivers that contain information used by hub to initialize the hub cluster
+    /// A RegistrationDriverHub contains details of authentication type and the hub cluster ARN
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDrivers")]
+    pub registration_drivers: Option<Vec<ClusterManagerRegistrationConfigurationRegistrationDrivers>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -222,6 +226,25 @@ pub struct ClusterManagerRegistrationConfigurationFeatureGates {
 pub enum ClusterManagerRegistrationConfigurationFeatureGatesMode {
     Enable,
     Disable,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDrivers {
+    /// Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
+    pub auth_type: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAuthType>,
+    /// This represents the hub cluster ARN
+    /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
+    pub hub_cluster_arn: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerRegistrationConfigurationRegistrationDriversAuthType {
+    #[serde(rename = "csr")]
+    Csr,
+    #[serde(rename = "awsirsa")]
+    Awsirsa,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.

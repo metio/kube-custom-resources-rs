@@ -14,9 +14,8 @@ use self::prelude::*;
 /// 
 /// A storage lake of event data against which you can run complex SQL-based
 /// queries. An event data store can include events that you have logged on your
-/// account from the last 90 to 2555 days (about three months to up to seven
-/// years). To select events for an event data store, use advanced event selectors
-/// (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced).
+/// account. To select events for an event data store, use advanced event selectors
+/// (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-lake-concepts.html#adv-event-selectors).
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cloudtrail.services.k8s.aws", version = "v1alpha1", kind = "EventDataStore", plural = "eventdatastores")]
 #[kube(namespaced)]
@@ -26,13 +25,26 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct EventDataStoreSpec {
     /// The advanced event selectors to use to select the events for the data store.
-    /// For more information about how to use advanced event selectors, see Log events
-    /// by using advanced event selectors (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced)
+    /// You can configure up to five advanced event selectors for each event data
+    /// store.
+    /// 
+    /// For more information about how to use advanced event selectors to log CloudTrail
+    /// events, see Log events by using advanced event selectors (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html#creating-data-event-selectors-advanced)
+    /// in the CloudTrail User Guide.
+    /// 
+    /// For more information about how to use advanced event selectors to include
+    /// Config configuration items in your event data store, see Create an event
+    /// data store for Config configuration items (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/lake-eds-cli.html#lake-cli-create-eds-config)
+    /// in the CloudTrail User Guide.
+    /// 
+    /// For more information about how to use advanced event selectors to include
+    /// events outside of Amazon Web Services events in your event data store, see
+    /// Create an integration to log events from outside Amazon Web Services (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/lake-integrations-cli.html#lake-cli-create-integration)
     /// in the CloudTrail User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedEventSelectors")]
     pub advanced_event_selectors: Option<Vec<EventDataStoreAdvancedEventSelectors>>,
-    /// Specifies whether the event data store includes events from all regions,
-    /// or only from the region in which the event data store is created.
+    /// Specifies whether the event data store includes events from all Regions,
+    /// or only from the Region in which the event data store is created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiRegionEnabled")]
     pub multi_region_enabled: Option<bool>,
     /// The name of the event data store.
@@ -41,8 +53,23 @@ pub struct EventDataStoreSpec {
     /// in Organizations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "organizationEnabled")]
     pub organization_enabled: Option<bool>,
-    /// The retention period of the event data store, in days. You can set a retention
-    /// period of up to 2555 days, the equivalent of seven years.
+    /// The retention period of the event data store, in days. If BillingMode is
+    /// set to EXTENDABLE_RETENTION_PRICING, you can set a retention period of up
+    /// to 3653 days, the equivalent of 10 years. If BillingMode is set to FIXED_RETENTION_PRICING,
+    /// you can set a retention period of up to 2557 days, the equivalent of seven
+    /// years.
+    /// 
+    /// CloudTrail Lake determines whether to retain an event by checking if the
+    /// eventTime of the event is within the specified retention period. For example,
+    /// if you set a retention period of 90 days, CloudTrail will remove events when
+    /// the eventTime is older than 90 days.
+    /// 
+    /// If you plan to copy trail events to this event data store, we recommend that
+    /// you consider both the age of the events that you want to copy as well as
+    /// how long you want to keep the copied events in your event data store. For
+    /// example, if you copy trail events that are 5 years old and specify a retention
+    /// period of 7 years, the event data store will retain those events for two
+    /// years.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,25 +81,74 @@ pub struct EventDataStoreSpec {
     pub termination_protection_enabled: Option<bool>,
 }
 
-/// Advanced event selectors let you create fine-grained selectors for the following
-/// CloudTrail event record ﬁelds. They help you control costs by logging only
-/// those events that are important to you. For more information about advanced
-/// event selectors, see Logging data events for trails (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html)
-/// in the CloudTrail User Guide.
+/// Advanced event selectors let you create fine-grained selectors for CloudTrail
+/// management, data, and network activity events. They help you control costs
+/// by logging only those events that are important to you. For more information
+/// about configuring advanced event selectors, see the Logging data events (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html),
+/// Logging network activity events (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-network-events-with-cloudtrail.html),
+/// and Logging management events (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-management-events-with-cloudtrail.html)
+/// topics in the CloudTrail User Guide.
 /// 
-///    * readOnly
+/// You cannot apply both event selectors and advanced event selectors to a trail.
+/// 
+/// Supported CloudTrail event record fields for management events
+/// 
+///    * eventCategory (required)
 /// 
 ///    * eventSource
 /// 
+///    * readOnly
+/// 
+/// The following additional fields are available for event data stores:
+/// 
 ///    * eventName
 /// 
-///    * eventCategory
+///    * eventType
 /// 
-///    * resources.type
+///    * sessionCredentialFromConsole
+/// 
+///    * userIdentity.arn
+/// 
+/// Supported CloudTrail event record fields for data events
+/// 
+///    * eventCategory (required)
+/// 
+///    * resources.type (required)
+/// 
+///    * readOnly
+/// 
+///    * eventName
 /// 
 ///    * resources.ARN
 /// 
-/// You cannot apply both event selectors and advanced event selectors to a trail.
+/// The following additional fields are available for event data stores:
+/// 
+///    * eventSource
+/// 
+///    * eventType
+/// 
+///    * sessionCredentialFromConsole
+/// 
+///    * userIdentity.arn
+/// 
+/// Supported CloudTrail event record fields for network activity events
+/// 
+/// Network activity events is in preview release for CloudTrail and is subject
+/// to change.
+/// 
+///    * eventCategory (required)
+/// 
+///    * eventSource (required)
+/// 
+///    * eventName
+/// 
+///    * errorCode - The only valid value for errorCode is VpceAccessDenied.
+/// 
+///    * vpcEndpointId
+/// 
+/// For event data stores for CloudTrail Insights events, Config configuration
+/// items, Audit Manager evidence, or events outside of Amazon Web Services,
+/// the only supported field is eventCategory.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventDataStoreAdvancedEventSelectors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
@@ -100,7 +176,8 @@ pub struct EventDataStoreAdvancedEventSelectorsFieldSelectors {
     pub starts_with: Option<Vec<String>>,
 }
 
-/// A custom key-value pair associated with a resource such as a CloudTrail trail.
+/// A custom key-value pair associated with a resource such as a CloudTrail trail,
+/// event data store, dashboard, or channel.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventDataStoreTags {
     #[serde(default, skip_serializing_if = "Option::is_none")]

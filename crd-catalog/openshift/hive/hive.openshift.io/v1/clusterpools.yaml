@@ -366,6 +366,9 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                        discardLocalSsdOnHibernate:
+                          description: "DiscardLocalSsdOnHibernate passes the specified value through to the GCP API to indicate\nwhether the content of any local SSDs should be preserved or discarded. See\nhttps://cloud.google.com/compute/docs/disks/local-ssd#stop_instance\nThis field is required when attempting to hibernate clusters with instances possessing\nSSDs -- e.g. those with GPUs."
+                          type: "boolean"
                         privateServiceConnect:
                           description: "PrivateSericeConnect allows users to enable access to the cluster's API server using GCP\nPrivate Service Connect. It includes a forwarding rule paired with a Service Attachment\nacross GCP accounts and allows clients to connect to services using GCP internal networking\nof using public load balancers."
                           properties:

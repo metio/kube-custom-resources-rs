@@ -24,6 +24,8 @@ pub struct SriovNetworkNodeStateSpec {
     pub bridges: Option<SriovNetworkNodeStateBridges>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<SriovNetworkNodeStateInterfaces>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub system: Option<SriovNetworkNodeStateSystem>,
 }
 
 /// Bridges contains list of bridges
@@ -81,6 +83,9 @@ pub struct SriovNetworkNodeStateBridgesOvsUplinksInterface {
     /// external_ids field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
+    /// mtu_request field in the Interface table in OVSDB
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mtuRequest")]
+    pub mtu_request: Option<i64>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
@@ -130,6 +135,21 @@ pub struct SriovNetworkNodeStateInterfacesVfGroups {
     pub vf_range: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SriovNetworkNodeStateSystem {
+    /// RDMA subsystem. Allowed value "shared", "exclusive".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rdmaMode")]
+    pub rdma_mode: Option<SriovNetworkNodeStateSystemRdmaMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SriovNetworkNodeStateSystemRdmaMode {
+    #[serde(rename = "shared")]
+    Shared,
+    #[serde(rename = "exclusive")]
+    Exclusive,
+}
+
 /// SriovNetworkNodeStateStatus defines the observed state of SriovNetworkNodeState
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodeStateStatus {
@@ -142,6 +162,8 @@ pub struct SriovNetworkNodeStateStatus {
     pub last_sync_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncStatus")]
     pub sync_status: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub system: Option<SriovNetworkNodeStateStatusSystem>,
 }
 
 /// Bridges contains list of bridges
@@ -199,6 +221,9 @@ pub struct SriovNetworkNodeStateStatusBridgesOvsUplinksInterface {
     /// external_ids field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
+    /// mtu_request field in the Interface table in OVSDB
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mtuRequest")]
+    pub mtu_request: Option<i64>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
@@ -274,5 +299,20 @@ pub struct SriovNetworkNodeStateStatusInterfacesVfs {
     pub vendor: Option<String>,
     #[serde(rename = "vfID")]
     pub vf_id: i64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SriovNetworkNodeStateStatusSystem {
+    /// RDMA subsystem. Allowed value "shared", "exclusive".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rdmaMode")]
+    pub rdma_mode: Option<SriovNetworkNodeStateStatusSystemRdmaMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SriovNetworkNodeStateStatusSystemRdmaMode {
+    #[serde(rename = "shared")]
+    Shared,
+    #[serde(rename = "exclusive")]
+    Exclusive,
 }
 

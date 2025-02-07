@@ -55,7 +55,7 @@ pub enum BackupRepositoryRepositoryType {
 /// BackupRepositoryStatus is the current status of a BackupRepository.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupRepositoryStatus {
-    /// LastMaintenanceTime is the last time maintenance was run.
+    /// LastMaintenanceTime is the last time repo maintenance succeeded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastMaintenanceTime")]
     pub last_maintenance_time: Option<String>,
     /// Message is a message about the current status of the BackupRepository.
@@ -64,6 +64,9 @@ pub struct BackupRepositoryStatus {
     /// Phase is the current state of the BackupRepository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<BackupRepositoryStatusPhase>,
+    /// RecentMaintenance is status of the recent repo maintenance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recentMaintenance")]
+    pub recent_maintenance: Option<Vec<BackupRepositoryStatusRecentMaintenance>>,
 }
 
 /// BackupRepositoryStatus is the current status of a BackupRepository.
@@ -72,5 +75,27 @@ pub enum BackupRepositoryStatusPhase {
     New,
     Ready,
     NotReady,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupRepositoryStatusRecentMaintenance {
+    /// CompleteTimestamp is the completion time of the repo maintenance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completeTimestamp")]
+    pub complete_timestamp: Option<String>,
+    /// Message is a message about the current status of the repo maintenance.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    /// Result is the result of the repo maintenance.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub result: Option<BackupRepositoryStatusRecentMaintenanceResult>,
+    /// StartTimestamp is the start time of the repo maintenance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTimestamp")]
+    pub start_timestamp: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupRepositoryStatusRecentMaintenanceResult {
+    Succeeded,
+    Failed,
 }
 

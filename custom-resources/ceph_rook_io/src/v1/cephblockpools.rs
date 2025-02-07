@@ -241,6 +241,9 @@ pub struct CephBlockPoolStatus {
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    /// optional
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolID")]
+    pub pool_id: Option<i64>,
     /// SnapshotScheduleStatusSpec is the status of the snapshot schedule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephBlockPoolStatusSnapshotScheduleStatus>,

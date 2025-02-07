@@ -18,7 +18,8 @@ use self::prelude::*;
 pub struct IPAMConfigSpec {
     #[serde(rename = "autoAllocateBlocks")]
     pub auto_allocate_blocks: bool,
-    /// MaxBlocksPerHost, if non-zero, is the max number of blocks that can be affine to each host.
+    /// MaxBlocksPerHost, if non-zero, is the max number of blocks that can be
+    /// affine to each host.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBlocksPerHost")]
     pub max_blocks_per_host: Option<i64>,
     #[serde(rename = "strictAffinity")]

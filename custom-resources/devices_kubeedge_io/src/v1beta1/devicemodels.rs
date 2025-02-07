@@ -9,7 +9,8 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// DeviceModelSpec defines the model for a device.It is a blueprint which describes the device capabilities and access mechanism via property visitors.
+/// DeviceModelSpec defines the model for a device.It is a blueprint which describes the device
+/// capabilities and access mechanism via property visitors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "devices.kubeedge.io", version = "v1beta1", kind = "DeviceModel", plural = "devicemodels")]
 #[kube(namespaced)]
@@ -38,7 +39,8 @@ pub struct DeviceModelProperties {
     pub maximum: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub minimum: Option<String>,
-    /// Required: The device property name. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
+    /// Required: The device property name.
+    /// Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Required: Type of device property, ENUM: INT,FLOAT,DOUBLE,STRING,BOOLEAN,BYTES,STREAM

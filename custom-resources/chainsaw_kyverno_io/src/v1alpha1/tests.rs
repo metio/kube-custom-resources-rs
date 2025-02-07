@@ -166,6 +166,9 @@ pub struct TestCatchCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestCatchCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -569,6 +572,9 @@ pub struct TestCatchScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestCatchScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -954,6 +960,9 @@ pub struct TestStepsCatchCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsCatchCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -1357,6 +1366,9 @@ pub struct TestStepsCatchScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsCatchScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -1603,6 +1615,9 @@ pub struct TestStepsCleanupCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsCleanupCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -2006,6 +2021,9 @@ pub struct TestStepsCleanupScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsCleanupScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -2280,6 +2298,9 @@ pub struct TestStepsFinallyCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsFinallyCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -2683,6 +2704,9 @@ pub struct TestStepsFinallyScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsFinallyScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -3144,6 +3168,9 @@ pub struct TestStepsTryCommand {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsTryCommandOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,
@@ -3888,6 +3915,9 @@ pub struct TestStepsTryScript {
     /// Outputs defines output bindings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<Vec<TestStepsTryScriptOutputs>>,
+    /// SkipCommandOutput removes the command from the output logs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCommandOutput")]
+    pub skip_command_output: Option<bool>,
     /// SkipLogOutput removes the output from the command. Useful for sensitive logs or to reduce noise.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLogOutput")]
     pub skip_log_output: Option<bool>,

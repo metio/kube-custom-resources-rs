@@ -26,10 +26,11 @@ pub struct TableSpec {
     /// capacity. This setting can be changed later.
     /// 
     ///    * PROVISIONED - We recommend using PROVISIONED for predictable workloads.
-    ///    PROVISIONED sets the billing mode to Provisioned Mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html#HowItWorks.ProvisionedThroughput.Manual).
+    ///    PROVISIONED sets the billing mode to Provisioned capacity mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html).
     /// 
     ///    * PAY_PER_REQUEST - We recommend using PAY_PER_REQUEST for unpredictable
-    ///    workloads. PAY_PER_REQUEST sets the billing mode to On-Demand Mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html#HowItWorks.OnDemand).
+    ///    workloads. PAY_PER_REQUEST sets the billing mode to On-demand capacity
+    ///    mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "billingMode")]
     pub billing_mode: Option<String>,
     /// Represents the settings used to enable point in time recovery.
@@ -157,7 +158,8 @@ pub struct TableSpec {
     /// The table class of the new table. Valid values are STANDARD and STANDARD_INFREQUENT_ACCESS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tableClass")]
     pub table_class: Option<String>,
-    /// The name of the table to create.
+    /// The name of the table to create. You can also provide the Amazon Resource
+    /// Name (ARN) of the table in this parameter.
     #[serde(rename = "tableName")]
     pub table_name: String,
     /// A list of key-value pairs to label the table. For more information, see Tagging
@@ -170,7 +172,7 @@ pub struct TableSpec {
     pub time_to_live: Option<TableTimeToLive>,
 }
 
-/// Represents an attribute for describing the key schema for the table and indexes.
+/// Represents an attribute for describing the schema for the table and indexes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableAttributeDefinitions {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeName")]

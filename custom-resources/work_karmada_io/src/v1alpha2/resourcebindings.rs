@@ -27,7 +27,6 @@ pub struct ResourceBindingSpec {
     /// ConflictResolution declares how potential conflict should be handled when
     /// a resource that is being propagated already exists in the target cluster.
     /// 
-    /// 
     /// It defaults to "Abort" which means stop propagating to avoid unexpected
     /// overwrites. The "Overwrite" might be useful when migrating legacy cluster
     /// resources to Karmada, in which case conflict is predictable and can be
@@ -81,7 +80,6 @@ pub struct ResourceBindingSpec {
     /// of this action is to do a complete recalculation without referring to last scheduling results.
     /// It works with the status.lastScheduledTime field, and only when this timestamp is later than timestamp in
     /// status.lastScheduledTime will the rescheduling actually execute, otherwise, ignored.
-    /// 
     /// 
     /// It is represented in RFC3339 form (like '2006-01-02T15:04:05Z') and is in UTC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rescheduleTriggeredAt")]
@@ -153,6 +151,22 @@ pub struct ResourceBindingFailoverApplication {
     /// Defaults to "Graciously".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeMode")]
     pub purge_mode: Option<ResourceBindingFailoverApplicationPurgeMode>,
+    /// StatePreservation defines the policy for preserving and restoring state data
+    /// during failover events for stateful applications.
+    /// 
+    /// When an application fails over from one cluster to another, this policy enables
+    /// the extraction of critical data from the original resource configuration.
+    /// Upon successful migration, the extracted data is then re-injected into the new
+    /// resource, ensuring that the application can resume operation with its previous
+    /// state intact.
+    /// This is particularly useful for stateful applications where maintaining data
+    /// consistency across failover events is crucial.
+    /// If not specified, means no state data will be preserved.
+    /// 
+    /// Note: This requires the StatefulFailoverInjection feature gate to be enabled,
+    /// which is alpha.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statePreservation")]
+    pub state_preservation: Option<ResourceBindingFailoverApplicationStatePreservation>,
 }
 
 /// DecisionConditions indicates the decision conditions of performing the failover process.
@@ -180,14 +194,63 @@ pub enum ResourceBindingFailoverApplicationPurgeMode {
     Never,
 }
 
+/// StatePreservation defines the policy for preserving and restoring state data
+/// during failover events for stateful applications.
+/// 
+/// When an application fails over from one cluster to another, this policy enables
+/// the extraction of critical data from the original resource configuration.
+/// Upon successful migration, the extracted data is then re-injected into the new
+/// resource, ensuring that the application can resume operation with its previous
+/// state intact.
+/// This is particularly useful for stateful applications where maintaining data
+/// consistency across failover events is crucial.
+/// If not specified, means no state data will be preserved.
+/// 
+/// Note: This requires the StatefulFailoverInjection feature gate to be enabled,
+/// which is alpha.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingFailoverApplicationStatePreservation {
+    /// Rules contains a list of StatePreservationRule configurations.
+    /// Each rule specifies a JSONPath expression targeting specific pieces of
+    /// state data to be preserved during failover events. An AliasLabelName is associated
+    /// with each rule, serving as a label key when the preserved data is passed
+    /// to the new cluster.
+    pub rules: Vec<ResourceBindingFailoverApplicationStatePreservationRules>,
+}
+
+/// StatePreservationRule defines a single rule for state preservation.
+/// It includes a JSONPath expression and an alias name that will be used
+/// as a label key when passing state information to the new cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingFailoverApplicationStatePreservationRules {
+    /// AliasLabelName is the name that will be used as a label key when the preserved
+    /// data is passed to the new cluster. This facilitates the injection of the
+    /// preserved state back into the application resources during recovery.
+    #[serde(rename = "aliasLabelName")]
+    pub alias_label_name: String,
+    /// JSONPath is the JSONPath template used to identify the state data
+    /// to be preserved from the original resource configuration.
+    /// The JSONPath syntax follows the Kubernetes specification:
+    /// https://kubernetes.io/docs/reference/kubectl/jsonpath/
+    /// 
+    /// Note: The JSONPath expression will start searching from the "status" field of
+    /// the API resource object by default. For example, to extract the "availableReplicas"
+    /// from a Deployment, the JSONPath expression should be "{.availableReplicas}", not
+    /// "{.status.availableReplicas}".
+    #[serde(rename = "jsonPath")]
+    pub json_path: String,
+}
+
 /// GracefulEvictionTask represents a graceful eviction task.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingGracefulEvictionTasks {
+    /// ClustersBeforeFailover records the clusters where running the application before failover.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersBeforeFailover")]
+    pub clusters_before_failover: Option<Vec<String>>,
     /// CreationTimestamp is a timestamp representing the server time when this object was
     /// created.
     /// Clients should not set this value to avoid the time inconsistency issue.
     /// It is represented in RFC3339 form(like '2021-04-25T10:02:10Z') and is in UTC.
-    /// 
     /// 
     /// Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTimestamp")]
@@ -206,8 +269,17 @@ pub struct ResourceBindingGracefulEvictionTasks {
     /// This may be an empty string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// PreservedLabelState represents the application state information collected from the original cluster,
+    /// and it will be injected into the new cluster in form of application labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservedLabelState")]
+    pub preserved_label_state: Option<BTreeMap<String, String>>,
     /// Producer indicates the controller who triggered the eviction.
     pub producer: String,
+    /// PurgeMode represents how to deal with the legacy applications on the
+    /// cluster from which the application is migrated.
+    /// Valid options are "Immediately", "Graciously" and "Never".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "purgeMode")]
+    pub purge_mode: Option<ResourceBindingGracefulEvictionTasksPurgeMode>,
     /// Reason contains a programmatic identifier indicating the reason for the eviction.
     /// Producers may define expected values and meanings for this field,
     /// and whether the values are considered a guaranteed API.
@@ -225,12 +297,19 @@ pub struct ResourceBindingGracefulEvictionTasks {
     pub suppress_deletion: Option<bool>,
 }
 
+/// GracefulEvictionTask represents a graceful eviction task.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ResourceBindingGracefulEvictionTasksPurgeMode {
+    Immediately,
+    Graciously,
+    Never,
+}
+
 /// Placement represents the rule for select clusters to propagate resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingPlacement {
     /// ClusterAffinities represents scheduling restrictions to multiple cluster
     /// groups that indicated by ClusterAffinityTerm.
-    /// 
     /// 
     /// The scheduler will evaluate these groups one by one in the order they
     /// appear in the spec, the group that does not satisfy scheduling restrictions
@@ -238,16 +317,13 @@ pub struct ResourceBindingPlacement {
     /// unless it also belongs to the next group(a cluster could belong to multiple
     /// groups).
     /// 
-    /// 
     /// If none of the groups satisfy the scheduling restrictions, then scheduling
     /// fails, which means no cluster will be selected.
-    /// 
     /// 
     /// Note:
     ///   1. ClusterAffinities can not co-exist with ClusterAffinity.
     ///   2. If both ClusterAffinity and ClusterAffinities are not set, any cluster
     ///      can be scheduling candidates.
-    /// 
     /// 
     /// Potential use case 1:
     /// The private clusters in the local data center could be the main group, and
@@ -255,7 +331,6 @@ pub struct ResourceBindingPlacement {
     /// group. So that the Karmada scheduler would prefer to schedule workloads
     /// to the main group and the second group will only be considered in case of
     /// the main group does not satisfy restrictions(like, lack of resources).
-    /// 
     /// 
     /// Potential use case 2:
     /// For the disaster recovery scenario, the clusters could be organized to
@@ -862,6 +937,15 @@ pub struct ResourceBindingSuspension {
     /// Note: Can not co-exist with Dispatching which is used to suspend all.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dispatchingOnClusters")]
     pub dispatching_on_clusters: Option<ResourceBindingSuspensionDispatchingOnClusters>,
+    /// Scheduling controls whether scheduling should be suspended, the scheduler will pause scheduling and not
+    /// process resource binding when the value is true and resume scheduling when it's false or nil.
+    /// This is designed for third-party systems to temporarily pause the scheduling of applications, which enabling
+    /// manage resource allocation, prioritize critical workloads, etc.
+    /// It is expected that third-party systems use an admission webhook to suspend scheduling at the time of
+    /// ResourceBinding creation. Once a ResourceBinding has been scheduled, it cannot be paused afterward, as it may
+    /// lead to ineffective suspension.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheduling: Option<bool>,
 }
 
 /// DispatchingOnClusters declares a list of clusters to which the dispatching

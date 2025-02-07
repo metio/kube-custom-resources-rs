@@ -52,13 +52,16 @@ pub struct VSphereVMSpec {
     /// Defaults to empty map
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customVMXKeys")]
     pub custom_vmx_keys: Option<BTreeMap<String, String>>,
-    /// Datacenter is the name or inventory path of the datacenter in which the
-    /// virtual machine is created/located.
+    /// DataDisks are additional disks to add to the VM that are not part of the VM's OVA template.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDisks")]
+    pub data_disks: Option<Vec<VSphereVMDataDisks>>,
+    /// Datacenter is the name, inventory path, managed object reference or the managed
+    /// object ID of the datacenter in which the virtual machine is created/located.
     /// Defaults to * which selects the default datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<String>,
-    /// Datastore is the name or inventory path of the datastore in which the
-    /// virtual machine is created/located.
+    /// Datastore is the name, inventory path, managed object reference or the managed
+    /// object ID of the datastore in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datastore: Option<String>,
     /// DiskGiB is the size of a virtual machine's disk, in GiB.
@@ -66,8 +69,8 @@ pub struct VSphereVMSpec {
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskGiB")]
     pub disk_gi_b: Option<i32>,
-    /// Folder is the name or inventory path of the folder in which the
-    /// virtual machine is created/located.
+    /// Folder is the name, inventory path, managed object reference or the managed
+    /// object ID of the folder in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
     /// GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.
@@ -123,8 +126,8 @@ pub struct VSphereVMSpec {
     /// If omitted, the mode defaults to hard.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "powerOffMode")]
     pub power_off_mode: Option<VSphereVMPowerOffMode>,
-    /// ResourcePool is the name or inventory path of the resource pool in which
-    /// the virtual machine is created/located.
+    /// ResourcePool is the name, inventory path, managed object reference or the managed
+    /// object ID in which the virtual machine is created/located.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
     /// Server is the IP address or FQDN of the vSphere server on which
@@ -144,8 +147,8 @@ pub struct VSphereVMSpec {
     /// must use URN-notation instead of display names.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagIDs")]
     pub tag_i_ds: Option<Vec<String>>,
-    /// Template is the name or inventory path of the template used to clone
-    /// the virtual machine.
+    /// Template is the name, inventory path, managed object reference or the managed
+    /// object ID of the template used to clone the virtual machine.
     pub template: String,
     /// Thumbprint is the colon-separated SHA-1 checksum of the given vCenter server's host certificate
     /// When this is set to empty, this VirtualMachine would be created
@@ -193,6 +196,29 @@ pub struct VSphereVMBootstrapRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// VSphereDisk is an additional disk to add to the VM that is not part of the VM OVA template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereVMDataDisks {
+    /// Name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to
+    /// clearly identify purpose of the disk.
+    pub name: String,
+    /// ProvisioningMode specifies the provisioning type to be used by this vSphere data disk.
+    /// If not set, the setting will be provided by the default storage policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisioningMode")]
+    pub provisioning_mode: Option<VSphereVMDataDisksProvisioningMode>,
+    /// SizeGiB is the size of the disk in GiB.
+    #[serde(rename = "sizeGiB")]
+    pub size_gi_b: i32,
+}
+
+/// VSphereDisk is an additional disk to add to the VM that is not part of the VM OVA template.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VSphereVMDataDisksProvisioningMode {
+    Thin,
+    Thick,
+    EagerlyZeroed,
 }
 
 /// Network is the network configuration for this machine's VM.
@@ -280,8 +306,8 @@ pub struct VSphereVMNetworkDevices {
     /// Please note that Linux allows only three nameservers (https://linux.die.net/man/5/resolv.conf).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nameservers: Option<Vec<String>>,
-    /// NetworkName is the name of the vSphere network to which the device
-    /// will be connected.
+    /// NetworkName is the name, managed object reference or the managed
+    /// object ID of the vSphere network to which the device will be connected.
     #[serde(rename = "networkName")]
     pub network_name: String,
     /// Routes is a list of optional, static routes applied to the device.

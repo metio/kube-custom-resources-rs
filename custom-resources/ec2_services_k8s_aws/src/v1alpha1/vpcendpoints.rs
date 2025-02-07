@@ -48,24 +48,24 @@ pub struct VPCEndpointSpec {
     /// Default: true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateDNSEnabled")]
     pub private_dns_enabled: Option<bool>,
-    /// (Gateway endpoint) One or more route table IDs.
+    /// (Gateway endpoint) The route table IDs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableIDs")]
     pub route_table_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableRefs")]
     pub route_table_refs: Option<Vec<VPCEndpointRouteTableRefs>>,
-    /// (Interface endpoint) The ID of one or more security groups to associate with
-    /// the endpoint network interface.
+    /// (Interface endpoint) The IDs of the security groups to associate with the
+    /// endpoint network interfaces. If this parameter is not specified, we use the
+    /// default security group for the VPC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
     pub security_group_refs: Option<Vec<VPCEndpointSecurityGroupRefs>>,
-    /// The service name. To get a list of available services, use the DescribeVpcEndpointServices
-    /// request, or get the name from the service provider.
-    #[serde(rename = "serviceName")]
-    pub service_name: String,
-    /// (Interface and Gateway Load Balancer endpoints) The ID of one or more subnets
-    /// in which to create an endpoint network interface. For a Gateway Load Balancer
-    /// endpoint, you can specify one subnet only.
+    /// The name of the endpoint service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+    /// (Interface and Gateway Load Balancer endpoints) The IDs of the subnets in
+    /// which to create endpoint network interfaces. For a Gateway Load Balancer
+    /// endpoint, you can specify only one subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
@@ -80,7 +80,7 @@ pub struct VPCEndpointSpec {
     /// Default: Gateway
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpointType")]
     pub vpc_endpoint_type: Option<String>,
-    /// The ID of the VPC in which the endpoint will be used.
+    /// The ID of the VPC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -237,7 +237,7 @@ pub struct VPCEndpointStatus {
     /// The last error that occurred for endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastError")]
     pub last_error: Option<VPCEndpointStatusLastError>,
-    /// (Interface endpoint) One or more network interfaces for the endpoint.
+    /// (Interface endpoint) The network interfaces for the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaceIDs")]
     pub network_interface_i_ds: Option<Vec<String>>,
     /// The ID of the Amazon Web Services account that owns the endpoint.

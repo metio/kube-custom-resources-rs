@@ -48,8 +48,6 @@ pub struct FlowFilters {
     pub detect_exceptions: Option<FlowFiltersDetectExceptions>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch_genid: Option<FlowFiltersElasticsearchGenid>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enhanceK8s")]
-    pub enhance_k8s: Option<FlowFiltersEnhanceK8s>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub geoip: Option<FlowFiltersGeoip>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,8 +64,6 @@ pub struct FlowFilters {
     pub record_transformer: Option<FlowFiltersRecordTransformer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdout: Option<FlowFiltersStdout>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sumologic: Option<FlowFiltersSumologic>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag_normaliser: Option<FlowFiltersTagNormaliser>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -166,164 +162,6 @@ pub struct FlowFiltersElasticsearchGenid {
     pub use_entire_record: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub use_record_as_seed: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8s {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub api_groups: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_file: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ca_file: Option<FlowFiltersEnhanceK8sCaFile>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cache_refresh: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cache_refresh_variation: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cache_size: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cache_ttl: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_cert: Option<FlowFiltersEnhanceK8sClientCert>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_key: Option<FlowFiltersEnhanceK8sClientKey>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub core_api_versions: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub data_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub in_namespace_path: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub in_pod_path: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubernetes_url: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret_dir: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ssl_partial_chain: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub verify_ssl: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sCaFile {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from: Option<FlowFiltersEnhanceK8sCaFileMountFrom>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<FlowFiltersEnhanceK8sCaFileValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sCaFileMountFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sCaFileMountFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sCaFileMountFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sCaFileValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sCaFileValueFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sCaFileValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientCert {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from: Option<FlowFiltersEnhanceK8sClientCertMountFrom>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<FlowFiltersEnhanceK8sClientCertValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientCertMountFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sClientCertMountFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientCertMountFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientCertValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sClientCertValueFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientCertValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientKey {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from: Option<FlowFiltersEnhanceK8sClientKeyMountFrom>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<FlowFiltersEnhanceK8sClientKeyValueFrom>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientKeyMountFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sClientKeyMountFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientKeyMountFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientKeyValueFrom {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<FlowFiltersEnhanceK8sClientKeyValueFromSecretKeyRef>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersEnhanceK8sClientKeyValueFromSecretKeyRef {
-    pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -929,62 +767,6 @@ pub struct FlowFiltersRecordTransformer {
 pub struct FlowFiltersStdout {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output_type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlowFiltersSumologic {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub collector_key_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub collector_value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_container_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_facility_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_host_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_namespace_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_pod_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_priority_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exclude_unit_regex: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub log_format: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_category: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_category_key_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_category_prefix: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_category_replace_dash: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_host: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_host_key_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source_name_key_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_annotation_prefix: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_container_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_format: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_host: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_label_prefix: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_namespace: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_pod: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracing_pod_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

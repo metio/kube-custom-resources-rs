@@ -27,7 +27,7 @@ pub struct ClusterSpec {
     /// NOTE: this field is considered only for computing v1beta2 conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]
     pub availability_gates: Option<Vec<ClusterAvailabilityGates>>,
-    /// Cluster network configuration.
+    /// clusterNetwork represents the cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
@@ -44,7 +44,7 @@ pub struct ClusterSpec {
     /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// This encapsulates the topology for the cluster.
+    /// topology encapsulates the topology for the cluster.
     /// NOTE: It is required to enable the ClusterTopology
     /// feature gate flag to activate managed topologies support;
     /// this feature is highly experimental, and parts of it might still be not implemented.
@@ -62,34 +62,36 @@ pub struct ClusterAvailabilityGates {
     pub condition_type: String,
 }
 
-/// Cluster network configuration.
+/// clusterNetwork represents the cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
     /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
-    /// The network ranges from which Pod networks are allocated.
+    /// pods is the network ranges from which Pod networks are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<ClusterClusterNetworkPods>,
-    /// Domain name for services.
+    /// serviceDomain is the domain name for services.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDomain")]
     pub service_domain: Option<String>,
-    /// The network ranges from which service VIPs are allocated.
+    /// services is the network ranges from which service VIPs are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<ClusterClusterNetworkServices>,
 }
 
-/// The network ranges from which Pod networks are allocated.
+/// pods is the network ranges from which Pod networks are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkPods {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
 
-/// The network ranges from which service VIPs are allocated.
+/// services is the network ranges from which service VIPs are allocated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkServices {
+    /// cidrBlocks is a list of CIDR blocks.
     #[serde(rename = "cidrBlocks")]
     pub cidr_blocks: Vec<String>,
 }
@@ -97,9 +99,9 @@ pub struct ClusterClusterNetworkServices {
 /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     pub host: String,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     pub port: i32,
 }
 
@@ -179,14 +181,19 @@ pub struct ClusterInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// This encapsulates the topology for the cluster.
+/// topology encapsulates the topology for the cluster.
 /// NOTE: It is required to enable the ClusterTopology
 /// feature gate flag to activate managed topologies support;
 /// this feature is highly experimental, and parts of it might still be not implemented.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopology {
-    /// The name of the ClusterClass object to create the topology.
+    /// class is the name of the ClusterClass object to create the topology.
     pub class: String,
+    /// classNamespace is the namespace of the ClusterClass object to create the topology.
+    /// If the namespace is empty or not set, it is defaulted to the namespace of the cluster object.
+    /// Value must follow the DNS1123Subdomain syntax.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classNamespace")]
+    pub class_namespace: Option<String>,
     /// controlPlane describes the cluster control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
@@ -201,7 +208,7 @@ pub struct ClusterTopology {
     /// VariableClasses defined in the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ClusterTopologyVariables>>,
-    /// The Kubernetes version of the cluster.
+    /// version is the Kubernetes version of the cluster.
     pub version: String,
     /// workers encapsulates the different constructs that form the worker nodes
     /// for the cluster.
@@ -262,7 +269,8 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
+    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
@@ -293,8 +301,9 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
@@ -349,8 +358,14 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions {
+    /// status of the condition, one of True, False, Unknown.
     pub status: String,
+    /// timeout is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
     pub timeout: String,
+    /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -367,7 +382,7 @@ pub struct ClusterTopologyControlPlaneMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -457,7 +472,7 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyWorkersMachineDeploymentsMetadata>,
-    /// Minimum number of seconds for which a newly created machine should
+    /// minReadySeconds is the minimum number of seconds for which a newly created machine should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
@@ -488,7 +503,7 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// of this value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// The deployment strategy to use to replace existing machines with
+    /// strategy is the deployment strategy to use to replace existing machines with
     /// new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<ClusterTopologyWorkersMachineDeploymentsStrategy>,
@@ -512,7 +527,8 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
+    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
+    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
@@ -543,8 +559,9 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
     pub unhealthy_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "UnhealthyRange". Takes precedence over MaxUnhealthy.
+    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
     /// Eg. "[3-5]" - This means that remediation will be allowed only when:
     /// (a) there are at least 3 unhealthy machines (and)
     /// (b) there are at most 5 unhealthy machines
@@ -599,8 +616,14 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediation
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+    /// status of the condition, one of True, False, Unknown.
     pub status: String,
+    /// timeout is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
     pub timeout: String,
+    /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -615,7 +638,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -623,7 +646,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// The deployment strategy to use to replace existing machines with
+/// strategy is the deployment strategy to use to replace existing machines with
 /// new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
@@ -631,7 +654,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
     /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRemediation>,
-    /// Rolling update config params. Present only if
+    /// rollingUpdate is the rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate>,
@@ -663,7 +686,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRemediation {
     pub max_in_flight: Option<IntOrString>,
 }
 
-/// Rolling update config params. Present only if
+/// rollingUpdate is the rolling update config params. Present only if
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
@@ -672,7 +695,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     /// When no value is supplied, the default DeletePolicy of MachineSet is used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
-    /// The maximum number of machines that can be scheduled above the
+    /// maxSurge is the maximum number of machines that can be scheduled above the
     /// desired number of machines.
     /// Value can be an absolute number (ex: 5) or a percentage of
     /// desired machines (ex: 10%).
@@ -687,7 +710,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     /// at any time during the update is at most 130% of desired machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<IntOrString>,
-    /// The maximum number of machines that can be unavailable during the update.
+    /// maxUnavailable is the maximum number of machines that can be unavailable during the update.
     /// Value can be an absolute number (ex: 5) or a percentage of desired
     /// machines (ex: 10%).
     /// Absolute number is calculated from percentage by rounding down.
@@ -703,7 +726,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// Rolling update config params. Present only if
+/// rollingUpdate is the rolling update config params. Present only if
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy {
@@ -712,7 +735,7 @@ pub enum ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePoli
     Oldest,
 }
 
-/// The deployment strategy to use to replace existing machines with
+/// strategy is the deployment strategy to use to replace existing machines with
 /// new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterTopologyWorkersMachineDeploymentsStrategyType {
@@ -765,7 +788,7 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyWorkersMachinePoolsMetadata>,
-    /// Minimum number of seconds for which a newly created machine pool should
+    /// minReadySeconds is the minimum number of seconds for which a newly created machine pool should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
     /// is ready)
@@ -811,7 +834,7 @@ pub struct ClusterTopologyWorkersMachinePoolsMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels

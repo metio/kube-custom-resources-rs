@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.9.2"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "products.capabilities.3scale.net"
 spec:
   group: "capabilities.3scale.net"
@@ -19,10 +19,10 @@ spec:
           description: "Product is the Schema for the products API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -34,7 +34,7 @@ spec:
                     description: "ApplicationPlanSpec defines the desired state of Product's Application Plan"
                     properties:
                       appsRequireApproval:
-                        description: "Set whether or not applications can be created on demand or if approval is required from you before they are activated."
+                        description: "Set whether or not applications can be created on demand\nor if approval is required from you before they are activated."
                         type: "boolean"
                       costMonth:
                         description: "Cost per Month (USD)"
@@ -43,13 +43,13 @@ spec:
                       limits:
                         description: "Limits"
                         items:
-                          description: "LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources. Once a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract."
+                          description: "LimitSpec defines the maximum value a metric can take on a contract before the user is no longer authorized to use resources.\nOnce a limit has been passed in a given period, reject messages will be issued if the service is accessed under this contract."
                           properties:
                             metricMethodRef:
                               description: "Metric or Method Reference"
                               properties:
                                 backend:
-                                  description: "BackendSystemName identifies uniquely the backend Backend reference must be used by the product"
+                                  description: "BackendSystemName identifies uniquely the backend\nBackend reference must be used by the product"
                                   type: "string"
                                 systemName:
                                   description: "SystemName identifies uniquely the metric or methods"
@@ -82,7 +82,7 @@ spec:
                       pricingRules:
                         description: "Pricing Rules"
                         items:
-                          description: "PricingRuleSpec defines the cost of each operation performed on an API. Multiple pricing rules on the same metric divide up the ranges of when a pricing rule applies."
+                          description: "PricingRuleSpec defines the cost of each operation performed on an API.\nMultiple pricing rules on the same metric divide up the ranges of when a pricing rule applies."
                           properties:
                             from:
                               description: "Range From"
@@ -91,7 +91,7 @@ spec:
                               description: "Metric or Method Reference"
                               properties:
                                 backend:
-                                  description: "BackendSystemName identifies uniquely the backend Backend reference must be used by the product"
+                                  description: "BackendSystemName identifies uniquely the backend\nBackend reference must be used by the product"
                                   type: "string"
                                 systemName:
                                   description: "SystemName identifies uniquely the metric or methods"
@@ -114,7 +114,7 @@ spec:
                           type: "object"
                         type: "array"
                       published:
-                        description: "Controls whether the application plan is published. If not specified it is hidden by default"
+                        description: "Controls whether the application plan is published. If not specified it is\nhidden by default"
                         type: "boolean"
                       setupFee:
                         description: "Setup fee (USD)"
@@ -125,7 +125,7 @@ spec:
                         minimum: 0.0
                         type: "integer"
                     type: "object"
-                  description: "Application Plans Map: system_name -> Application Plan Spec"
+                  description: "Application Plans\nMap: system_name -> Application Plan Spec"
                   type: "object"
                 backendUsages:
                   additionalProperties:
@@ -136,7 +136,7 @@ spec:
                     required:
                       - "path"
                     type: "object"
-                  description: "Backend usage will be a map of Map: system_name -> BackendUsageSpec Having system_name as the index, the structure ensures one backend is not used multiple times."
+                  description: "Backend usage will be a map of\nMap: system_name -> BackendUsageSpec\nHaving system_name as the index, the structure ensures one backend is not used multiple times."
                   type: "object"
                 deployment:
                   description: "Deployment defined 3scale product deployment mode"
@@ -157,7 +157,7 @@ spec:
                                   description: "AppKey is the name of the parameter that acts of behalf of app key"
                                   type: "string"
                                 credentials:
-                                  description: "CredentialsLoc available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "CredentialsLoc available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -214,7 +214,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               type: "object"
@@ -240,7 +240,7 @@ spec:
                                     - "standardFlowEnabled"
                                   type: "object"
                                 credentials:
-                                  description: "Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "Credentials Location available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -326,7 +326,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               required:
@@ -338,7 +338,7 @@ spec:
                                 authUserKey:
                                   type: "string"
                                 credentials:
-                                  description: "Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "Credentials Location available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -395,7 +395,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               type: "object"
@@ -417,7 +417,7 @@ spec:
                                   description: "AppKey is the name of the parameter that acts of behalf of app key"
                                   type: "string"
                                 credentials:
-                                  description: "CredentialsLoc available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "CredentialsLoc available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -474,7 +474,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               type: "object"
@@ -500,7 +500,7 @@ spec:
                                     - "standardFlowEnabled"
                                   type: "object"
                                 credentials:
-                                  description: "Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "Credentials Location available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -586,7 +586,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               required:
@@ -598,7 +598,7 @@ spec:
                                 authUserKey:
                                   type: "string"
                                 credentials:
-                                  description: "Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication"
+                                  description: "Credentials Location available options:\nheaders: As HTTP Headers\nquery: As query parameters (GET) or body parameters (POST/PUT/DELETE)\nauthorization: As HTTP Basic Authentication"
                                   enum:
                                     - "headers"
                                     - "query"
@@ -655,7 +655,7 @@ spec:
                                       description: "HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host."
                                       type: "string"
                                     secretToken:
-                                      description: "SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
+                                      description: "SecretToken Enables you to block any direct developer requests to your API backend;\neach 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token.\nThe value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header."
                                       type: "string"
                                   type: "object"
                               type: "object"
@@ -672,7 +672,7 @@ spec:
                   description: "Description is a human readable text of the product"
                   type: "string"
                 mappingRules:
-                  description: "Mapping Rules Array: MappingRule Spec"
+                  description: "Mapping Rules\nArray: MappingRule Spec"
                   items:
                     description: "MappingRuleSpec defines the desired state of Product's MappingRule"
                     properties:
@@ -714,7 +714,7 @@ spec:
                     required:
                       - "friendlyName"
                     type: "object"
-                  description: "Methods Map: system_name -> MethodSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A."
+                  description: "Methods\nMap: system_name -> MethodSpec\nsystem_name attr is unique for all metrics AND methods\nIn other words, if metric's system_name is A, there is no metric or method with system_name A."
                   type: "object"
                 metrics:
                   additionalProperties:
@@ -730,7 +730,7 @@ spec:
                       - "friendlyName"
                       - "unit"
                     type: "object"
-                  description: "Metrics Map: system_name -> MetricSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A."
+                  description: "Metrics\nMap: system_name -> MetricSpec\nsystem_name attr is unique for all metrics AND methods\nIn other words, if metric's system_name is A, there is no metric or method with system_name A."
                   type: "object"
                 name:
                   description: "Name is human readable name for the product"
@@ -774,12 +774,12 @@ spec:
                   description: "ProviderAccountRef references account provider credentials"
                   properties:
                     name:
-                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                       type: "string"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 systemName:
-                  description: "SystemName identifies uniquely the product within the account provider Default value will be sanitized Name"
+                  description: "SystemName identifies uniquely the product within the account provider\nDefault value will be sanitized Name"
                   type: "string"
               required:
                 - "name"
@@ -788,9 +788,9 @@ spec:
               description: "ProductStatus defines the observed state of Product"
               properties:
                 conditions:
-                  description: "Current state of the 3scale product. Conditions represent the latest available observations of an object's state"
+                  description: "Current state of the 3scale product.\nConditions represent the latest available observations of an object's state"
                   items:
-                    description: "Condition represents an observation of an object's state. Conditions are an extension mechanism intended to be used when the details of an observation are not a priori known or would not apply to all instances of a given Kind. \n Conditions should be added to explicitly convey properties that users and components care about rather than requiring those properties to be inferred from other observations. Once defined, the meaning of a Condition can not be changed arbitrarily - it becomes part of the API, and has the same backwards- and forwards-compatibility concerns of any other part of the API."
+                    description: "Condition represents an observation of an object's state. Conditions are an\nextension mechanism intended to be used when the details of an observation\nare not a priori known or would not apply to all instances of a given Kind.\n\n\nConditions should be added to explicitly convey properties that users and\ncomponents care about rather than requiring those properties to be inferred\nfrom other observations. Once defined, the meaning of a Condition can not be\nchanged arbitrarily - it becomes part of the API, and has the same\nbackwards- and forwards-compatibility concerns of any other part of the API."
                     properties:
                       lastTransitionTime:
                         format: "date-time"
@@ -798,12 +798,12 @@ spec:
                       message:
                         type: "string"
                       reason:
-                        description: "ConditionReason is intended to be a one-word, CamelCase representation of the category of cause of the current status. It is intended to be used in concise output, such as one-line kubectl get output, and in summarizing occurrences of causes."
+                        description: "ConditionReason is intended to be a one-word, CamelCase representation of\nthe category of cause of the current status. It is intended to be used in\nconcise output, such as one-line kubectl get output, and in summarizing\noccurrences of causes."
                         type: "string"
                       status:
                         type: "string"
                       type:
-                        description: "ConditionType is the type of the condition and is typically a CamelCased word or short phrase. \n Condition types should indicate state in the \"abnormal-true\" polarity. For example, if the condition indicates when a policy is invalid, the \"is valid\" case is probably the norm, so the condition should be called \"Invalid\"."
+                        description: "ConditionType is the type of the condition and is typically a CamelCased\nword or short phrase.\n\n\nCondition types should indicate state in the \"abnormal-true\" polarity. For\nexample, if the condition indicates when a policy is invalid, the \"is valid\"\ncase is probably the norm, so the condition should be called \"Invalid\"."
                         type: "string"
                     required:
                       - "status"

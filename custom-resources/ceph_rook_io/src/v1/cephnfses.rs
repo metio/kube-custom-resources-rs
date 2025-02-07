@@ -1103,17 +1103,17 @@ pub struct CephNFSServerLivenessProbe {
 /// alive or ready to receive traffic.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CephNFSServerLivenessProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CephNFSServerLivenessProbeProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CephNFSServerLivenessProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1128,7 +1128,7 @@ pub struct CephNFSServerLivenessProbeProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephNFSServerLivenessProbeProbeTcpSocket>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
@@ -1140,7 +1140,7 @@ pub struct CephNFSServerLivenessProbeProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1152,7 +1152,7 @@ pub struct CephNFSServerLivenessProbeProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1165,7 +1165,7 @@ pub struct CephNFSServerLivenessProbeProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1198,7 +1198,7 @@ pub struct CephNFSServerLivenessProbeProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephNFSServerLivenessProbeProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.

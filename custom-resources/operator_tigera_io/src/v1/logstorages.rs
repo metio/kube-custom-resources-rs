@@ -36,6 +36,9 @@ pub struct LogStorageSpec {
     /// ElasticsearchMetricsDeployment configures the tigera-elasticsearch-metric Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchMetricsDeployment")]
     pub elasticsearch_metrics_deployment: Option<LogStorageElasticsearchMetricsDeployment>,
+    /// ESGatewayDeployment configures the es-gateway Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "esGatewayDeployment")]
+    pub es_gateway_deployment: Option<LogStorageEsGatewayDeployment>,
     /// Index defines the configuration for the indices in the Elasticsearch cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub indices: Option<LogStorageIndices>,
@@ -108,6 +111,11 @@ pub struct LogStorageComponentResourcesResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ECKOperatorStatefulSet configures the ECKOperator StatefulSet. If used in conjunction with the deprecated
@@ -201,6 +209,11 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecContainersResourcesCl
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ECKOperatorStatefulSetInitContainer is a ECKOperator StatefulSet init container.
@@ -246,6 +259,11 @@ pub struct LogStorageEckOperatorStatefulSetSpecTemplateSpecInitContainersResourc
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ElasticsearchMetricsDeployment configures the tigera-elasticsearch-metric Deployment.
@@ -338,6 +356,11 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecContainersRes
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ElasticsearchMetricsDeploymentInitContainer is a ElasticsearchMetricsDeployment init container.
@@ -391,6 +414,166 @@ pub struct LogStorageElasticsearchMetricsDeploymentSpecTemplateSpecInitContainer
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+/// ESGatewayDeployment configures the es-gateway Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeployment {
+    /// Spec is the specification of the es-gateway Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogStorageEsGatewayDeploymentSpec>,
+}
+
+/// Spec is the specification of the es-gateway Deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpec {
+    /// Template describes the es-gateway Deployment pod that will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<LogStorageEsGatewayDeploymentSpecTemplate>,
+}
+
+/// Template describes the es-gateway Deployment pod that will be created.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplate {
+    /// Spec is the es-gateway Deployment's PodSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<LogStorageEsGatewayDeploymentSpecTemplateSpec>,
+}
+
+/// Spec is the es-gateway Deployment's PodSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpec {
+    /// Containers is a list of es-gateway containers.
+    /// If specified, this overrides the specified es-gateway Deployment containers.
+    /// If omitted, the es-gateway Deployment will use its default values for its containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<LogStorageEsGatewayDeploymentSpecTemplateSpecContainers>>,
+    /// InitContainers is a list of es-gateway init containers.
+    /// If specified, this overrides the specified es-gateway Deployment init containers.
+    /// If omitted, the es-gateway Deployment will use its default values for its init containers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainers>>,
+}
+
+/// ESGatewayDeploymentContainer is a es-gateway Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecContainers {
+    /// Name is an enum which identifies the es-gateway Deployment container by name.
+    /// Supported values are: tigera-secure-es-gateway
+    pub name: LogStorageEsGatewayDeploymentSpecTemplateSpecContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named es-gateway Deployment container's resources.
+    /// If omitted, the es-gateway Deployment will use its default value for this container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogStorageEsGatewayDeploymentSpecTemplateSpecContainersResources>,
+}
+
+/// ESGatewayDeploymentContainer is a es-gateway Deployment container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogStorageEsGatewayDeploymentSpecTemplateSpecContainersName {
+    #[serde(rename = "tigera-secure-es-gateway")]
+    TigeraSecureEsGateway,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named es-gateway Deployment container's resources.
+/// If omitted, the es-gateway Deployment will use its default value for this container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogStorageEsGatewayDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+/// ESGatewayDeploymentInitContainer is a es-gateway Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainers {
+    /// Name is an enum which identifies the es-gateway Deployment init container by name.
+    /// Supported values are: tigera-secure-elasticsearch-cert-key-cert-provisioner
+    pub name: LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersName,
+    /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+    /// If specified, this overrides the named es-gateway Deployment init container's resources.
+    /// If omitted, the es-gateway Deployment will use its default value for this init container's resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersResources>,
+}
+
+/// ESGatewayDeploymentInitContainer is a es-gateway Deployment init container.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersName {
+    #[serde(rename = "tigera-secure-elasticsearch-cert-key-cert-provisioner")]
+    TigeraSecureElasticsearchCertKeyCertProvisioner,
+}
+
+/// Resources allows customization of limits and requests for compute resources such as cpu and memory.
+/// If specified, this overrides the named es-gateway Deployment init container's resources.
+/// If omitted, the es-gateway Deployment will use its default value for this init container's resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LogStorageEsGatewayDeploymentSpecTemplateSpecInitContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Index defines the configuration for the indices in the Elasticsearch cluster.
@@ -491,6 +674,11 @@ pub struct LogStorageKibanaSpecTemplateSpecContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// KibanaInitContainer is a Kibana init container.
@@ -546,6 +734,11 @@ pub struct LogStorageKibanaSpecTemplateSpecInitContainersResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// LinseedDeployment configures the linseed Deployment.
@@ -638,6 +831,11 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecContainersResourcesClaims 
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// LinseedDeploymentInitContainer is a linseed Deployment init container.
@@ -693,6 +891,11 @@ pub struct LogStorageLinseedDeploymentSpecTemplateSpecInitContainersResourcesCla
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Nodes defines the configuration for a set of identical Elasticsearch cluster nodes, each of type master, data, and ingest.
@@ -759,6 +962,11 @@ pub struct LogStorageNodesResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Retention defines how long data is retained in the Elasticsearch cluster before it is cleared.

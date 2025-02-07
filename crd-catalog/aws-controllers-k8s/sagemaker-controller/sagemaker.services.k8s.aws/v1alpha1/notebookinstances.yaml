@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "notebookinstances.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -38,7 +38,7 @@ spec:
               description: "NotebookInstanceSpec defines the desired state of NotebookInstance."
               properties:
                 acceleratorTypes:
-                  description: "A list of Elastic Inference (EI) instance types to associate with this notebook\ninstance. Currently, only one instance type can be associated with a notebook\ninstance. For more information, see Using Elastic Inference in Amazon SageMaker\n(https://docs.aws.amazon.com/sagemaker/latest/dg/ei.html)."
+                  description: "This parameter is no longer supported. Elastic Inference (EI) is no longer\navailable.\n\nThis parameter was used to specify a list of EI instance types to associate\nwith this notebook instance."
                   items:
                     type: "string"
                   type: "array"
@@ -51,7 +51,7 @@ spec:
                   description: "A Git repository to associate with the notebook instance as its default code\nrepository. This can be either the name of a Git repository stored as a resource\nin your account, or the URL of a Git repository in Amazon Web Services CodeCommit\n(https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html) or\nin any other Git repository. When you open a notebook instance, it opens\nin the directory that contains this repository. For more information, see\nAssociating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html)."
                   type: "string"
                 directInternetAccess:
-                  description: "Sets whether SageMaker provides internet access to the notebook instance.\nIf you set this to Disabled this notebook instance is able to access resources\nonly in your VPC, and is not be able to connect to SageMaker training and\nendpoint services unless you configure a NAT Gateway in your VPC.\n\n\nFor more information, see Notebook Instances Are Internet-Enabled by Default\n(https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access).\nYou can set the value of this parameter to Disabled only if you set a value\nfor the SubnetId parameter."
+                  description: "Sets whether SageMaker provides internet access to the notebook instance.\nIf you set this to Disabled this notebook instance is able to access resources\nonly in your VPC, and is not be able to connect to SageMaker training and\nendpoint services unless you configure a NAT Gateway in your VPC.\n\nFor more information, see Notebook Instances Are Internet-Enabled by Default\n(https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access).\nYou can set the value of this parameter to Disabled only if you set a value\nfor the SubnetId parameter."
                   type: "string"
                 instanceType:
                   description: "The type of ML compute instance to launch for the notebook instance."
@@ -69,10 +69,10 @@ spec:
                   description: "The platform identifier of the notebook instance runtime environment."
                   type: "string"
                 roleARN:
-                  description: "When you send any requests to Amazon Web Services resources from the notebook\ninstance, SageMaker assumes this role to perform tasks on your behalf. You\nmust grant this role necessary permissions so SageMaker can perform these\ntasks. The policy must allow the SageMaker service principal (sagemaker.amazonaws.com)\npermissions to assume this role. For more information, see SageMaker Roles\n(https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\n\nTo be able to pass this role to SageMaker, the caller of this API must have\nthe iam:PassRole permission."
+                  description: "When you send any requests to Amazon Web Services resources from the notebook\ninstance, SageMaker assumes this role to perform tasks on your behalf. You\nmust grant this role necessary permissions so SageMaker can perform these\ntasks. The policy must allow the SageMaker service principal (sagemaker.amazonaws.com)\npermissions to assume this role. For more information, see SageMaker Roles\n(https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to SageMaker, the caller of this API must have\nthe iam:PassRole permission."
                   type: "string"
                 rootAccess:
-                  description: "Whether root access is enabled or disabled for users of the notebook instance.\nThe default value is Enabled.\n\n\nLifecycle configurations need root access to be able to set up a notebook\ninstance. Because of this, lifecycle configurations associated with a notebook\ninstance always run with root access even if you disable root access for\nusers."
+                  description: "Whether root access is enabled or disabled for users of the notebook instance.\nThe default value is Enabled.\n\nLifecycle configurations need root access to be able to set up a notebook\ninstance. Because of this, lifecycle configurations associated with a notebook\ninstance always run with root access even if you disable root access for\nusers."
                   type: "string"
                 securityGroupIDs:
                   description: "The VPC security group IDs, in the form sg-xxxxxxxx. The security groups\nmust be for the same VPC as specified in the subnet."
@@ -85,7 +85,7 @@ spec:
                 tags:
                   description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -109,7 +109,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

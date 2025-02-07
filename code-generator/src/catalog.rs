@@ -53,6 +53,16 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "abalki001/mariadb-operator",
+        license: MIT,
+        urls: &[
+            "https://github.com/abalki001/mariadb-operator/blob/master/deploy/crds/mariadb.persistentsys_backups_crd.yaml",
+            "https://github.com/abalki001/mariadb-operator/blob/master/deploy/crds/mariadb.persistentsys_mariadbs_crd.yaml",
+            "https://github.com/abalki001/mariadb-operator/blob/master/deploy/crds/mariadb.persistentsys_monitors_crd.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "actions/actions-runner-controller",
         license: APACHE_V2,
         urls: &[
@@ -1122,6 +1132,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "controlplaneio-fluxcd/flux-operator",
+        license: AGPL_V3_OR_LATER,
+        urls: &[
+            "https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/config/crd/bases/fluxcd.controlplane.io_fluxinstances.yaml",
+            "https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/config/crd/bases/fluxcd.controlplane.io_fluxreports.yaml",
+            "https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/config/crd/bases/fluxcd.controlplane.io_resourcesetinputproviders.yaml",
+            "https://github.com/controlplaneio-fluxcd/flux-operator/blob/main/config/crd/bases/fluxcd.controlplane.io_resourcesets.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "couchbase-partners/helm-charts",
         license: APACHE_V2,
         urls: &[
@@ -1806,6 +1827,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "kaiso/kom-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kaiso/kom-operator/blob/master/config/crd/bases/kom.kaiso.github.io_microservices.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "KaotoIO/kaoto-operator",
         license: APACHE_V2,
         urls: &[
@@ -2467,17 +2496,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "kyverno/kyverno",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_admissionreports.yaml",
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_backgroundscanreports.yaml",
+            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_celpolicyexceptions.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_cleanuppolicies.yaml",
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clusteradmissionreports.yaml",
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clusterbackgroundscanreports.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clustercleanuppolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clusterpolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_globalcontextentries.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_policies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_policyexceptions.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_updaterequests.yaml",
+            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_validatingpolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/reports/reports.kyverno.io_clusterephemeralreports.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/reports/reports.kyverno.io_ephemeralreports.yaml",
         ],
@@ -2565,6 +2592,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/m88i/nexus-operator/blob/main/config/crd/bases/apps.m88i.io_nexus.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "maistra/istio-workspace",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/maistra/istio-workspace/blob/master/config/crd/bases/workspace.maistra.io_sessions.yaml",
         ],
         ignores: &[],
     },
@@ -2660,6 +2695,23 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ipaddresses.yaml",
             "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ipclaims.yaml",
             "https://github.com/metal3-io/ip-address-manager/blob/main/config/crd/bases/ipam.metal3.io_ippools.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "metallb/metallb-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/frrk8s.metallb.io_frrconfigurations.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/frrk8s.metallb.io_frrnodestates.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_bfdprofiles.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_bgpadvertisements.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_bgppeers.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_communities.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_ipaddresspools.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_l2advertisements.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_metallbs.yaml",
+            "https://github.com/metallb/metallb-operator/blob/main/config/crd/bases/metallb.io_servicel2statuses.yaml",
         ],
         ignores: &[],
     },

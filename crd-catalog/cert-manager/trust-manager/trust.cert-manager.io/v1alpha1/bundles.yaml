@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.1"
   name: "bundles.trust.cert-manager.io"
 spec:
   group: "trust.cert-manager.io"
@@ -55,13 +55,18 @@ spec:
                     description: "BundleSource is the set of sources whose data will be appended and synced to\nthe BundleTarget in all Namespaces."
                     properties:
                       configMap:
-                        description: "ConfigMap is a reference (by name) to a ConfigMap's `data` key, or to a\nlist of ConfigMap's `data` key using label selector, in the trust Namespace."
+                        description: "ConfigMap is a reference (by name) to a ConfigMap's `data` key(s), or to a\nlist of ConfigMap's `data` key(s) using label selector, in the trust Namespace."
                         properties:
+                          includeAllKeys:
+                            description: "IncludeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.\nThis field must not be true when `Key` is set."
+                            type: "boolean"
                           key:
-                            description: "Key is the key of the entry in the object's `data` field to be used."
+                            description: "Key of the entry in the object's `data` field to be used."
+                            minLength: 1
                             type: "string"
                           name:
                             description: "Name is the name of the source object in the trust Namespace.\nThis field must be left empty when `selector` is set"
+                            minLength: 1
                             type: "string"
                           selector:
                             description: "Selector is the label selector to use to fetch a list of objects. Must not be set\nwhen `Name` is set."
@@ -96,20 +101,24 @@ spec:
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
-                        required:
-                          - "key"
                         type: "object"
+                        x-kubernetes-map-type: "atomic"
                       inLine:
                         description: "InLine is a simple string to append as the source data."
                         type: "string"
                       secret:
-                        description: "Secret is a reference (by name) to a Secret's `data` key, or to a\nlist of Secret's `data` key using label selector, in the trust Namespace."
+                        description: "Secret is a reference (by name) to a Secret's `data` key(s), or to a\nlist of Secret's `data` key(s) using label selector, in the trust Namespace."
                         properties:
+                          includeAllKeys:
+                            description: "IncludeAllKeys is a flag to include all keys in the object's `data` field to be used. False by default.\nThis field must not be true when `Key` is set."
+                            type: "boolean"
                           key:
-                            description: "Key is the key of the entry in the object's `data` field to be used."
+                            description: "Key of the entry in the object's `data` field to be used."
+                            minLength: 1
                             type: "string"
                           name:
                             description: "Name is the name of the source object in the trust Namespace.\nThis field must be left empty when `selector` is set"
+                            minLength: 1
                             type: "string"
                           selector:
                             description: "Selector is the label selector to use to fetch a list of objects. Must not be set\nwhen `Name` is set."
@@ -144,14 +153,17 @@ spec:
                                 type: "object"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
-                        required:
-                          - "key"
                         type: "object"
+                        x-kubernetes-map-type: "atomic"
                       useDefaultCAs:
                         description: "UseDefaultCAs, when true, requests the default CA bundle to be used as a source.\nDefault CAs are available if trust-manager was installed via Helm\nor was otherwise set up to include a package-injecting init container by using the\n\"--default-package-location\" flag when starting the trust-manager controller.\nIf default CAs were not configured at start-up, any request to use the default\nCAs will fail.\nThe version of the default CA package which is used for a Bundle is stored in the\ndefaultCAPackageVersion field of the Bundle's status field."
                         type: "boolean"
                     type: "object"
+                    x-kubernetes-map-type: "atomic"
+                  maxItems: 100
+                  minItems: 1
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 target:
                   description: "Target is the target location in all namespaces to sync source data to."
                   properties:
@@ -163,6 +175,7 @@ spec:
                           properties:
                             key:
                               description: "Key is the key of the entry in the object's `data` field to be used."
+                              minLength: 1
                               type: "string"
                             password:
                               default: "changeit"
@@ -173,11 +186,13 @@ spec:
                           required:
                             - "key"
                           type: "object"
+                          x-kubernetes-map-type: "atomic"
                         pkcs12:
                           description: "PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.\nThe bundle is by default created without a password."
                           properties:
                             key:
                               description: "Key is the key of the entry in the object's `data` field to be used."
+                              minLength: 1
                               type: "string"
                             password:
                               default: ""
@@ -187,12 +202,14 @@ spec:
                           required:
                             - "key"
                           type: "object"
+                          x-kubernetes-map-type: "atomic"
                       type: "object"
                     configMap:
                       description: "ConfigMap is the target ConfigMap in Namespaces that all Bundle source\ndata will be synced to."
                       properties:
                         key:
                           description: "Key is the key of the entry in the object's `data` field to be used."
+                          minLength: 1
                           type: "string"
                       required:
                         - "key"
@@ -200,17 +217,42 @@ spec:
                     namespaceSelector:
                       description: "NamespaceSelector will, if set, only sync the target resource in\nNamespaces which match the selector."
                       properties:
+                        matchExpressions:
+                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                          items:
+                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                            properties:
+                              key:
+                                description: "key is the label key that the selector applies to."
+                                type: "string"
+                              operator:
+                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                type: "string"
+                              values:
+                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                items:
+                                  type: "string"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                            required:
+                              - "key"
+                              - "operator"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
                         matchLabels:
                           additionalProperties:
                             type: "string"
-                          description: "MatchLabels matches on the set of labels that must be present on a\nNamespace for the Bundle target to be synced there."
+                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                           type: "object"
                       type: "object"
+                      x-kubernetes-map-type: "atomic"
                     secret:
                       description: "Secret is the target Secret that all Bundle source data will be synced to.\nUsing Secrets as targets is only supported if enabled at trust-manager startup.\nBy default, trust-manager has no permissions for writing to secrets and can only read secrets in the trust namespace."
                       properties:
                         key:
                           description: "Key is the key of the entry in the object's `data` field to be used."
+                          minLength: 1
                           type: "string"
                       required:
                         - "key"

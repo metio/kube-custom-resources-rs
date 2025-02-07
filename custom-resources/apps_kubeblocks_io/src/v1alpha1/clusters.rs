@@ -314,6 +314,12 @@ pub struct ClusterBackup {
     /// Specifies whether automated backup is enabled for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Specifies whether to enable incremental backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalBackupEnabled")]
+    pub incremental_backup_enabled: Option<bool>,
+    /// The cron expression for the incremental backup schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalCronExpression")]
+    pub incremental_cron_expression: Option<String>,
     /// Specifies the backup method to use, as defined in backupPolicy.
     pub method: String,
     /// Specifies whether to enable point-in-time recovery.

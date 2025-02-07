@@ -141,6 +141,10 @@ pub struct EMQXCoreTemplateSpec {
     pub lifecycle: Option<EMQXCoreTemplateSpecLifecycle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<EMQXCoreTemplateSpecLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
+    pub min_available: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -3193,6 +3197,10 @@ pub struct EMQXReplicantTemplateSpec {
     pub lifecycle: Option<EMQXReplicantTemplateSpecLifecycle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<EMQXReplicantTemplateSpecLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
+    pub min_available: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]

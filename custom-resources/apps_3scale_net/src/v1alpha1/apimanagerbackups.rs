@@ -35,21 +35,27 @@ pub struct APIManagerBackupBackupDestination {
 /// PersistentVolumeClaim as backup data destination configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerBackupBackupDestinationPersistentVolumeClaim {
-    /// Resources configuration for the backup data PersistentVolumeClaim. Ignored when VolumeName field is set
+    /// Resources configuration for the backup data PersistentVolumeClaim.
+    /// Ignored when VolumeName field is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<APIManagerBackupBackupDestinationPersistentVolumeClaimResources>,
-    /// Storage class to be used by the PersistentVolumeClaim. Ignored when VolumeName field is set
+    /// Storage class to be used by the PersistentVolumeClaim. Ignored
+    /// when VolumeName field is set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    /// Name of an existing PersistentVolume to be bound to the backup data PersistentVolumeClaim
+    /// Name of an existing PersistentVolume to be bound to the
+    /// backup data PersistentVolumeClaim
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
-/// Resources configuration for the backup data PersistentVolumeClaim. Ignored when VolumeName field is set
+/// Resources configuration for the backup data PersistentVolumeClaim.
+/// Ignored when VolumeName field is set
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerBackupBackupDestinationPersistentVolumeClaimResources {
-    /// Storage Resource requests to be used on the PersistentVolumeClaim. To learn more about resource requests see: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Storage Resource requests to be used on the PersistentVolumeClaim.
+    /// To learn more about resource requests see:
+    /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     pub requests: IntOrString,
 }
 
@@ -59,7 +65,8 @@ pub struct APIManagerBackupStatus {
     /// Name of the APIManager from which the backup has been performed
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiManagerSourceName")]
     pub api_manager_source_name: Option<String>,
-    /// Name of the backup data PersistentVolumeClaim. Only set when PersistentVolumeClaim is used as the backup data destination
+    /// Name of the backup data PersistentVolumeClaim. Only set when
+    /// PersistentVolumeClaim is used as the backup data destination
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPersistentVolumeClaimName")]
     pub backup_persistent_volume_claim_name: Option<String>,
     /// Set to true when backup has been completed
@@ -68,7 +75,9 @@ pub struct APIManagerBackupStatus {
     /// Backup completion time. It is represented in RFC3339 form and is in UTC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
-    /// Set to true when main steps have been completed. At this point backup still cannot be considered  fully completed due to some remaining post-backup tasks are pending (cleanup, ...)
+    /// Set to true when main steps have been completed. At this point
+    /// backup still cannot be considered  fully completed due to some remaining
+    /// post-backup tasks are pending (cleanup, ...)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mainStepsCompleted")]
     pub main_steps_completed: Option<bool>,
     /// Backup start time. It is represented in RFC3339 form and is in UTC.

@@ -39,9 +39,10 @@ pub struct ConnectionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
+    /// Either passwordSecretKeyRef or tlsClientCertSecretRef must be provided as client credentials.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(rename = "passwordSecretKeyRef")]
-    pub password_secret_key_ref: ConnectionPasswordSecretKeyRef,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
+    pub password_secret_key_ref: Option<ConnectionPasswordSecretKeyRef>,
     /// Port to connect to. If not provided, it defaults to the MariaDB port or to the first MaxScale listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
@@ -54,6 +55,12 @@ pub struct ConnectionSpec {
     /// ServiceName to be used in the Connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
+    /// TLSClientCertSecretRef is a reference to a Kubernetes TLS Secret used as authentication when checking the connection health.
+    /// Either passwordSecretKeyRef or tlsClientCertSecretRef must be provided as client credentials.
+    /// If not provided, the client certificate provided by the referred MariaDB is used if TLS is enabled.
+    /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the client certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientCertSecretRef")]
+    pub tls_client_cert_secret_ref: Option<ConnectionTlsClientCertSecretRef>,
     /// Username to use for configuring the Connection.
     pub username: String,
 }
@@ -91,6 +98,7 @@ pub struct ConnectionMaxScaleRef {
 }
 
 /// PasswordSecretKeyRef is a reference to the password to use for configuring the Connection.
+/// Either passwordSecretKeyRef or tlsClientCertSecretRef must be provided as client credentials.
 /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConnectionPasswordSecretKeyRef {
@@ -137,6 +145,16 @@ pub struct ConnectionSecretTemplateMetadata {
     /// Labels to be added to children resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// TLSClientCertSecretRef is a reference to a Kubernetes TLS Secret used as authentication when checking the connection health.
+/// Either passwordSecretKeyRef or tlsClientCertSecretRef must be provided as client credentials.
+/// If not provided, the client certificate provided by the referred MariaDB is used if TLS is enabled.
+/// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the client certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConnectionTlsClientCertSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// ConnectionStatus defines the observed state of Connection

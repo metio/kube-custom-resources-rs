@@ -424,6 +424,7 @@ spec:
                     - "preparation error"
                     - "provisioning error"
                     - "power management error"
+                    - "servicing error"
                   type: "string"
                 goodCredentials:
                   description: "The last credentials we were able to validate as working."
@@ -661,6 +662,7 @@ spec:
                     - "error"
                     - "delayed"
                     - "detached"
+                    - "servicing"
                   type: "string"
                 poweredOn:
                   description: "The currently detected power state of the host. This field may get\nbriefly out of sync with the actual state of the hardware while\nprovisioning processes are running."

@@ -70,5 +70,7 @@ pub enum MetricTemplateProviderType {
     Dynatrace,
     #[serde(rename = "keptn")]
     Keptn,
+    #[serde(rename = "splunk")]
+    Splunk,
 }
 

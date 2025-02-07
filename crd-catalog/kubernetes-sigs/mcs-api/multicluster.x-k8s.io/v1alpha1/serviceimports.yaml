@@ -44,7 +44,7 @@ spec:
                   description: "ip will be used as the VIP for this service when type is ClusterSetIP."
                   items:
                     type: "string"
-                  maxItems: 1
+                  maxItems: 2
                   type: "array"
                 ports:
                   items:

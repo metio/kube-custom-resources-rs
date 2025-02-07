@@ -32,8 +32,8 @@ pub struct AuthenticationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ldap: Option<AuthenticationLdap>,
     /// ManagerDomain is the domain name of the Manager
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerDomain")]
-    pub manager_domain: Option<String>,
+    #[serde(rename = "managerDomain")]
+    pub manager_domain: String,
     /// OIDC contains the configuration needed to setup OIDC authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oidc: Option<AuthenticationOidc>,
@@ -137,6 +137,11 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecContainersResourcesClaims 
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// DexDeploymentInitContainer is a Dex Deployment init container.
@@ -190,6 +195,11 @@ pub struct AuthenticationDexDeploymentSpecTemplateSpecInitContainersResourcesCla
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// LDAP contains the configuration needed to setup LDAP authentication.

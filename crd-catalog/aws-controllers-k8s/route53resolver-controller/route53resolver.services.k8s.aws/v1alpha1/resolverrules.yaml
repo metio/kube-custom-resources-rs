@@ -75,7 +75,7 @@ spec:
                     type: "object"
                   type: "array"
                 targetIPs:
-                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\nonly IPv4 addresses. Separate IP addresses with a space.\n\nTargetIps is available only when the value of Rule type is FORWARD."
+                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\neither Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP\naddresses with a space.\n\nTargetIps is available only when the value of Rule type is FORWARD."
                   items:
                     description: "In a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html)\nrequest, an array of the IPs that you want to forward DNS queries to."
                     properties:
@@ -89,7 +89,6 @@ spec:
                     type: "object"
                   type: "array"
               required:
-                - "domainName"
                 - "ruleType"
               type: "object"
             status:

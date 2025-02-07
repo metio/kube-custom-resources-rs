@@ -1495,11 +1495,11 @@ pub struct ClusterPolicyRulesMutate {
     pub mutate_existing_on_policy_update: Option<bool>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
-    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<serde_json::Value>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
-    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// Targets defines the target resources to be mutated.
@@ -1526,11 +1526,11 @@ pub struct ClusterPolicyRulesMutateForeach {
     pub order: Option<ClusterPolicyRulesMutateForeachOrder>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
-    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<serde_json::Value>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
-    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a
@@ -4291,7 +4291,7 @@ pub struct ClusterPolicyStatusAutogenRules {
     pub verify_images: Option<Vec<ClusterPolicyStatusAutogenRulesVerifyImages>>,
 }
 
-/// MatchCondition represents a condition which must be fulfilled for a request to be sent to a webhook.
+/// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyStatusAutogenRulesCelPreconditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
@@ -5937,11 +5937,11 @@ pub struct ClusterPolicyStatusAutogenRulesMutate {
     pub mutate_existing_on_policy_update: Option<bool>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
-    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<serde_json::Value>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
-    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// Targets defines the target resources to be mutated.
@@ -5968,11 +5968,11 @@ pub struct ClusterPolicyStatusAutogenRulesMutateForeach {
     pub order: Option<ClusterPolicyStatusAutogenRulesMutateForeachOrder>,
     /// PatchStrategicMerge is a strategic merge patch used to modify resources.
     /// See https://kubernetes.io/docs/tasks/manage-kubernetes-objects/update-api-object-kubectl-patch/
-    /// and https://kubectl.docs.kubernetes.io/references/kustomize/patchesstrategicmerge/.
+    /// and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesstrategicmerge/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchStrategicMerge")]
     pub patch_strategic_merge: Option<serde_json::Value>,
     /// PatchesJSON6902 is a list of RFC 6902 JSON Patch declarations used to modify resources.
-    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/patchesjson6902/.
+    /// See https://tools.ietf.org/html/rfc6902 and https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patchesjson6902/.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patchesJson6902")]
     pub patches_json6902: Option<String>,
     /// AnyAllConditions are used to determine if a policy rule should be applied by evaluating a

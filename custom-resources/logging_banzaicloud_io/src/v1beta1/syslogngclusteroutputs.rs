@@ -22,8 +22,6 @@ pub struct SyslogNGClusterOutputSpec {
     pub elasticsearch: Option<SyslogNGClusterOutputElasticsearch>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearch-datastream")]
     pub elasticsearch_datastream: Option<SyslogNGClusterOutputElasticsearchDatastream>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledNamespaces")]
-    pub enabled_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<SyslogNGClusterOutputFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

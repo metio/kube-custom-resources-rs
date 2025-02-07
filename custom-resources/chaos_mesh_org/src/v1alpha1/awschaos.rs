@@ -16,12 +16,15 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct AWSChaosSpec {
-    /// Action defines the specific aws chaos action. Supported action: ec2-stop / ec2-restart / detach-volume Default action: ec2-stop
+    /// Action defines the specific aws chaos action.
+    /// Supported action: ec2-stop / ec2-restart / detach-volume
+    /// Default action: ec2-stop
     pub action: AWSChaosAction,
     /// AWSRegion defines the region of aws.
     #[serde(rename = "awsRegion")]
     pub aws_region: String,
-    /// DeviceName indicates the name of the device. Needed in detach-volume.
+    /// DeviceName indicates the name of the device.
+    /// Needed in detach-volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
     /// Duration represents the duration of the chaos action.
@@ -39,7 +42,8 @@ pub struct AWSChaosSpec {
     /// SecretName defines the name of kubernetes secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// EbsVolume indicates the ID of the EBS volume. Needed in detach-volume.
+    /// EbsVolume indicates the ID of the EBS volume.
+    /// Needed in detach-volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
     pub volume_id: Option<String>,
 }

@@ -21,6 +21,10 @@ pub struct MeshAccessLogSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshAccessLogFrom>>,
+    /// Rules defines inbound access log configurations. Currently limited to
+    /// selecting all inbound traffic, as L7 matching is not yet implemented.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<MeshAccessLogRules>>,
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined in-place.
@@ -229,6 +233,150 @@ pub enum MeshAccessLogFromTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRules {
+    /// Default contains configuration of the inbound access logging
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<MeshAccessLogRulesDefault>,
+}
+
+/// Default contains configuration of the inbound access logging
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefault {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub backends: Option<Vec<MeshAccessLogRulesDefaultBackends>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackends {
+    /// FileBackend defines configuration for file based access logs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub file: Option<MeshAccessLogRulesDefaultBackendsFile>,
+    /// Defines an OpenTelemetry logging backend.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
+    pub open_telemetry: Option<MeshAccessLogRulesDefaultBackendsOpenTelemetry>,
+    /// TCPBackend defines a TCP logging backend.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tcp: Option<MeshAccessLogRulesDefaultBackendsTcp>,
+    #[serde(rename = "type")]
+    pub r#type: MeshAccessLogRulesDefaultBackendsType,
+}
+
+/// FileBackend defines configuration for file based access logs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsFile {
+    /// Format of access logs. Placeholders available on
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<MeshAccessLogRulesDefaultBackendsFileFormat>,
+    /// Path to a file that logs will be written to
+    pub path: String,
+}
+
+/// Format of access logs. Placeholders available on
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsFileFormat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub json: Option<Vec<MeshAccessLogRulesDefaultBackendsFileFormatJson>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
+    pub omit_empty_values: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plain: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: MeshAccessLogRulesDefaultBackendsFileFormatType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsFileFormatJson {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Format of access logs. Placeholders available on
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshAccessLogRulesDefaultBackendsFileFormatType {
+    Plain,
+    Json,
+}
+
+/// Defines an OpenTelemetry logging backend.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsOpenTelemetry {
+    /// Attributes can contain placeholders available on
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<Vec<MeshAccessLogRulesDefaultBackendsOpenTelemetryAttributes>>,
+    /// Body is a raw string or an OTLP any value as described at
+    /// https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/logs/data-model.md#field-body
+    /// It can contain placeholders available on
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub body: Option<serde_json::Value>,
+    /// Endpoint of OpenTelemetry collector. An empty port defaults to 4317.
+    pub endpoint: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsOpenTelemetryAttributes {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TCPBackend defines a TCP logging backend.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsTcp {
+    /// Address of the TCP logging backend
+    pub address: String,
+    /// Format of access logs. Placeholders available on
+    /// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<MeshAccessLogRulesDefaultBackendsTcpFormat>,
+}
+
+/// Format of access logs. Placeholders available on
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsTcpFormat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub json: Option<Vec<MeshAccessLogRulesDefaultBackendsTcpFormatJson>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omitEmptyValues")]
+    pub omit_empty_values: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plain: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: MeshAccessLogRulesDefaultBackendsTcpFormatType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshAccessLogRulesDefaultBackendsTcpFormatJson {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Format of access logs. Placeholders available on
+/// https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage#command-operators
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshAccessLogRulesDefaultBackendsTcpFormatType {
+    Plain,
+    Json,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshAccessLogRulesDefaultBackendsType {
+    Tcp,
+    File,
+    OpenTelemetry,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.
@@ -282,6 +430,7 @@ pub enum MeshAccessLogTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -482,5 +631,6 @@ pub enum MeshAccessLogToTargetRefKind {
     MeshServiceSubset,
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
+    Dataplane,
 }
 

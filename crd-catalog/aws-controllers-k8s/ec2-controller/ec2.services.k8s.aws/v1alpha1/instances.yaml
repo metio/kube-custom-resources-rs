@@ -72,7 +72,7 @@ spec:
                     type: "object"
                   type: "array"
                 capacityReservationSpecification:
-                  description: "Information about the Capacity Reservation targeting option. If you do not\nspecify this parameter, the instance's Capacity Reservation preference defaults\nto open, which enables it to run in any open Capacity Reservation that has\nmatching attributes (instance type, platform, Availability Zone)."
+                  description: "Information about the Capacity Reservation targeting option. If you do not\nspecify this parameter, the instance's Capacity Reservation preference defaults\nto open, which enables it to run in any open Capacity Reservation that has\nmatching attributes (instance type, platform, Availability Zone, and tenancy)."
                   properties:
                     capacityReservationPreference:
                       type: "string"
@@ -111,18 +111,18 @@ spec:
                   description: "Indicates whether the instance is optimized for Amazon EBS I/O. This optimization\nprovides dedicated throughput to Amazon EBS and an optimized configuration\nstack to provide optimal Amazon EBS I/O performance. This optimization isn't\navailable with all instance types. Additional usage charges apply when using\nan EBS-optimized instance.\n\nDefault: false"
                   type: "boolean"
                 elasticGPUSpecification:
-                  description: "An elastic GPU to associate with the instance. An Elastic GPU is a GPU resource\nthat you can attach to your Windows instance to accelerate the graphics performance\nof your applications. For more information, see Amazon EC2 Elastic GPUs (https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/elastic-graphics.html)\nin the Amazon EC2 User Guide."
+                  description: "An elastic GPU to associate with the instance.\n\nAmazon Elastic Graphics reached end of life on January 8, 2024."
                   items:
-                    description: "A specification for an Elastic Graphics accelerator."
+                    description: "Amazon Elastic Graphics reached end of life on January 8, 2024.\n\nA specification for an Elastic Graphics accelerator."
                     properties:
                       type_:
                         type: "string"
                     type: "object"
                   type: "array"
                 elasticInferenceAccelerators:
-                  description: "An elastic inference accelerator to associate with the instance. Elastic\ninference accelerators are a resource you can attach to your Amazon EC2 instances\nto accelerate your Deep Learning (DL) inference workloads.\n\nYou cannot specify accelerators from different generations in the same request."
+                  description: "An elastic inference accelerator to associate with the instance.\n\nAmazon Elastic Inference is no longer available."
                   items:
-                    description: "Describes an elastic inference accelerator."
+                    description: "Amazon Elastic Inference is no longer available.\n\nDescribes an elastic inference accelerator."
                     properties:
                       count:
                         format: "int64"
@@ -138,7 +138,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 hibernationOptions:
-                  description: "Indicates whether an instance is enabled for hibernation. For more information,\nsee Hibernate your instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)\nin the Amazon EC2 User Guide.\n\nYou can't enable hibernation and Amazon Web Services Nitro Enclaves on the\nsame instance."
+                  description: "Indicates whether an instance is enabled for hibernation. This parameter\nis valid only if the instance meets the hibernation prerequisites (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/hibernating-prerequisites.html).\nFor more information, see Hibernate your Amazon EC2 instance (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Hibernate.html)\nin the Amazon EC2 User Guide.\n\nYou can't enable hibernation and Amazon Web Services Nitro Enclaves on the\nsame instance."
                   properties:
                     configured:
                       type: "boolean"
@@ -180,14 +180,14 @@ spec:
                       type: "object"
                   type: "object"
                 instanceType:
-                  description: "The instance type. For more information, see Instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)\nin the Amazon EC2 User Guide.\n\nDefault: m1.small"
+                  description: "The instance type. For more information, see Amazon EC2 instance types (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-types.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 ipv6AddressCount:
-                  description: "[EC2-VPC] The number of IPv6 addresses to associate with the primary network\ninterface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet.\nYou cannot specify this option and the option to assign specific IPv6 addresses\nin the same request. You can specify this option if you've specified a minimum\nnumber of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "The number of IPv6 addresses to associate with the primary network interface.\nAmazon EC2 chooses the IPv6 addresses from the range of your subnet. You\ncannot specify this option and the option to assign specific IPv6 addresses\nin the same request. You can specify this option if you've specified a minimum\nnumber of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   format: "int64"
                   type: "integer"
                 ipv6Addresses:
-                  description: "[EC2-VPC] The IPv6 addresses from the range of the subnet to associate with\nthe primary network interface. You cannot specify this option and the option\nto assign a number of IPv6 addresses in the same request. You cannot specify\nthis option if you've specified a minimum number of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "The IPv6 addresses from the range of the subnet to associate with the primary\nnetwork interface. You cannot specify this option and the option to assign\na number of IPv6 addresses in the same request. You cannot specify this option\nif you've specified a minimum number of instances to launch.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   items:
                     description: "Describes an IPv6 address."
                     properties:
@@ -202,7 +202,7 @@ spec:
                   description: "The name of the key pair. You can create a key pair using CreateKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateKeyPair.html)\nor ImportKeyPair (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ImportKeyPair.html).\n\nIf you do not specify a key pair, you can't connect to the instance unless\nyou choose an AMI that is configured to allow users another way to log in."
                   type: "string"
                 launchTemplate:
-                  description: "The launch template to use to launch the instances. Any parameters that you\nspecify in RunInstances override the same parameters in the launch template.\nYou can specify either the name or ID of a launch template, but not both."
+                  description: "The launch template. Any additional parameters that you specify for the new\ninstance overwrite the corresponding parameters included in the launch template."
                   properties:
                     launchTemplateID:
                       type: "string"
@@ -227,7 +227,7 @@ spec:
                       type: "string"
                   type: "object"
                 maxCount:
-                  description: "The maximum number of instances to launch. If you specify more instances\nthan Amazon EC2 can launch in the target Availability Zone, Amazon EC2 launches\nthe largest possible number of instances above MinCount.\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 FAQ."
+                  description: "The maximum number of instances to launch. If you specify a value that is\nmore capacity than Amazon EC2 can launch in the target Availability Zone,\nAmazon EC2 launches the largest possible number of instances above the specified\nminimum count.\n\nConstraints: Between 1 and the quota for the specified instance type for\nyour account for this Region. For more information, see Amazon EC2 instance\ntype quotas (https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-instance-quotas.html)."
                   format: "int64"
                   type: "integer"
                 metadataOptions:
@@ -246,7 +246,7 @@ spec:
                       type: "string"
                   type: "object"
                 minCount:
-                  description: "The minimum number of instances to launch. If you specify a minimum that\nis more instances than Amazon EC2 can launch in the target Availability Zone,\nAmazon EC2 launches no instances.\n\nConstraints: Between 1 and the maximum number you're allowed for the specified\ninstance type. For more information about the default limits, and how to\nrequest an increase, see How many instances can I run in Amazon EC2 (http://aws.amazon.com/ec2/faqs/#How_many_instances_can_I_run_in_Amazon_EC2)\nin the Amazon EC2 General FAQ."
+                  description: "The minimum number of instances to launch. If you specify a value that is\nmore capacity than Amazon EC2 can provide in the target Availability Zone,\nAmazon EC2 does not launch any instances.\n\nConstraints: Between 1 and the quota for the specified instance type for\nyour account for this Region. For more information, see Amazon EC2 instance\ntype quotas (https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-instance-quotas.html)."
                   format: "int64"
                   type: "integer"
                 monitoring:
@@ -256,7 +256,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 networkInterfaces:
-                  description: "The network interfaces to associate with the instance. If you specify a network\ninterface, you must specify any security groups and subnets as part of the\nnetwork interface."
+                  description: "The network interfaces to associate with the instance."
                   items:
                     description: "Describes a network interface."
                     properties:
@@ -352,7 +352,7 @@ spec:
                       type: "string"
                   type: "object"
                 privateDNSNameOptions:
-                  description: "The options for the instance hostname. The default values are inherited from\nthe subnet."
+                  description: "The options for the instance hostname. The default values are inherited from\nthe subnet. Applies only if creating a network interface, not attaching an\nexisting one."
                   properties:
                     enableResourceNameDNSAAAARecord:
                       type: "boolean"
@@ -362,23 +362,23 @@ spec:
                       type: "string"
                   type: "object"
                 privateIPAddress:
-                  description: "[EC2-VPC] The primary IPv4 address. You must specify a value from the IPv4\naddress range of the subnet.\n\nOnly one private IP address can be designated as primary. You can't specify\nthis option if you've specified the option to designate a private IP address\nas the primary IP address in a network interface specification. You cannot\nspecify this option if you're launching more than one instance in the request.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
+                  description: "The primary IPv4 address. You must specify a value from the IPv4 address\nrange of the subnet.\n\nOnly one private IP address can be designated as primary. You can't specify\nthis option if you've specified the option to designate a private IP address\nas the primary IP address in a network interface specification. You cannot\nspecify this option if you're launching more than one instance in the request.\n\nYou cannot specify this option and the network interfaces option in the same\nrequest."
                   type: "string"
                 ramDiskID:
                   description: "The ID of the RAM disk to select. Some kernels require additional drivers\nat launch. Check the kernel requirements for information about whether you\nneed to specify a RAM disk. To find kernel requirements, go to the Amazon\nWeb Services Resource Center and search for the kernel ID.\n\nWe recommend that you use PV-GRUB instead of kernels and RAM disks. For more\ninformation, see PV-GRUB (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UserProvidedkernels.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 securityGroupIDs:
-                  description: "The IDs of the security groups. You can create a security group using CreateSecurityGroup\n(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface."
+                  description: "The IDs of the security groups. You can create a security group using CreateSecurityGroup\n(https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateSecurityGroup.html).\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface instead of using this parameter."
                   items:
                     type: "string"
                   type: "array"
                 securityGroups:
-                  description: "[EC2-Classic, default VPC] The names of the security groups. For a nondefault\nVPC, you must use security group IDs instead.\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface.\n\nDefault: Amazon EC2 uses the default security group."
+                  description: "[Default VPC] The names of the security groups.\n\nIf you specify a network interface, you must specify any security groups\nas part of the network interface instead of using this parameter.\n\nDefault: Amazon EC2 uses the default security group."
                   items:
                     type: "string"
                   type: "array"
                 subnetID:
-                  description: "[EC2-VPC] The ID of the subnet to launch the instance into.\n\nIf you specify a network interface, you must specify any subnets as part\nof the network interface."
+                  description: "The ID of the subnet to launch the instance into.\n\nIf you specify a network interface, you must specify any subnets as part\nof the network interface instead of using this parameter."
                   type: "string"
                 tags:
                   description: "The tags. The value parameter is required, but if you don't want the tag\nto have a value, specify the parameter with no value, and we set the value\nto an empty string."
@@ -392,7 +392,7 @@ spec:
                     type: "object"
                   type: "array"
                 userData:
-                  description: "The user data script to make available to the instance. For more information,\nsee Run commands on your Linux instance at launch (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html)\nand Run commands on your Windows instance at launch (https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/ec2-windows-user-data.html).\nIf you are using a command line tool, base64-encoding is performed for you,\nand you can load the text from a file. Otherwise, you must provide base64-encoded\ntext. User data is limited to 16 KB."
+                  description: "The user data to make available to the instance. User data must be base64-encoded.\nDepending on the tool or SDK that you're using, the base64-encoding might\nbe performed for you. For more information, see Work with instance user data\n(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instancedata-add-user-data.html)."
                   type: "string"
               type: "object"
             status:
@@ -422,7 +422,7 @@ spec:
                   description: "The architecture of the image."
                   type: "string"
                 bootMode:
-                  description: "The boot mode of the instance. For more information, see Boot modes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html)\nin the Amazon EC2 User Guide."
+                  description: "The boot mode that was specified by the AMI. If the value is uefi-preferred,\nthe AMI supports both UEFI and Legacy BIOS. The currentInstanceBootMode parameter\nis the boot mode that is used to boot the instance at launch or start.\n\nThe operating system contained in the AMI must be configured to support the\nspecified boot mode.\n\nFor more information, see Boot modes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ami-boot.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 capacityReservationID:
                   description: "The ID of the Capacity Reservation."
@@ -454,9 +454,9 @@ spec:
                     type: "object"
                   type: "array"
                 elasticGPUAssociations:
-                  description: "The Elastic GPU associated with the instance."
+                  description: "Deprecated.\n\nAmazon Elastic Graphics reached end of life on January 8, 2024."
                   items:
-                    description: "Describes the association between an instance and an Elastic Graphics accelerator."
+                    description: "Amazon Elastic Graphics reached end of life on January 8, 2024.\n\nDescribes the association between an instance and an Elastic Graphics accelerator."
                     properties:
                       elasticGPUAssociationID:
                         type: "string"
@@ -469,9 +469,9 @@ spec:
                     type: "object"
                   type: "array"
                 elasticInferenceAcceleratorAssociations:
-                  description: "The elastic inference accelerator associated with the instance."
+                  description: "Deprecated\n\nAmazon Elastic Inference is no longer available."
                   items:
-                    description: "Describes the association between an instance and an elastic inference accelerator."
+                    description: "Amazon Elastic Inference is no longer available.\n\nDescribes the association between an instance and an elastic inference accelerator."
                     properties:
                       elasticInferenceAcceleratorARN:
                         type: "string"
@@ -500,7 +500,7 @@ spec:
                   description: "The IPv6 address assigned to the instance."
                   type: "string"
                 launchTime:
-                  description: "The time the instance was launched."
+                  description: "The time that the instance was last launched. To determine the time that\ninstance was first launched, see the attachment time for the primary network\ninterface."
                   format: "date-time"
                   type: "string"
                 licenses:
@@ -516,13 +516,13 @@ spec:
                   description: "The Amazon Resource Name (ARN) of the Outpost."
                   type: "string"
                 platform:
-                  description: "The value is Windows for Windows instances; otherwise blank."
+                  description: "The platform. This value is windows for Windows instances; otherwise, it\nis empty."
                   type: "string"
                 platformDetails:
                   description: "The platform details value for the instance. For more information, see AMI\nbilling information fields (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/billing-info-fields.html)\nin the Amazon EC2 User Guide."
                   type: "string"
                 privateDNSName:
-                  description: "(IPv4 only) The private DNS hostname name assigned to the instance. This\nDNS hostname can only be used inside the Amazon EC2 network. This name is\nnot available until the instance enters the running state.\n\n[EC2-VPC] The Amazon-provided DNS server resolves Amazon-provided private\nDNS hostnames if you've enabled DNS resolution and DNS hostnames in your\nVPC. If you are not using the Amazon-provided DNS server in your VPC, your\ncustom domain name servers must resolve the hostname as appropriate."
+                  description: "[IPv4 only] The private DNS hostname name assigned to the instance. This\nDNS hostname can only be used inside the Amazon EC2 network. This name is\nnot available until the instance enters the running state.\n\nThe Amazon-provided DNS server resolves Amazon-provided private DNS hostnames\nif you've enabled DNS resolution and DNS hostnames in your VPC. If you are\nnot using the Amazon-provided DNS server in your VPC, your custom domain\nname servers must resolve the hostname as appropriate."
                   type: "string"
                 productCodes:
                   description: "The product codes attached to this instance, if applicable."
@@ -536,7 +536,7 @@ spec:
                     type: "object"
                   type: "array"
                 publicDNSName:
-                  description: "(IPv4 only) The public DNS name assigned to the instance. This name is not\navailable until the instance enters the running state. For EC2-VPC, this\nname is only available if you've enabled DNS hostnames for your VPC."
+                  description: "[IPv4 only] The public DNS name assigned to the instance. This name is not\navailable until the instance enters the running state. This name is only\navailable if you've enabled DNS hostnames for your VPC."
                   type: "string"
                 publicIPAddress:
                   description: "The public IPv4 address, or the Carrier IP address assigned to the instance,\nif applicable.\n\nA Carrier IP address only applies to an instance launched in a subnet associated\nwith a Wavelength Zone."
@@ -590,7 +590,7 @@ spec:
                   description: "The virtualization type of the instance."
                   type: "string"
                 vpcID:
-                  description: "[EC2-VPC] The ID of the VPC in which the instance is running."
+                  description: "The ID of the VPC in which the instance is running."
                   type: "string"
               type: "object"
           type: "object"

@@ -19,8 +19,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PlatformEndpointSpec {
-    /// Arbitrary user data to associate with the endpoint. Amazon SNS does not use
-    /// this data. The data must be in UTF-8 format and less than 2KB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customUserData")]
     pub custom_user_data: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

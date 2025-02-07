@@ -19,7 +19,8 @@ use self::prelude::*;
 pub struct KubeControllersConfigurationSpec {
     /// Controllers enables and configures individual Kubernetes controllers
     pub controllers: KubeControllersConfigurationControllers,
-    /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling is disabled.
+    /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling
+    /// is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugProfilePort")]
     pub debug_profile_port: Option<i32>,
     /// EtcdV3CompactionPeriod is the period between etcdv3 compaction requests. Set to 0 to disable. [Default: 10m]
@@ -39,6 +40,9 @@ pub struct KubeControllersConfigurationSpec {
 /// Controllers enables and configures individual Kubernetes controllers
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllers {
+    /// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<KubeControllersConfigurationControllersLoadBalancer>,
     /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<KubeControllersConfigurationControllersNamespace>,
@@ -56,6 +60,13 @@ pub struct KubeControllersConfigurationControllers {
     pub workload_endpoint: Option<KubeControllersConfigurationControllersWorkloadEndpoint>,
 }
 
+/// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationControllersLoadBalancer {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignIPs")]
+    pub assign_i_ps: Option<String>,
+}
+
 /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationControllersNamespace {
@@ -70,7 +81,8 @@ pub struct KubeControllersConfigurationControllersNode {
     /// HostEndpoint controls syncing nodes to host endpoints. Disabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostEndpoint")]
     pub host_endpoint: Option<KubeControllersConfigurationControllersNodeHostEndpoint>,
-    /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked. Set to 0 to disable IP garbage collection. [Default: 15m]
+    /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked.
+    /// Set to 0 to disable IP garbage collection. [Default: 15m]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leakGracePeriod")]
     pub leak_grace_period: Option<String>,
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]
@@ -113,23 +125,29 @@ pub struct KubeControllersConfigurationControllersWorkloadEndpoint {
     pub reconciler_period: Option<String>,
 }
 
-/// KubeControllersConfigurationStatus represents the status of the configuration. It's useful for admins to be able to see the actual config that was applied, which can be modified by environment variables on the kube-controllers process.
+/// KubeControllersConfigurationStatus represents the status of the configuration. It's useful for admins to
+/// be able to see the actual config that was applied, which can be modified by environment variables on the
+/// kube-controllers process.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatus {
-    /// EnvironmentVars contains the environment variables on the kube-controllers that influenced the RunningConfig.
+    /// EnvironmentVars contains the environment variables on the kube-controllers that influenced
+    /// the RunningConfig.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "environmentVars")]
     pub environment_vars: Option<BTreeMap<String, String>>,
-    /// RunningConfig contains the effective config that is running in the kube-controllers pod, after merging the API resource with any environment variables.
+    /// RunningConfig contains the effective config that is running in the kube-controllers pod, after
+    /// merging the API resource with any environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runningConfig")]
     pub running_config: Option<KubeControllersConfigurationStatusRunningConfig>,
 }
 
-/// RunningConfig contains the effective config that is running in the kube-controllers pod, after merging the API resource with any environment variables.
+/// RunningConfig contains the effective config that is running in the kube-controllers pod, after
+/// merging the API resource with any environment variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfig {
     /// Controllers enables and configures individual Kubernetes controllers
     pub controllers: KubeControllersConfigurationStatusRunningConfigControllers,
-    /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling is disabled.
+    /// DebugProfilePort configures the port to serve memory and cpu profiles on. If not specified, profiling
+    /// is disabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugProfilePort")]
     pub debug_profile_port: Option<i32>,
     /// EtcdV3CompactionPeriod is the period between etcdv3 compaction requests. Set to 0 to disable. [Default: 10m]
@@ -149,6 +167,9 @@ pub struct KubeControllersConfigurationStatusRunningConfig {
 /// Controllers enables and configures individual Kubernetes controllers
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllers {
+    /// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<KubeControllersConfigurationStatusRunningConfigControllersLoadBalancer>,
     /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<KubeControllersConfigurationStatusRunningConfigControllersNamespace>,
@@ -166,6 +187,13 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllers {
     pub workload_endpoint: Option<KubeControllersConfigurationStatusRunningConfigControllersWorkloadEndpoint>,
 }
 
+/// LoadBalancer enables and configures the LoadBalancer controller. Enabled by default, set to nil to disable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationStatusRunningConfigControllersLoadBalancer {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignIPs")]
+    pub assign_i_ps: Option<String>,
+}
+
 /// Namespace enables and configures the namespace controller. Enabled by default, set to nil to disable.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubeControllersConfigurationStatusRunningConfigControllersNamespace {
@@ -180,7 +208,8 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNode {
     /// HostEndpoint controls syncing nodes to host endpoints. Disabled by default, set to nil to disable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostEndpoint")]
     pub host_endpoint: Option<KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpoint>,
-    /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked. Set to 0 to disable IP garbage collection. [Default: 15m]
+    /// LeakGracePeriod is the period used by the controller to determine if an IP address has been leaked.
+    /// Set to 0 to disable IP garbage collection. [Default: 15m]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leakGracePeriod")]
     pub leak_grace_period: Option<String>,
     /// ReconcilerPeriod is the period to perform reconciliation with the Calico datastore. [Default: 5m]

@@ -36,7 +36,7 @@ spec:
                   description: "The unique identifier (ID) of the parent root or OU that you want to create\nthe new OU in.\n\nThe regex pattern (http://wikipedia.org/wiki/regex) for a parent ID string\nrequires one of the following:\n\n   * Root - A string that begins with \"r-\" followed by from 4 to 32 lowercase\n   letters or digits.\n\n   * Organizational unit (OU) - A string that begins with \"ou-\" followed\n   by from 4 to 32 lowercase letters or digits (the ID of the root that the\n   OU is in). This string is followed by a second \"-\" dash and from 8 to\n   32 additional lowercase letters or digits."
                   type: "string"
                 tags:
-                  description: "A list of tags that you want to attach to the newly created OU. For each\ntag in the list, you must specify both a tag key and a value. You can set\nthe value to an empty string, but you can't set it to null. For more information\nabout tagging, see Tagging Organizations resources (https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html)\nin the Organizations User Guide.\n\nIf any one of the tags is invalid or if you exceed the allowed number of\ntags for an OU, then the entire request fails and the OU is not created."
+                  description: "A list of tags that you want to attach to the newly created OU. For each\ntag in the list, you must specify both a tag key and a value. You can set\nthe value to an empty string, but you can't set it to null. For more information\nabout tagging, see Tagging Organizations resources (https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html)\nin the Organizations User Guide.\n\nIf any one of the tags is not valid or if you exceed the allowed number of\ntags for an OU, then the entire request fails and the OU is not created."
                   items:
                     description: "A custom key-value pair associated with a resource within your organization.\n\nYou can attach tags to any of the following organization resources.\n\n   * Amazon Web Services account\n\n   * Organizational unit (OU)\n\n   * Organization root\n\n   * Policy"
                     properties:
@@ -96,7 +96,7 @@ spec:
                     type: "object"
                   type: "array"
                 id:
-                  description: "The unique identifier (ID) associated with this OU.\n\nThe regex pattern (http://wikipedia.org/wiki/regex) for an organizational\nunit ID string requires \"ou-\" followed by from 4 to 32 lowercase letters\nor digits (the ID of the root that contains the OU). This string is followed\nby a second \"-\" dash and from 8 to 32 additional lowercase letters or digits."
+                  description: "The unique identifier (ID) associated with this OU. The ID is unique to the\norganization only.\n\nThe regex pattern (http://wikipedia.org/wiki/regex) for an organizational\nunit ID string requires \"ou-\" followed by from 4 to 32 lowercase letters\nor digits (the ID of the root that contains the OU). This string is followed\nby a second \"-\" dash and from 8 to 32 additional lowercase letters or digits."
                   type: "string"
               type: "object"
           type: "object"

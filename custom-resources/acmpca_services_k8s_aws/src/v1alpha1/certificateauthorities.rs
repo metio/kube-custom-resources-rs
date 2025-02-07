@@ -51,10 +51,9 @@ pub struct CertificateAuthoritySpec {
     /// and security compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyStorageSecurityStandard")]
     pub key_storage_security_standard: Option<String>,
-    /// Contains information to enable Online Certificate Status Protocol (OCSP)
-    /// support, to enable a certificate revocation list (CRL), to enable both, or
-    /// to enable neither. The default is for both certificate validation mechanisms
-    /// to be disabled.
+    /// Contains information to enable support for Online Certificate Status Protocol
+    /// (OCSP), certificate revocation list (CRL), both protocols, or neither. By
+    /// default, both certificate validation mechanisms are disabled.
     /// 
     /// The following requirements apply to revocation configurations.
     /// 
@@ -333,10 +332,9 @@ pub struct CertificateAuthorityCertificateAuthorityConfigurationSubjectCustomAtt
     pub value: Option<String>,
 }
 
-/// Contains information to enable Online Certificate Status Protocol (OCSP)
-/// support, to enable a certificate revocation list (CRL), to enable both, or
-/// to enable neither. The default is for both certificate validation mechanisms
-/// to be disabled.
+/// Contains information to enable support for Online Certificate Status Protocol
+/// (OCSP), certificate revocation list (CRL), both protocols, or neither. By
+/// default, both certificate validation mechanisms are disabled.
 /// 
 /// The following requirements apply to revocation configurations.
 /// 
@@ -365,13 +363,15 @@ pub struct CertificateAuthorityRevocationConfiguration {
     /// by setting the Enabled parameter to true. Your private CA writes CRLs to
     /// an S3 bucket that you specify in the S3BucketName parameter. You can hide
     /// the name of your bucket by specifying a value for the CustomCname parameter.
-    /// Your private CA copies the CNAME or the S3 bucket name to the CRL Distribution
-    /// Points extension of each certificate it issues. Your S3 bucket policy must
-    /// give write permission to Amazon Web Services Private CA.
+    /// Your private CA by default copies the CNAME or the S3 bucket name to the
+    /// CRL Distribution Points extension of each certificate it issues. If you want
+    /// to configure this default behavior to be something different, you can set
+    /// the CrlDistributionPointExtensionConfiguration parameter. Your S3 bucket
+    /// policy must give write permission to Amazon Web Services Private CA.
     /// 
     /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
     /// protected with encryption. For more information, see Encrypting Your CRLs
-    /// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
+    /// (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#crl-encryption).
     /// 
     /// Your private CA uses the value in the ExpirationInDays parameter to calculate
     /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's
@@ -436,13 +436,15 @@ pub struct CertificateAuthorityRevocationConfiguration {
 /// by setting the Enabled parameter to true. Your private CA writes CRLs to
 /// an S3 bucket that you specify in the S3BucketName parameter. You can hide
 /// the name of your bucket by specifying a value for the CustomCname parameter.
-/// Your private CA copies the CNAME or the S3 bucket name to the CRL Distribution
-/// Points extension of each certificate it issues. Your S3 bucket policy must
-/// give write permission to Amazon Web Services Private CA.
+/// Your private CA by default copies the CNAME or the S3 bucket name to the
+/// CRL Distribution Points extension of each certificate it issues. If you want
+/// to configure this default behavior to be something different, you can set
+/// the CrlDistributionPointExtensionConfiguration parameter. Your S3 bucket
+/// policy must give write permission to Amazon Web Services Private CA.
 /// 
 /// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
 /// protected with encryption. For more information, see Encrypting Your CRLs
-/// (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption).
+/// (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#crl-encryption).
 /// 
 /// Your private CA uses the value in the ExpirationInDays parameter to calculate
 /// the nextUpdate field in the CRL. The CRL is refreshed prior to a certificate's

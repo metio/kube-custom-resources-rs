@@ -35,6 +35,9 @@ pub struct IngressClassParamsSpec {
     /// LoadBalancerAttributes define the custom attributes to LoadBalancers for all Ingress that that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerAttributes")]
     pub load_balancer_attributes: Option<Vec<IngressClassParamsLoadBalancerAttributes>>,
+    /// MinimumLoadBalancerCapacity define the capacity reservation for LoadBalancers for all Ingress that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumLoadBalancerCapacity")]
+    pub minimum_load_balancer_capacity: Option<IngressClassParamsMinimumLoadBalancerCapacity>,
     /// NamespaceSelector restrict the namespaces of Ingresses that are allowed to specify the IngressClass with this IngressClassParams.
     /// * if absent or present but empty, it selects all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
@@ -100,6 +103,14 @@ pub struct IngressClassParamsLoadBalancerAttributes {
     pub key: String,
     /// The value of the attribute.
     pub value: String,
+}
+
+/// MinimumLoadBalancerCapacity define the capacity reservation for LoadBalancers for all Ingress that belong to IngressClass with this IngressClassParams.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressClassParamsMinimumLoadBalancerCapacity {
+    /// The Capacity Units Value.
+    #[serde(rename = "capacityUnits")]
+    pub capacity_units: i32,
 }
 
 /// NamespaceSelector restrict the namespaces of Ingresses that are allowed to specify the IngressClass with this IngressClassParams.

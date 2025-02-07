@@ -89,6 +89,11 @@ pub struct IntrusionDetectionComponentResourcesResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// DeepPacketInspectionDaemonset configures the DPI Daemonset
@@ -173,6 +178,11 @@ pub struct IntrusionDetectionDeepPacketInspectionDaemonsetSpecTemplateSpecInitCo
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// IntrusionDetectionControllerDeployment configures the IntrusionDetection Controller Deployment.
@@ -267,6 +277,11 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// IntrusionDetectionControllerDeploymentInitContainer is a IntrusionDetectionController Deployment init container.
@@ -320,6 +335,11 @@ pub struct IntrusionDetectionIntrusionDetectionControllerDeploymentSpecTemplateS
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Most recently observed state for Tigera intrusion detection.

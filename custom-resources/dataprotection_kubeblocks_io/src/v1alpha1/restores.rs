@@ -42,6 +42,10 @@ pub struct RestoreSpec {
     /// The priority of merging is as follows: `Restore env > Backup env > ActionSet env`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<RestoreEnv>>,
+    /// Specifies a list of name-value pairs representing parameters and their corresponding values.
+    /// Parameters match the schema specified in the `actionset.spec.parametersSchema`
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub parameters: Option<Vec<RestoreParameters>>,
     /// Configuration for the action of "prepareData" phase, including the persistent volume claims
     /// that need to be restored and scheduling strategy of temporary recovery pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prepareDataConfig")]
@@ -207,6 +211,14 @@ pub struct RestoreEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreParameters {
+    /// Represents the name of the parameter.
+    pub name: String,
+    /// Represents the parameter values.
+    pub value: String,
 }
 
 /// Configuration for the action of "prepareData" phase, including the persistent volume claims

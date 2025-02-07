@@ -119,12 +119,21 @@ pub struct ClusterSpec {
 /// Specifies the backup configuration of the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBackup {
+    /// Specifies the backup method to use, if not set, use the first continuous method.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousMethod")]
+    pub continuous_method: Option<String>,
     /// The cron expression for the schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronExpression")]
     pub cron_expression: Option<String>,
     /// Specifies whether automated backup is enabled for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Specifies whether to enable incremental backup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalBackupEnabled")]
+    pub incremental_backup_enabled: Option<bool>,
+    /// The cron expression for the incremental backup schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "incrementalCronExpression")]
+    pub incremental_cron_expression: Option<String>,
     /// Specifies the backup method to use, as defined in backupPolicy.
     pub method: String,
     /// Specifies whether to enable point-in-time recovery.
@@ -281,19 +290,16 @@ pub struct ClusterComponentSpecs {
     /// with other Kubernetes resources, such as modifying Pod labels or sending events.
     /// 
     /// 
-    /// Defaults:
-    /// To perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.
-    /// The service account will be bound to a default role named "kubeblocks-cluster-pod-role" which is installed together with KubeBlocks.
-    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}"
+    /// If not specified, KubeBlocks automatically creates a default ServiceAccount named
+    /// "kb-{componentdefinition.name}", bound to a role with rules defined in ComponentDefinition's
+    /// `policyRules` field. If needed (currently this means if any lifecycleAction is enabled),
+    /// it will also be bound to a default role named
+    /// "kubeblocks-cluster-pod-role", which is installed together with KubeBlocks.
+    /// If multiple components use the same ComponentDefinition, they will share one ServiceAccount.
     /// 
     /// 
-    /// Future Changes:
-    /// Future versions might change the default ServiceAccount creation strategy to one per Component,
-    /// potentially revising the naming to "kb-{cluster.name}-{component.name}".
-    /// 
-    /// 
-    /// Users can override the automatic ServiceAccount assignment by explicitly setting the name of
-    /// an existed ServiceAccount in this field.
+    /// If the field is not empty, the specified ServiceAccount will be used, and KubeBlocks will not
+    /// create a ServiceAccount. But KubeBlocks does create RoleBindings for the specified ServiceAccount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Defines a list of ServiceRef for a Component, enabling access to both external services and
@@ -332,7 +338,7 @@ pub struct ClusterComponentSpecs {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
     /// Stop the Component.
@@ -543,6 +549,16 @@ pub struct ClusterComponentSpecsInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterComponentSpecsInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -664,6 +680,30 @@ pub struct ClusterComponentSpecsInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterComponentSpecsInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -1667,6 +1707,12 @@ pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -3351,6 +3397,10 @@ pub struct ClusterComponentSpecsIssuerSecretRef {
     pub key: String,
     /// Name of the Secret that contains user-provided certificates.
     pub name: String,
+    /// The namespace where the secret is located.
+    /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// ClusterComponentSpec defines the specification of a Component within a Cluster.
@@ -4483,6 +4533,9 @@ pub enum ClusterComponentSpecsServicesServiceType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsSystemAccounts {
+    /// Specifies whether the system account is disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
     /// The name of the system account.
     pub name: String,
     /// Specifies the policy for generating the account's password.
@@ -4492,6 +4545,9 @@ pub struct ClusterComponentSpecsSystemAccounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordConfig")]
     pub password_config: Option<ClusterComponentSpecsSystemAccountsPasswordConfig>,
     /// Refers to the secret from which data will be copied to create the new account.
+    /// 
+    /// 
+    /// For user-specified passwords, the maximum length is limited to 64 bytes.
     /// 
     /// 
     /// This field is immutable once set.
@@ -4537,6 +4593,9 @@ pub enum ClusterComponentSpecsSystemAccountsPasswordConfigLetterCase {
 /// Refers to the secret from which data will be copied to create the new account.
 /// 
 /// 
+/// For user-specified passwords, the maximum length is limited to 64 bytes.
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsSystemAccountsSecretRef {
@@ -4544,6 +4603,9 @@ pub struct ClusterComponentSpecsSystemAccountsSecretRef {
     pub name: String,
     /// The namespace where the secret is located.
     pub namespace: String,
+    /// The key in the secret data that contains the password.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4589,6 +4651,12 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -7673,19 +7741,16 @@ pub struct ClusterShardingsTemplate {
     /// with other Kubernetes resources, such as modifying Pod labels or sending events.
     /// 
     /// 
-    /// Defaults:
-    /// To perform certain operational tasks, agent sidecars running in Pods require specific RBAC permissions.
-    /// The service account will be bound to a default role named "kubeblocks-cluster-pod-role" which is installed together with KubeBlocks.
-    /// If not specified, KubeBlocks automatically assigns a default ServiceAccount named "kb-{cluster.name}"
+    /// If not specified, KubeBlocks automatically creates a default ServiceAccount named
+    /// "kb-{componentdefinition.name}", bound to a role with rules defined in ComponentDefinition's
+    /// `policyRules` field. If needed (currently this means if any lifecycleAction is enabled),
+    /// it will also be bound to a default role named
+    /// "kubeblocks-cluster-pod-role", which is installed together with KubeBlocks.
+    /// If multiple components use the same ComponentDefinition, they will share one ServiceAccount.
     /// 
     /// 
-    /// Future Changes:
-    /// Future versions might change the default ServiceAccount creation strategy to one per Component,
-    /// potentially revising the naming to "kb-{cluster.name}-{component.name}".
-    /// 
-    /// 
-    /// Users can override the automatic ServiceAccount assignment by explicitly setting the name of
-    /// an existed ServiceAccount in this field.
+    /// If the field is not empty, the specified ServiceAccount will be used, and KubeBlocks will not
+    /// create a ServiceAccount. But KubeBlocks does create RoleBindings for the specified ServiceAccount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Defines a list of ServiceRef for a Component, enabling access to both external services and
@@ -7724,7 +7789,7 @@ pub struct ClusterShardingsTemplate {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingsTemplateServices>>,
     /// Stop the Component.
@@ -7935,6 +8000,16 @@ pub struct ClusterShardingsTemplateInstances {
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
     /// The specified name overrides any default naming conventions or patterns.
     pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterShardingsTemplateInstancesOrdinals>,
     /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
     /// This field allows setting how many replicated instances of the Component,
     /// with the specific overrides in the InstanceTemplate, are created.
@@ -8056,6 +8131,30 @@ pub struct ClusterShardingsTemplateInstancesEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterShardingsTemplateInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
 }
 
 /// Specifies an override for the resource requirements of the first container in the Pod.
@@ -9059,6 +9158,12 @@ pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -10743,6 +10848,10 @@ pub struct ClusterShardingsTemplateIssuerSecretRef {
     pub key: String,
     /// Name of the Secret that contains user-provided certificates.
     pub name: String,
+    /// The namespace where the secret is located.
+    /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The template for generating Components for shards, where each shard consists of one Component.
@@ -11885,6 +11994,9 @@ pub enum ClusterShardingsTemplateServicesServiceType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateSystemAccounts {
+    /// Specifies whether the system account is disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
     /// The name of the system account.
     pub name: String,
     /// Specifies the policy for generating the account's password.
@@ -11894,6 +12006,9 @@ pub struct ClusterShardingsTemplateSystemAccounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordConfig")]
     pub password_config: Option<ClusterShardingsTemplateSystemAccountsPasswordConfig>,
     /// Refers to the secret from which data will be copied to create the new account.
+    /// 
+    /// 
+    /// For user-specified passwords, the maximum length is limited to 64 bytes.
     /// 
     /// 
     /// This field is immutable once set.
@@ -11939,6 +12054,9 @@ pub enum ClusterShardingsTemplateSystemAccountsPasswordConfigLetterCase {
 /// Refers to the secret from which data will be copied to create the new account.
 /// 
 /// 
+/// For user-specified passwords, the maximum length is limited to 64 bytes.
+/// 
+/// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateSystemAccountsSecretRef {
@@ -11946,6 +12064,9 @@ pub struct ClusterShardingsTemplateSystemAccountsSecretRef {
     pub name: String,
     /// The namespace where the secret is located.
     pub namespace: String,
+    /// The key in the secret data that contains the password.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11991,6 +12112,12 @@ pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// 
+    /// 
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// Defines what type of volume is required by the claim, either Block or Filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
@@ -13668,6 +13795,7 @@ pub enum ClusterStatusComponentsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,
@@ -13705,6 +13833,7 @@ pub enum ClusterStatusShardingsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,

@@ -30,7 +30,7 @@ spec:
               description: "FunctionUrlConfigSpec defines the desired state of FunctionUrlConfig.\n\nDetails about a Lambda function URL."
               properties:
                 authType:
-                  description: "The type of authentication that your function URL uses. Set to AWS_IAM if\nyou want to restrict access to authenticated IAM users only. Set to NONE\nif you want to bypass IAM authentication to create a public endpoint. For\nmore information, see Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html)."
+                  description: "The type of authentication that your function URL uses. Set to AWS_IAM if\nyou want to restrict access to authenticated users only. Set to NONE if you\nwant to bypass IAM authentication to create a public endpoint. For more information,\nsee Security and auth model for Lambda function URLs (https://docs.aws.amazon.com/lambda/latest/dg/urls-auth.html)."
                   type: "string"
                 cors:
                   description: "The cross-origin resource sharing (CORS) (https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)\nsettings for your function URL."
@@ -58,7 +58,7 @@ spec:
                       type: "integer"
                   type: "object"
                 functionName:
-                  description: "The name of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"

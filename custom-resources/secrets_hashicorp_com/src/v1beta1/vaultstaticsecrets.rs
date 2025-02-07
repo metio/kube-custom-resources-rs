@@ -44,7 +44,7 @@ pub struct VaultStaticSecretSpec {
     /// not support dynamically reloading a rotated secret.
     /// In that case one, or more RolloutRestartTarget(s) can be configured here. The Operator will
     /// trigger a "rollout-restart" for each target whenever the Vault secret changes between reconciliation events.
-    /// All configured targets wil be ignored if HMACSecretData is set to false.
+    /// All configured targets will be ignored if HMACSecretData is set to false.
     /// See RolloutRestartTarget for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutRestartTargets")]
     pub rollout_restart_targets: Option<Vec<VaultStaticSecretRolloutRestartTargets>>,

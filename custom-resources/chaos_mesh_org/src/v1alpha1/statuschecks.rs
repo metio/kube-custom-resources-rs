@@ -18,30 +18,43 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct StatusCheckSpec {
-    /// Duration defines the duration of the whole status check if the number of failed execution does not exceed the failure threshold. Duration is available to both `Synchronous` and `Continuous` mode. A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
+    /// Duration defines the duration of the whole status check if the
+    /// number of failed execution does not exceed the failure threshold.
+    /// Duration is available to both `Synchronous` and `Continuous` mode.
+    /// A duration string is a possibly signed sequence of
+    /// decimal numbers, each with optional fraction and a unit suffix,
+    /// such as "300ms", "-1.5h" or "2h45m".
+    /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// FailureThreshold defines the minimum consecutive failure for the status check to be considered failed.
+    /// FailureThreshold defines the minimum consecutive failure
+    /// for the status check to be considered failed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<StatusCheckHttp>,
-    /// IntervalSeconds defines how often (in seconds) to perform an execution of status check.
+    /// IntervalSeconds defines how often (in seconds) to perform
+    /// an execution of status check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
-    /// Mode defines the execution mode of the status check. Support type: Synchronous / Continuous
+    /// Mode defines the execution mode of the status check.
+    /// Support type: Synchronous / Continuous
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<StatusCheckMode>,
     /// RecordsHistoryLimit defines the number of record to retain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordsHistoryLimit")]
     pub records_history_limit: Option<i64>,
-    /// SuccessThreshold defines the minimum consecutive successes for the status check to be considered successful. SuccessThreshold only works for `Synchronous` mode.
+    /// SuccessThreshold defines the minimum consecutive successes
+    /// for the status check to be considered successful.
+    /// SuccessThreshold only works for `Synchronous` mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
-    /// TimeoutSeconds defines the number of seconds after which an execution of status check times out.
+    /// TimeoutSeconds defines the number of seconds after which
+    /// an execution of status check times out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
-    /// Type defines the specific status check type. Support type: HTTP
+    /// Type defines the specific status check type.
+    /// Support type: HTTP
     #[serde(rename = "type")]
     pub r#type: StatusCheckType,
 }
@@ -52,8 +65,11 @@ pub struct StatusCheckHttp {
     pub body: Option<String>,
     /// Criteria defines how to determine the result of the status check.
     pub criteria: StatusCheckHttpCriteria,
-    /// A Header represents the key-value pairs in an HTTP header. 
-    ///  The keys should be in canonical form, as returned by CanonicalHeaderKey.
+    /// A Header represents the key-value pairs in an HTTP header.
+    /// 
+    /// 
+    /// The keys should be in canonical form, as returned by
+    /// [CanonicalHeaderKey].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,7 +80,9 @@ pub struct StatusCheckHttp {
 /// Criteria defines how to determine the result of the status check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StatusCheckHttpCriteria {
-    /// StatusCode defines the expected http status code for the request. A statusCode string could be a single code (e.g. 200), or an inclusive range (e.g. 200-400, both `200` and `400` are included).
+    /// StatusCode defines the expected http status code for the request.
+    /// A statusCode string could be a single code (e.g. 200), or
+    /// an inclusive range (e.g. 200-400, both `200` and `400` are included).
     #[serde(rename = "statusCode")]
     pub status_code: String,
 }

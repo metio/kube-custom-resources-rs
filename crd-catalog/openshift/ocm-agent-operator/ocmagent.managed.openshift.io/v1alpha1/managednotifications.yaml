@@ -63,6 +63,8 @@ spec:
                           - "Warning"
                           - "Major"
                           - "Critical"
+                          - "Error"
+                          - "Fatal"
                         type: "string"
                       summary:
                         description: "The summary line of the Service Log notification"

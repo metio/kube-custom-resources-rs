@@ -162,6 +162,11 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecContainersReso
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// L7LogCollectorDaemonSetInitContainer is a L7LogCollector DaemonSet init container.
@@ -207,6 +212,11 @@ pub struct ApplicationLayerL7LogCollectorDaemonSetSpecTemplateSpecInitContainers
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Specification for application layer (L7) log collection.

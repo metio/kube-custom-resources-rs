@@ -35,8 +35,8 @@ pub struct TempoStackSpec {
     pub limits: Option<TempoStackLimits>,
     /// ManagementState defines if the CR should be managed by the operator or not.
     /// Default is managed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
-    pub management_state: Option<TempoStackManagementState>,
+    #[serde(rename = "managementState")]
+    pub management_state: TempoStackManagementState,
     /// ObservabilitySpec defines how telemetry data gets handled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<TempoStackObservability>,
@@ -319,9 +319,17 @@ pub struct TempoStackObservabilityMetrics {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoStackObservabilityTracing {
     /// JaegerAgentEndpoint defines the jaeger endpoint data gets send to.
+    /// Deprecated: in favor of OTLPHttpEndpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jaeger_agent_endpoint: Option<String>,
+    /// OTLPHttpEndpoint defines the OTLP/http endpoint data gets send to.
+    /// For example, "http://localhost:4320".
+    /// The default OTLP/http port 4318 collides with the distributor ports, therefore it is recommended to use a different port
+    /// on the sidecar injected to the Tempo (e.g. 4320).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub otlp_http_endpoint: Option<String>,
     /// SamplingFraction defines the sampling ratio. Valid values are 0 to 1.
+    /// The SamplingFraction has to be defined to enable tracing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling_fraction: Option<String>,
 }
@@ -346,10 +354,8 @@ pub struct TempoStackResourcesTotal {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -527,11 +533,9 @@ pub struct TempoStackTemplateCompactorPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -639,7 +643,6 @@ pub struct TempoStackTemplateCompactorPodSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -690,10 +693,8 @@ pub struct TempoStackTemplateCompactorResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -754,13 +755,11 @@ pub struct TempoStackTemplateCompactorTolerations {
 pub struct TempoStackTemplateDistributor {
     /// TempoComponentSpec is embedded to extend this definition with further options.
     /// 
-    /// 
     /// Currently, there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub component: Option<TempoStackTemplateDistributorComponent>,
     /// TLS defines TLS configuration for distributor receivers
-    /// 
     /// 
     /// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
     /// certName or caName is specified, OpenShift service serving certificates will  be used.
@@ -769,7 +768,6 @@ pub struct TempoStackTemplateDistributor {
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-/// 
 /// 
 /// Currently, there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
@@ -799,11 +797,9 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -911,7 +907,6 @@ pub struct TempoStackTemplateDistributorComponentPodSecurityContextSeccompProfil
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -962,10 +957,8 @@ pub struct TempoStackTemplateDistributorComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1023,7 +1016,6 @@ pub struct TempoStackTemplateDistributorComponentTolerations {
 
 /// TLS defines TLS configuration for distributor receivers
 /// 
-/// 
 /// If openshift feature flag `servingCertsService` is enabled and TLS is enabled but no
 /// certName or caName is specified, OpenShift service serving certificates will  be used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1049,7 +1041,6 @@ pub struct TempoStackTemplateDistributorTls {
 pub struct TempoStackTemplateGateway {
     /// TempoComponentSpec is embedded to extend this definition with further options.
     /// 
-    /// 
     /// Currently there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1061,7 +1052,6 @@ pub struct TempoStackTemplateGateway {
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-/// 
 /// 
 /// Currently there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
@@ -1091,11 +1081,9 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1203,7 +1191,6 @@ pub struct TempoStackTemplateGatewayComponentPodSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1254,10 +1241,8 @@ pub struct TempoStackTemplateGatewayComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1395,11 +1380,9 @@ pub struct TempoStackTemplateIngesterPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1507,7 +1490,6 @@ pub struct TempoStackTemplateIngesterPodSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1558,10 +1540,8 @@ pub struct TempoStackTemplateIngesterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1644,11 +1624,9 @@ pub struct TempoStackTemplateQuerierPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -1756,7 +1734,6 @@ pub struct TempoStackTemplateQuerierPodSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1807,10 +1784,8 @@ pub struct TempoStackTemplateQuerierResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1871,7 +1846,6 @@ pub struct TempoStackTemplateQuerierTolerations {
 pub struct TempoStackTemplateQueryFrontend {
     /// TempoComponentSpec is embedded to extend this definition with further options.
     /// 
-    /// 
     /// Currently there is no way to inline this field.
     /// See: https://github.com/golang/go/issues/6213
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1882,7 +1856,6 @@ pub struct TempoStackTemplateQueryFrontend {
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
-/// 
 /// 
 /// Currently there is no way to inline this field.
 /// See: https://github.com/golang/go/issues/6213
@@ -1912,11 +1885,9 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContext {
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
     /// 
-    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    /// 
     /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -2024,7 +1995,6 @@ pub struct TempoStackTemplateQueryFrontendComponentPodSecurityContextSeccompProf
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2075,10 +2045,8 @@ pub struct TempoStackTemplateQueryFrontendComponentResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2193,10 +2161,8 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryAuthenticationResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2289,7 +2255,6 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusEndpoint")]
     pub prometheus_endpoint: Option<String>,
     /// REDMetricsNamespace defines the a prefix used retrieve span rate, error, and duration (RED) metrics.
-    /// By default it is set to `traces.span.metrics` following the default namespace of the OpenTelemetry Collector since Version 0.109.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redMetricsNamespace")]
     pub red_metrics_namespace: Option<String>,
 }
@@ -2300,10 +2265,8 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2343,10 +2306,8 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryTempoQueryResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]

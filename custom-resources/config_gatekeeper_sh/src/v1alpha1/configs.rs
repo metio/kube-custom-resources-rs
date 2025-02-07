@@ -13,6 +13,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "config.gatekeeper.sh", version = "v1alpha1", kind = "Config", plural = "configs")]
 #[kube(namespaced)]
+#[kube(status = "ConfigStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -99,5 +100,31 @@ pub struct ConfigValidationTracesKind {
 /// ConfigStatus defines the observed state of Config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "byPod")]
+    pub by_pod: Option<Vec<ConfigStatusByPod>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigStatusByPod {
+    /// UID is a type that holds unique ID values, including UUIDs.  Because we
+    /// don't ONLY use UUIDs, this is an alias to string.  Being a type captures
+    /// intent and helps make sure that UIDs and names do not get conflated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configUID")]
+    pub config_uid: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub errors: Option<Vec<ConfigStatusByPodErrors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operations: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigStatusByPodErrors {
+    pub message: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 

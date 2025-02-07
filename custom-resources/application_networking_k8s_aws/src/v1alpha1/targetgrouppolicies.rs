@@ -19,26 +19,33 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TargetGroupPolicySpec {
-    /// The health check configuration. 
-    ///  Changes to this value will update VPC Lattice resource in place.
+    /// The health check configuration.
+    /// 
+    /// Changes to this value will update VPC Lattice resource in place.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TargetGroupPolicyHealthCheck>,
-    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default), HTTPS and TCP. 
-    ///  Changes to this value results in a replacement of VPC Lattice target group.
+    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default), HTTPS and TCP.
+    /// 
+    /// Changes to this value results in a replacement of VPC Lattice target group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2. When a policy Protocol is TCP, you should not set this field. Otherwise, the whole TargetGroupPolicy will not take effect. When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2. 
-    ///  Changes to this value results in a replacement of VPC Lattice target group.
+    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2.
+    /// When a policy Protocol is TCP, you should not set this field. Otherwise, the whole TargetGroupPolicy will not take effect.
+    /// When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2.
+    /// 
+    /// Changes to this value results in a replacement of VPC Lattice target group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<String>,
-    /// TargetRef points to the kubernetes Service resource that will have this policy attached. 
-    ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
+    /// TargetRef points to the kubernetes Service resource that will have this policy attached.
+    /// 
+    /// This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: TargetGroupPolicyTargetRef,
 }
 
-/// The health check configuration. 
-///  Changes to this value will update VPC Lattice resource in place.
+/// The health check configuration.
+/// 
+/// Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyHealthCheck {
     /// Indicates whether health checking is enabled.
@@ -53,7 +60,8 @@ pub struct TargetGroupPolicyHealthCheck {
     /// The destination for health checks on the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// The port used when performing health checks on targets. If not specified, health check defaults to the port that a target receives traffic on.
+    /// The port used when performing health checks on targets. If not specified, health check defaults to the
+    /// port that a target receives traffic on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The protocol used when performing health checks on targets.
@@ -73,8 +81,9 @@ pub struct TargetGroupPolicyHealthCheck {
     pub unhealthy_threshold_count: Option<i64>,
 }
 
-/// The health check configuration. 
-///  Changes to this value will update VPC Lattice resource in place.
+/// The health check configuration.
+/// 
+/// Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TargetGroupPolicyHealthCheckProtocol {
     #[serde(rename = "HTTP")]
@@ -83,8 +92,9 @@ pub enum TargetGroupPolicyHealthCheckProtocol {
     Https,
 }
 
-/// The health check configuration. 
-///  Changes to this value will update VPC Lattice resource in place.
+/// The health check configuration.
+/// 
+/// Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TargetGroupPolicyHealthCheckProtocolVersion {
     #[serde(rename = "HTTP1")]
@@ -93,8 +103,9 @@ pub enum TargetGroupPolicyHealthCheckProtocolVersion {
     Http2,
 }
 
-/// TargetRef points to the kubernetes Service resource that will have this policy attached. 
-///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
+/// TargetRef points to the kubernetes Service resource that will have this policy attached.
+/// 
+/// This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyTargetRef {
     /// Group is the group of the target resource.
@@ -103,7 +114,10 @@ pub struct TargetGroupPolicyTargetRef {
     pub kind: String,
     /// Name is the name of the target resource.
     pub name: String,
-    /// Namespace is the namespace of the referent. When unspecified, the local namespace is inferred. Even when policy targets a resource in a different namespace, it MUST only apply to traffic originating from the same namespace as the policy.
+    /// Namespace is the namespace of the referent. When unspecified, the local
+    /// namespace is inferred. Even when policy targets a resource in a different
+    /// namespace, it MUST only apply to traffic originating from the same
+    /// namespace as the policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -111,10 +125,17 @@ pub struct TargetGroupPolicyTargetRef {
 /// Status defines the current state of TargetGroupPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyStatus {
-    /// Conditions describe the current conditions of the TargetGroup. 
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe TargetGroup state. 
-    ///  Known condition types are: 
-    ///  * "Accepted" * "Ready"
+    /// Conditions describe the current conditions of the TargetGroup.
+    /// 
+    /// Implementations should prefer to express Policy conditions
+    /// using the `PolicyConditionType` and `PolicyConditionReason`
+    /// constants so that operators and tools can converge on a common
+    /// vocabulary to describe TargetGroup state.
+    /// 
+    /// Known condition types are:
+    /// 
+    /// * "Accepted"
+    /// * "Ready"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

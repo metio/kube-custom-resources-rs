@@ -143,7 +143,7 @@ spec:
                           type: "string"
                       type: "object"
                     filterCriteria:
-                      description: "The collection of event patterns used to filter events. For more information,\nsee Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)\nin the Amazon EventBridge User Guide."
+                      description: "The collection of event patterns used to filter events.\n\nTo remove a filter, specify a FilterCriteria object with an empty array of\nFilter objects.\n\nFor more information, see Events and Event Patterns (https://docs.aws.amazon.com/eventbridge/latest/userguide/eventbridge-and-event-patterns.html)\nin the Amazon EventBridge User Guide."
                       properties:
                         filters:
                           items:
@@ -234,7 +234,7 @@ spec:
                           type: "string"
                       type: "object"
                     selfManagedKafkaParameters:
-                      description: "The parameters for using a self-managed Apache Kafka stream as a source."
+                      description: "The parameters for using a self-managed Apache Kafka stream as a source.\n\nA self managed cluster refers to any Apache Kafka cluster not hosted by Amazon\nWeb Services. This includes both clusters you manage yourself, as well as\nthose hosted by a third-party provider, such as Confluent Cloud (https://www.confluent.io/),\nCloudKarafka (https://www.cloudkarafka.com/), or Redpanda (https://redpanda.com/).\nFor more information, see Apache Kafka streams as a source (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-kafka.html)\nin the Amazon EventBridge User Guide."
                       properties:
                         additionalBootstrapServers:
                           items:
@@ -306,7 +306,7 @@ spec:
                   description: "The ARN of the target resource."
                   type: "string"
                 targetParameters:
-                  description: "The parameters required to set up a target for your pipe."
+                  description: "The parameters required to set up a target for your pipe.\n\nFor more information about pipe target parameters, including how to use dynamic\npath parameters, see Target parameters (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-pipes-event-target.html)\nin the Amazon EventBridge User Guide."
                   properties:
                     batchJobParameters:
                       description: "The parameters for using an Batch job as a target."
@@ -582,7 +582,7 @@ spec:
                     inputTemplate:
                       type: "string"
                     kinesisStreamParameters:
-                      description: "The parameters for using a Kinesis stream as a source."
+                      description: "The parameters for using a Kinesis stream as a target."
                       properties:
                         partitionKey:
                           type: "string"
@@ -594,7 +594,7 @@ spec:
                           type: "string"
                       type: "object"
                     redshiftDataParameters:
-                      description: "These are custom parameters to be used when the target is a Amazon Redshift\ncluster to invoke the Amazon Redshift Data API ExecuteStatement."
+                      description: "These are custom parameters to be used when the target is a Amazon Redshift\ncluster to invoke the Amazon Redshift Data API BatchExecuteStatement."
                       properties:
                         database:
                           description: "// Redshift Database"
@@ -611,7 +611,7 @@ spec:
                             type: "string"
                           type: "array"
                         statementName:
-                          description: "// A name for Redshift DataAPI statement which can be used as filter of //\nListStatement."
+                          description: "// A name for Redshift DataAPI statement which can be used as filter of//\nListStatement."
                           type: "string"
                         withEvent:
                           type: "boolean"
@@ -631,7 +631,7 @@ spec:
                           type: "array"
                       type: "object"
                     sqsQueueParameters:
-                      description: "The parameters for using a Amazon SQS stream as a source."
+                      description: "The parameters for using a Amazon SQS stream as a target."
                       properties:
                         messageDeduplicationID:
                           type: "string"

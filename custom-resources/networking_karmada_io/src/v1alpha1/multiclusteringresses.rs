@@ -129,7 +129,6 @@ pub struct MultiClusterIngressRules {
     /// IngressRuleValue. If the host is unspecified, the Ingress routes all
     /// traffic based on the specified IngressRuleValue.
     /// 
-    /// 
     /// host can be "precise" which is a domain name without the terminating dot of
     /// a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name
     /// prefixed with a single wildcard label (e.g. "*.foo.com").
@@ -319,10 +318,7 @@ pub struct MultiClusterIngressStatusLoadBalancerIngressPorts {
     ///   CamelCase names
     /// - cloud provider specific error values must have names that comply with the
     ///   format foo.example.com/CamelCase.
-    /// ---
-    /// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     /// port is the port number of the ingress port.
     pub port: i32,
     /// protocol is the protocol of the ingress port.

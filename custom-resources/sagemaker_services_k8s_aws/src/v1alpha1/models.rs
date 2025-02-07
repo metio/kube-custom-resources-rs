@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// ModelSpec defines the desired state of Model.
 /// 
-/// 
 /// The properties of a model as returned by the Search (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Search.html)
 /// API.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -35,7 +34,6 @@ pub struct ModelSpec {
     /// to access model artifacts and docker image for deployment on ML compute instances
     /// or for batch transform jobs. Deploying on ML compute instances is part of
     /// model hosting. For more information, see SageMaker Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).
-    /// 
     /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
@@ -143,10 +141,8 @@ pub struct ModelContainersModelDataSourceS3DataSource {
     /// explicitly accept the model end-user license agreement (EULA) within the
     /// ModelAccessConfig.
     /// 
-    /// 
     ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
     ///    section for more details on accepting the EULA.
-    /// 
     /// 
     ///    * If you are an AutoML user, see the Optional Parameters section of Create
     ///    an AutoML job to fine-tune text generation models using the API for details
@@ -164,10 +160,8 @@ pub struct ModelContainersModelDataSourceS3DataSource {
 /// explicitly accept the model end-user license agreement (EULA) within the
 /// ModelAccessConfig.
 /// 
-/// 
 ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
 ///    section for more details on accepting the EULA.
-/// 
 /// 
 ///    * If you are an AutoML user, see the Optional Parameters section of Create
 ///    an AutoML job to fine-tune text generation models using the API for details
@@ -269,10 +263,8 @@ pub struct ModelPrimaryContainerModelDataSourceS3DataSource {
     /// explicitly accept the model end-user license agreement (EULA) within the
     /// ModelAccessConfig.
     /// 
-    /// 
     ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
     ///    section for more details on accepting the EULA.
-    /// 
     /// 
     ///    * If you are an AutoML user, see the Optional Parameters section of Create
     ///    an AutoML job to fine-tune text generation models using the API for details
@@ -290,10 +282,8 @@ pub struct ModelPrimaryContainerModelDataSourceS3DataSource {
 /// explicitly accept the model end-user license agreement (EULA) within the
 /// ModelAccessConfig.
 /// 
-/// 
 ///    * If you are a Jumpstart user, see the End-user license agreements (https://docs.aws.amazon.com/sagemaker/latest/dg/jumpstart-foundation-models-choose.html#jumpstart-foundation-models-choose-eula)
 ///    section for more details on accepting the EULA.
-/// 
 /// 
 ///    * If you are an AutoML user, see the Optional Parameters section of Create
 ///    an AutoML job to fine-tune text generation models using the API for details
@@ -315,12 +305,10 @@ pub struct ModelPrimaryContainerMultiModelConfig {
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
 /// 
-/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-/// 
 /// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
@@ -377,7 +365,6 @@ pub struct ModelStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

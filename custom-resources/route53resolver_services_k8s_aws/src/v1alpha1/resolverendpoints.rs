@@ -38,13 +38,16 @@ pub struct ResolverEndpointSpec {
     /// The subnets and IP addresses in your VPC that DNS queries originate from
     /// (for outbound endpoints) or that you forward DNS queries to (for inbound
     /// endpoints). The subnet ID uniquely identifies a VPC.
+    /// 
+    /// Even though the minimum is 1, Route 53 requires that you create at least
+    /// two.
     #[serde(rename = "ipAddresses")]
     pub ip_addresses: Vec<ResolverEndpointIpAddresses>,
     /// A friendly name that lets you easily find a configuration in the Resolver
     /// dashboard in the Route 53 console.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A
+    /// For the endpoint type you can choose either IPv4, IPv6, or dual-stack. A
     /// dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This
     /// endpoint type is applied to all IP addresses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolverEndpointType")]
@@ -55,6 +58,13 @@ pub struct ResolverEndpointSpec {
     /// Resolver endpoints). Inbound and outbound rules must allow TCP and UDP access.
     /// For inbound access, open port 53. For outbound access, open the port that
     /// you're using for DNS queries on your network.
+    /// 
+    /// Some security group rules will cause your connection to be tracked. For outbound
+    /// resolver endpoint, it can potentially impact the maximum queries per second
+    /// from outbound endpoint to your target name server. For inbound resolver endpoint,
+    /// it can bring down the overall maximum queries per second per IP address to
+    /// as low as 1500. To avoid connection tracking caused by security group, see
+    /// Untracked connections (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#untracked-connectionsl).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
@@ -167,6 +177,8 @@ pub struct ResolverEndpointStatus {
     /// The number of IP addresses that the Resolver endpoint can use for DNS queries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressCount")]
     pub ip_address_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddresses")]
+    pub ip_addresses: Option<Vec<ResolverEndpointStatusIpAddresses>>,
     /// The date and time that the endpoint was last modified, in Unix time format
     /// and Coordinated Universal Time (UTC).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modificationTime")]
@@ -230,5 +242,28 @@ pub struct ResolverEndpointStatusAckResourceMetadata {
     pub owner_account_id: String,
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
+}
+
+/// In the response to a GetResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html)
+/// request, information about the IP addresses that the Resolver endpoint uses
+/// for DNS queries.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResolverEndpointStatusIpAddresses {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
+    pub creation_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipID")]
+    pub ip_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ipv6: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modificationTime")]
+    pub modification_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub status: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
+    pub status_message: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
+    pub subnet_id: Option<String>,
 }
 

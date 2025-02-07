@@ -173,6 +173,9 @@ pub struct PolicyOidc {
 pub struct PolicyRateLimit {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub burst: Option<i64>,
+    /// RateLimitCondition defines a condition for a rate limit policy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub condition: Option<PolicyRateLimitCondition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delay: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
@@ -191,6 +194,24 @@ pub struct PolicyRateLimit {
     pub scale: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSize")]
     pub zone_size: Option<String>,
+}
+
+/// RateLimitCondition defines a condition for a rate limit policy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRateLimitCondition {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<bool>,
+    /// JWTCondition defines a condition for a rate limit by JWT claim.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jwt: Option<PolicyRateLimitConditionJwt>,
+}
+
+/// JWTCondition defines a condition for a rate limit by JWT claim.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRateLimitConditionJwt {
+    pub claim: String,
+    #[serde(rename = "match")]
+    pub r#match: String,
 }
 
 /// WAF defines an WAF policy.

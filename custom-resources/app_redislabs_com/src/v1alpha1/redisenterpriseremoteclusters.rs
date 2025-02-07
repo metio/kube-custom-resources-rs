@@ -20,6 +20,9 @@ pub struct RedisEnterpriseRemoteClusterSpec {
     /// The URL of the cluster, will be used for the active-active database URL.
     #[serde(rename = "apiFqdnUrl")]
     pub api_fqdn_url: String,
+    /// The port number of the cluster's URL used for connectivity/sync
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiPort")]
+    pub api_port: Option<i64>,
     /// The database URL suffix, will be used for the active-active database replication endpoint and replication endpoint SNI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbFqdnSuffix")]
     pub db_fqdn_suffix: Option<String>,
@@ -36,6 +39,9 @@ pub struct RedisEnterpriseRemoteClusterSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseRemoteClusterStatus {
+    /// The observed secret resource version. Used for internal purposes only.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalObservedSecretResourceVersion")]
+    pub internal_observed_secret_resource_version: Option<String>,
     /// Indicates whether this object represents a local or a remote cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub local: Option<bool>,

@@ -7,4 +7,5 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
 }
+use self::prelude::*;
 

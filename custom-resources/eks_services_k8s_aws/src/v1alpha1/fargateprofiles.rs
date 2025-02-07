@@ -22,7 +22,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct FargateProfileSpec {
-    /// A unique, case-sensitive identifier that you provide to ensure the idempotency
+    /// A unique, case-sensitive identifier that you provide to ensurethe idempotency
     /// of the request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
     pub client_request_token: Option<String>,

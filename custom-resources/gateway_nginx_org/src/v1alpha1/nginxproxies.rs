@@ -27,6 +27,9 @@ pub struct NginxProxySpec {
     /// Logging defines logging related settings for NGINX.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<NginxProxyLogging>,
+    /// NginxPlus specifies NGINX Plus additional settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nginxPlus")]
+    pub nginx_plus: Option<NginxProxyNginxPlus>,
     /// RewriteClientIP defines configuration for rewriting the client IP to the original client's IP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewriteClientIP")]
     pub rewrite_client_ip: Option<NginxProxyRewriteClientIp>,
@@ -78,6 +81,33 @@ pub enum NginxProxyLoggingErrorLevel {
     Emerg,
 }
 
+/// NginxPlus specifies NGINX Plus additional settings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyNginxPlus {
+    /// AllowedAddresses specifies IPAddresses or CIDR blocks to the allow list for accessing the NGINX Plus API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedAddresses")]
+    pub allowed_addresses: Option<Vec<NginxProxyNginxPlusAllowedAddresses>>,
+}
+
+/// NginxPlusAllowAddress specifies the address type and value for an NginxPlus allow address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct NginxProxyNginxPlusAllowedAddresses {
+    /// Type specifies the type of address.
+    #[serde(rename = "type")]
+    pub r#type: NginxProxyNginxPlusAllowedAddressesType,
+    /// Value specifies the address value.
+    pub value: String,
+}
+
+/// NginxPlusAllowAddress specifies the address type and value for an NginxPlus allow address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyNginxPlusAllowedAddressesType {
+    #[serde(rename = "CIDR")]
+    Cidr,
+    #[serde(rename = "IPAddress")]
+    IpAddress,
+}
+
 /// RewriteClientIP defines configuration for rewriting the client IP to the original client's IP.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyRewriteClientIp {
@@ -119,7 +149,7 @@ pub enum NginxProxyRewriteClientIpMode {
     XForwardedFor,
 }
 
-/// Address is a struct that specifies address type and value.
+/// RewriteClientIPAddress specifies the address type and value for a RewriteClientIP address.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NginxProxyRewriteClientIpTrustedAddresses {
     /// Type specifies the type of address.
@@ -129,7 +159,7 @@ pub struct NginxProxyRewriteClientIpTrustedAddresses {
     pub value: String,
 }
 
-/// Address is a struct that specifies address type and value.
+/// RewriteClientIPAddress specifies the address type and value for a RewriteClientIP address.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NginxProxyRewriteClientIpTrustedAddressesType {
     #[serde(rename = "CIDR")]

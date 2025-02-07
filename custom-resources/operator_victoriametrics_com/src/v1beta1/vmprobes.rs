@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -350,6 +351,10 @@ pub enum VMProbeScheme {
     Http,
     #[serde(rename = "https")]
     Https,
+    #[serde(rename = "HTTPS")]
+    HttpsX,
+    #[serde(rename = "HTTP")]
+    HttpX,
 }
 
 /// Targets defines a set of static and/or dynamically discovered targets to be probed using the prober.
@@ -961,11 +966,18 @@ pub struct VMProbeVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
 /// ScrapeObjectStatus defines the observed state of ScrapeObjects
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMProbeStatus {
-    /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
-    pub last_sync_error: Option<String>,
-    /// Status defines update status of resource
+    /// Known .status.conditions.type are: "Available", "Progressing", and "Degraded"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub status: Option<String>,
+    pub conditions: Option<Vec<Condition>>,
+    /// ObservedGeneration defines current generation picked by operator for the
+    /// reconcile
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// Reason defines human readable error reason
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+    /// UpdateStatus defines a status for update rollout
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 

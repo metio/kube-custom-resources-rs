@@ -39,7 +39,6 @@ pub struct CronFederatedHPARules {
     /// Name of the rule.
     /// Each rule in a CronFederatedHPA must have a unique name.
     /// 
-    /// 
     /// Note: the name will be used as an identifier to record its execution
     /// history. Changing the name will be considered as deleting the old rule
     /// and adding a new rule, that means the original execution history will be

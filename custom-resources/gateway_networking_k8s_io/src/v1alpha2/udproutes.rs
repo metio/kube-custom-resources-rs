@@ -80,17 +80,9 @@ pub struct UDPRouteSpec {
     /// connections originating from the same namespace as the Route, for which
     /// the intended destination of the connections are a Service targeted as a
     /// ParentRef of the Route.
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
-    /// 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<UDPRouteParentRefs>>,
     /// Rules are a list of UDP matchers and actions.
-    /// 
-    /// 
     pub rules: Vec<UDPRouteRules>,
 }
 
@@ -248,7 +240,6 @@ pub struct UDPRouteRules {
 /// namespace's owner to accept the reference. See the ReferenceGrant
 /// documentation for details.
 /// 
-/// <gateway:experimental:description>
 /// 
 /// When the BackendRef points to a Kubernetes Service, implementations SHOULD
 /// honor the appProtocol field if it is set for the target Service Port.
@@ -264,7 +255,6 @@ pub struct UDPRouteRules {
 /// protocol then the backend is considered invalid. Implementations MUST set the
 /// "ResolvedRefs" condition to "False" with the "UnsupportedProtocol" reason.
 /// 
-/// </gateway:experimental:description>
 /// 
 /// Note that when the BackendTLSPolicy object is enabled by the implementation,
 /// there are some extra rules about validity to consider here. See the fields

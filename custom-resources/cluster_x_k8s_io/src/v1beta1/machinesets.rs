@@ -28,6 +28,10 @@ pub struct MachineSetSpec {
     /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<MachineSetDeletePolicy>,
+    /// machineNamingStrategy allows changing the naming pattern used when creating Machines.
+    /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
+    pub machine_naming_strategy: Option<MachineSetMachineNamingStrategy>,
     /// minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.
     /// Defaults to 0 (machine will be considered available as soon as the Node is ready)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
@@ -69,6 +73,30 @@ pub enum MachineSetDeletePolicy {
     Random,
     Newest,
     Oldest,
+}
+
+/// machineNamingStrategy allows changing the naming pattern used when creating Machines.
+/// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetMachineNamingStrategy {
+    /// template defines the template to use for generating the names of the
+    /// Machine objects.
+    /// If not defined, it will fallback to `{{ .machineSet.name }}-{{ .random }}`.
+    /// If the generated name string exceeds 63 characters, it will be trimmed to
+    /// 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// Length of the template string must not exceed 256 characters.
+    /// The template allows the following variables `.cluster.name`,
+    /// `.machineSet.name` and `.random`.
+    /// The variable `.cluster.name` retrieves the name of the cluster object
+    /// that owns the Machines being created.
+    /// The variable `.machineSet.name` retrieves the name of the MachineSet
+    /// object that owns the Machines being created.
+    /// The variable `.random` is substituted with random alphanumeric string,
+    /// without vowels, of length 5. This variable is required part of the
+    /// template. If not provided, validation will fail.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 
 /// selector is a label query over machines that should match the replica count.
@@ -113,7 +141,7 @@ pub struct MachineSetTemplate {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachineSetTemplateMetadata>,
-    /// Specification of the desired behavior of the machine.
+    /// spec is the specification of the desired behavior of the machine.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<MachineSetTemplateSpec>,
@@ -129,7 +157,7 @@ pub struct MachineSetTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Map of string keys and values that can be used to organize and categorize
+    /// labels is a map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
     /// More info: http://kubernetes.io/docs/user-guide/labels
@@ -137,7 +165,7 @@ pub struct MachineSetTemplateMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Specification of the desired behavior of the machine.
+/// spec is the specification of the desired behavior of the machine.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateSpec {
@@ -190,7 +218,11 @@ pub struct MachineSetTemplateSpec {
     /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
     /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
     /// 
-    /// NOTE: this field is considered only for computing v1beta2 conditions.
+    /// NOTE: This field is considered only for computing v1beta2 conditions.
+    /// NOTE: In case readinessGates conditions start with the APIServer, ControllerManager, Scheduler prefix, and all those
+    /// readiness gates condition are reporting the same message, when computing the Machine's Ready condition those
+    /// readinessGates will be replaced by a single entry reporting "Control plane components: " + message.
+    /// This helps to improve readability of conditions bubbling up to the Machine's owner resource / to the Cluster).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachineSetTemplateSpecReadinessGates>>,
     /// version defines the desired Kubernetes version.
@@ -306,15 +338,23 @@ pub struct MachineSetTemplateSpecReadinessGates {
 /// MachineSetStatus defines the observed state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
-    /// The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+    /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachineSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// conditions defines current service state of the MachineSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// failureMessage will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a more verbose string suitable
+    /// for logging and human consumption.
+    /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
+    /// failureReason will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a succinct value suitable
+    /// for machine interpretation.
+    /// 
     /// In the event that there is a terminal problem reconciling the
     /// replicas, both FailureReason and FailureMessage will be set. FailureReason
     /// will be populated with a succinct value suitable for machine
@@ -337,13 +377,15 @@ pub struct MachineSetStatus {
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// The number of replicas that have labels matching the labels of the machine template of the MachineSet.
+    /// fullyLabeledReplicas is the number of replicas that have labels matching the labels of the machine template of the MachineSet.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullyLabeledReplicas")]
     pub fully_labeled_replicas: Option<i32>,
     /// observedGeneration reflects the generation of the most recently observed MachineSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+    /// readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the most recently observed number of replicas.

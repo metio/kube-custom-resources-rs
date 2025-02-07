@@ -19,6 +19,8 @@ pub struct ConstraintPodStatusStatus {
     pub constraint_uid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enforced: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforcementPointsStatus")]
+    pub enforcement_points_status: Option<Vec<ConstraintPodStatusStatusEnforcementPointsStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub errors: Option<Vec<ConstraintPodStatusStatusErrors>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -27,6 +29,18 @@ pub struct ConstraintPodStatusStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
+}
+
+/// EnforcementPointStatus represents the status of a single enforcement point.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConstraintPodStatusStatusEnforcementPointsStatus {
+    #[serde(rename = "enforcementPoint")]
+    pub enforcement_point: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    pub state: String,
 }
 
 /// Error represents a single error caught while adding a constraint to engine.

@@ -13,16 +13,23 @@ use self::prelude::*;
 /// LockPackage is a package that is in the lock.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LockPackages {
+    /// APIVersion of the package.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
     /// Dependencies are the list of dependencies of this package. The order of
     /// the dependencies will dictate the order in which they are resolved.
     pub dependencies: Vec<LockPackagesDependencies>,
+    /// Kind of the package (not the kind of the package revision).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
     /// Name corresponds to the name of the package revision for this package.
     pub name: String,
     /// Source is the OCI image name without a tag or digest.
     pub source: String,
-    /// Type is the type of package. Can be either Configuration or Provider.
-    #[serde(rename = "type")]
-    pub r#type: String,
+    /// Type is the type of package.
+    /// Deprecated: Specify an apiVersion and kind instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<LockPackagesType>,
     /// Version is the tag or digest of the OCI image.
     pub version: String,
 }
@@ -30,14 +37,37 @@ pub struct LockPackages {
 /// A Dependency is a dependency of a package in the lock.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LockPackagesDependencies {
+    /// APIVersion of the package.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
     /// Constraints is a valid semver range or a digest, which will be used to select a valid
     /// dependency version.
     pub constraints: String,
+    /// Kind of the package (not the kind of the package revision).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
     /// Package is the OCI image name without a tag or digest.
     pub package: String,
     /// Type is the type of package. Can be either Configuration or Provider.
-    #[serde(rename = "type")]
-    pub r#type: String,
+    /// Deprecated: Specify an apiVersion and kind instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<LockPackagesDependenciesType>,
+}
+
+/// A Dependency is a dependency of a package in the lock.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LockPackagesDependenciesType {
+    Configuration,
+    Provider,
+    Function,
+}
+
+/// LockPackage is a package that is in the lock.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LockPackagesType {
+    Configuration,
+    Provider,
+    Function,
 }
 
 /// Status of the Lock.

@@ -6,9 +6,27 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
+
+/// spec defines the behavior of a ServiceExport.
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[kube(group = "multicluster.x-k8s.io", version = "v1alpha1", kind = "ServiceExport", plural = "serviceexports")]
+#[kube(namespaced)]
+#[kube(status = "ServiceExportStatus")]
+#[kube(schema = "disabled")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct ServiceExportSpec {
+    /// exportedAnnotations describes the annotations exported. It is optional for implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportedAnnotations")]
+    pub exported_annotations: Option<BTreeMap<String, String>>,
+    /// exportedLabels describes the labels exported. It is optional for implementation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportedLabels")]
+    pub exported_labels: Option<BTreeMap<String, String>>,
+}
 
 /// status describes the current state of an exported service.
 /// Service configuration comes from the Service that had the same

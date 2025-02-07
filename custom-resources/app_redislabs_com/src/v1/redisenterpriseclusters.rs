@@ -435,6 +435,9 @@ pub struct RedisEnterpriseClusterLdap {
     /// The maximum TTL of cached entries.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheTTLSeconds")]
     pub cache_ttl_seconds: Option<i64>,
+    /// The connection timeout to the LDAP server when authenticating a user, in seconds
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryTimeoutSeconds")]
+    pub directory_timeout_seconds: Option<i64>,
     /// Whether to enable LDAP for control plane access. Disabled by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledForControlPlane")]
     pub enabled_for_control_plane: Option<bool>,
@@ -6753,6 +6756,9 @@ pub struct RedisEnterpriseClusterStatus {
     /// Versions of open source databases bundled by Redis Enterprise Software - please note that in order to use a specific version it should be supported by the ‘upgradePolicy’ - ‘major’ or ‘latest’ according to the desired version (major/minor)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bundledDatabaseVersions")]
     pub bundled_database_versions: Option<Vec<RedisEnterpriseClusterStatusBundledDatabaseVersions>>,
+    /// Stores information about cluster certificates and their update process. In Active-Active databases, this is used to detect updates to the certificates, and trigger synchronization across the participating clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesStatus")]
+    pub certificates_status: Option<RedisEnterpriseClusterStatusCertificatesStatus>,
     /// The ingressOrRouteSpec/ActiveActive spec method that exist
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressOrRouteMethodStatus")]
     pub ingress_or_route_method_status: Option<String>,
@@ -6784,6 +6790,17 @@ pub struct RedisEnterpriseClusterStatusBundledDatabaseVersions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub major: Option<bool>,
     pub version: String,
+}
+
+/// Stores information about cluster certificates and their update process. In Active-Active databases, this is used to detect updates to the certificates, and trigger synchronization across the participating clusters.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterStatusCertificatesStatus {
+    /// Generation stores the version of the cluster's Proxy and Syncer certificate secrets. In Active-Active databases, when a user updates the proxy or syncer certificate, a crdb-update command needs to be triggered to avoid potential sync issues. This helps the REAADB controller detect a change in a certificate and trigger a crdb-update. The version of the cluster's Proxy certificate secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generation: Option<i64>,
+    /// The status of the cluster's certificates update
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStatus")]
+    pub update_status: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

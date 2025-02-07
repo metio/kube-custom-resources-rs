@@ -80,6 +80,10 @@ pub struct ReplicaSpec {
     pub last_healthy_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRequested")]
     pub log_requested: Option<bool>,
+    /// MigrationEngineName is indicating the migrating engine which current connected to this replica. This is only
+    /// used for live migration of v2 data engine
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrationEngineName")]
+    pub migration_engine_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildRetryCount")]

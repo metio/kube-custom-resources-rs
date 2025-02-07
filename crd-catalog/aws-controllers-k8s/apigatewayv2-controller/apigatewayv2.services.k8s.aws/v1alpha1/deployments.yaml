@@ -30,6 +30,7 @@ spec:
               description: "DeploymentSpec defines the desired state of Deployment.\n\nAn immutable representation of an API that can be called by users. A Deployment\nmust be associated with a Stage for it to be callable over the internet."
               properties:
                 apiID:
+                  description: "The API identifier."
                   type: "string"
                 apiRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -44,8 +45,10 @@ spec:
                       type: "object"
                   type: "object"
                 description:
+                  description: "The description for the deployment resource."
                   type: "string"
                 stageName:
+                  description: "The name of the Stage resource for the Deployment resource to create."
                   type: "string"
               type: "object"
             status:
@@ -68,6 +71,7 @@ spec:
                     - "region"
                   type: "object"
                 autoDeployed:
+                  description: "Specifies whether a deployment was automatically released."
                   type: "boolean"
                 conditions:
                   description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
@@ -96,13 +100,17 @@ spec:
                     type: "object"
                   type: "array"
                 createdDate:
+                  description: "The date and time when the Deployment resource was created."
                   format: "date-time"
                   type: "string"
                 deploymentID:
+                  description: "The identifier for the deployment."
                   type: "string"
                 deploymentStatus:
+                  description: "The status of the deployment: PENDING, FAILED, or SUCCEEDED."
                   type: "string"
                 deploymentStatusMessage:
+                  description: "May contain additional feedback on the status of an API deployment."
                   type: "string"
               type: "object"
           type: "object"
