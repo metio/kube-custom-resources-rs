@@ -4,7 +4,7 @@
 use k8s_openapi::apiextensions_apiserver::pkg::apis::apiextensions::v1::CustomResourceDefinition;
 use k8s_openapi::serde::Deserialize;
 use reqwest::blocking::Client;
-use serde_yml::Value;
+use serde_yaml_ng::Value;
 use std::io::Write;
 use std::process::{Command, Stdio};
 use std::{env, fs};
@@ -50,7 +50,7 @@ fn main() {
                                     println!("! {:?}", why);
                                 });
 
-                                if let Ok(data) = serde_yml::to_string(&crd) {
+                                if let Ok(data) = serde_yaml_ng::to_string(&crd) {
                                     let mut child = Command::new("yq")
                                         .args(&[r#"(.. | select(tag == "!!str") ) style="double""#])
                                         .stdin(Stdio::piped())
@@ -88,9 +88,9 @@ fn main() {
 fn parse_crds(content: String) -> Vec<CustomResourceDefinition> {
     let mut crds: Vec<CustomResourceDefinition> = vec![];
 
-    for document in serde_yml::Deserializer::from_str(&content) {
+    for document in serde_yaml_ng::Deserializer::from_str(content.trim()) {
         if let Ok(yaml) = Value::deserialize(document) {
-            if let Ok(crd) = serde_yml::from_value::<CustomResourceDefinition>(yaml) {
+            if let Ok(crd) = serde_yaml_ng::from_value::<CustomResourceDefinition>(yaml) {
                 for version in &crd.spec.versions {
                     let mut cloned = crd.clone();
                     cloned.spec.versions = vec![version.to_owned()];
