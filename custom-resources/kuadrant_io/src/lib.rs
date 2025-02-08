@@ -4,7 +4,6 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## kuadrant.io/v1
-- `AuthPolicy`
 - `RateLimitPolicy`
 ## kuadrant.io/v1alpha1
 - `DNSRecord`
