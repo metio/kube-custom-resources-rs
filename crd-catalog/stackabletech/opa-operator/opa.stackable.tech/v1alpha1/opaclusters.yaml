@@ -58,6 +58,12 @@ spec:
                             experimentalActiveDirectory:
                               description: "Backend that fetches user information from Active Directory"
                               properties:
+                                additionalGroupAttributeFilters:
+                                  additionalProperties:
+                                    type: "string"
+                                  default: {}
+                                  description: "Attributes that groups must have to be returned.\n\nThese fields will be spliced into an LDAP Search Query, so wildcards can be used, but characters with a special meaning in LDAP will need to be escaped."
+                                  type: "object"
                                 baseDistinguishedName:
                                   description: "The root Distinguished Name (DN) where users and groups are located."
                                   type: "string"
@@ -249,7 +255,7 @@ spec:
                   description: "The OPA image to use"
                   properties:
                     custom:
-                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `docker.stackable.tech/stackable/superset:1.4.1-stackable2.1.0`"
+                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`"
                       type: "string"
                     productVersion:
                       description: "Version of the product, e.g. `1.4.1`."
@@ -276,7 +282,7 @@ spec:
                       nullable: true
                       type: "array"
                     repo:
-                      description: "Name of the docker repo, e.g. `docker.stackable.tech/stackable`"
+                      description: "Name of the docker repo, e.g. `oci.stackable.tech/sdp`"
                       nullable: true
                       type: "string"
                     stackableVersion:

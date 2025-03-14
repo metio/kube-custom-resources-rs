@@ -61,11 +61,12 @@ spec:
                       type: "boolean"
                     version:
                       enum:
-                        - 14
-                        - 13
-                        - 12
-                        - 11
                         - 10
+                        - 11
+                        - 12
+                        - 13
+                        - 14
+                        - 15
                       type: "integer"
                   required:
                     - "encryption"

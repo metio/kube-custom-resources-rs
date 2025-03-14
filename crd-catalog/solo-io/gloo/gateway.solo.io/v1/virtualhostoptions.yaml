@@ -5,6 +5,8 @@ metadata:
 spec:
   group: "gateway.solo.io"
   names:
+    categories:
+      - "gloo-gateway"
     kind: "VirtualHostOption"
     listKind: "VirtualHostOptionList"
     plural: "virtualhostoptions"
@@ -372,6 +374,8 @@ spec:
                         providers:
                           additionalProperties:
                             properties:
+                              attachFailedStatusToMetadata:
+                                type: "string"
                               audiences:
                                 items:
                                   type: "string"
@@ -454,6 +458,8 @@ spec:
                             providers:
                               additionalProperties:
                                 properties:
+                                  attachFailedStatusToMetadata:
+                                    type: "string"
                                   audiences:
                                     items:
                                       type: "string"
@@ -534,6 +540,8 @@ spec:
                             providers:
                               additionalProperties:
                                 properties:
+                                  attachFailedStatusToMetadata:
+                                    type: "string"
                                   audiences:
                                     items:
                                       type: "string"
@@ -1512,6 +1520,14 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           passthrough:
                                             type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
+                                            type: "object"
                                         type: "object"
                                       xsltTransformation:
                                         properties:
@@ -1628,6 +1644,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -1765,6 +1789,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -1943,6 +1975,14 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           passthrough:
                                             type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
+                                            type: "object"
                                         type: "object"
                                       xsltTransformation:
                                         properties:
@@ -2059,6 +2099,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -2196,6 +2244,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -2366,6 +2422,14 @@ spec:
                                             x-kubernetes-int-or-string: true
                                           passthrough:
                                             type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
+                                            type: "object"
                                         type: "object"
                                       xsltTransformation:
                                         properties:
@@ -2482,6 +2546,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -2619,6 +2691,14 @@ spec:
                                             type: "string"
                                             x-kubernetes-int-or-string: true
                                           passthrough:
+                                            type: "object"
+                                          spanTransformer:
+                                            properties:
+                                              name:
+                                                properties:
+                                                  text:
+                                                    type: "string"
+                                                type: "object"
                                             type: "object"
                                         type: "object"
                                       xsltTransformation:
@@ -2759,6 +2839,14 @@ spec:
                                   x-kubernetes-int-or-string: true
                                 passthrough:
                                   type: "object"
+                                spanTransformer:
+                                  properties:
+                                    name:
+                                      properties:
+                                        text:
+                                          type: "string"
+                                      type: "object"
+                                  type: "object"
                               type: "object"
                             xsltTransformation:
                               properties:
@@ -2875,6 +2963,14 @@ spec:
                                   type: "string"
                                   x-kubernetes-int-or-string: true
                                 passthrough:
+                                  type: "object"
+                                spanTransformer:
+                                  properties:
+                                    name:
+                                      properties:
+                                        text:
+                                          type: "string"
+                                      type: "object"
                                   type: "object"
                               type: "object"
                             xsltTransformation:

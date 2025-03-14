@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "cachesubnetgroups.elasticache.services.k8s.aws"
 spec:
   group: "elasticache.services.k8s.aws"
@@ -27,13 +27,13 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "CacheSubnetGroupSpec defines the desired state of CacheSubnetGroup.\n\n\nRepresents the output of one of the following operations:\n\n\n   * CreateCacheSubnetGroup\n\n\n   * ModifyCacheSubnetGroup"
+              description: "CacheSubnetGroupSpec defines the desired state of CacheSubnetGroup.\n\nRepresents the output of one of the following operations:\n\n   * CreateCacheSubnetGroup\n\n   * ModifyCacheSubnetGroup"
               properties:
                 cacheSubnetGroupDescription:
                   description: "A description for the cache subnet group."
                   type: "string"
                 cacheSubnetGroupName:
-                  description: "A name for the cache subnet group. This value is stored as a lowercase string.\n\n\nConstraints: Must contain no more than 255 alphanumeric characters or hyphens.\n\n\nExample: mysubnetgroup"
+                  description: "A name for the cache subnet group. This value is stored as a lowercase string.\n\nConstraints: Must contain no more than 255 alphanumeric characters or hyphens.\n\nExample: mysubnetgroup"
                   type: "string"
                 subnetIDs:
                   description: "A list of VPC subnet IDs for the cache subnet group."
@@ -42,12 +42,14 @@ spec:
                   type: "array"
                 subnetRefs:
                   items:
-                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                     properties:
                       from:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
                         properties:
                           name:
+                            type: "string"
+                          namespace:
                             type: "string"
                         type: "object"
                     type: "object"
@@ -74,7 +76,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -87,7 +89,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

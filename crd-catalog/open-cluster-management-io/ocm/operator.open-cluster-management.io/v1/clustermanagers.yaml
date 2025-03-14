@@ -170,6 +170,49 @@ spec:
                           - "feature"
                         type: "object"
                       type: "array"
+                    registrationDrivers:
+                      description: "RegistrationDrivers represent the list of hub registration drivers that contain information used by hub to initialize the hub cluster\nA RegistrationDriverHub contains details of authentication type and the hub cluster ARN"
+                      items:
+                        properties:
+                          authType:
+                            default: "csr"
+                            description: "Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa."
+                            enum:
+                              - "csr"
+                              - "awsirsa"
+                            type: "string"
+                          awsisra:
+                            description: "AwsIrsa represents the configuration for awsisra driver."
+                            properties:
+                              autoApprovedIdentities:
+                                description: "AutoApprovedIdentities represent a list of approved arn patterns"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              hubClusterArn:
+                                description: "This represents the hub cluster ARN\nExample - arn:eks:us-west-2:12345678910:cluster/hub-cluster1"
+                                pattern: "^arn:aws:eks:([a-zA-Z0-9-]+):(\\d{12}):cluster/([a-zA-Z0-9-]+)$"
+                                type: "string"
+                              tags:
+                                description: "List of tags to be added to AWS resources created by hub while processing awsirsa registration request\nExample - \"product:v1:tenant:app-name=My-App\""
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          csr:
+                            description: "CSR represents the configuration for csr driver."
+                            properties:
+                              autoApprovedIdentities:
+                                description: "AutoApprovedIdentities represent a list of approved users"
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                        type: "object"
+                      type: "array"
+                      x-kubernetes-list-map-keys:
+                        - "authType"
+                      x-kubernetes-list-type: "map"
                   type: "object"
                 registrationImagePullSpec:
                   default: "quay.io/open-cluster-management/registration"

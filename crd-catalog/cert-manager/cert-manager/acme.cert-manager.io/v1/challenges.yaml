@@ -181,13 +181,13 @@ spec:
                               description: "Auth: Azure Workload Identity or Azure Managed Service Identity:\nSettings to enable Azure Workload Identity or Azure Managed Service Identity\nIf set, ClientID, ClientSecret and TenantID must not be set."
                               properties:
                                 clientID:
-                                  description: "client ID of the managed identity, can not be used at the same time as resourceID"
+                                  description: "client ID of the managed identity, cannot be used at the same time as resourceID"
                                   type: "string"
                                 resourceID:
-                                  description: "resource ID of the managed identity, can not be used at the same time as clientID\nCannot be used for Azure Managed Service Identity"
+                                  description: "resource ID of the managed identity, cannot be used at the same time as clientID\nCannot be used for Azure Managed Service Identity"
                                   type: "string"
                                 tenantID:
-                                  description: "tenant ID of the managed identity, can not be used at the same time as resourceID"
+                                  description: "tenant ID of the managed identity, cannot be used at the same time as resourceID"
                                   type: "string"
                               type: "object"
                             resourceGroupName:

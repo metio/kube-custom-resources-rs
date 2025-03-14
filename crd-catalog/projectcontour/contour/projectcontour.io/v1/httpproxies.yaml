@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "httpproxies.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -730,6 +730,10 @@ spec:
                             enum:
                               - 301
                               - 302
+                              - 303
+                              - 307
+                              - 308
+                            format: "int32"
                             type: "integer"
                         type: "object"
                       responseHeadersPolicy:
@@ -779,18 +783,21 @@ spec:
                               type: "integer"
                             type: "array"
                           retryOn:
-                            description: "RetryOn specifies the conditions on which to retry a request.\nSupported [HTTP conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on):\n- `5xx`\n- `gateway-error`\n- `reset`\n- `connect-failure`\n- `retriable-4xx`\n- `refused-stream`\n- `retriable-status-codes`\n- `retriable-headers`\nSupported [gRPC conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-grpc-on):\n- `cancelled`\n- `deadline-exceeded`\n- `internal`\n- `resource-exhausted`\n- `unavailable`"
+                            description: "RetryOn specifies the conditions on which to retry a request.\nSupported [HTTP conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on):\n- `5xx`\n- `gateway-error`\n- `reset`\n- `reset-before-request`\n- `connect-failure`\n- `envoy-ratelimited`\n- `retriable-4xx`\n- `refused-stream`\n- `retriable-status-codes`\n- `retriable-headers`\n- `http3-post-connect-failure`\nSupported [gRPC conditions](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-grpc-on):\n- `cancelled`\n- `deadline-exceeded`\n- `internal`\n- `resource-exhausted`\n- `unavailable`"
                             items:
                               description: "RetryOn is a string type alias with validation to ensure that the value is valid."
                               enum:
                                 - "5xx"
                                 - "gateway-error"
                                 - "reset"
+                                - "reset-before-request"
                                 - "connect-failure"
+                                - "envoy-ratelimited"
                                 - "retriable-4xx"
                                 - "refused-stream"
                                 - "retriable-status-codes"
                                 - "retriable-headers"
+                                - "http3-post-connect-failure"
                                 - "cancelled"
                                 - "deadline-exceeded"
                                 - "internal"
@@ -1879,6 +1886,7 @@ spec:
                           ports:
                             description: "Ports is a list of records of service ports\nIf used, every port defined in the service should have an entry in it"
                             items:
+                              description: "PortStatus represents the error condition of a service port"
                               properties:
                                 error:
                                   description: "Error is to record the problem with the service port\nThe format of the error shall comply with the following rules:\n- built-in error values shall be specified in this file and those shall use\n  CamelCase names\n- cloud provider specific error values must have names that comply with the\n  format foo.example.com/CamelCase."

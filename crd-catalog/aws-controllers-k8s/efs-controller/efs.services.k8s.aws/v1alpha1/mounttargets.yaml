@@ -142,7 +142,7 @@ spec:
                   description: "The name of the Availability Zone in which the mount target is located. Availability\nZones are independently mapped to names for each Amazon Web Services account.\nFor example, the Availability Zone us-east-1a for your Amazon Web Services\naccount might not be the same location as us-east-1a for another Amazon Web\nServices account."
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

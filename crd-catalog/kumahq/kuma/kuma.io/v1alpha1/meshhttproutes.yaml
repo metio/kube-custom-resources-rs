@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "meshhttproutes.kuma.io"
 spec:
   group: "kuma.io"
@@ -12,6 +12,8 @@ spec:
     kind: "MeshHTTPRoute"
     listKind: "MeshHTTPRouteList"
     plural: "meshhttproutes"
+    shortNames:
+      - "mhttpr"
     singular: "meshhttproute"
   scope: "Namespaced"
   versions:
@@ -51,6 +53,7 @@ spec:
                         - "MeshMultiZoneService"
                         - "MeshServiceSubset"
                         - "MeshHTTPRoute"
+                        - "Dataplane"
                       type: "string"
                     labels:
                       additionalProperties:
@@ -73,7 +76,6 @@ spec:
                           - "Sidecar"
                           - "Gateway"
                         type: "string"
-                      minItems: 1
                       type: "array"
                     sectionName:
                       description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -83,6 +85,8 @@ spec:
                         type: "string"
                       description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                       type: "object"
+                  required:
+                    - "kind"
                   type: "object"
                 to:
                   description: "To matches destination services of requests and holds configuration."
@@ -115,6 +119,7 @@ spec:
                                           - "MeshMultiZoneService"
                                           - "MeshServiceSubset"
                                           - "MeshHTTPRoute"
+                                          - "Dataplane"
                                         type: "string"
                                       labels:
                                         additionalProperties:
@@ -141,7 +146,6 @@ spec:
                                             - "Sidecar"
                                             - "Gateway"
                                           type: "string"
-                                        minItems: 1
                                         type: "array"
                                       sectionName:
                                         description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -155,6 +159,8 @@ spec:
                                         default: 1
                                         minimum: 0.0
                                         type: "integer"
+                                    required:
+                                      - "kind"
                                     type: "object"
                                   type: "array"
                                 filters:
@@ -223,6 +229,7 @@ spec:
                                                   - "MeshMultiZoneService"
                                                   - "MeshServiceSubset"
                                                   - "MeshHTTPRoute"
+                                                  - "Dataplane"
                                                 type: "string"
                                               labels:
                                                 additionalProperties:
@@ -249,7 +256,6 @@ spec:
                                                     - "Sidecar"
                                                     - "Gateway"
                                                   type: "string"
-                                                minItems: 1
                                                 type: "array"
                                               sectionName:
                                                 description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -263,6 +269,8 @@ spec:
                                                 default: 1
                                                 minimum: 0.0
                                                 type: "integer"
+                                            required:
+                                              - "kind"
                                             type: "object"
                                           percentage:
                                             anyOf:
@@ -506,6 +514,7 @@ spec:
                               - "MeshMultiZoneService"
                               - "MeshServiceSubset"
                               - "MeshHTTPRoute"
+                              - "Dataplane"
                             type: "string"
                           labels:
                             additionalProperties:
@@ -528,7 +537,6 @@ spec:
                                 - "Sidecar"
                                 - "Gateway"
                               type: "string"
-                            minItems: 1
                             type: "array"
                           sectionName:
                             description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -538,7 +546,12 @@ spec:
                               type: "string"
                             description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                             type: "object"
+                        required:
+                          - "kind"
                         type: "object"
+                    required:
+                      - "rules"
+                      - "targetRef"
                     type: "object"
                   type: "array"
               type: "object"

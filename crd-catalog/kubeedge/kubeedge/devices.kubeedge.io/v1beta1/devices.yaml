@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.6.2"
+    controller-gen.kubebuilder.io/version: "v0.15.0"
   name: "devices.devices.kubeedge.io"
 spec:
   group: "devices.kubeedge.io"
@@ -19,10 +19,10 @@ spec:
           description: "Device is the Schema for the devices API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -30,14 +30,16 @@ spec:
               description: "DeviceSpec represents a single device instance."
               properties:
                 deviceModelRef:
-                  description: "Required: DeviceModelRef is reference to the device model used as a template to create the device instance."
+                  description: "Required: DeviceModelRef is reference to the device model used as a template\nto create the device instance."
                   properties:
                     name:
-                      description: "Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?"
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
                       type: "string"
                   type: "object"
+                  x-kubernetes-map-type: "atomic"
                 methods:
-                  description: "List of methods of device. methods list item must be unique by method.Name."
+                  description: "List of methods of device.\nmethods list item must be unique by method.Name."
                   items:
                     description: "DeviceMethod describes the specifics all the methods of the device."
                     properties:
@@ -48,17 +50,17 @@ spec:
                         description: "Required: The device method name to be accessed. It must be unique."
                         type: "string"
                       propertyNames:
-                        description: "PropertyNames are list of device properties that device methods can control. Required: A device method can control multiple device properties."
+                        description: "PropertyNames are list of device properties that device methods can control.\nRequired: A device method can control multiple device properties."
                         items:
                           type: "string"
                         type: "array"
                     type: "object"
                   type: "array"
                 nodeName:
-                  description: "NodeName is a request to schedule this device onto a specific node. If it is non-empty, the scheduler simply schedules this device onto that node, assuming that it fits resource requirements."
+                  description: "NodeName is a request to schedule this device onto a specific node. If it is non-empty,\nthe scheduler simply schedules this device onto that node, assuming that it fits\nresource requirements."
                   type: "string"
                 properties:
-                  description: "List of properties which describe the device properties. properties list item must be unique by properties.Name."
+                  description: "List of properties which describe the device properties.\nproperties list item must be unique by properties.Name."
                   items:
                     description: "DeviceProperty describes the specifics all the properties of the device."
                     properties:
@@ -81,13 +83,13 @@ spec:
                           - "value"
                         type: "object"
                       name:
-                        description: "Required: The device property name to be accessed. It must be unique. Note: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo"
+                        description: "Required: The device property name to be accessed. It must be unique.\nNote: If you need to use the built-in stream data processing function, you need to define Name as saveFrame or saveVideo"
                         type: "string"
                       pushMethod:
-                        description: "PushMethod represents the protocol used to push data, please ensure that the mapper can access the destination address."
+                        description: "PushMethod represents the protocol used to push data,\nplease ensure that the mapper can access the destination address."
                         properties:
                           dbMethod:
-                            description: "DBMethod represents the method used to push data to database, please ensure that the mapper can access the destination address."
+                            description: "DBMethod represents the method used to push data to database,\nplease ensure that the mapper can access the destination address."
                             properties:
                               TDEngine:
                                 properties:
@@ -216,7 +218,7 @@ spec:
                         description: "whether be reported to the cloud"
                         type: "boolean"
                       visitors:
-                        description: "Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property."
+                        description: "Visitors are intended to be consumed by device mappers which connect to devices\nand collect data / perform actions on the device.\nRequired: Protocol relevant config details about the how to access the device property."
                         properties:
                           configData:
                             description: "Required: The configData of customized protocol"
@@ -236,7 +238,7 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     protocolName:
-                      description: "Unique protocol name Required."
+                      description: "Unique protocol name\nRequired."
                       type: "string"
                   type: "object"
               type: "object"
@@ -257,12 +259,12 @@ spec:
                   description: "Optional: The state of the device."
                   type: "string"
                 twins:
-                  description: "A list of device twins containing desired/reported desired/reported values of twin properties. Optional: A passive device won't have twin properties and this list could be empty."
+                  description: "A list of device twins containing desired/reported desired/reported values of twin properties.\nOptional: A passive device won't have twin properties and this list could be empty."
                   items:
-                    description: "Twin provides a logical representation of control properties (writable properties in the device model). The properties can have a Desired state and a Reported state. The cloud configures the `Desired`state of a device property and this configuration update is pushed to the edge node. The mapper sends a command to the device to change this property value as per the desired state . It receives the `Reported` state of the property once the previous operation is complete and sends the reported state to the cloud. Offline device interaction in the edge is possible via twin properties for control/command operations."
+                    description: "Twin provides a logical representation of control properties (writable properties in the\ndevice model). The properties can have a Desired state and a Reported state. The cloud configures\nthe `Desired`state of a device property and this configuration update is pushed to the edge node.\nThe mapper sends a command to the device to change this property value as per the desired state .\nIt receives the `Reported` state of the property once the previous operation is complete and sends\nthe reported state to the cloud. Offline device interaction in the edge is possible via twin\nproperties for control/command operations."
                     properties:
                       observedDesired:
-                        description: "The meaning of here is to indicate desired value of `deviceProperty.Desired` that the mapper has received in current cycle. Useful in cases that people want to check whether the mapper is working appropriately and its internal status is up-to-date. This value should be only updated by devicecontroller upstream."
+                        description: "The meaning of here is to indicate desired value of `deviceProperty.Desired`\nthat the mapper has received in current cycle.\nUseful in cases that people want to check whether the mapper is working\nappropriately and its internal status is up-to-date.\nThis value should be only updated by devicecontroller upstream."
                         properties:
                           metadata:
                             additionalProperties:
@@ -276,7 +278,7 @@ spec:
                           - "value"
                         type: "object"
                       propertyName:
-                        description: "Required: The property name for which the desired/reported values are specified. This property should be present in the device model."
+                        description: "Required: The property name for which the desired/reported values are specified.\nThis property should be present in the device model."
                         type: "string"
                       reported:
                         description: "Required: the reported property value."
@@ -298,9 +300,3 @@ spec:
           type: "object"
       served: true
       storage: true
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

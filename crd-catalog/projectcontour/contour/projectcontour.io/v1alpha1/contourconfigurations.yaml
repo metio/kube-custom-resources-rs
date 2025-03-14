@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "contourconfigurations.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -163,6 +163,18 @@ spec:
                     listener:
                       description: "Listener hold various configurable Envoy listener values."
                       properties:
+                        compression:
+                          description: "Compression defines configuration related to compression in the default HTTP Listener filters."
+                          properties:
+                            algorithm:
+                              description: "Algorithm selects the response compression type applied in the compression HTTP filter of the default Listener filters.\nValues: `gzip` (default), `brotli`, `zstd`, `disabled`.\nSetting this to `disabled` will make Envoy skip \"Accept-Encoding: gzip,deflate\" request header and always return uncompressed response."
+                              enum:
+                                - "gzip"
+                                - "brotli"
+                                - "zstd"
+                                - "disabled"
+                              type: "string"
+                          type: "object"
                         connectionBalancer:
                           description: "ConnectionBalancer. If the value is exact, the listener will use the exact connection balancer\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/listener.proto#envoy-api-msg-listener-connectionbalanceconfig\nfor more information.\nValues: (empty string): use the default ConnectionBalancer, `exact`: use the Exact ConnectionBalancer.\nOther values will produce an error."
                           type: "string"
@@ -288,6 +300,9 @@ spec:
                           description: "XffNumTrustedHops defines the number of additional ingress proxy hops from the\nright side of the x-forwarded-for HTTP header to trust when determining the origin\nclient’s IP address.\nSee https://www.envoyproxy.io/docs/envoy/v1.17.0/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=xff_num_trusted_hops\nfor more information.\nContour's default is 0."
                           format: "int32"
                           type: "integer"
+                        stripTrailingHostDot:
+                          description: "EnvoyStripTrailingHostDot defines if trailing dot of the host should be removed from host/authority header\nbefore any processing of request by HTTP filters or routing. This\naffects the upstream host header. Without setting this option to true, incoming\nrequests with host example.com. will not match against route with domains\nmatch set to example.com.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=strip_trailing_host_dot\nfor more information.\nContour's default is false."
+                          type: "boolean"
                       type: "object"
                     service:
                       description: "Service holds Envoy service parameters for setting Ingress status.\nContour's default is { namespace: \"projectcontour\", name: \"envoy\" }."
@@ -718,9 +733,6 @@ spec:
                           description: "Client key filename."
                           type: "string"
                       type: "object"
-                    type:
-                      description: "Defines the XDSServer to use for `contour serve`.\nValues: `envoy` (default), `contour (deprecated)`.\nOther values will produce an error.\nDeprecated: this field will be removed in a future release when\nthe `contour` xDS server implementation is removed."
-                      type: "string"
                   type: "object"
               type: "object"
             status:

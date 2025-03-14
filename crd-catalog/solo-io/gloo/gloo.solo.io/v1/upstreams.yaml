@@ -5,6 +5,8 @@ metadata:
 spec:
   group: "gloo.solo.io"
   names:
+    categories:
+      - "gloo-gateway"
     kind: "Upstream"
     listKind: "UpstreamList"
     plural: "upstreams"
@@ -41,6 +43,9 @@ spec:
                         customHost:
                           properties:
                             host:
+                              type: "string"
+                            hostname:
+                              nullable: true
                               type: "string"
                             port:
                               maximum: 4294967295.0
@@ -116,6 +121,9 @@ spec:
                           properties:
                             host:
                               type: "string"
+                            hostname:
+                              nullable: true
+                              type: "string"
                             port:
                               maximum: 4294967295.0
                               minimum: 0.0
@@ -151,6 +159,9 @@ spec:
                                         customHost:
                                           properties:
                                             host:
+                                              type: "string"
+                                            hostname:
+                                              nullable: true
                                               type: "string"
                                             port:
                                               maximum: 4294967295.0
@@ -226,6 +237,9 @@ spec:
                                           properties:
                                             host:
                                               type: "string"
+                                            hostname:
+                                              nullable: true
+                                              type: "string"
                                             port:
                                               maximum: 4294967295.0
                                               minimum: 0.0
@@ -253,6 +267,9 @@ spec:
                                         customHost:
                                           properties:
                                             host:
+                                              type: "string"
+                                            hostname:
+                                              nullable: true
                                               type: "string"
                                             port:
                                               maximum: 4294967295.0
@@ -316,6 +333,9 @@ spec:
                         customHost:
                           properties:
                             host:
+                              type: "string"
+                            hostname:
+                              nullable: true
                               type: "string"
                             port:
                               maximum: 4294967295.0
@@ -741,6 +761,14 @@ spec:
                                     type: "string"
                                     x-kubernetes-int-or-string: true
                                   passthrough:
+                                    type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
                                     type: "object"
                                 type: "object"
                               type: "object"
@@ -1400,6 +1428,14 @@ spec:
                                     x-kubernetes-int-or-string: true
                                   passthrough:
                                     type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "object"
                           type: "object"
@@ -1766,6 +1802,14 @@ spec:
                                     x-kubernetes-int-or-string: true
                                   passthrough:
                                     type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "object"
                           type: "object"
@@ -2080,6 +2124,14 @@ spec:
                                     type: "string"
                                     x-kubernetes-int-or-string: true
                                   passthrough:
+                                    type: "object"
+                                  spanTransformer:
+                                    properties:
+                                      name:
+                                        properties:
+                                          text:
+                                            type: "string"
+                                        type: "object"
                                     type: "object"
                                 type: "object"
                               type: "object"

@@ -550,6 +550,9 @@ spec:
                 hostname:
                   description: "(Deprecated) The hostname of the instance"
                   type: "string"
+                idle_deployment:
+                  description: "Scale down deployments to put AWX into an idle state"
+                  type: "boolean"
                 image:
                   description: "Registry path to the application container to use"
                   type: "string"
@@ -734,6 +737,9 @@ spec:
                 metrics_utility_ship_target:
                   description: "Metrics-Utility Ship Target"
                   type: "string"
+                nginx_client_max_body_size:
+                  description: "Sets the maximum allowed size of the client request body in megabytes (defaults to 5M)"
+                  type: "integer"
                 nginx_listen_queue_size:
                   description: "Set the socket listen queue size for nginx (defaults to same as uwsgi)"
                   type: "integer"
@@ -912,7 +918,6 @@ spec:
                     - "_No_"
                   type: "string"
                 public_base_url:
-                  default: ""
                   description: "Public base URL"
                   type: "string"
                 receptor_log_level:
@@ -2031,6 +2036,7 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                  x-kubernetes-preserve-unknown-fields: true
                 image:
                   description: "URL of the image used for the deployed instance"
                   type: "string"
@@ -2053,6 +2059,7 @@ spec:
                   description: "Version of the deployed instance"
                   type: "string"
               type: "object"
+              x-kubernetes-preserve-unknown-fields: true
           type: "object"
       served: true
       storage: true

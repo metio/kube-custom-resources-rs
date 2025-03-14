@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "resourceflavors.kueue.x-k8s.io"
 spec:
   group: "kueue.x-k8s.io"
@@ -41,7 +41,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 nodeTaints:
-                  description: "nodeTaints are taints that the nodes associated with this ResourceFlavor\nhave.\nWorkloads' podsets must have tolerations for these nodeTaints in order to\nget assigned this ResourceFlavor during admission.\n\nAn example of a nodeTaint is\ncloud.provider.com/preemptible=\"true\":NoSchedule\n\nnodeTaints can be up to 8 elements."
+                  description: "nodeTaints are taints that the nodes associated with this ResourceFlavor\nhave.\nWorkloads' podsets must have tolerations for these nodeTaints in order to\nget assigned this ResourceFlavor during admission.\nOnly the 'NoSchedule' and 'NoExecute' taint effects are evaluated,\nwhile 'PreferNoSchedule' is ignored.\n\nAn example of a nodeTaint is\ncloud.provider.com/preemptible=\"true\":NoSchedule\n\nnodeTaints can be up to 8 elements."
                   items:
                     description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
                     properties:
@@ -113,6 +113,8 @@ spec:
               x-kubernetes-validations:
                 - message: "at least one nodeLabel is required when topology is set"
                   rule: "!has(self.topologyName) || self.nodeLabels.size() >= 1"
+                - message: "resourceFlavorSpec are immutable when topologyName is set"
+                  rule: "!has(oldSelf.topologyName) || self == oldSelf"
           type: "object"
       served: true
       storage: true

@@ -37,7 +37,7 @@ spec:
                   description: "Specify the applicable value:\n\n   * INBOUND: Resolver forwards DNS queries to the DNS service for a VPC\n   from your network\n\n   * OUTBOUND: Resolver forwards DNS queries from the DNS service for a VPC\n   to your network"
                   type: "string"
                 ipAddresses:
-                  description: "The subnets and IP addresses in your VPC that DNS queries originate from\n(for outbound endpoints) or that you forward DNS queries to (for inbound\nendpoints). The subnet ID uniquely identifies a VPC."
+                  description: "The subnets and IP addresses in your VPC that DNS queries originate from\n(for outbound endpoints) or that you forward DNS queries to (for inbound\nendpoints). The subnet ID uniquely identifies a VPC.\n\nEven though the minimum is 1, Route 53 requires that you create at least\ntwo."
                   items:
                     description: "In a CreateResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html)\nrequest, the IP address that DNS queries originate from (for outbound endpoints)\nor that you forward DNS queries to (for inbound endpoints). IpAddressRequest\nalso includes the ID of the subnet that contains the IP address."
                     properties:
@@ -65,10 +65,10 @@ spec:
                   description: "A friendly name that lets you easily find a configuration in the Resolver\ndashboard in the Route 53 console."
                   type: "string"
                 resolverEndpointType:
-                  description: "For the endpoint type you can choose either IPv4, IPv6. or dual-stack. A\ndual-stack endpoint means that it will resolve via both IPv4 and IPv6. This\nendpoint type is applied to all IP addresses."
+                  description: "For the endpoint type you can choose either IPv4, IPv6, or dual-stack. A\ndual-stack endpoint means that it will resolve via both IPv4 and IPv6. This\nendpoint type is applied to all IP addresses."
                   type: "string"
                 securityGroupIDs:
-                  description: "The ID of one or more security groups that you want to use to control access\nto this VPC. The security group that you specify must include one or more\ninbound rules (for inbound Resolver endpoints) or outbound rules (for outbound\nResolver endpoints). Inbound and outbound rules must allow TCP and UDP access.\nFor inbound access, open port 53. For outbound access, open the port that\nyou're using for DNS queries on your network."
+                  description: "The ID of one or more security groups that you want to use to control access\nto this VPC. The security group that you specify must include one or more\ninbound rules (for inbound Resolver endpoints) or outbound rules (for outbound\nResolver endpoints). Inbound and outbound rules must allow TCP and UDP access.\nFor inbound access, open port 53. For outbound access, open the port that\nyou're using for DNS queries on your network.\n\nSome security group rules will cause your connection to be tracked. For outbound\nresolver endpoint, it can potentially impact the maximum queries per second\nfrom outbound endpoint to your target name server. For inbound resolver endpoint,\nit can bring down the overall maximum queries per second per IP address to\nas low as 1500. To avoid connection tracking caused by security group, see\nUntracked connections (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#untracked-connectionsl)."
                   items:
                     type: "string"
                   type: "array"
@@ -121,7 +121,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -162,6 +162,28 @@ spec:
                   description: "The number of IP addresses that the Resolver endpoint can use for DNS queries."
                   format: "int64"
                   type: "integer"
+                ipAddresses:
+                  items:
+                    description: "In the response to a GetResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html)\nrequest, information about the IP addresses that the Resolver endpoint uses\nfor DNS queries."
+                    properties:
+                      creationTime:
+                        type: "string"
+                      ip:
+                        type: "string"
+                      ipID:
+                        type: "string"
+                      ipv6:
+                        type: "string"
+                      modificationTime:
+                        type: "string"
+                      status:
+                        type: "string"
+                      statusMessage:
+                        type: "string"
+                      subnetID:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 modificationTime:
                   description: "The date and time that the endpoint was last modified, in Unix time format\nand Coordinated Universal Time (UTC)."
                   type: "string"

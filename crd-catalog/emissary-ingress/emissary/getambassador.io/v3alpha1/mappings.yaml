@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.13.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   name: "mappings.getambassador.io"
 spec:
   conversion:
@@ -49,10 +49,10 @@ spec:
           description: "Mapping is the Schema for the mappings API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -92,12 +92,12 @@ spec:
                     type: "object"
                   type: "object"
                 allow_upgrade:
-                  description: "A case-insensitive list of the non-HTTP protocols to allow \"upgrading\" to from HTTP via the \"Connection: upgrade\" mechanism[1].  After the upgrade, Ambassador does not interpret the traffic, and behaves similarly to how it does for TCPMappings. \n [1]: https://tools.ietf.org/html/rfc7230#section-6.7 \n For example, if your upstream service supports WebSockets, you would write \n allow_upgrade: - websocket \n Or if your upstream service supports upgrading from HTTP to SPDY (as the Kubernetes apiserver does for `kubectl exec` functionality), you would write \n allow_upgrade: - spdy/3.1"
+                  description: "A case-insensitive list of the non-HTTP protocols to allow\n\"upgrading\" to from HTTP via the \"Connection: upgrade\"\nmechanism[1].  After the upgrade, Ambassador does not\ninterpret the traffic, and behaves similarly to how it does\nfor TCPMappings.\n\n[1]: https://tools.ietf.org/html/rfc7230#section-6.7\n\nFor example, if your upstream service supports WebSockets,\nyou would write\n\n   allow_upgrade:\n   - websocket\n\nOr if your upstream service supports upgrading from HTTP to\nSPDY (as the Kubernetes apiserver does for `kubectl exec`\nfunctionality), you would write\n\n   allow_upgrade:\n   - spdy/3.1"
                   items:
                     type: "string"
                   type: "array"
                 ambassador_id:
-                  description: "AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: \n ambassador_id: - \"default\""
+                  description: "AmbassadorID declares which Ambassador instances should pay\nattention to this resource. If no value is provided, the default is:\n\n\tambassador_id:\n\t- \"default\""
                   items:
                     type: "string"
                   type: "array"
@@ -168,7 +168,7 @@ spec:
                 dns_type:
                   type: "string"
                 docs:
-                  description: "DocsInfo provides some extra information about the docs for the Mapping. Docs is used by both the agent and the DevPortal."
+                  description: "DocsInfo provides some extra information about the docs for the Mapping.\nDocs is used by both the agent and the DevPortal."
                   properties:
                     display_name:
                       type: "string"
@@ -189,7 +189,7 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 error_response_overrides:
-                  description: "Error response overrides for this Mapping. Replaces all of the `error_response_overrides` set on the Ambassador module, if any."
+                  description: "Error response overrides for this Mapping. Replaces all of the `error_response_overrides`\nset on the Ambassador module, if any."
                   items:
                     description: "A response rewrite for an HTTP error response"
                     properties:
@@ -197,18 +197,18 @@ spec:
                         description: "The new response body"
                         properties:
                           content_type:
-                            description: "The content type to set on the error response body when using text_format or text_format_source. Defaults to 'text/plain'."
+                            description: "The content type to set on the error response body when\nusing text_format or text_format_source. Defaults to 'text/plain'."
                             type: "string"
                           json_format:
                             additionalProperties:
                               type: "string"
-                            description: "A JSON response with content-type: application/json. The values can contain format text like in text_format."
+                            description: "A JSON response with content-type: application/json. The values can\ncontain format text like in text_format."
                             type: "object"
                           text_format:
-                            description: "A format string representing a text response body. Content-Type can be set using the `content_type` field below."
+                            description: "A format string representing a text response body.\nContent-Type can be set using the `content_type` field below."
                             type: "string"
                           text_format_source:
-                            description: "A format string sourced from a file on the Ambassador container. Useful for larger response bodies that should not be placed inline in configuration."
+                            description: "A format string sourced from a file on the Ambassador container.\nUseful for larger response bodies that should not be placed inline\nin configuration."
                             properties:
                               filename:
                                 description: "The name of a file on the Ambassador pod that contains a format text string."
@@ -320,7 +320,7 @@ spec:
                   minItems: 1
                   type: "array"
                 host:
-                  description: "Exact match for the hostname of a request if HostRegex is false; regex match for the hostname if HostRegex is true. \n Host specifies both a match for the ':authority' header of a request, as well as a match criterion for Host CRDs: a Mapping that specifies Host will not associate with a Host that doesn't have a matching Hostname. \n If both Host and Hostname are set, an error is logged, Host is ignored, and Hostname is used. \n DEPRECATED: Host is either an exact match or a regex, depending on HostRegex. Use HostName instead."
+                  description: "Exact match for the hostname of a request if HostRegex is false; regex match for the\nhostname if HostRegex is true.\n\nHost specifies both a match for the ':authority' header of a request, as well as a match\ncriterion for Host CRDs: a Mapping that specifies Host will not associate with a Host that\ndoesn't have a matching Hostname.\n\nIf both Host and Hostname are set, an error is logged, Host is ignored, and Hostname is\nused.\n\nDEPRECATED: Host is either an exact match or a regex, depending on HostRegex. Use HostName instead."
                   type: "string"
                 host_redirect:
                   type: "boolean"
@@ -330,7 +330,7 @@ spec:
                 host_rewrite:
                   type: "string"
                 hostname:
-                  description: "Hostname is a DNS glob specifying the hosts to which this Mapping applies. \n Hostname specifies both a match for the ':authority' header of a request, as well as a match criterion for Host CRDs: a Mapping that specifies Hostname will not associate with a Host that doesn't have a matching Hostname. \n If both Host and Hostname are set, an error is logged, Host is ignored, and Hostname is used."
+                  description: "Hostname is a DNS glob specifying the hosts to which this Mapping applies.\n\nHostname specifies both a match for the ':authority' header of a request, as well as a\nmatch criterion for Host CRDs: a Mapping that specifies Hostname will not associate with\na Host that doesn't have a matching Hostname.\n\nIf both Host and Hostname are set, an error is logged, Host is ignored, and Hostname is\nused."
                   type: "string"
                 idle_timeout_ms:
                   type: "integer"
@@ -348,9 +348,9 @@ spec:
                     description: "A MappingLabelGroupsArray is an array of MappingLabelGroups. I know, complex."
                     items:
                       additionalProperties:
-                        description: "A MappingLabelsArray is the value in the MappingLabelGroup: an array of label specifiers."
+                        description: "A MappingLabelsArray is the value in the MappingLabelGroup: an array of label\nspecifiers."
                         items:
-                          description: "A MappingLabelSpecifier (finally!) defines a single label. \n This mimics envoy/config/route/v3/route_components.proto:RateLimit:Action:action_specifier."
+                          description: "A MappingLabelSpecifier (finally!) defines a single label.\n\nThis mimics envoy/config/route/v3/route_components.proto:RateLimit:Action:action_specifier."
                           maxProperties: 1
                           minProperties: 1
                           properties:
@@ -365,7 +365,7 @@ spec:
                                 - "key"
                               type: "object"
                             generic_key:
-                              description: "Sets the label \"«key»=«value»\" (where by default «key» is \"generic_key\")."
+                              description: "Sets the label \"«key»=«value»\" (where by default «key»\nis \"generic_key\")."
                               properties:
                                 key:
                                   description: "The default is \"generic_key\"."
@@ -388,7 +388,7 @@ spec:
                                 - "key"
                               type: "object"
                             request_headers:
-                              description: "If the «header_name» header is set, then set the label \"«key»=«Value of the «header_name» header»\"; otherwise skip applying this label group."
+                              description: "If the «header_name» header is set, then set the label \"«key»=«Value of the\n«header_name» header»\"; otherwise skip applying this label group."
                               properties:
                                 header_name:
                                   type: "string"
@@ -412,12 +412,12 @@ spec:
                               type: "object"
                           type: "object"
                         type: "array"
-                      description: "A MappingLabelGroup is a single element of a MappingLabelGroupsArray: a second map, where the key is a human-readable name that identifies the group."
+                      description: "A MappingLabelGroup is a single element of a MappingLabelGroupsArray: a second\nmap, where the key is a human-readable name that identifies the group."
                       maxProperties: 1
                       minProperties: 1
                       type: "object"
                     type: "array"
-                  description: "A DomainMap is the overall Mapping.spec.Labels type. It maps domains (kind of like namespaces for Mapping labels) to arrays of label groups."
+                  description: "A DomainMap is the overall Mapping.spec.Labels type. It maps domains (kind of\nlike namespaces for Mapping labels) to arrays of label groups."
                   type: "object"
                 load_balancer:
                   properties:
@@ -478,7 +478,7 @@ spec:
                     type: "string"
                   type: "object"
                 redirect_response_code:
-                  description: "The response code to use when generating an HTTP redirect. Defaults to 301. Used with `host_redirect`."
+                  description: "The response code to use when generating an HTTP redirect. Defaults to 301. Used with\n`host_redirect`."
                   enum:
                     - 301
                     - 302
@@ -551,7 +551,7 @@ spec:
                 tls:
                   type: "string"
                 use_websocket:
-                  description: "use_websocket is deprecated, and is equivlaent to setting `allow_upgrade: [\"websocket\"]`"
+                  description: "use_websocket is deprecated, and is equivlaent to setting\n`allow_upgrade: [\"websocket\"]`"
                   type: "boolean"
                 v2BoolHeaders:
                   items:
@@ -562,14 +562,14 @@ spec:
                     type: "string"
                   type: "array"
                 v2ExplicitTLS:
-                  description: "V2ExplicitTLS controls some vanity/stylistic elements when converting from v3alpha1 to v2.  The values in an V2ExplicitTLS should not in any way affect the runtime operation of Emissary; except that it may affect internal names in the Envoy config, which may in turn affect stats names.  But it should not affect any end-user observable behavior."
+                  description: "V2ExplicitTLS controls some vanity/stylistic elements when converting\nfrom v3alpha1 to v2.  The values in an V2ExplicitTLS should not in any\nway affect the runtime operation of Emissary; except that it may affect\ninternal names in the Envoy config, which may in turn affect stats\nnames.  But it should not affect any end-user observable behavior."
                   properties:
                     serviceScheme:
-                      description: "ServiceScheme specifies how to spell and capitalize the scheme-part of the service URL. \n Acceptable values are \"http://\" (case-insensitive), \"https://\" (case-insensitive), or \"\".  The value is used if it agrees with whether or not this resource enables TLS origination, or if something else in the resource overrides the scheme."
+                      description: "ServiceScheme specifies how to spell and capitalize the scheme-part of the\nservice URL.\n\nAcceptable values are \"http://\" (case-insensitive), \"https://\"\n(case-insensitive), or \"\".  The value is used if it agrees with\nwhether or not this resource enables TLS origination, or if\nsomething else in the resource overrides the scheme."
                       pattern: "^([hH][tT][tT][pP][sS]?://)?$"
                       type: "string"
                     tls:
-                      description: "TLS controls whether and how to represent the \"tls\" field when its value could be implied by the \"service\" field.  In v2, there were a lot of different ways to spell an \"empty\" value, and this field specifies which way to spell it (and will therefore only be used if the value will indeed be empty). \n | Value        | Representation                        | Meaning of representation          | |--------------+---------------------------------------+------------------------------------| | \"\"           | omit the field                        | defer to service (no TLSContext)   | | \"null\"       | store an explicit \"null\" in the field | defer to service (no TLSContext)   | | \"string\"     | store an empty string in the field    | defer to service (no TLSContext)   | | \"bool:false\" | store a Boolean \"false\" in the field  | defer to service (no TLSContext)   | | \"bool:true\"  | store a Boolean \"true\" in the field   | originate TLS (no TLSContext)      | \n If the meaning of the representation contradicts anything else (if a TLSContext is to be used, or in the case of \"bool:true\" if TLS is not to be originated), then this field is ignored."
+                      description: "TLS controls whether and how to represent the \"tls\" field when\nits value could be implied by the \"service\" field.  In v2, there\nwere a lot of different ways to spell an \"empty\" value, and this\nfield specifies which way to spell it (and will therefore only\nbe used if the value will indeed be empty).\n\n | Value        | Representation                        | Meaning of representation          |\n |--------------+---------------------------------------+------------------------------------|\n | \"\"           | omit the field                        | defer to service (no TLSContext)   |\n | \"null\"       | store an explicit \"null\" in the field | defer to service (no TLSContext)   |\n | \"string\"     | store an empty string in the field    | defer to service (no TLSContext)   |\n | \"bool:false\" | store a Boolean \"false\" in the field  | defer to service (no TLSContext)   |\n | \"bool:true\"  | store a Boolean \"true\" in the field   | originate TLS (no TLSContext)      |\n\nIf the meaning of the representation contradicts anything else\n(if a TLSContext is to be used, or in the case of \"bool:true\" if\nTLS is not to be originated), then this field is ignored."
                       enum:
                         - ""
                         - "null"

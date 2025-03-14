@@ -63,6 +63,7 @@ spec:
                       enum:
                         - 57
                         - 80
+                        - 84
                       type: "integer"
                   required:
                     - "encryption"

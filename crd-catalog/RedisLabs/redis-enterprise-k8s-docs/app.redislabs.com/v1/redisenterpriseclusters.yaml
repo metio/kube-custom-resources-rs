@@ -382,6 +382,9 @@ spec:
                     cacheTTLSeconds:
                       description: "The maximum TTL of cached entries."
                       type: "integer"
+                    directoryTimeoutSeconds:
+                      description: "The connection timeout to the LDAP server when authenticating a user, in seconds"
+                      type: "integer"
                     enabledForControlPlane:
                       description: "Whether to enable LDAP for control plane access. Disabled by default."
                       type: "boolean"
@@ -3431,6 +3434,19 @@ spec:
                 resp3Default:
                   description: "Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info."
                   type: "boolean"
+                securityContext:
+                  description: "the security configuration that will be applied to RS pods."
+                  properties:
+                    readOnlyRootFilesystemPolicy:
+                      description: "Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly."
+                      properties:
+                        enabled:
+                          description: "Whether RS containers has a read-only root filesystem. Default is false."
+                          type: "boolean"
+                      required:
+                        - "enabled"
+                      type: "object"
+                  type: "object"
                 serviceAccountName:
                   description: "Name of the service account to use"
                   type: "string"
@@ -7324,6 +7340,17 @@ spec:
                       - "version"
                     type: "object"
                   type: "array"
+                certificatesStatus:
+                  description: "Stores information about cluster certificates and their update process. In Active-Active databases, this is used to detect updates to the certificates, and trigger synchronization across the participating clusters."
+                  properties:
+                    generation:
+                      description: "Generation stores the version of the cluster's Proxy and Syncer certificate secrets. In Active-Active databases, when a user updates the proxy or syncer certificate, a crdb-update command needs to be triggered to avoid potential sync issues. This helps the REAADB controller detect a change in a certificate and trigger a crdb-update. The version of the cluster's Proxy certificate secret."
+                      format: "int64"
+                      type: "integer"
+                    updateStatus:
+                      description: "The status of the cluster's certificates update"
+                      type: "string"
+                  type: "object"
                 ingressOrRouteMethodStatus:
                   description: "The ingressOrRouteSpec/ActiveActive spec method that exist"
                   type: "string"

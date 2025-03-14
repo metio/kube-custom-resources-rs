@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "propagationpolicies.policy.karmada.io"
 spec:
   group: "policy.karmada.io"
@@ -44,7 +44,7 @@ spec:
               description: "Spec represents the desired behavior of PropagationPolicy."
               properties:
                 activationPreference:
-                  description: "ActivationPreference indicates how the referencing resource template will\nbe propagated, in case of policy changes.\n\n\nIf empty, the resource template will respond to policy changes\nimmediately, in other words, any policy changes will drive the resource\ntemplate to be propagated immediately as per the current propagation rules.\n\n\nIf the value is 'Lazy' means the policy changes will not take effect for now\nbut defer to the resource template changes, in other words, the resource\ntemplate will not be propagated as per the current propagation rules until\nthere is an update on it.\nThis is an experimental feature that might help in a scenario where a policy\nmanages huge amount of resource templates, changes to a policy typically\naffect numerous applications simultaneously. A minor misconfiguration\ncould lead to widespread failures. With this feature, the change can be\ngradually rolled out through iterative modifications of resource templates."
+                  description: "ActivationPreference indicates how the referencing resource template will\nbe propagated, in case of policy changes.\n\nIf empty, the resource template will respond to policy changes\nimmediately, in other words, any policy changes will drive the resource\ntemplate to be propagated immediately as per the current propagation rules.\n\nIf the value is 'Lazy' means the policy changes will not take effect for now\nbut defer to the resource template changes, in other words, the resource\ntemplate will not be propagated as per the current propagation rules until\nthere is an update on it.\nThis is an experimental feature that might help in a scenario where a policy\nmanages huge amount of resource templates, changes to a policy typically\naffect numerous applications simultaneously. A minor misconfiguration\ncould lead to widespread failures. With this feature, the change can be\ngradually rolled out through iterative modifications of resource templates."
                   enum:
                     - "Lazy"
                   type: "string"
@@ -53,13 +53,13 @@ spec:
                   type: "boolean"
                 conflictResolution:
                   default: "Abort"
-                  description: "ConflictResolution declares how potential conflict should be handled when\na resource that is being propagated already exists in the target cluster.\n\n\nIt defaults to \"Abort\" which means stop propagating to avoid unexpected\noverwrites. The \"Overwrite\" might be useful when migrating legacy cluster\nresources to Karmada, in which case conflict is predictable and can be\ninstructed to Karmada take over the resource by overwriting."
+                  description: "ConflictResolution declares how potential conflict should be handled when\na resource that is being propagated already exists in the target cluster.\n\nIt defaults to \"Abort\" which means stop propagating to avoid unexpected\noverwrites. The \"Overwrite\" might be useful when migrating legacy cluster\nresources to Karmada, in which case conflict is predictable and can be\ninstructed to Karmada take over the resource by overwriting."
                   enum:
                     - "Abort"
                     - "Overwrite"
                   type: "string"
                 dependentOverrides:
-                  description: "DependentOverrides represents the list of overrides(OverridePolicy)\nwhich must present before the current PropagationPolicy takes effect.\n\n\nIt used to explicitly specify overrides which current PropagationPolicy rely on.\nA typical scenario is the users create OverridePolicy(ies) and resources at the same time,\nthey want to ensure the new-created policies would be adopted.\n\n\nNote: For the overrides, OverridePolicy(ies) in current namespace and ClusterOverridePolicy(ies),\nwhich not present in this list will still be applied if they matches the resources."
+                  description: "DependentOverrides represents the list of overrides(OverridePolicy)\nwhich must present before the current PropagationPolicy takes effect.\n\nIt used to explicitly specify overrides which current PropagationPolicy rely on.\nA typical scenario is the users create OverridePolicy(ies) and resources at the same time,\nthey want to ensure the new-created policies would be adopted.\n\nNote: For the overrides, OverridePolicy(ies) in current namespace and ClusterOverridePolicy(ies),\nwhich not present in this list will still be applied if they matches the resources."
                   items:
                     type: "string"
                   type: "array"
@@ -90,6 +90,28 @@ spec:
                             - "Graciously"
                             - "Never"
                           type: "string"
+                        statePreservation:
+                          description: "StatePreservation defines the policy for preserving and restoring state data\nduring failover events for stateful applications.\n\nWhen an application fails over from one cluster to another, this policy enables\nthe extraction of critical data from the original resource configuration.\nUpon successful migration, the extracted data is then re-injected into the new\nresource, ensuring that the application can resume operation with its previous\nstate intact.\nThis is particularly useful for stateful applications where maintaining data\nconsistency across failover events is crucial.\nIf not specified, means no state data will be preserved.\n\nNote: This requires the StatefulFailoverInjection feature gate to be enabled,\nwhich is alpha."
+                          properties:
+                            rules:
+                              description: "Rules contains a list of StatePreservationRule configurations.\nEach rule specifies a JSONPath expression targeting specific pieces of\nstate data to be preserved during failover events. An AliasLabelName is associated\nwith each rule, serving as a label key when the preserved data is passed\nto the new cluster."
+                              items:
+                                description: "StatePreservationRule defines a single rule for state preservation.\nIt includes a JSONPath expression and an alias name that will be used\nas a label key when passing state information to the new cluster."
+                                properties:
+                                  aliasLabelName:
+                                    description: "AliasLabelName is the name that will be used as a label key when the preserved\ndata is passed to the new cluster. This facilitates the injection of the\npreserved state back into the application resources during recovery."
+                                    type: "string"
+                                  jsonPath:
+                                    description: "JSONPath is the JSONPath template used to identify the state data\nto be preserved from the original resource configuration.\nThe JSONPath syntax follows the Kubernetes specification:\nhttps://kubernetes.io/docs/reference/kubectl/jsonpath/\n\nNote: The JSONPath expression will start searching from the \"status\" field of\nthe API resource object by default. For example, to extract the \"availableReplicas\"\nfrom a Deployment, the JSONPath expression should be \"{.availableReplicas}\", not\n\"{.status.availableReplicas}\"."
+                                    type: "string"
+                                required:
+                                  - "aliasLabelName"
+                                  - "jsonPath"
+                                type: "object"
+                              type: "array"
+                          required:
+                            - "rules"
+                          type: "object"
                       required:
                         - "decisionConditions"
                       type: "object"
@@ -98,7 +120,7 @@ spec:
                   description: "Placement represents the rule for select clusters to propagate resources."
                   properties:
                     clusterAffinities:
-                      description: "ClusterAffinities represents scheduling restrictions to multiple cluster\ngroups that indicated by ClusterAffinityTerm.\n\n\nThe scheduler will evaluate these groups one by one in the order they\nappear in the spec, the group that does not satisfy scheduling restrictions\nwill be ignored which means all clusters in this group will not be selected\nunless it also belongs to the next group(a cluster could belong to multiple\ngroups).\n\n\nIf none of the groups satisfy the scheduling restrictions, then scheduling\nfails, which means no cluster will be selected.\n\n\nNote:\n  1. ClusterAffinities can not co-exist with ClusterAffinity.\n  2. If both ClusterAffinity and ClusterAffinities are not set, any cluster\n     can be scheduling candidates.\n\n\nPotential use case 1:\nThe private clusters in the local data center could be the main group, and\nthe managed clusters provided by cluster providers could be the secondary\ngroup. So that the Karmada scheduler would prefer to schedule workloads\nto the main group and the second group will only be considered in case of\nthe main group does not satisfy restrictions(like, lack of resources).\n\n\nPotential use case 2:\nFor the disaster recovery scenario, the clusters could be organized to\nprimary and backup groups, the workloads would be scheduled to primary\nclusters firstly, and when primary cluster fails(like data center power off),\nKarmada scheduler could migrate workloads to the backup clusters."
+                      description: "ClusterAffinities represents scheduling restrictions to multiple cluster\ngroups that indicated by ClusterAffinityTerm.\n\nThe scheduler will evaluate these groups one by one in the order they\nappear in the spec, the group that does not satisfy scheduling restrictions\nwill be ignored which means all clusters in this group will not be selected\nunless it also belongs to the next group(a cluster could belong to multiple\ngroups).\n\nIf none of the groups satisfy the scheduling restrictions, then scheduling\nfails, which means no cluster will be selected.\n\nNote:\n  1. ClusterAffinities can not co-exist with ClusterAffinity.\n  2. If both ClusterAffinity and ClusterAffinities are not set, any cluster\n     can be scheduling candidates.\n\nPotential use case 1:\nThe private clusters in the local data center could be the main group, and\nthe managed clusters provided by cluster providers could be the secondary\ngroup. So that the Karmada scheduler would prefer to schedule workloads\nto the main group and the second group will only be considered in case of\nthe main group does not satisfy restrictions(like, lack of resources).\n\nPotential use case 2:\nFor the disaster recovery scenario, the clusters could be organized to\nprimary and backup groups, the workloads would be scheduled to primary\nclusters firstly, and when primary cluster fails(like data center power off),\nKarmada scheduler could migrate workloads to the backup clusters."
                       items:
                         description: "ClusterAffinityTerm selects a set of cluster."
                         properties:
@@ -423,15 +445,15 @@ spec:
                     - "Never"
                   type: "string"
                 preserveResourcesOnDeletion:
-                  description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember clusters when the resource template is deleted.\nIf set to true, resources will be preserved on the member clusters.\nDefault is false, which means resources will be deleted along with the resource template.\n\n\nThis setting is particularly useful during workload migration scenarios to ensure\nthat rollback can occur quickly without affecting the workloads running on the\nmember clusters.\n\n\nAdditionally, this setting applies uniformly across all member clusters and will not\nselectively control preservation on only some clusters.\n\n\nNote: This setting does not apply to the deletion of the policy itself.\nWhen the policy is deleted, the resource templates and their corresponding\npropagated resources in member clusters will remain unchanged unless explicitly deleted."
+                  description: "PreserveResourcesOnDeletion controls whether resources should be preserved on the\nmember clusters when the resource template is deleted.\nIf set to true, resources will be preserved on the member clusters.\nDefault is false, which means resources will be deleted along with the resource template.\n\nThis setting is particularly useful during workload migration scenarios to ensure\nthat rollback can occur quickly without affecting the workloads running on the\nmember clusters.\n\nAdditionally, this setting applies uniformly across all member clusters and will not\nselectively control preservation on only some clusters.\n\nNote: This setting does not apply to the deletion of the policy itself.\nWhen the policy is deleted, the resource templates and their corresponding\npropagated resources in member clusters will remain unchanged unless explicitly deleted."
                   type: "boolean"
                 priority:
                   default: 0
-                  description: "Priority indicates the importance of a policy(PropagationPolicy or ClusterPropagationPolicy).\nA policy will be applied for the matched resource templates if there is\nno other policies with higher priority at the point of the resource\ntemplate be processed.\nOnce a resource template has been claimed by a policy, by default it will\nnot be preempted by following policies even with a higher priority.\nSee Preemption for more details.\n\n\nIn case of two policies have the same priority, the one with a more precise\nmatching rules in ResourceSelectors wins:\n- matching by name(resourceSelector.name) has higher priority than\n  by selector(resourceSelector.labelSelector)\n- matching by selector(resourceSelector.labelSelector) has higher priority\n  than by APIVersion(resourceSelector.apiVersion) and Kind(resourceSelector.kind).\nIf there is still no winner at this point, the one with the lower alphabetic\norder wins, e.g. policy 'bar' has higher priority than 'foo'.\n\n\nThe higher the value, the higher the priority. Defaults to zero."
+                  description: "Priority indicates the importance of a policy(PropagationPolicy or ClusterPropagationPolicy).\nA policy will be applied for the matched resource templates if there is\nno other policies with higher priority at the point of the resource\ntemplate be processed.\nOnce a resource template has been claimed by a policy, by default it will\nnot be preempted by following policies even with a higher priority.\nSee Preemption for more details.\n\nIn case of two policies have the same priority, the one with a more precise\nmatching rules in ResourceSelectors wins:\n- matching by name(resourceSelector.name) has higher priority than\n  by selector(resourceSelector.labelSelector)\n- matching by selector(resourceSelector.labelSelector) has higher priority\n  than by APIVersion(resourceSelector.apiVersion) and Kind(resourceSelector.kind).\nIf there is still no winner at this point, the one with the lower alphabetic\norder wins, e.g. policy 'bar' has higher priority than 'foo'.\n\nThe higher the value, the higher the priority. Defaults to zero."
                   format: "int32"
                   type: "integer"
                 propagateDeps:
-                  description: "PropagateDeps tells if relevant resources should be propagated automatically.\nTake 'Deployment' which referencing 'ConfigMap' and 'Secret' as an example, when 'propagateDeps' is 'true',\nthe referencing resources could be omitted(for saving config effort) from 'resourceSelectors' as they will be\npropagated along with the Deployment. In addition to the propagating process, the referencing resources will be\nmigrated along with the Deployment in the fail-over scenario.\n\n\nDefaults to false."
+                  description: "PropagateDeps tells if relevant resources should be propagated automatically.\nTake 'Deployment' which referencing 'ConfigMap' and 'Secret' as an example, when 'propagateDeps' is 'true',\nthe referencing resources could be omitted(for saving config effort) from 'resourceSelectors' as they will be\npropagated along with the Deployment. In addition to the propagating process, the referencing resources will be\nmigrated along with the Deployment in the fail-over scenario.\n\nDefaults to false."
                   type: "boolean"
                 resourceSelectors:
                   description: "ResourceSelectors used to select resources.\nNil or empty selector is not allowed and doesn't mean match all kinds\nof resources for security concerns that sensitive resources(like Secret)\nmight be accidentally propagated."
@@ -489,6 +511,21 @@ spec:
                     type: "object"
                   minItems: 1
                   type: "array"
+                schedulePriority:
+                  description: "SchedulePriority defines how Karmada should resolve the priority and preemption policy\nfor workload scheduling.\n\nThis setting is useful for controlling the scheduling behavior of offline workloads.\nBy setting a higher or lower priority, users can control which workloads are scheduled first.\nAdditionally, it allows specifying a preemption policy where higher-priority workloads can\npreempt lower-priority ones in scenarios of resource contention.\n\nNote: This feature is currently in the alpha stage. The priority-based scheduling functionality is\ncontrolled by the PriorityBasedScheduling feature gate, and preemption is controlled by the\nPriorityBasedPreemptiveScheduling feature gate. Currently, only priority-based scheduling is\nsupported. Preemption functionality is not yet available and will be introduced in future\nreleases as the feature matures."
+                  properties:
+                    priorityClassName:
+                      description: "PriorityClassName specifies which PriorityClass to use. Its behavior depends on PriorityClassSource:\n\nBehavior of PriorityClassName:\n\nFor KubePriorityClass:\n- When specified: Uses the named Kubernetes PriorityClass.\n\nFor PodPriorityClass:\n- Uses PriorityClassName from the PodTemplate.\n- Not yet implemented.\n\nFor FederatedPriorityClass:\n- Not yet implemented."
+                      type: "string"
+                    priorityClassSource:
+                      description: "PriorityClassSource specifies where Karmada should look for the PriorityClass definition.\nAvailable options:\n- KubePriorityClass: Uses Kubernetes PriorityClass (scheduling.k8s.io/v1)\n- PodPriorityClass: Uses PriorityClassName from PodTemplate: PodSpec.PriorityClassName (not yet implemented)\n- FederatedPriorityClass: Uses Karmada FederatedPriorityClass (not yet implemented)"
+                      enum:
+                        - "KubePriorityClass"
+                      type: "string"
+                  required:
+                    - "priorityClassName"
+                    - "priorityClassSource"
+                  type: "object"
                 schedulerName:
                   default: "default-scheduler"
                   description: "SchedulerName represents which scheduler to proceed the scheduling.\nIf specified, the policy will be dispatched by specified scheduler.\nIf not specified, the policy will be dispatched by default scheduler."

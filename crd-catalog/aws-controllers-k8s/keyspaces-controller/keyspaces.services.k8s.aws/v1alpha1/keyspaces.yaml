@@ -42,6 +42,9 @@ spec:
                     replicationStrategy:
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 tags:
                   description: "A list of key-value pair tags to be attached to the keyspace.\n\nFor more information, see Adding tags and labels to Amazon Keyspaces resources\n(https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)\nin the Amazon Keyspaces Developer Guide."
                   items:
@@ -76,7 +79,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

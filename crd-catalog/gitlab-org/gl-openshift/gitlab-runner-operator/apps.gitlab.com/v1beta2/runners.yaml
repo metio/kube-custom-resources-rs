@@ -67,6 +67,9 @@ spec:
                 config:
                   description: "allow user to provide configmap name\ncontaining the user provided config.toml"
                   type: "string"
+                connectionMaxAge:
+                  description: "The maximum duration a TLS keepalive connection to the GitLab server should remain open before reconnecting. The default value is `15m` for 15 minutes. If set to `0` or lower, the connection persists as long as possible."
+                  type: "string"
                 env:
                   description: "Accepts configmap name. Provides user mechanism to inject environment\nvariables in the GitLab Runner pod via the key value pairs in the ConfigMap"
                   type: "string"
@@ -96,9 +99,21 @@ spec:
                   description: "Option to define the number of seconds between checks for new jobs.\nThis is set to a default of 30s by operator if not set"
                   format: "int32"
                   type: "integer"
+                listenAddr:
+                  description: "Option to set the metrics listen address for the runner."
+                  type: "string"
                 locked:
                   description: "Specify whether the runner should be locked to a specific project. Defaults to false."
                   type: "boolean"
+                logFormat:
+                  description: "Specifies the log format. Options are `runner`, `text`, and `json`. The default value is `runner`, which contains ANSI escape codes for coloring."
+                  type: "string"
+                logLevel:
+                  description: "Option to set the log level for the runner.\nValid values are \"debug\", \"info\", \"warn\", \"error\", \"fatal\", \"panic\""
+                  type: "string"
+                namespace:
+                  description: "If specified, overrides the namespace where job pods are created"
+                  type: "string"
                 podSpec:
                   items:
                     description: "KubernetesPodSpec represents the structure expected when adding a custom PodSpec to configure\nthe Pod running the GitLab Runner Manager"
@@ -147,9 +162,16 @@ spec:
                     server:
                       type: "string"
                   type: "object"
+                sentryDsn:
+                  description: "Enables tracking of all system level errors to Sentry.\nIf not specified, error tracking with Sentry will be disabled."
+                  type: "string"
                 serviceaccount:
                   description: "allow user to override service account\nused by GitLab Runner"
                   type: "string"
+                shutdownTimeout:
+                  description: "Number of seconds until the forceful shutdown operation times out and exits the process. The default value is `30`. If set to `0` or lower, the default value is used."
+                  format: "int32"
+                  type: "integer"
                 tags:
                   description: "List of comma separated tags to be applied to the runner\nMore info: https://docs.gitlab.com/ee/ci/runners/#use-tags-to-limit-the-number-of-jobs-using-the-runner"
                   type: "string"

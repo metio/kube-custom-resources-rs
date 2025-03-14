@@ -35,6 +35,9 @@ spec:
                 path:
                   description: "The path to the instance profile. For more information about paths, see IAM\nIdentifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 role:
                   type: "string"
                 roleRef:
@@ -83,7 +86,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

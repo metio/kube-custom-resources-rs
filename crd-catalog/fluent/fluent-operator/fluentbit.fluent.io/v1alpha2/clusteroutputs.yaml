@@ -1610,6 +1610,13 @@ spec:
                     topics:
                       description: "Single entry or list of topics separated by comma (,) that Fluent Bit will use to send messages to Kafka.\nIf only one topic is set, that one will be used for all records.\nInstead if multiple topics exists, the one set in the record by Topic_Key will be used."
                       type: "string"
+                    totalLimitSize:
+                      description: "Limit the maximum number of Chunks in the filesystem for the current output logical destination."
+                      type: "string"
+                    workers:
+                      description: "Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0."
+                      format: "int32"
+                      type: "integer"
                   type: "object"
                 kinesis:
                   description: "Kinesis defines Kinesis Output configuration."
@@ -1913,9 +1920,16 @@ spec:
                           description: "Hostname to be used for TLS SNI extension"
                           type: "string"
                       type: "object"
+                    totalLimitSize:
+                      description: "Limit the maximum number of Chunks in the filesystem for the current output logical destination."
+                      type: "string"
                     uri:
                       description: "Specify a custom HTTP URI. It must start with forward slash."
                       type: "string"
+                    workers:
+                      description: "Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0."
+                      format: "int32"
+                      type: "integer"
                   required:
                     - "host"
                   type: "object"
@@ -1931,10 +1945,6 @@ spec:
                 opensearch:
                   description: "OpenSearch defines OpenSearch Output configuration."
                   properties:
-                    Workers:
-                      description: "Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0."
-                      format: "int32"
-                      type: "integer"
                     awsAuth:
                       description: "Enable AWS Sigv4 Authentication for Amazon OpenSearch Service."
                       type: "string"
@@ -2184,6 +2194,10 @@ spec:
                     type:
                       description: "Type name"
                       type: "string"
+                    workers:
+                      description: "Enables dedicated thread(s) for this output. Default value is set since version 1.8.13. For previous versions is 0."
+                      format: "int32"
+                      type: "integer"
                     writeOperation:
                       description: "Operation to use to write in bulk requests."
                       type: "string"
@@ -2257,6 +2271,9 @@ spec:
                     logResponsePayload:
                       description: "Log the response payload within the Fluent Bit log."
                       type: "boolean"
+                    logsBodyKey:
+                      description: "The log body key to look up in the log events body/message. Sets the Body field of the opentelemtry logs data model."
+                      type: "string"
                     logsBodyKeyAttributes:
                       description: "If true, remaining unmatched keys are added as attributes."
                       type: "boolean"
