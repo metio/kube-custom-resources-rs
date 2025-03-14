@@ -1022,6 +1022,16 @@ spec:
                         description: "Defines VolumeClaimTemplates to override.\nAdd new or override existing volume claim templates."
                         items:
                           properties:
+                            annotations:
+                              additionalProperties:
+                                type: "string"
+                              description: "Specifies the annotations for the PVC of the volume."
+                              type: "object"
+                            labels:
+                              additionalProperties:
+                                type: "string"
+                              description: "Specifies the labels for the PVC of the volume."
+                              type: "object"
                             name:
                               description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                               type: "string"
@@ -3150,6 +3160,16 @@ spec:
                   description: "Specifies a list of PersistentVolumeClaim templates that define the storage requirements for the Component.\nEach template specifies the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes.\nThese templates are used to dynamically provision persistent volumes for the Component."
                   items:
                     properties:
+                      annotations:
+                        additionalProperties:
+                          type: "string"
+                        description: "Specifies the annotations for the PVC of the volume."
+                        type: "object"
+                      labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Specifies the labels for the PVC of the volume."
+                        type: "object"
                       name:
                         description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                         type: "string"

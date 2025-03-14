@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "meshhealthchecks.kuma.io"
 spec:
   group: "kuma.io"
@@ -12,6 +12,8 @@ spec:
     kind: "MeshHealthCheck"
     listKind: "MeshHealthCheckList"
     plural: "meshhealthchecks"
+    shortNames:
+      - "mhc"
     singular: "meshhealthcheck"
   scope: "Namespaced"
   versions:
@@ -51,6 +53,7 @@ spec:
                         - "MeshMultiZoneService"
                         - "MeshServiceSubset"
                         - "MeshHTTPRoute"
+                        - "Dataplane"
                       type: "string"
                     labels:
                       additionalProperties:
@@ -73,7 +76,6 @@ spec:
                           - "Sidecar"
                           - "Gateway"
                         type: "string"
-                      minItems: 1
                       type: "array"
                     sectionName:
                       description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -83,6 +85,8 @@ spec:
                         type: "string"
                       description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                       type: "object"
+                  required:
+                    - "kind"
                   type: "object"
                 to:
                   description: "To list makes a match between the consumed services and corresponding configurations"
@@ -117,11 +121,10 @@ spec:
                             anyOf:
                               - type: "integer"
                               - type: "string"
-                            description: "Allows to configure panic threshold for Envoy cluster. If not specified,\nthe default is 50%. To disable panic mode, set to 0%.\nEither int or decimal represented as string."
+                            description: "Allows to configure panic threshold for Envoy cluster. If not specified,\nthe default is 50%. To disable panic mode, set to 0%.\nEither int or decimal represented as string.\nDeprecated: the setting has been moved to MeshCircuitBreaker policy,\nplease use MeshCircuitBreaker policy instead."
                             x-kubernetes-int-or-string: true
                           healthyThreshold:
-                            default: 1
-                            description: "Number of consecutive healthy checks before considering a host healthy."
+                            description: "Number of consecutive healthy checks before considering a host healthy.\nIf not specified then the default value is 1"
                             format: "int32"
                             type: "integer"
                           http:
@@ -137,8 +140,7 @@ spec:
                                   type: "integer"
                                 type: "array"
                               path:
-                                default: "/"
-                                description: "The HTTP path which will be requested during the health check\n(ie. /health)"
+                                description: "The HTTP path which will be requested during the health check\n(ie. /health)\nIf not specified then the default value is \"/\""
                                 type: "string"
                               requestHeadersToAdd:
                                 description: "The list of HTTP headers which should be added to each health check\nrequest"
@@ -187,8 +189,7 @@ spec:
                             description: "If specified, Envoy will start health checking after a random time in\nms between 0 and initialJitter. This only applies to the first health\ncheck."
                             type: "string"
                           interval:
-                            default: "1m"
-                            description: "Interval between consecutive health checks."
+                            description: "Interval between consecutive health checks.\nIf not specified then the default value is 1m"
                             type: "string"
                           intervalJitter:
                             description: "If specified, during every interval Envoy will add IntervalJitter to the\nwait time."
@@ -219,12 +220,10 @@ spec:
                                 type: "string"
                             type: "object"
                           timeout:
-                            default: "15s"
-                            description: "Maximum time to wait for a health check response."
+                            description: "Maximum time to wait for a health check response.\nIf not specified then the default value is 15s"
                             type: "string"
                           unhealthyThreshold:
-                            default: 5
-                            description: "Number of consecutive unhealthy checks before considering a host\nunhealthy."
+                            description: "Number of consecutive unhealthy checks before considering a host\nunhealthy.\nIf not specified then the default value is 5"
                             format: "int32"
                             type: "integer"
                         type: "object"
@@ -242,6 +241,7 @@ spec:
                               - "MeshMultiZoneService"
                               - "MeshServiceSubset"
                               - "MeshHTTPRoute"
+                              - "Dataplane"
                             type: "string"
                           labels:
                             additionalProperties:
@@ -264,7 +264,6 @@ spec:
                                 - "Sidecar"
                                 - "Gateway"
                               type: "string"
-                            minItems: 1
                             type: "array"
                           sectionName:
                             description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -274,6 +273,8 @@ spec:
                               type: "string"
                             description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                             type: "object"
+                        required:
+                          - "kind"
                         type: "object"
                     required:
                       - "targetRef"

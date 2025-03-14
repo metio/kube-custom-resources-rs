@@ -11,7 +11,7 @@ spec:
     kind: "SparkApplication"
     plural: "sparkapplications"
     shortNames:
-      - "sc"
+      - "sparkapp"
     singular: "sparkapplication"
   scope: "Namespaced"
   versions:
@@ -189,6 +189,10 @@ spec:
                               nullable: true
                               type: "boolean"
                           type: "object"
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -247,6 +251,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -459,6 +489,10 @@ spec:
                               nullable: true
                               type: "boolean"
                           type: "object"
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -517,6 +551,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -545,6 +605,10 @@ spec:
                     config:
                       default: {}
                       properties:
+                        requestedSecretLifetime:
+                          description: "Request secret (currently only autoTls certificates) lifetime from the secret operator, e.g. `7d`, or `30d`. This can be shortened by the `maxCertificateLifetime` setting on the SecretClass issuing the TLS certificate."
+                          nullable: true
+                          type: "string"
                         resources:
                           default:
                             cpu:
@@ -603,6 +667,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -700,6 +790,15 @@ spec:
                                           minimum: 0.0
                                           nullable: true
                                           type: "integer"
+                                        region:
+                                          default:
+                                            name: "us-east-1"
+                                          description: "Bucket region used for signing headers (sigv4).\n\nThis defaults to `us-east-1` which is compatible with other implementations such as Minio.\n\nWARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2."
+                                          properties:
+                                            name:
+                                              default: "us-east-1"
+                                              type: "string"
+                                          type: "object"
                                         tls:
                                           description: "Use a TLS connection. If not specified no TLS will be used."
                                           nullable: true
@@ -836,6 +935,15 @@ spec:
                           minimum: 0.0
                           nullable: true
                           type: "integer"
+                        region:
+                          default:
+                            name: "us-east-1"
+                          description: "Bucket region used for signing headers (sigv4).\n\nThis defaults to `us-east-1` which is compatible with other implementations such as Minio.\n\nWARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2."
+                          properties:
+                            name:
+                              default: "us-east-1"
+                              type: "string"
+                          type: "object"
                         tls:
                           description: "Use a TLS connection. If not specified no TLS will be used."
                           nullable: true
@@ -898,7 +1006,7 @@ spec:
                   description: "Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.\n\nConsult the [Product image selection documentation](https://docs.stackable.tech/home/nightly/concepts/product_image_selection) for details."
                   properties:
                     custom:
-                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `docker.stackable.tech/stackable/superset:1.4.1-stackable2.1.0`"
+                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`"
                       type: "string"
                     productVersion:
                       description: "Version of the product, e.g. `1.4.1`."
@@ -925,7 +1033,7 @@ spec:
                       nullable: true
                       type: "array"
                     repo:
-                      description: "Name of the docker repo, e.g. `docker.stackable.tech/stackable`"
+                      description: "Name of the docker repo, e.g. `oci.stackable.tech/sdp`"
                       nullable: true
                       type: "string"
                     stackableVersion:

@@ -75,7 +75,7 @@ spec:
                     type: "object"
                   type: "array"
                 targetIPs:
-                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\nonly IPv4 addresses. Separate IP addresses with a space.\n\nTargetIps is available only when the value of Rule type is FORWARD."
+                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\neither Ipv4 or Ipv6 addresses but not both in the same rule. Separate IP\naddresses with a space.\n\nTargetIps is available only when the value of Rule type is FORWARD."
                   items:
                     description: "In a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html)\nrequest, an array of the IPs that you want to forward DNS queries to."
                     properties:
@@ -89,7 +89,6 @@ spec:
                     type: "object"
                   type: "array"
               required:
-                - "domainName"
                 - "ruleType"
               type: "object"
             status:
@@ -112,7 +111,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

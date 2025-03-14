@@ -71,6 +71,9 @@ spec:
                 name:
                   description: "The name of the topic you want to create.\n\nConstraints: Topic names must be made up of only uppercase and lowercase\nASCII letters, numbers, underscores, and hyphens, and must be between 1 and\n256 characters long.\n\nFor a FIFO (first-in-first-out) topic, the name must end with the .fifo suffix."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 policy:
                   type: "string"
                 policyRef:
@@ -123,7 +126,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

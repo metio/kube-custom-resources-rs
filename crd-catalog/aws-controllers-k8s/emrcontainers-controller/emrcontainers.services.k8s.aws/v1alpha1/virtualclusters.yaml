@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "VirtualClusterSpec defines the desired state of VirtualCluster.\n\nThis entity describes a virtual cluster. A virtual cluster is a Kubernetes\nnamespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters\nto run jobs and host endpoints. Multiple virtual clusters can be backed by\nthe same physical cluster. However, each virtual cluster maps to one namespace\non an EKS cluster. Virtual clusters do not create any active resources that\ncontribute to your bill or that require lifecycle management outside the\nservice."
+              description: "VirtualClusterSpec defines the desired state of VirtualCluster.\n\nThis entity describes a virtual cluster. A virtual cluster is a Kubernetes\nnamespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters\nto run jobs and host endpoints. Multiple virtual clusters can be backed by\nthe same physical cluster. However, each virtual cluster maps to one namespace\non an Amazon EKS cluster. Virtual clusters do not create any active resources\nthat contribute to your bill or that require lifecycle management outside\nthe service."
               properties:
                 containerProvider:
                   description: "The container provider of the virtual cluster."
@@ -38,7 +38,7 @@ spec:
                       description: "The information about the container used for a job run or a managed endpoint."
                       properties:
                         eksInfo:
-                          description: "The information about the EKS cluster."
+                          description: "The information about the Amazon EKS cluster."
                           properties:
                             namespace:
                               type: "string"
@@ -79,7 +79,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

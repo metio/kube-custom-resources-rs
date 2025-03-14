@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.8.0-dev"
+    app.kubernetes.io/version: "v1.9.0-dev"
     longhorn-manager: ""
   name: "replicas.longhorn.io"
 spec:
@@ -110,6 +110,9 @@ spec:
                   type: "string"
                 logRequested:
                   type: "boolean"
+                migrationEngineName:
+                  description: "MigrationEngineName is indicating the migrating engine which current connected to this replica. This is only\nused for live migration of v2 data engine"
+                  type: "string"
                 nodeID:
                   type: "string"
                 rebuildRetryCount:

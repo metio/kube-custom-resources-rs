@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.3"
+    controller-gen.kubebuilder.io/version: "v0.17.0"
   name: "vspherevms.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -74,18 +74,46 @@ spec:
                     type: "string"
                   description: "CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM\nDefaults to empty map"
                   type: "object"
+                dataDisks:
+                  description: "DataDisks are additional disks to add to the VM that are not part of the VM's OVA template."
+                  items:
+                    description: "VSphereDisk is an additional disk to add to the VM that is not part of the VM OVA template."
+                    properties:
+                      name:
+                        description: "Name is used to identify the disk definition. Name is required and needs to be unique so that it can be used to\nclearly identify purpose of the disk."
+                        type: "string"
+                      provisioningMode:
+                        description: "ProvisioningMode specifies the provisioning type to be used by this vSphere data disk.\nIf not set, the setting will be provided by the default storage policy."
+                        enum:
+                          - "Thin"
+                          - "Thick"
+                          - "EagerlyZeroed"
+                        type: "string"
+                      sizeGiB:
+                        description: "SizeGiB is the size of the disk in GiB."
+                        format: "int32"
+                        type: "integer"
+                    required:
+                      - "name"
+                      - "sizeGiB"
+                    type: "object"
+                  maxItems: 29
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "name"
+                  x-kubernetes-list-type: "map"
                 datacenter:
-                  description: "Datacenter is the name or inventory path of the datacenter in which the\nvirtual machine is created/located.\nDefaults to * which selects the default datacenter."
+                  description: "Datacenter is the name, inventory path, managed object reference or the managed\nobject ID of the datacenter in which the virtual machine is created/located.\nDefaults to * which selects the default datacenter."
                   type: "string"
                 datastore:
-                  description: "Datastore is the name or inventory path of the datastore in which the\nvirtual machine is created/located."
+                  description: "Datastore is the name, inventory path, managed object reference or the managed\nobject ID of the datastore in which the virtual machine is created/located."
                   type: "string"
                 diskGiB:
                   description: "DiskGiB is the size of a virtual machine's disk, in GiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
                   type: "integer"
                 folder:
-                  description: "Folder is the name or inventory path of the folder in which the\nvirtual machine is created/located."
+                  description: "Folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
                   type: "string"
                 guestSoftPowerOffTimeout:
                   description: "GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
@@ -220,7 +248,7 @@ spec:
                               type: "string"
                             type: "array"
                           networkName:
-                            description: "NetworkName is the name of the vSphere network to which the device\nwill be connected."
+                            description: "NetworkName is the name, managed object reference or the managed\nobject ID of the vSphere network to which the device will be connected."
                             type: "string"
                           routes:
                             description: "Routes is a list of optional, static routes applied to the device."
@@ -323,7 +351,7 @@ spec:
                     - "trySoft"
                   type: "string"
                 resourcePool:
-                  description: "ResourcePool is the name or inventory path of the resource pool in which\nthe virtual machine is created/located."
+                  description: "ResourcePool is the name, inventory path, managed object reference or the managed\nobject ID in which the virtual machine is created/located."
                   type: "string"
                 server:
                   description: "Server is the IP address or FQDN of the vSphere server on which\nthe virtual machine is created/located."
@@ -340,7 +368,7 @@ spec:
                     type: "string"
                   type: "array"
                 template:
-                  description: "Template is the name or inventory path of the template used to clone\nthe virtual machine."
+                  description: "Template is the name, inventory path, managed object reference or the managed\nobject ID of the template used to clone the virtual machine."
                   minLength: 1
                   type: "string"
                 thumbprint:
@@ -367,14 +395,14 @@ spec:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
                       lastTransitionTime:
-                        description: "Last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "A human readable message indicating details about the transition.\nThis field may be empty."
+                        description: "message is a human readable message indicating details about the transition.\nThis field may be empty."
                         type: "string"
                       reason:
-                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
+                        description: "reason is the reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
                         type: "string"
                       severity:
                         description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."

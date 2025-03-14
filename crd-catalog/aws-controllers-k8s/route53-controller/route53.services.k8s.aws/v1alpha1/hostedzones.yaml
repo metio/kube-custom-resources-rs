@@ -89,7 +89,7 @@ spec:
                   description: "The value that you specified for CallerReference when you created the hosted\nzone."
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -121,6 +121,18 @@ spec:
                       type: "string"
                     privateZone:
                       type: "boolean"
+                  type: "object"
+                delegationSet:
+                  description: "A complex type that describes the name servers for this hosted zone."
+                  properties:
+                    callerReference:
+                      type: "string"
+                    id:
+                      type: "string"
+                    nameServers:
+                      items:
+                        type: "string"
+                      type: "array"
                   type: "object"
                 id:
                   description: "The ID that Amazon Route 53 assigned to the hosted zone when you created\nit."

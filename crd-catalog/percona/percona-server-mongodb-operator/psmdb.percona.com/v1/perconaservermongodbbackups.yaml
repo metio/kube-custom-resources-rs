@@ -70,6 +70,8 @@ spec:
                   enum:
                     - "logical"
                     - "physical"
+                    - "incremental"
+                    - "incremental-base"
                   type: "string"
               type: "object"
             status:
@@ -94,6 +96,13 @@ spec:
                   type: "string"
                 error:
                   type: "string"
+                filesystem:
+                  properties:
+                    path:
+                      type: "string"
+                  required:
+                    - "path"
+                  type: "object"
                 lastTransition:
                   format: "date-time"
                   type: "string"

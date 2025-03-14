@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "resourceinterpreterwebhookconfigurations.config.karmada.io"
 spec:
   group: "config.karmada.io"
@@ -34,14 +34,14 @@ spec:
                 description: "ResourceInterpreterWebhook describes the webhook as well as the resources and operations it applies to."
                 properties:
                   clientConfig:
-                    description: "ClientConfig defines how to communicate with the hook."
+                    description: "ClientConfig defines how to communicate with the hook.\nIt supports two mutually exclusive configuration modes:\n\n1. URL - Directly specify the webhook URL with format `scheme://host:port/path`.\n   Example: https://webhook.example.com:8443/my-interpreter\n\n2. Service - Reference a Kubernetes Service that exposes the webhook.\n   When using Service reference, Karmada resolves the endpoint through following steps:\n   a) First attempts to locate the Service in karmada-apiserver\n   b) If found, constructs URL based on Service type:\n      - ClusterIP/LoadBalancer/NodePort: Uses ClusterIP with port from Service spec\n        (Note: Services with ClusterIP \"None\" are rejected), Example:\n        `https://<cluster ip>:<port>`\n      - ExternalName: Uses external DNS name format: `https://<external name>:<port>`\n   c) If NOT found in karmada-apiserver, falls back to standard Kubernetes\n      service DNS name format: `https://<service>.<namespace>.svc:<port>`\n\nNote: When both URL and Service are specified, the Service reference takes precedence\n      and the URL configuration will be ignored."
                     properties:
                       caBundle:
                         description: "`caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.\nIf unspecified, system trust roots on the apiserver are used."
                         format: "byte"
                         type: "string"
                       service:
-                        description: "`service` is a reference to the service for this webhook. Either\n`service` or `url` must be specified.\n\n\nIf the webhook is running within the cluster, then you should use `service`."
+                        description: "`service` is a reference to the service for this webhook. Either\n`service` or `url` must be specified.\n\nIf the webhook is running within the cluster, then you should use `service`."
                         properties:
                           name:
                             description: "`name` is the name of the service.\nRequired"
@@ -61,7 +61,7 @@ spec:
                           - "namespace"
                         type: "object"
                       url:
-                        description: "`url` gives the location of the webhook, in standard URL form\n(`scheme://host:port/path`). Exactly one of `url` or `service`\nmust be specified.\n\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead. The host might be resolved via external\nDNS in some apiservers (e.g., `kube-apiserver` cannot resolve\nin-cluster DNS as that would be a layering violation). `host` may\nalso be an IP address.\n\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is\nrisky unless you take great care to run this webhook on all hosts\nwhich run an apiserver which might need to make calls to this\nwebhook. Such installs are likely to be non-portable, i.e., not easy\nto turn up in a new cluster.\n\n\nThe scheme must be \"https\"; the URL must begin with \"https://\".\n\n\nA path is optional, and if present may be any string permissible in\na URL. You may use the path to pass an arbitrary string to the\nwebhook, for example, a cluster identifier.\n\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed, either."
+                        description: "`url` gives the location of the webhook, in standard URL form\n(`scheme://host:port/path`). Exactly one of `url` or `service`\nmust be specified.\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead. The host might be resolved via external\nDNS in some apiservers (e.g., `kube-apiserver` cannot resolve\nin-cluster DNS as that would be a layering violation). `host` may\nalso be an IP address.\n\nPlease note that using `localhost` or `127.0.0.1` as a `host` is\nrisky unless you take great care to run this webhook on all hosts\nwhich run an apiserver which might need to make calls to this\nwebhook. Such installs are likely to be non-portable, i.e., not easy\nto turn up in a new cluster.\n\nThe scheme must be \"https\"; the URL must begin with \"https://\".\n\nA path is optional, and if present may be any string permissible in\na URL. You may use the path to pass an arbitrary string to the\nwebhook, for example, a cluster identifier.\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed, either."
                         type: "string"
                     type: "object"
                   interpreterContextVersions:
@@ -78,7 +78,7 @@ spec:
                       description: "RuleWithOperations is a tuple of Operations and Resources. It is recommended to make\nsure that all the tuple expansions are valid."
                       properties:
                         apiGroups:
-                          description: "APIGroups is the API groups the resources belong to. '*' is all groups.\nIf '*' is present, the length of the slice must be one.\nFor example:\n [\"apps\", \"batch\", \"example.io\"] means matches 3 groups.\n [\"*\"] means matches all group\n\n\nNote: The group could be empty, e.g the 'core' group of kubernetes, in that case use [\"\"]."
+                          description: "APIGroups is the API groups the resources belong to. '*' is all groups.\nIf '*' is present, the length of the slice must be one.\nFor example:\n [\"apps\", \"batch\", \"example.io\"] means matches 3 groups.\n [\"*\"] means matches all group\n\nNote: The group could be empty, e.g the 'core' group of kubernetes, in that case use [\"\"]."
                           items:
                             type: "string"
                           type: "array"
