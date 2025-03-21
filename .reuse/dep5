@@ -575,8 +575,8 @@ Files: crd-catalog/gpu-ninja/dex-operator/*
 Copyright: The gpu-ninja/dex-operator Authors
 License: Apache-2.0
 
-Files: crd-catalog/grafana-operator/grafana-operator/*
-Copyright: The grafana-operator/grafana-operator Authors
+Files: crd-catalog/grafana/grafana-operator/*
+Copyright: The grafana/grafana-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/grafana/k6-operator/*
@@ -1177,6 +1177,10 @@ License: Apache-2.0
 
 Files: crd-catalog/sigstore/sigstore-helm-operator/*
 Copyright: The sigstore/sigstore-helm-operator Authors
+License: Apache-2.0
+
+Files: crd-catalog/SlinkyProject/slurm-operator/*
+Copyright: The SlinkyProject/slurm-operator Authors
 License: Apache-2.0
 
 Files: crd-catalog/slok/sloth/*

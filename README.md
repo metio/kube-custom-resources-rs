@@ -384,6 +384,7 @@ The following groups are available:
 - [serving.kubedl.io](https://crates.io/crates/kcr_serving_kubedl_io)
 - [sfn.services.k8s.aws](https://crates.io/crates/kcr_sfn_services_k8s_aws)
 - [site.superedge.io](https://crates.io/crates/kcr_site_superedge_io)
+- [slinky.slurm.net](https://crates.io/crates/kcr_slinky_slurm_net)
 - [slo.koordinator.sh](https://crates.io/crates/kcr_slo_koordinator_sh)
 - [sloth.slok.dev](https://crates.io/crates/kcr_sloth_slok_dev)
 - [snapscheduler.backube](https://crates.io/crates/kcr_snapscheduler_backube)

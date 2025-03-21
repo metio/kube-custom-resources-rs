@@ -344,6 +344,7 @@ members = [
     "custom-resources/serving_kubedl_io",
     "custom-resources/sfn_services_k8s_aws",
     "custom-resources/site_superedge_io",
+    "custom-resources/slinky_slurm_net",
     "custom-resources/slo_koordinator_sh",
     "custom-resources/sloth_slok_dev",
     "custom-resources/snapscheduler_backube",
