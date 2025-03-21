@@ -1,3 +1,10 @@
 pub mod grafanadashboards;
 pub mod grafanadatasources;
 pub mod grafanafolders;
+pub mod grafanaalertrulegroups;
+pub mod grafanacontactpoints;
+pub mod grafanalibrarypanels;
+pub mod grafanamutetimings;
+pub mod grafananotificationpolicies;
+pub mod grafananotificationpolicyroutes;
+pub mod grafananotificationtemplates;

@@ -4,9 +4,16 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## grafana.integreatly.org/v1beta1
+- `GrafanaAlertRuleGroup`
+- `GrafanaContactPoint`
 - `GrafanaDashboard`
 - `GrafanaDatasource`
 - `GrafanaFolder`
+- `GrafanaLibraryPanel`
+- `GrafanaMuteTiming`
+- `GrafanaNotificationPolicy`
+- `GrafanaNotificationPolicyRoute`
+- `GrafanaNotificationTemplate`
 */
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;

@@ -3,22 +3,19 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: "v0.16.3"
-  name: "grafanadashboards.grafana.integreatly.org"
+  name: "grafanalibrarypanels.grafana.integreatly.org"
 spec:
   group: "grafana.integreatly.org"
   names:
     categories:
       - "grafana-operator"
-    kind: "GrafanaDashboard"
-    listKind: "GrafanaDashboardList"
-    plural: "grafanadashboards"
-    singular: "grafanadashboard"
+    kind: "GrafanaLibraryPanel"
+    listKind: "GrafanaLibraryPanelList"
+    plural: "grafanalibrarypanels"
+    singular: "grafanalibrarypanel"
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
-        - jsonPath: ".status.NoMatchingInstances"
-          name: "No matching instances"
-          type: "boolean"
         - format: "date-time"
           jsonPath: ".status.lastResync"
           name: "Last resync"
@@ -29,7 +26,7 @@ spec:
       name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "GrafanaDashboard is the Schema for the grafanadashboards API"
+          description: "GrafanaLibraryPanel is the Schema for the grafanalibrarypanels API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -40,14 +37,14 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "GrafanaDashboardSpec defines the desired state of GrafanaDashboard"
+              description: "GrafanaLibraryPanelSpec defines the desired state of GrafanaLibraryPanel"
               properties:
                 allowCrossNamespaceImport:
                   default: false
                   description: "Allow the Operator to match this resource with Grafanas outside the current namespace"
                   type: "boolean"
                 configMapRef:
-                  description: "dashboard from configmap"
+                  description: "model from configmap"
                   properties:
                     key:
                       description: "The key to select."
@@ -64,11 +61,12 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 contentCacheDuration:
-                  description: "Cache duration for dashboards fetched from URLs"
+                  description: "Cache duration for models fetched from URLs"
                   type: "string"
                 datasources:
                   description: "maps required data sources to existing ones"
                   items:
+                    description: "GrafanaResourceDatasource is used to set the datasource name of any templated datasources in\ncontent definitions (e.g., dashboard JSON)."
                     properties:
                       datasourceName:
                         type: "string"
@@ -170,9 +168,6 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
-                folder:
-                  description: "folder assignment for dashboard"
-                  type: "string"
                 folderRef:
                   description: "Name of a `GrafanaFolder` resource in the same namespace"
                   type: "string"
@@ -190,7 +185,7 @@ spec:
                     - "id"
                   type: "object"
                 gzipJson:
-                  description: "GzipJson the dashboard's JSON compressed with Gzip. Base64-encoded when in YAML."
+                  description: "GzipJson the model's JSON compressed with Gzip. Base64-encoded when in YAML."
                   format: "byte"
                   type: "string"
                 instanceSelector:
@@ -230,7 +225,7 @@ spec:
                     - message: "spec.instanceSelector is immutable"
                       rule: "self == oldSelf"
                 json:
-                  description: "dashboard json"
+                  description: "model json"
                   type: "string"
                 jsonnet:
                   description: "Jsonnet"
@@ -271,7 +266,7 @@ spec:
                   pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 uid:
-                  description: "Manually specify the uid for the dashboard, overwrites uids already present\nin the json model. Can be any string consisting of alphanumeric characters,\n- and _ with a maximum length of 40"
+                  description: "Manually specify the uid, overwrites uids already present in the json model.\nCan be any string consisting of alphanumeric characters, - and _ with a maximum length of 40."
                   maxLength: 40
                   pattern: "^[a-zA-Z0-9-_]+$"
                   type: "string"
@@ -279,10 +274,10 @@ spec:
                     - message: "spec.uid is immutable"
                       rule: "self == oldSelf"
                 url:
-                  description: "dashboard url"
+                  description: "model url"
                   type: "string"
                 urlAuthorization:
-                  description: "authorization options for dashboard from url"
+                  description: "authorization options for model from url"
                   properties:
                     basicAuth:
                       properties:
@@ -328,18 +323,13 @@ spec:
               x-kubernetes-validations:
                 - message: "Only one of folderUID or folderRef can be declared at the same time"
                   rule: "(has(self.folderUID) && !(has(self.folderRef))) || (has(self.folderRef) && !(has(self.folderUID))) || !(has(self.folderRef) && (has(self.folderUID)))"
-                - message: "folder field cannot be set when folderUID or folderRef is already declared"
-                  rule: "(has(self.folder) && !(has(self.folderRef) || has(self.folderUID))) || !(has(self.folder))"
                 - message: "spec.uid is immutable"
                   rule: "((!has(oldSelf.uid) && !has(self.uid)) || (has(oldSelf.uid) && has(self.uid)))"
                 - message: "disabling spec.allowCrossNamespaceImport requires a recreate to ensure desired state"
                   rule: "!oldSelf.allowCrossNamespaceImport || (oldSelf.allowCrossNamespaceImport && self.allowCrossNamespaceImport)"
             status:
-              description: "GrafanaDashboardStatus defines the observed state of GrafanaDashboard"
+              description: "GrafanaLibraryPanelStatus defines the observed state of GrafanaLibraryPanel"
               properties:
-                NoMatchingInstances:
-                  description: "The dashboard instanceSelector can't find matching grafana instances"
-                  type: "boolean"
                 conditions:
                   description: "Results when synchonizing resource with Grafana instances"
                   items:
@@ -401,6 +391,8 @@ spec:
                 uid:
                   type: "string"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true
