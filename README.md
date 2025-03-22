@@ -61,6 +61,7 @@ The following groups are available:
 - [apigatewayv2.services.k8s.aws](https://crates.io/crates/kcr_apigatewayv2_services_k8s_aws)
 - [apisix.apache.org](https://crates.io/crates/kcr_apisix_apache_org)
 - [apm.k8s.elastic.co](https://crates.io/crates/kcr_apm_k8s_elastic_co)
+- [app.k8s.io](https://crates.io/crates/kcr_app_k8s_io)
 - [app.kiegroup.org](https://crates.io/crates/kcr_app_kiegroup_org)
 - [app.lightbend.com](https://crates.io/crates/kcr_app_lightbend_com)
 - [app.redislabs.com](https://crates.io/crates/kcr_app_redislabs_com)

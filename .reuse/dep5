@@ -771,6 +771,10 @@ Files: crd-catalog/kubernetes-sigs/about-api/*
 Copyright: The kubernetes-sigs/about-api Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/application/*
+Copyright: The kubernetes-sigs/application Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/aws-load-balancer-controller/*
 Copyright: The kubernetes-sigs/aws-load-balancer-controller Authors
 License: Apache-2.0

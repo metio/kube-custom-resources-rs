@@ -21,6 +21,7 @@ members = [
     "custom-resources/apigatewayv2_services_k8s_aws",
     "custom-resources/apisix_apache_org",
     "custom-resources/apm_k8s_elastic_co",
+    "custom-resources/app_k8s_io",
     "custom-resources/app_kiegroup_org",
     "custom-resources/app_lightbend_com",
     "custom-resources/app_redislabs_com",
