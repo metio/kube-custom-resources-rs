@@ -124,6 +124,9 @@ pub struct VMPodScrapePodMetricsEndpoints {
     /// Name of the port exposed at Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// PortNumber defines the `Pod` port number which exposes the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
+    pub port_number: Option<i32>,
     /// ProxyURL eg http://proxyserver:2195 Directs scrapes to proxy through this endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
@@ -147,8 +150,8 @@ pub struct VMPodScrapePodMetricsEndpoints {
     /// a single target can expose during all the scrapes on the time window of 24h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
-    /// TargetPort
-    /// Name or number of the pod port this endpoint refers to. Mutually exclusive with port.
+    /// TargetPort defines name or number of the pod port this endpoint refers to.
+    /// Mutually exclusive with Port and PortNumber.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// TLSConfig configuration to use when scraping the endpoint

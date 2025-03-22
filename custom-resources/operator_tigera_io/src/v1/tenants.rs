@@ -39,6 +39,9 @@ pub struct TenantSpec {
     /// LinseedDeployment configures the linseed Deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "linseedDeployment")]
     pub linseed_deployment: Option<TenantLinseedDeployment>,
+    /// ManagedClusterVariant is the variant of the managed cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedClusterVariant")]
+    pub managed_cluster_variant: Option<String>,
     /// Name is a human readable name for this tenant.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

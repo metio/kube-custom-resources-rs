@@ -124,6 +124,21 @@ pub struct ClusterPropagationPolicySpec {
     /// might be accidentally propagated.
     #[serde(rename = "resourceSelectors")]
     pub resource_selectors: Vec<ClusterPropagationPolicyResourceSelectors>,
+    /// SchedulePriority defines how Karmada should resolve the priority and preemption policy
+    /// for workload scheduling.
+    /// 
+    /// This setting is useful for controlling the scheduling behavior of offline workloads.
+    /// By setting a higher or lower priority, users can control which workloads are scheduled first.
+    /// Additionally, it allows specifying a preemption policy where higher-priority workloads can
+    /// preempt lower-priority ones in scenarios of resource contention.
+    /// 
+    /// Note: This feature is currently in the alpha stage. The priority-based scheduling functionality is
+    /// controlled by the PriorityBasedScheduling feature gate, and preemption is controlled by the
+    /// PriorityBasedPreemptiveScheduling feature gate. Currently, only priority-based scheduling is
+    /// supported. Preemption functionality is not yet available and will be introduced in future
+    /// releases as the feature matures.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulePriority")]
+    pub schedule_priority: Option<ClusterPropagationPolicySchedulePriority>,
     /// SchedulerName represents which scheduler to proceed the scheduling.
     /// If specified, the policy will be dispatched by specified scheduler.
     /// If not specified, the policy will be dispatched by default scheduler.
@@ -776,6 +791,63 @@ pub struct ClusterPropagationPolicyResourceSelectorsLabelSelectorMatchExpression
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// SchedulePriority defines how Karmada should resolve the priority and preemption policy
+/// for workload scheduling.
+/// 
+/// This setting is useful for controlling the scheduling behavior of offline workloads.
+/// By setting a higher or lower priority, users can control which workloads are scheduled first.
+/// Additionally, it allows specifying a preemption policy where higher-priority workloads can
+/// preempt lower-priority ones in scenarios of resource contention.
+/// 
+/// Note: This feature is currently in the alpha stage. The priority-based scheduling functionality is
+/// controlled by the PriorityBasedScheduling feature gate, and preemption is controlled by the
+/// PriorityBasedPreemptiveScheduling feature gate. Currently, only priority-based scheduling is
+/// supported. Preemption functionality is not yet available and will be introduced in future
+/// releases as the feature matures.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterPropagationPolicySchedulePriority {
+    /// PriorityClassName specifies which PriorityClass to use. Its behavior depends on PriorityClassSource:
+    /// 
+    /// Behavior of PriorityClassName:
+    /// 
+    /// For KubePriorityClass:
+    /// - When specified: Uses the named Kubernetes PriorityClass.
+    /// 
+    /// For PodPriorityClass:
+    /// - Uses PriorityClassName from the PodTemplate.
+    /// - Not yet implemented.
+    /// 
+    /// For FederatedPriorityClass:
+    /// - Not yet implemented.
+    #[serde(rename = "priorityClassName")]
+    pub priority_class_name: String,
+    /// PriorityClassSource specifies where Karmada should look for the PriorityClass definition.
+    /// Available options:
+    /// - KubePriorityClass: Uses Kubernetes PriorityClass (scheduling.k8s.io/v1)
+    /// - PodPriorityClass: Uses PriorityClassName from PodTemplate: PodSpec.PriorityClassName (not yet implemented)
+    /// - FederatedPriorityClass: Uses Karmada FederatedPriorityClass (not yet implemented)
+    #[serde(rename = "priorityClassSource")]
+    pub priority_class_source: ClusterPropagationPolicySchedulePriorityPriorityClassSource,
+}
+
+/// SchedulePriority defines how Karmada should resolve the priority and preemption policy
+/// for workload scheduling.
+/// 
+/// This setting is useful for controlling the scheduling behavior of offline workloads.
+/// By setting a higher or lower priority, users can control which workloads are scheduled first.
+/// Additionally, it allows specifying a preemption policy where higher-priority workloads can
+/// preempt lower-priority ones in scenarios of resource contention.
+/// 
+/// Note: This feature is currently in the alpha stage. The priority-based scheduling functionality is
+/// controlled by the PriorityBasedScheduling feature gate, and preemption is controlled by the
+/// PriorityBasedPreemptiveScheduling feature gate. Currently, only priority-based scheduling is
+/// supported. Preemption functionality is not yet available and will be introduced in future
+/// releases as the feature matures.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterPropagationPolicySchedulePriorityPriorityClassSource {
+    KubePriorityClass,
 }
 
 /// Suspension declares the policy for suspending different aspects of propagation.

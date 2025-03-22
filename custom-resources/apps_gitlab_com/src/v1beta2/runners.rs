@@ -51,6 +51,9 @@ pub struct RunnerSpec {
     /// containing the user provided config.toml
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
+    /// The maximum duration a TLS keepalive connection to the GitLab server should remain open before reconnecting. The default value is `15m` for 15 minutes. If set to `0` or lower, the connection persists as long as possible.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionMaxAge")]
+    pub connection_max_age: Option<String>,
     /// Accepts configmap name. Provides user mechanism to inject environment
     /// variables in the GitLab Runner pod via the key value pairs in the ConfigMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -76,9 +79,22 @@ pub struct RunnerSpec {
     /// This is set to a default of 30s by operator if not set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<i32>,
+    /// Option to set the metrics listen address for the runner.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenAddr")]
+    pub listen_addr: Option<String>,
     /// Specify whether the runner should be locked to a specific project. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub locked: Option<bool>,
+    /// Specifies the log format. Options are `runner`, `text`, and `json`. The default value is `runner`, which contains ANSI escape codes for coloring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
+    pub log_format: Option<String>,
+    /// Option to set the log level for the runner.
+    /// Valid values are "debug", "info", "warn", "error", "fatal", "panic"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
+    pub log_level: Option<String>,
+    /// If specified, overrides the namespace where job pods are created
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<Vec<RunnerPodSpec>>,
     /// Specify whether the runner should only run protected branches. Defaults to false.
@@ -96,10 +112,17 @@ pub struct RunnerSpec {
     /// object store as GitLab Runner Cache
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<RunnerS3>,
+    /// Enables tracking of all system level errors to Sentry.
+    /// If not specified, error tracking with Sentry will be disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sentryDsn")]
+    pub sentry_dsn: Option<String>,
     /// allow user to override service account
     /// used by GitLab Runner
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub serviceaccount: Option<String>,
+    /// Number of seconds until the forceful shutdown operation times out and exits the process. The default value is `30`. If set to `0` or lower, the default value is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownTimeout")]
+    pub shutdown_timeout: Option<i32>,
     /// List of comma separated tags to be applied to the runner
     /// More info: https://docs.gitlab.com/ee/ci/runners/#use-tags-to-limit-the-number-of-jobs-using-the-runner
     #[serde(default, skip_serializing_if = "Option::is_none")]

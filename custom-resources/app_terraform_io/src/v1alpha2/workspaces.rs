@@ -128,6 +128,11 @@ pub struct WorkspaceSpec {
     pub terraform_version: Option<String>,
     /// API Token to be used for API calls.
     pub token: WorkspaceToken,
+    /// HCP Terraform variable sets let you reuse variables in an efficient and centralized way.
+    /// More information
+    ///   - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variableSets")]
+    pub variable_sets: Option<Vec<WorkspaceVariableSets>>,
     /// Settings for the workspace's VCS repository, enabling the UI/VCS-driven run workflow.
     /// Omit this argument to utilize the CLI-driven and API-driven workflows, where runs are not driven by webhooks on your VCS provider.
     /// More information:
@@ -567,6 +572,21 @@ pub struct WorkspaceTokenSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkspaceVariableSets {
+    /// ID of the variable set.
+    /// Must match pattern: `varset-[a-zA-Z0-9]+$`
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Name of the variable set.
+    /// More information:
+    ///   - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// Settings for the workspace's VCS repository, enabling the UI/VCS-driven run workflow.
 /// Omit this argument to utilize the CLI-driven and API-driven workflows, where runs are not driven by webhooks on your VCS provider.
 /// More information:
@@ -577,6 +597,12 @@ pub struct WorkspaceVersionControl {
     /// The repository branch that Run will execute from. This defaults to the repository's default branch (e.g. main).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
+    /// File triggers allow you to queue runs in HCP Terraform when files in your VCS repository change.
+    /// Default: `false`.
+    /// More informarion:
+    ///  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileTriggersEnabled")]
+    pub file_triggers_enabled: Option<bool>,
     /// The VCS Connection (OAuth Connection + Token) to use.
     /// Must match pattern: `^ot-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthTokenID")]
@@ -591,6 +617,18 @@ pub struct WorkspaceVersionControl {
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "speculativePlans")]
     pub speculative_plans: Option<bool>,
+    /// The list of pattern triggers that will queue runs in HCP Terraform when files in your VCS repository change.
+    /// `spec.versionControl.fileTriggersEnabled` must be set to `true`.
+    /// More informarion:
+    ///  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerPatterns")]
+    pub trigger_patterns: Option<Vec<String>>,
+    /// The list of pattern prefixes that will queue runs in HCP Terraform when files in your VCS repository change.
+    /// `spec.versionControl.fileTriggersEnabled` must be set to `true`.
+    /// More informarion:
+    ///  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerPrefixes")]
+    pub trigger_prefixes: Option<Vec<String>>,
 }
 
 /// WorkspaceStatus defines the observed state of Workspace.
@@ -620,6 +658,9 @@ pub struct WorkspaceStatus {
     /// Workspace last update timestamp.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateAt")]
     pub update_at: Option<i64>,
+    /// Variable Sets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "variableSet")]
+    pub variable_set: Option<Vec<WorkspaceStatusVariableSet>>,
     /// Workspace variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<WorkspaceStatusVariables>>,
@@ -657,6 +698,14 @@ pub struct WorkspaceStatusRunStatus {
     /// Current(both active and finished) HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkspaceStatusVariableSet {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -43,6 +43,12 @@ spec:
             spec:
               description: "TopicSpec defines the desired state of Topic.\n\nA wrapper type for the topic's Amazon Resource Name (ARN). To retrieve a\ntopic's attributes, use GetTopicAttributes."
               properties:
+                applicationFailureFeedbackRoleARN:
+                  type: "string"
+                applicationSuccessFeedbackRoleARN:
+                  type: "string"
+                applicationSuccessFeedbackSampleRate:
+                  type: "string"
                 contentBasedDeduplication:
                   type: "string"
                 dataProtectionPolicy:
@@ -53,6 +59,18 @@ spec:
                 displayName:
                   type: "string"
                 fifoTopic:
+                  type: "string"
+                firehoseFailureFeedbackRoleARN:
+                  type: "string"
+                firehoseSuccessFeedbackRoleARN:
+                  type: "string"
+                firehoseSuccessFeedbackSampleRate:
+                  type: "string"
+                httpFailureFeedbackRoleARN:
+                  type: "string"
+                httpSuccessFeedbackRoleARN:
+                  type: "string"
+                httpSuccessFeedbackSampleRate:
                   type: "string"
                 kmsMasterKeyID:
                   type: "string"
@@ -68,9 +86,18 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                lambdaFailureFeedbackRoleARN:
+                  type: "string"
+                lambdaSuccessFeedbackRoleARN:
+                  type: "string"
+                lambdaSuccessFeedbackSampleRate:
+                  type: "string"
                 name:
                   description: "The name of the topic you want to create.\n\nConstraints: Topic names must be made up of only uppercase and lowercase\nASCII letters, numbers, underscores, and hyphens, and must be between 1 and\n256 characters long.\n\nFor a FIFO (first-in-first-out) topic, the name must end with the .fifo suffix."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 policy:
                   type: "string"
                 policyRef:
@@ -86,6 +113,12 @@ spec:
                       type: "object"
                   type: "object"
                 signatureVersion:
+                  type: "string"
+                sqsFailureFeedbackRoleARN:
+                  type: "string"
+                sqsSuccessFeedbackRoleARN:
+                  type: "string"
+                sqsSuccessFeedbackSampleRate:
                   type: "string"
                 tags:
                   description: "The list of tags to add to a new topic.\n\nTo be able to tag a topic on creation, you must have the sns:CreateTopic\nand sns:TagResource permissions."
@@ -123,7 +156,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

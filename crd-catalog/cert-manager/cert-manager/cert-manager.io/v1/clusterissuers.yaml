@@ -93,7 +93,7 @@ spec:
                         - "keySecretRef"
                       type: "object"
                     preferredChain:
-                      description: "PreferredChain is the chain to use if the ACME server outputs multiple.\nPreferredChain is no guarantee that this one gets delivered by the ACME\nendpoint.\nFor example, for Let's Encrypt's DST crosssign you would use:\n\"DST Root CA X3\" or \"ISRG Root X1\" for the newer Let's Encrypt root CA.\nThis value picks the first certificate bundle in the combined set of\nACME default and alternative chains that has a root-most certificate with\nthis value as its issuer's commonname."
+                      description: "PreferredChain is the chain to use if the ACME server outputs multiple.\nPreferredChain is no guarantee that this one gets delivered by the ACME\nendpoint.\nFor example, for Let's Encrypt's DST cross-sign you would use:\n\"DST Root CA X3\" or \"ISRG Root X1\" for the newer Let's Encrypt root CA.\nThis value picks the first certificate bundle in the combined set of\nACME default and alternative chains that has a root-most certificate with\nthis value as its issuer's commonname."
                       maxLength: 64
                       type: "string"
                     privateKeySecretRef:
@@ -223,13 +223,13 @@ spec:
                                     description: "Auth: Azure Workload Identity or Azure Managed Service Identity:\nSettings to enable Azure Workload Identity or Azure Managed Service Identity\nIf set, ClientID, ClientSecret and TenantID must not be set."
                                     properties:
                                       clientID:
-                                        description: "client ID of the managed identity, can not be used at the same time as resourceID"
+                                        description: "client ID of the managed identity, cannot be used at the same time as resourceID"
                                         type: "string"
                                       resourceID:
-                                        description: "resource ID of the managed identity, can not be used at the same time as clientID\nCannot be used for Azure Managed Service Identity"
+                                        description: "resource ID of the managed identity, cannot be used at the same time as clientID\nCannot be used for Azure Managed Service Identity"
                                         type: "string"
                                       tenantID:
-                                        description: "tenant ID of the managed identity, can not be used at the same time as resourceID"
+                                        description: "tenant ID of the managed identity, cannot be used at the same time as resourceID"
                                         type: "string"
                                     type: "object"
                                   resourceGroupName:
@@ -2143,7 +2143,7 @@ spec:
                             - "name"
                           type: "object"
                         url:
-                          description: "URL is the base URL for Venafi Cloud.\nDefaults to \"https://api.venafi.cloud/v1\"."
+                          description: "URL is the base URL for Venafi Cloud.\nDefaults to \"https://api.venafi.cloud/\"."
                           type: "string"
                       required:
                         - "apiTokenSecretRef"

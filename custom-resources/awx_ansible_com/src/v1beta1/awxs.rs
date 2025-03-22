@@ -104,6 +104,9 @@ pub struct AWXSpec {
     /// (Deprecated) The hostname of the instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
+    /// Scale down deployments to put AWX into an idle state
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub idle_deployment: Option<bool>,
     /// Registry path to the application container to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -227,6 +230,9 @@ pub struct AWXSpec {
     /// Metrics-Utility Ship Target
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics_utility_ship_target: Option<String>,
+    /// Sets the maximum allowed size of the client request body in megabytes (defaults to 5M)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nginx_client_max_body_size: Option<i64>,
     /// Set the socket listen queue size for nginx (defaults to same as uwsgi)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nginx_listen_queue_size: Option<i64>,

@@ -17,6 +17,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CouchbaseCollectionSpec {
+    /// History defines whether change history is retained for the collection.
+    /// If this field is set, it will override the historyRetention.collectionDefault bucket level value.
+    /// This is only supported with storageBackend=magma at the bucket level.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub history: Option<bool>,
     /// MaxTTL defines how long a document is permitted to exist for, without
     /// modification, until it is automatically deleted.  This field takes precedence over
     /// any TTL defined at the bucket level.  This is a default, and maximum
@@ -24,8 +29,9 @@ pub struct CouchbaseCollectionSpec {
     /// a higher value, then it is truncated to the maximum durability.  Documents are
     /// removed by Couchbase, after they have expired, when either accessed, the expiry
     /// pager is run, or the bucket is compacted.  When set to 0, then documents are not
-    /// expired by default.  This field must be a duration in the range 0-2147483648s,
-    /// defaulting to 0.  More info:
+    /// expired by default.  This field must either be a duration in the range 0-2147483648s or "-1",
+    /// defaulting to 0. If set to "-1", the collection's bucket will be prevented from setting a
+    /// default expiration on the collection's documents. More info:
     /// https://golang.org/pkg/time/#ParseDuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTTL")]
     pub max_ttl: Option<String>,

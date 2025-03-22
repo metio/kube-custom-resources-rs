@@ -141,6 +141,9 @@ pub struct VSphereClusterStatus {
     pub failure_domains: Option<BTreeMap<String, VSphereClusterStatusFailureDomains>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// v1beta2 groups all the fields that will be added or modified in VSphereCluster's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<VSphereClusterStatusV1beta2>,
     /// VCenterVersion defines the version of the vCenter server defined in the spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vCenterVersion")]
     pub v_center_version: Option<String>,
@@ -155,5 +158,14 @@ pub struct VSphereClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in VSphereCluster's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereClusterStatusV1beta2 {
+    /// conditions represents the observations of a VSphereCluster's current state.
+    /// Known condition types are Ready, FailureDomainsReady, VCenterAvailable, ClusterModulesReady and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

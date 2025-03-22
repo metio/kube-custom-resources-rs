@@ -9,7 +9,9 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// KubernetesEndpointResolver tells Ambassador to use Kubernetes Endpoints resources to resolve services. It actually has no spec other than the AmbassadorID.
+/// KubernetesEndpointResolver tells Ambassador to use Kubernetes Endpoints
+/// resources to resolve services. It actually has no spec other than the
+/// AmbassadorID.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "getambassador.io", version = "v3alpha1", kind = "KubernetesEndpointResolver", plural = "kubernetesendpointresolvers")]
 #[kube(namespaced)]
@@ -17,8 +19,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KubernetesEndpointResolverSpec {
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
-    ///  ambassador_id: - "default"
+    /// AmbassadorID declares which Ambassador instances should pay
+    /// attention to this resource. If no value is provided, the default is:
+    /// 
+    /// 	ambassador_id:
+    /// 	- "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
 }

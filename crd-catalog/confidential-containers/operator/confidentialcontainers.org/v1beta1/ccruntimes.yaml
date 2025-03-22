@@ -65,18 +65,31 @@ spec:
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                ccTolerations:
+                  items:
+                    description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                    properties:
+                      effect:
+                        description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                        type: "string"
+                      key:
+                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                        type: "string"
+                      operator:
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                        type: "string"
+                      tolerationSeconds:
+                        description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                        format: "int64"
+                        type: "integer"
+                      value:
+                        description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 config:
                   description: "CcInstallConfig is a placeholder struct"
                   properties:
-                    ImagePullSecret:
-                      description: "This specifies the registry secret to pull of the container images"
-                      properties:
-                        name:
-                          default: ""
-                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                          type: "string"
-                      type: "object"
-                      x-kubernetes-map-type: "atomic"
                     cleanupCmd:
                       description: "This specifies the command for cleanup on the nodes"
                       items:
@@ -183,6 +196,15 @@ spec:
                     imagePullPolicy:
                       description: "PullPolicy describes a policy for if/when to pull a container image"
                       type: "string"
+                    imagePullSecret:
+                      description: "This specifies the registry secret to pull of the container images"
+                      properties:
+                        name:
+                          default: ""
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                          type: "string"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
                     installCmd:
                       description: "This specifies the command for installation of the runtime on the nodes"
                       items:

@@ -191,9 +191,15 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 keyStorageSecurityStandard:
                   description: "Specifies a cryptographic key management compliance standard used for handling\nCA keys.\n\nDefault: FIPS_140_2_LEVEL_3_OR_HIGHER\n\nSome Amazon Web Services Regions do not support the default. When creating\na CA in these Regions, you must provide FIPS_140_2_LEVEL_2_OR_HIGHER as the\nargument for KeyStorageSecurityStandard. Failure to do this results in an\nInvalidArgsException with the message, \"A certificate authority cannot be\ncreated in this region with the specified security standard.\"\n\nFor information about security standard support in various Regions, see Storage\nand security compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys)."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 revocationConfiguration:
                   description: "Contains information to enable support for Online Certificate Status Protocol\n(OCSP), certificate revocation list (CRL), both protocols, or neither. By\ndefault, both certificate validation mechanisms are disabled.\n\nThe following requirements apply to revocation configurations.\n\n   * A configuration disabling CRLs or OCSP must contain only the Enabled=False\n   parameter, and will fail if other parameters such as CustomCname or ExpirationInDays\n   are included.\n\n   * In a CRL configuration, the S3BucketName parameter must conform to Amazon\n   S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html).\n\n   * A configuration containing a custom Canonical Name (CNAME) parameter\n   for CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)\n   restrictions on the use of special characters in a CNAME.\n\n   * In a CRL or OCSP configuration, the value of a CNAME parameter must\n   not include a protocol prefix such as \"http://\" or \"https://\".\n\nFor more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)\nand CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)\ntypes."
                   properties:
@@ -235,9 +241,15 @@ spec:
                 type:
                   description: "The type of the certificate authority."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 usageMode:
                   description: "Specifies whether the CA issues general-purpose certificates that typically\nrequire a revocation mechanism, or short-lived certificates that may optionally\nomit revocation because they expire quickly. Short-lived certificate validity\nis limited to seven days.\n\nThe default value is GENERAL_PURPOSE."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
               required:
                 - "certificateAuthorityConfiguration"
                 - "type"
@@ -265,7 +277,7 @@ spec:
                   description: "The base64 PEM-encoded certificate signing request (CSR) for your private\nCA certificate."
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

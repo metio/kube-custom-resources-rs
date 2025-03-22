@@ -23,6 +23,13 @@ pub struct TrinoCatalogSpec {
     pub config_overrides: Option<BTreeMap<String, String>>,
     /// The `connector` defines which connector is used.
     pub connector: TrinoCatalogConnector,
+    /// List of config properties which should be removed.
+    /// 
+    /// This is helpful, because Trino fails to start in case you have any unused config properties. The removals are executed after the `configOverrides`.
+    /// 
+    /// This field is experimental, and might be replaced by a more generic mechanism to edit config properties
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "experimentalConfigRemovals")]
+    pub experimental_config_removals: Option<Vec<String>>,
 }
 
 /// The `connector` defines which connector is used.
@@ -112,6 +119,13 @@ pub struct TrinoCatalogConnectorDeltaLakeS3Inline {
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
+    /// Bucket region used for signing headers (sigv4).
+    /// 
+    /// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+    /// 
+    /// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<TrinoCatalogConnectorDeltaLakeS3InlineRegion>,
     /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorDeltaLakeS3InlineTls>,
@@ -150,6 +164,17 @@ pub struct TrinoCatalogConnectorDeltaLakeS3InlineCredentialsScope {
     /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
+}
+
+/// Bucket region used for signing headers (sigv4).
+/// 
+/// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+/// 
+/// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TrinoCatalogConnectorDeltaLakeS3InlineRegion {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Use a TLS connection. If not specified no TLS will be used.
@@ -325,6 +350,13 @@ pub struct TrinoCatalogConnectorHiveS3Inline {
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
+    /// Bucket region used for signing headers (sigv4).
+    /// 
+    /// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+    /// 
+    /// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<TrinoCatalogConnectorHiveS3InlineRegion>,
     /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorHiveS3InlineTls>,
@@ -363,6 +395,17 @@ pub struct TrinoCatalogConnectorHiveS3InlineCredentialsScope {
     /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
+}
+
+/// Bucket region used for signing headers (sigv4).
+/// 
+/// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+/// 
+/// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TrinoCatalogConnectorHiveS3InlineRegion {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Use a TLS connection. If not specified no TLS will be used.
@@ -465,6 +508,13 @@ pub struct TrinoCatalogConnectorIcebergS3Inline {
     /// Port the S3 server listens on. If not specified the product will determine the port to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<u16>,
+    /// Bucket region used for signing headers (sigv4).
+    /// 
+    /// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+    /// 
+    /// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<TrinoCatalogConnectorIcebergS3InlineRegion>,
     /// Use a TLS connection. If not specified no TLS will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TrinoCatalogConnectorIcebergS3InlineTls>,
@@ -503,6 +553,17 @@ pub struct TrinoCatalogConnectorIcebergS3InlineCredentialsScope {
     /// The service scope allows Pod objects to specify custom scopes. This should typically correspond to Service objects that the Pod participates in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<String>>,
+}
+
+/// Bucket region used for signing headers (sigv4).
+/// 
+/// This defaults to `us-east-1` which is compatible with other implementations such as Minio.
+/// 
+/// WARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TrinoCatalogConnectorIcebergS3InlineRegion {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Use a TLS connection. If not specified no TLS will be used.

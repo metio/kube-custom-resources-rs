@@ -63,6 +63,7 @@ pub struct IngressRouteRoutes {
     pub services: Option<Vec<IngressRouteRoutesServices>>,
     /// Syntax defines the router's rule syntax.
     /// More info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rulesyntax
+    /// Deprecated: Please do not use this field and rewrite the router rules to use the v3 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syntax: Option<String>,
 }
@@ -147,9 +148,10 @@ pub struct IngressRouteRoutesServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<IngressRouteRoutesServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// RoundRobin is the only supported value at the moment.
+    /// Supported values are: wrr (Weighed round-robin) and p2c (Power of two choices).
+    /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<String>,
+    pub strategy: Option<IngressRouteRoutesServicesStrategy>,
     /// Weight defines the weight and should only be specified when Name references a TraefikService object
     /// (and to be precise, one that embeds a Weighted Round Robin).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -230,6 +232,10 @@ pub struct IngressRouteRoutesServicesSticky {
 /// Cookie defines the sticky cookie configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesServicesStickyCookie {
+    /// Domain defines the host to which the cookie will be sent.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
@@ -249,10 +255,31 @@ pub struct IngressRouteRoutesServicesStickyCookie {
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
-    pub same_site: Option<String>,
+    pub same_site: Option<IngressRouteRoutesServicesStickyCookieSameSite>,
     /// Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+/// Cookie defines the sticky cookie configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IngressRouteRoutesServicesStickyCookieSameSite {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "lax")]
+    Lax,
+    #[serde(rename = "strict")]
+    Strict,
+}
+
+/// Service defines an upstream HTTP service to proxy traffic to.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IngressRouteRoutesServicesStrategy {
+    #[serde(rename = "wrr")]
+    Wrr,
+    #[serde(rename = "p2c")]
+    P2c,
+    RoundRobin,
 }
 
 /// TLS defines the TLS configuration.

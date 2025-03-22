@@ -7,6 +7,7 @@ on:
     branches: [ main ]
     paths:
       - code-generator/**
+      - custom-resources/**
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -21,3 +22,31 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Check Code Generator
         run: cargo check --package code-generator
+      - name: Try-run Cargo Version Update
+        run: sed -i -e '0,/edition/s/^version = .*/version = "1.2.3"/' custom-resources/about_k8s_io/Cargo.toml
+      - name: Print modified Cargo.toml
+        run: cat custom-resources/about_k8s_io/Cargo.toml
+      - name: Set up Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Set up docs.rs environment
+        uses: dtolnay/install@cargo-docs-rs
+      - name: Verify docs can be generated
+        run: cargo +nightly docs-rs --package kcr_about_k8s_io
+      - name: Check changed CRDs
+        run: |
+          all_good=yes
+          for group in $(git diff --name-only origin/main -- ./custom-resources | grep lib.rs | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {} | sort --unique); do
+            echo "trying to test ${group}"
+            if [ -f "./custom-resources/${group}/src/lib.rs" ]; then
+              if ! ./code-generator/test-custom-resources.sh "${group}"; then
+                all_good=no
+              fi
+            fi
+          done
+          if [ "${all_good}" == no ]; then
+            echo 'we encountered test failures'
+            exit 1
+          fi
+        env:
+          RUSTFLAGS: "--deny warnings"
+          K8S_OPENAPI_ENABLED_VERSION: "1.31"

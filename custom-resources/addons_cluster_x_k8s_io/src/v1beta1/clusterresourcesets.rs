@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+/// spec is the desired state of ClusterResourceSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "addons.cluster.x-k8s.io", version = "v1beta1", kind = "ClusterResourceSet", plural = "clusterresourcesets")]
 #[kube(namespaced)]
@@ -83,14 +83,14 @@ pub enum ClusterResourceSetResourcesKind {
     ConfigMap,
 }
 
-/// ClusterResourceSetSpec defines the desired state of ClusterResourceSet.
+/// spec is the desired state of ClusterResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterResourceSetStrategy {
     ApplyOnce,
     Reconcile,
 }
 
-/// ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
+/// status is the observed state of ClusterResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterResourceSetStatus {
     /// conditions defines current state of the ClusterResourceSet.

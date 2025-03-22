@@ -328,7 +328,7 @@ pub struct GslbStrategy {
     /// Primary Geo Tag. Valid for failover strategy only
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryGeoTag")]
     pub primary_geo_tag: Option<String>,
-    /// Split brain TXT record expiration in seconds
+    /// Split brain TXT record expiration in seconds. The field is deprecated and not used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitBrainThresholdSeconds")]
     pub split_brain_threshold_seconds: Option<i64>,
     /// Load balancing strategy type:(roundRobin|failover)
@@ -352,10 +352,11 @@ pub struct GslbStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<String>,
     /// LoadBalancer configuration
-    #[serde(rename = "loadBalancer")]
-    pub load_balancer: GslbStatusLoadBalancer,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
+    pub load_balancer: Option<GslbStatusLoadBalancer>,
     /// Servers configuration
-    pub servers: Vec<GslbStatusServers>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub servers: Option<Vec<GslbStatusServers>>,
     /// Associated Service status
     #[serde(rename = "serviceHealth")]
     pub service_health: BTreeMap<String, String>,

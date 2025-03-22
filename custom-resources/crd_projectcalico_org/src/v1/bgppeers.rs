@@ -27,6 +27,9 @@ pub struct BGPPeerSpec {
     /// instead of "next hop self;"(default) in the specific branch of the Node on "bird.cfg".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepOriginalNextHop")]
     pub keep_original_next_hop: Option<bool>,
+    /// Selector for the local workload that the node should peer with. When this is set, the peerSelector and peerIP fields must be empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localWorkloadSelector")]
+    pub local_workload_selector: Option<String>,
     /// Time to allow for software restart.  When specified, this is configured as the graceful
     /// restart timeout.  When not specified, the BIRD default of 120s is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestartTime")]

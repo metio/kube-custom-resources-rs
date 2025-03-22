@@ -64,6 +64,7 @@ spec:
                               x-kubernetes-int-or-string: true
                             weight:
                               description: "Weight defines the weight used when balancing requests between multiple Kubernetes Service."
+                              minimum: 0.0
                               type: "integer"
                           required:
                             - "name"

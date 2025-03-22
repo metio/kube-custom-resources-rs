@@ -25,6 +25,9 @@ pub struct DistributionSpec {
     /// The distribution's configuration information.
     #[serde(rename = "distributionConfig")]
     pub distribution_config: DistributionDistributionConfig,
+    /// A complex type that contains Tag elements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Vec<DistributionTags>>,
 }
 
 /// The distribution's configuration information.
@@ -1155,6 +1158,19 @@ pub struct DistributionDistributionConfigViewerCertificateAcmCertificateRefFrom 
     pub namespace: Option<String>,
 }
 
+/// A complex type that contains Tag key and Tag value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DistributionTags {
+    /// A string that contains Tag key.
+    /// 
+    /// The string length should be between 1 and 128 characters. Valid characters
+    /// include a-z, A-Z, 0-9, space, and the special characters _ - . : / = + @.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// DistributionStatus defines the observed state of Distribution
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DistributionStatus {
@@ -1188,7 +1204,7 @@ pub struct DistributionStatus {
     pub alias_icp_recordals: Option<Vec<DistributionStatusAliasIcpRecordals>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "callerReference")]
     pub caller_reference: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

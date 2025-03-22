@@ -18,16 +18,103 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PersesDatasourceSpec {
-    pub default: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub display: Option<PersesDatasourceDisplay>,
-    /// Plugin will contain the datasource configuration.
-    /// The data typed is available in Cue.
-    pub plugin: PersesDatasourcePlugin,
+    pub client: Option<PersesDatasourceClient>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<PersesDatasourceConfig>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDatasourceDisplay {
+pub struct PersesDatasourceClient {
+    /// TLS the equivalent to the tls_config for perses client
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<PersesDatasourceClientTls>,
+}
+
+/// TLS the equivalent to the tls_config for perses client
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDatasourceClientTls {
+    /// CaCert to verify the perses certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
+    pub ca_cert: Option<PersesDatasourceClientTlsCaCert>,
+    /// Enable TLS connection to perses
+    pub enable: bool,
+    /// InsecureSkipVerify skip verify of perses certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// UserCert client cert/key for mTLS
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
+    pub user_cert: Option<PersesDatasourceClientTlsUserCert>,
+}
+
+/// CaCert to verify the perses certificate
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PersesDatasourceClientTlsCaCert {
+    /// Path to Certificate
+    #[serde(rename = "certPath")]
+    pub cert_path: String,
+    /// Name of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Path to Private key certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
+    pub private_key_path: Option<String>,
+    /// Type source type of certificate
+    #[serde(rename = "type")]
+    pub r#type: PersesDatasourceClientTlsCaCertType,
+}
+
+/// CaCert to verify the perses certificate
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PersesDatasourceClientTlsCaCertType {
+    #[serde(rename = "secret")]
+    Secret,
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "file")]
+    File,
+}
+
+/// UserCert client cert/key for mTLS
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PersesDatasourceClientTlsUserCert {
+    /// Path to Certificate
+    #[serde(rename = "certPath")]
+    pub cert_path: String,
+    /// Name of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Path to Private key certificate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
+    pub private_key_path: Option<String>,
+    /// Type source type of certificate
+    #[serde(rename = "type")]
+    pub r#type: PersesDatasourceClientTlsUserCertType,
+}
+
+/// UserCert client cert/key for mTLS
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PersesDatasourceClientTlsUserCertType {
+    #[serde(rename = "secret")]
+    Secret,
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "file")]
+    File,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDatasourceConfig {
+    pub default: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub display: Option<PersesDatasourceConfigDisplay>,
+    /// Plugin will contain the datasource configuration.
+    /// The data typed is available in Cue.
+    pub plugin: PersesDatasourceConfigPlugin,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDatasourceConfigDisplay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -37,7 +124,7 @@ pub struct PersesDatasourceDisplay {
 /// Plugin will contain the datasource configuration.
 /// The data typed is available in Cue.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDatasourcePlugin {
+pub struct PersesDatasourceConfigPlugin {
     pub kind: String,
     pub spec: serde_json::Value,
 }

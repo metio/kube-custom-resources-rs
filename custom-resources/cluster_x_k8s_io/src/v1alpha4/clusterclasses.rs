@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClusterClassSpec describes the desired state of the ClusterClass.
+/// spec is the desired state of ClusterClass.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha4", kind = "ClusterClass", plural = "clusterclasses")]
 #[kube(namespaced)]

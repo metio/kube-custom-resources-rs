@@ -13,7 +13,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClusterSpec defines the desired state of Cluster.
+/// spec is the desired state of Cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
@@ -23,6 +23,9 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
+    /// 
+    /// If this field is not defined and the Cluster implements a managed topology, availabilityGates
+    /// from the corresponding ClusterClass will be used, if any.
     /// 
     /// NOTE: this field is considered only for computing v1beta2 conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]
@@ -55,11 +58,25 @@ pub struct ClusterSpec {
 /// ClusterAvailabilityGate contains the type of a Cluster condition to be used as availability gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterAvailabilityGates {
-    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Cluster's condition list.
+    /// conditionType refers to a condition with matching type in the Cluster's condition list.
     /// If the conditions doesn't exist, it will be treated as unknown.
     /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as availability gates.
     #[serde(rename = "conditionType")]
     pub condition_type: String,
+    /// polarity of the conditionType specified in this availabilityGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<ClusterAvailabilityGatesPolarity>,
+}
+
+/// ClusterAvailabilityGate contains the type of a Cluster condition to be used as availability gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterAvailabilityGatesPolarity {
+    Positive,
+    Negative,
 }
 
 /// clusterNetwork represents the cluster network configuration.
@@ -243,6 +260,18 @@ pub struct ClusterTopologyControlPlane {
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
+    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
+    /// 
+    /// If this field is not defined, readinessGates from the corresponding ControlPlaneClass will be used, if any.
+    /// 
+    /// NOTE: This field is considered only for computing v1beta2 conditions.
+    /// NOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;
+    /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ClusterTopologyControlPlaneReadinessGates>>,
     /// replicas is the number of control plane nodes.
     /// If the value is nil, the ControlPlane object is created without the number of Replicas
     /// and it's assumed that the control plane controller does not implement support for this field.
@@ -390,6 +419,30 @@ pub struct ClusterTopologyControlPlaneMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyControlPlaneReadinessGates {
+    /// conditionType refers to a condition with matching type in the Machine's condition list.
+    /// If the conditions doesn't exist, it will be treated as unknown.
+    /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
+    /// polarity of the conditionType specified in this readinessGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<ClusterTopologyControlPlaneReadinessGatesPolarity>,
+}
+
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTopologyControlPlaneReadinessGatesPolarity {
+    Positive,
+    Negative,
+}
+
 /// variables can be used to customize the ControlPlane through patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariables {
@@ -497,6 +550,16 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
+    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
+    /// 
+    /// If this field is not defined, readinessGates from the corresponding MachineDeploymentClass will be used, if any.
+    /// 
+    /// NOTE: This field is considered only for computing v1beta2 conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ClusterTopologyWorkersMachineDeploymentsReadinessGates>>,
     /// replicas is the number of worker nodes belonging to this set.
     /// If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to 1)
     /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
@@ -644,6 +707,30 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsReadinessGates {
+    /// conditionType refers to a condition with matching type in the Machine's condition list.
+    /// If the conditions doesn't exist, it will be treated as unknown.
+    /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
+    #[serde(rename = "conditionType")]
+    pub condition_type: String,
+    /// polarity of the conditionType specified in this readinessGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<ClusterTopologyWorkersMachineDeploymentsReadinessGatesPolarity>,
+}
+
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTopologyWorkersMachineDeploymentsReadinessGatesPolarity {
+    Positive,
+    Negative,
 }
 
 /// strategy is the deployment strategy to use to replace existing machines with
@@ -871,7 +958,7 @@ pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
     pub value: serde_json::Value,
 }
 
-/// ClusterStatus defines the observed state of Cluster.
+/// status is the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
     /// conditions defines current service state of the cluster.
@@ -907,9 +994,8 @@ pub struct ClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of cluster actuation.
-    /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<ClusterStatusPhase>,
     /// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub v1beta2: Option<ClusterStatusV1beta2>,
@@ -924,6 +1010,17 @@ pub struct ClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+}
+
+/// status is the observed state of Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterStatusPhase {
+    Pending,
+    Provisioning,
+    Provisioned,
+    Deleting,
+    Failed,
+    Unknown,
 }
 
 /// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.

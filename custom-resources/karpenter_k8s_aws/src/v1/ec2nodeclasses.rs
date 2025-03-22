@@ -37,6 +37,10 @@ pub struct EC2NodeClassSpec {
     /// BlockDeviceMappings to be applied to provisioned nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockDeviceMappings")]
     pub block_device_mappings: Option<Vec<EC2NodeClassBlockDeviceMappings>>,
+    /// CapacityReservationSelectorTerms is a list of capacity reservation selector terms. Each term is ORed together to
+    /// determine the set of eligible capacity reservations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservationSelectorTerms")]
+    pub capacity_reservation_selector_terms: Option<Vec<EC2NodeClassCapacityReservationSelectorTerms>>,
     /// Context is a Reserved field in EC2 APIs
     /// https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateFleet.html
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,10 +85,10 @@ pub struct EC2NodeClassSpec {
     /// for the old instance profiles on an update.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
-    /// SecurityGroupSelectorTerms is a list of or security group selector terms. The terms are ORed.
+    /// SecurityGroupSelectorTerms is a list of security group selector terms. The terms are ORed.
     #[serde(rename = "securityGroupSelectorTerms")]
     pub security_group_selector_terms: Vec<EC2NodeClassSecurityGroupSelectorTerms>,
-    /// SubnetSelectorTerms is a list of or subnet selector terms. The terms are ORed.
+    /// SubnetSelectorTerms is a list of subnet selector terms. The terms are ORed.
     #[serde(rename = "subnetSelectorTerms")]
     pub subnet_selector_terms: Vec<EC2NodeClassSubnetSelectorTerms>,
     /// Tags to be applied on ec2 resources like instances and launch templates.
@@ -233,6 +237,20 @@ pub enum EC2NodeClassBlockDeviceMappingsEbsVolumeType {
     St1,
     #[serde(rename = "gp3")]
     Gp3,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EC2NodeClassCapacityReservationSelectorTerms {
+    /// ID is the capacity reservation id in EC2
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    /// Owner is the owner id for the ami.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
+    pub owner_id: Option<String>,
+    /// Tags is a map of key/value tags used to select capacity reservations.
+    /// Specifying '*' for a value selects all values for a given tag key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<BTreeMap<String, String>>,
 }
 
 /// EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.
@@ -455,6 +473,10 @@ pub struct EC2NodeClassStatus {
     /// cluster under the AMI selectors.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub amis: Option<Vec<EC2NodeClassStatusAmis>>,
+    /// CapacityReservations contains the current capacity reservation values that are available to this NodeClass under the
+    /// CapacityReservation selectors.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityReservations")]
+    pub capacity_reservations: Option<Vec<EC2NodeClassStatusCapacityReservations>>,
     /// Conditions contains signals for health and readiness
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
@@ -502,6 +524,36 @@ pub struct EC2NodeClassStatusAmisRequirements {
     /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct EC2NodeClassStatusCapacityReservations {
+    /// The availability zone the capacity reservation is available in.
+    #[serde(rename = "availabilityZone")]
+    pub availability_zone: String,
+    /// The time at which the capacity reservation expires. Once expired, the reserved capacity is released and Karpenter
+    /// will no longer be able to launch instances into that reservation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
+    pub end_time: Option<String>,
+    /// The id for the capacity reservation.
+    pub id: String,
+    /// Indicates the type of instance launches the capacity reservation accepts.
+    #[serde(rename = "instanceMatchCriteria")]
+    pub instance_match_criteria: EC2NodeClassStatusCapacityReservationsInstanceMatchCriteria,
+    /// The instance type for the capacity reservation.
+    #[serde(rename = "instanceType")]
+    pub instance_type: String,
+    /// The ID of the AWS account that owns the capacity reservation.
+    #[serde(rename = "ownerID")]
+    pub owner_id: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum EC2NodeClassStatusCapacityReservationsInstanceMatchCriteria {
+    #[serde(rename = "open")]
+    Open,
+    #[serde(rename = "targeted")]
+    Targeted,
 }
 
 /// SecurityGroup contains resolved SecurityGroup selector values utilized for node launch

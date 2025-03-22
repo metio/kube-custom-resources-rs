@@ -18,5 +18,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `MySql`
 - `PostgreSql`
 - `Redis`
+### api.clever-cloud.com/v1alpha1
+- `KV`
 ### api.clever-cloud.com/v1beta1
 - `Pulsar`

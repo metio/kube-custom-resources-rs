@@ -25,6 +25,9 @@ pub struct CouchbaseUserSpec {
     /// Full Name of Couchbase user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullName")]
     pub full_name: Option<String>,
+    /// Username of the couchbase user.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// CouchbaseUserSpec allows the specification of Couchbase user configuration.

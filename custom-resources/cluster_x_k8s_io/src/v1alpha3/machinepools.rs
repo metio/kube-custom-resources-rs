@@ -13,7 +13,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachinePoolSpec defines the desired state of MachinePool.
+/// spec is the desired state of MachinePool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha3", kind = "MachinePool", plural = "machinepools")]
 #[kube(namespaced)]
@@ -103,7 +103,7 @@ pub struct MachinePoolStrategyRollingUpdate {
 /// template describes the machines that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachinePoolTemplateMetadata>,
@@ -113,7 +113,7 @@ pub struct MachinePoolTemplate {
     pub spec: Option<MachinePoolTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplateMetadata {
@@ -353,7 +353,7 @@ pub struct MachinePoolTemplateSpecInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// MachinePoolStatus defines the observed state of MachinePool.
+/// status is the observed state of MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatus {
     /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachinePool.

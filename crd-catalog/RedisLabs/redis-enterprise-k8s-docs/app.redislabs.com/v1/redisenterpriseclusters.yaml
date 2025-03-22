@@ -3434,6 +3434,19 @@ spec:
                 resp3Default:
                   description: "Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info."
                   type: "boolean"
+                securityContext:
+                  description: "the security configuration that will be applied to RS pods."
+                  properties:
+                    readOnlyRootFilesystemPolicy:
+                      description: "Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly."
+                      properties:
+                        enabled:
+                          description: "Whether RS containers has a read-only root filesystem. Default is false."
+                          type: "boolean"
+                      required:
+                        - "enabled"
+                      type: "object"
+                  type: "object"
                 serviceAccountName:
                   description: "Name of the service account to use"
                   type: "string"

@@ -36,7 +36,11 @@ pub struct ServersTransportSpec {
     /// PeerCertURI defines the peer cert URI used to match against SAN URI during the peer certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerCertURI")]
     pub peer_cert_uri: Option<String>,
+    /// RootCAs defines a list of CA certificate Secrets or ConfigMaps used to validate server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCAs")]
+    pub root_c_as: Option<Vec<ServersTransportRootCAs>>,
     /// RootCAsSecrets defines a list of CA secret used to validate self-signed certificate.
+    /// Deprecated: RootCAsSecrets is deprecated, please use the RootCAs option instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCAsSecrets")]
     pub root_c_as_secrets: Option<Vec<String>>,
     /// ServerName defines the server name used to contact the server.
@@ -65,6 +69,20 @@ pub struct ServersTransportForwardingTimeouts {
     /// ResponseHeaderTimeout is the amount of time to wait for a server's response headers after fully writing the request (including its body, if any).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaderTimeout")]
     pub response_header_timeout: Option<IntOrString>,
+}
+
+/// RootCA defines a reference to a Secret or a ConfigMap that holds a CA certificate.
+/// If both a Secret and a ConfigMap reference are defined, the Secret reference takes precedence.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ServersTransportRootCAs {
+    /// ConfigMap defines the name of a ConfigMap that holds a CA certificate.
+    /// The referenced ConfigMap must contain a certificate under either a tls.ca or a ca.crt key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<String>,
+    /// Secret defines the name of a Secret that holds a CA certificate.
+    /// The referenced Secret must contain a certificate under either a tls.ca or a ca.crt key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
 }
 
 /// Spiffe defines the SPIFFE configuration.

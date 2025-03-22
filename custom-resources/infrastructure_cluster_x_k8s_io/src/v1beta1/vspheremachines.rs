@@ -530,16 +530,33 @@ pub struct VSphereMachineStatus {
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// v1beta2 groups all the fields that will be added or modified in VSphereMachine's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<VSphereMachineStatusV1beta2>,
 }
 
 /// MachineAddress contains information for the node's address.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VSphereMachineStatusAddresses {
     /// address is the machine address.
     pub address: String,
     /// type is the machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS.
     #[serde(rename = "type")]
-    pub r#type: String,
+    pub r#type: VSphereMachineStatusAddressesType,
+}
+
+/// MachineAddress contains information for the node's address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VSphereMachineStatusAddressesType {
+    Hostname,
+    #[serde(rename = "ExternalIP")]
+    ExternalIp,
+    #[serde(rename = "InternalIP")]
+    InternalIp,
+    #[serde(rename = "ExternalDNS")]
+    ExternalDns,
+    #[serde(rename = "InternalDNS")]
+    InternalDns,
 }
 
 /// NetworkStatus provides information about one of a VM's networks.
@@ -558,5 +575,14 @@ pub struct VSphereMachineStatusNetwork {
     /// NetworkName is the name of the network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in VSphereMachine's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereMachineStatusV1beta2 {
+    /// conditions represents the observations of a VSphereMachine's current state.
+    /// Known condition types are Ready, VirtualMachineProvisioned and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

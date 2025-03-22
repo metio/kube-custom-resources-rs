@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "clusters.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -37,7 +37,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ClusterSpec defines the desired state of Cluster."
+              description: "spec is the desired state of Cluster."
               properties:
                 clusterNetwork:
                   description: "clusterNetwork is the cluster network configuration."
@@ -143,7 +143,7 @@ spec:
                   type: "boolean"
               type: "object"
             status:
-              description: "ClusterStatus defines the observed state of Cluster."
+              description: "status is the observed state of Cluster."
               properties:
                 conditions:
                   description: "conditions defines current service state of the cluster."

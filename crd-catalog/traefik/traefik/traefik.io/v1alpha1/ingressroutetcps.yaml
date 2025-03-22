@@ -59,6 +59,7 @@ spec:
                         type: "array"
                       priority:
                         description: "Priority defines the router's priority.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#priority_1"
+                        maximum: 9.223372036854775e18
                         type: "integer"
                       services:
                         description: "Services defines the list of TCP services."
@@ -88,6 +89,8 @@ spec:
                               properties:
                                 version:
                                   description: "Version defines the PROXY Protocol version to use."
+                                  maximum: 2.0
+                                  minimum: 1.0
                                   type: "integer"
                               type: "object"
                             serversTransport:
@@ -101,6 +104,7 @@ spec:
                               type: "boolean"
                             weight:
                               description: "Weight defines the weight used when balancing requests between multiple Kubernetes Service."
+                              minimum: 0.0
                               type: "integer"
                           required:
                             - "name"
@@ -108,7 +112,10 @@ spec:
                           type: "object"
                         type: "array"
                       syntax:
-                        description: "Syntax defines the router's rule syntax.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rulesyntax_1"
+                        description: "Syntax defines the router's rule syntax.\nMore info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rulesyntax_1\nDeprecated: Please do not use this field and rewrite the router rules to use the v3 syntax."
+                        enum:
+                          - "v3"
+                          - "v2"
                         type: "string"
                     required:
                       - "match"

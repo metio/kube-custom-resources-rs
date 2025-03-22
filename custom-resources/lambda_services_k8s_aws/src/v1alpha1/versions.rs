@@ -164,7 +164,7 @@ pub struct VersionStatus {
     /// The size of the function's deployment package, in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSize")]
     pub code_size: Option<i64>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

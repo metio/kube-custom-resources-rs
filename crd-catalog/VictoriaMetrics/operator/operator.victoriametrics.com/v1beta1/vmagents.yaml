@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmagents.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -46,6 +46,33 @@ spec:
               description: "VMAgentSpec defines the desired state of VMAgent"
               properties:
                 aPIServerConfig:
+                  description: "APIServerConfig allows specifying a host and auth methods to access apiserver.\nIf left empty, VMAgent is assumed to run inside of the cluster\nand will discover API servers automatically and use the pod's CA certificate\nand bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/.\naPIServerConfig is deprecated use apiServerConfig instead"
+                  required:
+                    - "host"
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
+                additionalScrapeConfigs:
+                  description: "AdditionalScrapeConfigs As scrape configs are appended, the user is responsible to make sure it\nis valid. Note that using this feature may expose the possibility to\nbreak upgrades of VMAgent. It is advised to review VMAgent release\nnotes to ensure that no incompatible scrape configs are going to break\nVMAgent after the upgrade."
+                  properties:
+                    key:
+                      description: "The key of the secret to select from.  Must be a valid secret key."
+                      type: "string"
+                    name:
+                      default: ""
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                      type: "string"
+                    optional:
+                      description: "Specify whether the Secret or its key must be defined"
+                      type: "boolean"
+                  required:
+                    - "key"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
+                affinity:
+                  description: "Affinity If specified, the pod's scheduling constraints."
+                  type: "object"
+                  x-kubernetes-preserve-unknown-fields: true
+                apiServerConfig:
                   description: "APIServerConfig allows specifying a host and auth methods to access apiserver.\nIf left empty, VMAgent is assumed to run inside of the cluster\nand will discover API servers automatically and use the pod's CA certificate\nand bearer token file at /var/run/secrets/kubernetes.io/serviceaccount/."
                   properties:
                     authorization:
@@ -240,27 +267,6 @@ spec:
                   required:
                     - "host"
                   type: "object"
-                additionalScrapeConfigs:
-                  description: "AdditionalScrapeConfigs As scrape configs are appended, the user is responsible to make sure it\nis valid. Note that using this feature may expose the possibility to\nbreak upgrades of VMAgent. It is advised to review VMAgent release\nnotes to ensure that no incompatible scrape configs are going to break\nVMAgent after the upgrade."
-                  properties:
-                    key:
-                      description: "The key of the secret to select from.  Must be a valid secret key."
-                      type: "string"
-                    name:
-                      default: ""
-                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
-                      type: "string"
-                    optional:
-                      description: "Specify whether the Secret or its key must be defined"
-                      type: "boolean"
-                  required:
-                    - "key"
-                  type: "object"
-                  x-kubernetes-map-type: "atomic"
-                affinity:
-                  description: "Affinity If specified, the pod's scheduling constraints."
-                  type: "object"
-                  x-kubernetes-preserve-unknown-fields: true
                 arbitraryFSAccessThroughSMs:
                   description: "ArbitraryFSAccessThroughSMs configures whether configuration\nbased on EndpointAuth can access arbitrary files on the file system\nof the VMAgent container e.g. bearer token files, basic auth, tls certs"
                   properties:
@@ -449,9 +455,10 @@ spec:
                                   description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                   type: "string"
                                 status:
+                                  description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                   type: "string"
                                 type:
-                                  description: "PersistentVolumeClaimConditionType defines the condition of PV claim.\nValid values are:\n  - \"Resizing\", \"FileSystemResizePending\"\n\nIf RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:\n  - \"ControllerResizeError\", \"NodeResizeError\"\n\nIf VolumeAttributesClass feature gate is enabled, then following additional values can be expected:\n  - \"ModifyVolumeError\", \"ModifyingVolume\""
+                                  description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                   type: "string"
                               required:
                                 - "status"
@@ -544,6 +551,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                disableAutomountServiceAccountToken:
+                  description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
+                  type: "boolean"
                 disableSelfServiceScrape:
                   description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                   type: "boolean"
@@ -564,9 +574,10 @@ spec:
                         description: "PodDNSConfigOption defines DNS resolver options of a pod."
                         properties:
                           name:
-                            description: "Required."
+                            description: "Name is this DNS resolver option's name.\nRequired."
                             type: "string"
                           value:
+                            description: "Value is this DNS resolver option's value."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -1508,6 +1519,9 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          enableWindows:
+                            description: "EnableWindows enables aggregating data in separate windows ( available from v0.54.0)."
+                            type: "boolean"
                           ignoreFirstIntervals:
                             description: "IgnoreFirstIntervals instructs to ignore first interval"
                             type: "integer"
@@ -1535,6 +1549,9 @@ spec:
                                   items:
                                     type: "string"
                                   type: "array"
+                                enable_windows:
+                                  description: "EnableWindows enables aggregating data in separate windows"
+                                  type: "boolean"
                                 flush_on_shutdown:
                                   description: "FlushOnShutdown defines whether to flush the aggregation state on process termination\nor config reload. Is `false` by default.\nIt is not recommended changing this setting, unless unfinished aggregations states\nare preferred to missing data points."
                                   type: "boolean"
@@ -2431,9 +2448,10 @@ spec:
                                     description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                     type: "string"
                                   status:
+                                    description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                     type: "string"
                                   type:
-                                    description: "PersistentVolumeClaimConditionType defines the condition of PV claim.\nValid values are:\n  - \"Resizing\", \"FileSystemResizePending\"\n\nIf RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:\n  - \"ControllerResizeError\", \"NodeResizeError\"\n\nIf VolumeAttributesClass feature gate is enabled, then following additional values can be expected:\n  - \"ModifyVolumeError\", \"ModifyingVolume\""
+                                    description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                     type: "string"
                                 required:
                                   - "status"
@@ -2611,6 +2629,9 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    enableWindows:
+                      description: "EnableWindows enables aggregating data in separate windows ( available from v0.54.0)."
+                      type: "boolean"
                     ignoreFirstIntervals:
                       description: "IgnoreFirstIntervals instructs to ignore first interval"
                       type: "integer"
@@ -2638,6 +2659,9 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          enable_windows:
+                            description: "EnableWindows enables aggregating data in separate windows"
+                            type: "boolean"
                           flush_on_shutdown:
                             description: "FlushOnShutdown defines whether to flush the aggregation state on process termination\nor config reload. Is `false` by default.\nIt is not recommended changing this setting, unless unfinished aggregations states\nare preferred to missing data points."
                             type: "boolean"
@@ -2879,10 +2903,6 @@ spec:
             status:
               description: "VMAgentStatus defines the observed state of VMAgent"
               properties:
-                availableReplicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
                 conditions:
                   description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
                   items:
@@ -2950,17 +2970,9 @@ spec:
                   description: "Shards represents total number of vmagent deployments with uniq scrape targets"
                   format: "int32"
                   type: "integer"
-                unavailableReplicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
                 updateStatus:
                   description: "UpdateStatus defines a status for update rollout"
                   type: "string"
-                updatedReplicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
               type: "object"
           type: "object"
       served: true

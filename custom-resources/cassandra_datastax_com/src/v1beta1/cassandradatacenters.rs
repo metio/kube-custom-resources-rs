@@ -10059,6 +10059,9 @@ pub struct CassandraDatacenterStatus {
     /// This field is used to perform validation checks preventing a user from changing the override
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datacenterName")]
     pub datacenter_name: Option<String>,
+    /// FailedStarts tracks the pods that failed to start by the operator last time it tried
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedStarts")]
+    pub failed_starts: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRollingRestart")]
     pub last_rolling_restart: Option<String>,
     /// The timestamp when the operator last started a Server node

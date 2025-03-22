@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachineSetSpec defines the desired state of MachineSet.
+/// spec is the desired state of MachineSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "MachineSet", plural = "machinesets")]
 #[kube(namespaced)]
@@ -67,7 +67,7 @@ pub struct MachineSetSpec {
     pub template: Option<MachineSetTemplate>,
 }
 
-/// MachineSetSpec defines the desired state of MachineSet.
+/// spec is the desired state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MachineSetDeletePolicy {
     Random,
@@ -137,7 +137,7 @@ pub struct MachineSetSelectorMatchExpressions {
 /// Object references to custom resources are treated as templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachineSetTemplateMetadata>,
@@ -147,7 +147,7 @@ pub struct MachineSetTemplate {
     pub spec: Option<MachineSetTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateMetadata {
@@ -328,14 +328,28 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
 /// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateSpecReadinessGates {
-    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+    /// conditionType refers to a condition with matching type in the Machine's condition list.
     /// If the conditions doesn't exist, it will be treated as unknown.
     /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
     #[serde(rename = "conditionType")]
     pub condition_type: String,
+    /// polarity of the conditionType specified in this readinessGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<MachineSetTemplateSpecReadinessGatesPolarity>,
 }
 
-/// MachineSetStatus defines the observed state of MachineSet.
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineSetTemplateSpecReadinessGatesPolarity {
+    Positive,
+    Negative,
+}
+
+/// status is the observed state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
     /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachineSet.

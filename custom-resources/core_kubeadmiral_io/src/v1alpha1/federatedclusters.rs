@@ -26,7 +26,8 @@ pub struct FederatedClusterSpec {
     /// Access API endpoint with security.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
-    /// Name of the secret containing the token required to access the member cluster. The secret needs to exist in the fed system namespace.
+    /// Name of the secret containing the token required to access the member cluster.
+    /// The secret needs to exist in the fed system namespace.
     #[serde(rename = "secretRef")]
     pub secret_ref: FederatedClusterSecretRef,
     /// If specified, the cluster's taints.
@@ -37,21 +38,26 @@ pub struct FederatedClusterSpec {
     pub use_service_account: Option<bool>,
 }
 
-/// Name of the secret containing the token required to access the member cluster. The secret needs to exist in the fed system namespace.
+/// Name of the secret containing the token required to access the member cluster.
+/// The secret needs to exist in the fed system namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedClusterSecretRef {
     /// Name of a secret within the enclosing namespace
     pub name: String,
 }
 
-/// The node this Taint is attached to has the "effect" on any pod that does not tolerate the Taint.
+/// The node this Taint is attached to has the "effect" on
+/// any pod that does not tolerate the Taint.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedClusterTaints {
-    /// Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+    /// Required. The effect of the taint on pods
+    /// that do not tolerate the taint.
+    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
     pub effect: String,
     /// Required. The taint key to be applied to a node.
     pub key: String,
-    /// TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints.
+    /// TimeAdded represents the time at which the taint was added.
+    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.
@@ -68,7 +74,8 @@ pub struct FederatedClusterStatus {
     /// Conditions is an array of current cluster conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Whether any effectual action was performed in the cluster while joining. If true, clean-up is required on cluster removal to undo the side-effects.
+    /// Whether any effectual action was performed in the cluster while joining.
+    /// If true, clean-up is required on cluster removal to undo the side-effects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "joinPerformed")]
     pub join_performed: Option<bool>,
     /// Resources describes the cluster's resources.
@@ -84,7 +91,8 @@ pub struct FederatedClusterStatusApiResourceTypes {
     pub group: Option<String>,
     /// Kind of the resource.
     pub kind: String,
-    /// Lower-cased plural name of the resource (e.g. configmaps).  If not provided, it will be computed by lower-casing the kind and suffixing an 's'.
+    /// Lower-cased plural name of the resource (e.g. configmaps).  If not provided,
+    /// 	it will be computed by lower-casing the kind and suffixing an 's'.
     #[serde(rename = "pluralName")]
     pub plural_name: String,
     /// Scope of the resource.

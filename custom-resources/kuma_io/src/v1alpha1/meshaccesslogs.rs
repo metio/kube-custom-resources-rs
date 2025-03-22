@@ -35,12 +35,11 @@ pub struct MeshAccessLogSpec {
     pub to: Option<Vec<MeshAccessLogTo>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogFrom {
     /// Default is a configuration specific to the group of clients referenced in
     /// 'targetRef'
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<MeshAccessLogFromDefault>,
+    pub default: MeshAccessLogFromDefault,
     /// TargetRef is a reference to the resource that represents a group of
     /// clients.
     #[serde(rename = "targetRef")]
@@ -97,10 +96,8 @@ pub struct MeshAccessLogFromDefaultBackendsFileFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogFromDefaultBackendsFileFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -130,10 +127,8 @@ pub struct MeshAccessLogFromDefaultBackendsOpenTelemetry {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogFromDefaultBackendsOpenTelemetryAttributes {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// TCPBackend defines a TCP logging backend.
@@ -163,10 +158,8 @@ pub struct MeshAccessLogFromDefaultBackendsTcpFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogFromDefaultBackendsTcpFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -186,11 +179,10 @@ pub enum MeshAccessLogFromDefaultBackendsType {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// clients.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogFromTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshAccessLogFromTargetRefKind>,
+    pub kind: MeshAccessLogFromTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -239,8 +231,7 @@ pub enum MeshAccessLogFromTargetRefKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogRules {
     /// Default contains configuration of the inbound access logging
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<MeshAccessLogRulesDefault>,
+    pub default: MeshAccessLogRulesDefault,
 }
 
 /// Default contains configuration of the inbound access logging
@@ -292,10 +283,8 @@ pub struct MeshAccessLogRulesDefaultBackendsFileFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogRulesDefaultBackendsFileFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -325,10 +314,8 @@ pub struct MeshAccessLogRulesDefaultBackendsOpenTelemetry {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogRulesDefaultBackendsOpenTelemetryAttributes {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// TCPBackend defines a TCP logging backend.
@@ -358,10 +345,8 @@ pub struct MeshAccessLogRulesDefaultBackendsTcpFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogRulesDefaultBackendsTcpFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -382,11 +367,10 @@ pub enum MeshAccessLogRulesDefaultBackendsType {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined in-place.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshAccessLogTargetRefKind>,
+    pub kind: MeshAccessLogTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -433,12 +417,11 @@ pub enum MeshAccessLogTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogTo {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<MeshAccessLogToDefault>,
+    pub default: MeshAccessLogToDefault,
     /// TargetRef is a reference to the resource that represents a group of
     /// destinations.
     #[serde(rename = "targetRef")]
@@ -495,10 +478,8 @@ pub struct MeshAccessLogToDefaultBackendsFileFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogToDefaultBackendsFileFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -528,10 +509,8 @@ pub struct MeshAccessLogToDefaultBackendsOpenTelemetry {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogToDefaultBackendsOpenTelemetryAttributes {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// TCPBackend defines a TCP logging backend.
@@ -561,10 +540,8 @@ pub struct MeshAccessLogToDefaultBackendsTcpFormat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshAccessLogToDefaultBackendsTcpFormatJson {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub key: String,
+    pub value: String,
 }
 
 /// Format of access logs. Placeholders available on
@@ -584,11 +561,10 @@ pub enum MeshAccessLogToDefaultBackendsType {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshAccessLogToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshAccessLogToTargetRefKind>,
+    pub kind: MeshAccessLogToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

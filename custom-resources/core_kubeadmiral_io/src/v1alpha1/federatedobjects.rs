@@ -18,13 +18,16 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct FederatedObjectSpec {
-    /// Follows defines other objects, or "leaders", that the Kubernetes object should follow during propagation, i.e. the Kubernetes object should be propagated to all member clusters that its "leaders" are placed in.
+    /// Follows defines other objects, or "leaders", that the Kubernetes object should follow during propagation, i.e.
+    /// the Kubernetes object should be propagated to all member clusters that its "leaders" are placed in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follows: Option<Vec<FederatedObjectFollows>>,
-    /// Overrides describe the overrides that should be applied to the base template of the Kubernetes object before it is propagated to individual member clusters.
+    /// Overrides describe the overrides that should be applied to the base template of the Kubernetes object before it
+    /// is propagated to individual member clusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<FederatedObjectOverrides>>,
-    /// Placements describe the member clusters that the Kubernetes object will be propagated to, which is a union of all the listed clusters.
+    /// Placements describe the member clusters that the Kubernetes object will be propagated to, which is a union of all
+    /// the listed clusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placements: Option<Vec<FederatedObjectPlacements>>,
     /// Template is the base template of the Kubernetes object to be propagated.
@@ -42,7 +45,8 @@ pub struct FederatedObjectFollows {
     pub namespace: Option<String>,
 }
 
-/// OverrideWithController describes the overrides that will be applied to a Kubernetes object before it is propagated to individual member clusters.
+/// OverrideWithController describes the overrides that will be applied to a Kubernetes object before it is propagated to
+/// individual member clusters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedObjectOverrides {
     /// Override is the list of member clusters and their respective override patches.

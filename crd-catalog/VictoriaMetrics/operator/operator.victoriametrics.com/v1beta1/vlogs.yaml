@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vlogs.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -55,6 +55,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                disableAutomountServiceAccountToken:
+                  description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
+                  type: "boolean"
                 disableSelfServiceScrape:
                   description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                   type: "boolean"
@@ -75,9 +78,10 @@ spec:
                         description: "PodDNSConfigOption defines DNS resolver options of a pod."
                         properties:
                           name:
-                            description: "Required."
+                            description: "Name is this DNS resolver option's name.\nRequired."
                             type: "string"
                           value:
+                            description: "Value is this DNS resolver option's value."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -614,10 +618,6 @@ spec:
             status:
               description: "VLogsStatus defines the observed state of VLogs"
               properties:
-                availableReplicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
                 conditions:
                   description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
                   items:
@@ -674,20 +674,9 @@ spec:
                 reason:
                   description: "Reason defines human readable error reason"
                   type: "string"
-                replicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
-                unavailableReplicas:
-                  description: "deprecated and will be removed at v0.52.0"
-                  format: "int32"
-                  type: "integer"
                 updateStatus:
                   description: "UpdateStatus defines a status for update rollout"
                   type: "string"
-                updatedReplicas:
-                  format: "int32"
-                  type: "integer"
               type: "object"
           type: "object"
       served: true

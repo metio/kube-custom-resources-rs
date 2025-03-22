@@ -28,7 +28,7 @@ pub struct MeshTrafficPermissionSpec {
     pub target_ref: Option<MeshTrafficPermissionTargetRef>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTrafficPermissionFrom {
     /// Default is a configuration specific to the group of clients referenced in
     /// 'targetRef'
@@ -60,11 +60,10 @@ pub enum MeshTrafficPermissionFromDefaultAction {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// clients.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTrafficPermissionFromTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTrafficPermissionFromTargetRefKind>,
+    pub kind: MeshTrafficPermissionFromTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -113,11 +112,10 @@ pub enum MeshTrafficPermissionFromTargetRefKind {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTrafficPermissionTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTrafficPermissionTargetRefKind>,
+    pub kind: MeshTrafficPermissionTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

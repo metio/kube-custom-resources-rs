@@ -852,8 +852,13 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct APIServerApiServerDeploymentSpecTemplateSpecContainers {
     /// Name is an enum which identifies the API server Deployment container by name.
-    /// Supported values are: calico-apiserver, tigera-queryserver
+    /// Supported values are: calico-apiserver, tigera-queryserver, calico-l7-admission-controller
     pub name: APIServerApiServerDeploymentSpecTemplateSpecContainersName,
+    /// Ports allows customization of container's ports.
+    /// If specified, this overrides the named APIServer Deployment container's ports.
+    /// If omitted, the API server Deployment will use its default value for this container's port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecContainersPorts>>,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named API server Deployment container's resources.
     /// If omitted, the API server Deployment will use its default value for this container's resources.
@@ -871,6 +876,27 @@ pub enum APIServerApiServerDeploymentSpecTemplateSpecContainersName {
     TigeraQueryserver,
     #[serde(rename = "calico-l7-admission-controller")]
     CalicoL7AdmissionController,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct APIServerApiServerDeploymentSpecTemplateSpecContainersPorts {
+    /// Number of port to expose on the pod's IP address.
+    /// This must be a valid port number, 0 < x < 65536.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// Name is an enum which identifies the API server Deployment Container port by name.
+    /// Supported values are: apiserver, queryserver, l7admctrl
+    pub name: APIServerApiServerDeploymentSpecTemplateSpecContainersPortsName,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum APIServerApiServerDeploymentSpecTemplateSpecContainersPortsName {
+    #[serde(rename = "apiserver")]
+    Apiserver,
+    #[serde(rename = "queryserver")]
+    Queryserver,
+    #[serde(rename = "l7admctrl")]
+    L7admctrl,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.

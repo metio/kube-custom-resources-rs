@@ -223,6 +223,10 @@ pub struct UpdateRequestContextUserInfo {
     /// Roles is a list of possible role send the request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub roles: Option<Vec<String>>,
+    /// DryRun indicates that modifications will definitely not be persisted for this request.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub synchronize: Option<bool>,
     /// UserInfo is the userInfo carried in the admission request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userInfo")]
     pub user_info: Option<UpdateRequestContextUserInfoUserInfo>,

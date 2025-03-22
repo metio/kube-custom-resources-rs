@@ -211,6 +211,32 @@ spec:
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                       type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     podOverrides:
                       default: {}
                       description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -428,6 +454,32 @@ spec:
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                             type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
                           podOverrides:
                             default: {}
                             description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -448,7 +500,7 @@ spec:
                   properties:
                     additionalExtensions:
                       default: []
-                      description: "Additional extensions to load in Druid. The operator will automatically load all extensions needed based on the cluster configuration, but for extra functionality which the operator cannot anticipate, it can sometimes be necessary to load additional extensions. Add configuration for additional extensions using [configuration override for Druid](https://docs.stackable.tech/home/stable/druid/usage-guide/configuration-and-environment-overrides)."
+                      description: "Additional extensions to load in Druid. The operator will automatically load all extensions needed based on the cluster configuration, but for extra functionality which the operator cannot anticipate, it can sometimes be necessary to load additional extensions. Add configuration for additional extensions using [configuration override for Druid](https://docs.stackable.tech/home/stable/druid/usage-guide/overrides)."
                       items:
                         type: "string"
                       type: "array"
@@ -604,6 +656,15 @@ spec:
                                               minimum: 0.0
                                               nullable: true
                                               type: "integer"
+                                            region:
+                                              default:
+                                                name: "us-east-1"
+                                              description: "Bucket region used for signing headers (sigv4).\n\nThis defaults to `us-east-1` which is compatible with other implementations such as Minio.\n\nWARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2."
+                                              properties:
+                                                name:
+                                                  default: "us-east-1"
+                                                  type: "string"
+                                              type: "object"
                                             tls:
                                               description: "Use a TLS connection. If not specified no TLS will be used."
                                               nullable: true
@@ -734,6 +795,15 @@ spec:
                                   minimum: 0.0
                                   nullable: true
                                   type: "integer"
+                                region:
+                                  default:
+                                    name: "us-east-1"
+                                  description: "Bucket region used for signing headers (sigv4).\n\nThis defaults to `us-east-1` which is compatible with other implementations such as Minio.\n\nWARNING: Some products use the Hadoop S3 implementation which falls back to us-east-2."
+                                  properties:
+                                    name:
+                                      default: "us-east-1"
+                                      type: "string"
+                                  type: "object"
                                 tls:
                                   description: "Use a TLS connection. If not specified no TLS will be used."
                                   nullable: true
@@ -1046,6 +1116,32 @@ spec:
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                       type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     podOverrides:
                       default: {}
                       description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -1262,6 +1358,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}
@@ -1495,6 +1617,32 @@ spec:
                         type: "string"
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                      type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     podOverrides:
                       default: {}
@@ -1744,6 +1892,32 @@ spec:
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                             type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
                           podOverrides:
                             default: {}
                             description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -1991,6 +2165,32 @@ spec:
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                       type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     podOverrides:
                       default: {}
                       description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -2207,6 +2407,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}
@@ -2410,6 +2636,32 @@ spec:
                       default: {}
                       description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
                       type: "object"
+                    jvmArgumentOverrides:
+                      default:
+                        add: []
+                        remove: []
+                        removeRegex: []
+                      description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                      properties:
+                        add:
+                          default: []
+                          description: "JVM arguments to be added"
+                          items:
+                            type: "string"
+                          type: "array"
+                        remove:
+                          default: []
+                          description: "JVM arguments to be removed by exact match"
+                          items:
+                            type: "string"
+                          type: "array"
+                        removeRegex:
+                          default: []
+                          description: "JVM arguments matching any of this regexes will be removed"
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     podOverrides:
                       default: {}
                       description: "In the `podOverrides` property you can define a [PodTemplateSpec](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.27/#podtemplatespec-v1-core) to override any property that can be set on a Kubernetes Pod. Read the [Pod overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#pod-overrides) for more information."
@@ -2626,6 +2878,32 @@ spec:
                               type: "string"
                             default: {}
                             description: "`envOverrides` configure environment variables to be set in the Pods. It is a map from strings to strings - environment variables and the value to set. Read the [environment variable overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#env-overrides) for more information and consult the operator specific usage guide to find out about the product specific environment variables that are available."
+                            type: "object"
+                          jvmArgumentOverrides:
+                            default:
+                              add: []
+                              remove: []
+                              removeRegex: []
+                            description: "Allows overriding JVM arguments. Please read on the [JVM argument overrides documentation](https://docs.stackable.tech/home/nightly/concepts/overrides#jvm-argument-overrides) for details on the usage."
+                            properties:
+                              add:
+                                default: []
+                                description: "JVM arguments to be added"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              remove:
+                                default: []
+                                description: "JVM arguments to be removed by exact match"
+                                items:
+                                  type: "string"
+                                type: "array"
+                              removeRegex:
+                                default: []
+                                description: "JVM arguments matching any of this regexes will be removed"
+                                items:
+                                  type: "string"
+                                type: "array"
                             type: "object"
                           podOverrides:
                             default: {}

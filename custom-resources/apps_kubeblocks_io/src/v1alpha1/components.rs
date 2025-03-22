@@ -1631,6 +1631,12 @@ pub struct ComponentInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -4941,6 +4947,12 @@ pub struct ComponentTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 

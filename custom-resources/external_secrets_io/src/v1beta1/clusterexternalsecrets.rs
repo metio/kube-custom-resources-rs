@@ -36,6 +36,7 @@ pub struct ClusterExternalSecretSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelectors")]
     pub namespace_selectors: Option<Vec<ClusterExternalSecretNamespaceSelectors>>,
     /// Choose namespaces by name. This field is ORed with anything that NamespaceSelectors ends up choosing.
+    /// Deprecated: Use NamespaceSelectors instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// The time in which the controller should reconcile its objects and recheck namespaces for labels.

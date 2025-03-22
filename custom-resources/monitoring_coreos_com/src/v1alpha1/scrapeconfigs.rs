@@ -9916,6 +9916,8 @@ pub struct ScrapeConfigOpenstackSdConfigs {
     /// The OpenStack Region.
     pub region: String,
     /// The OpenStack role of entities that should be discovered.
+    /// 
+    /// Note: The `LoadBalancer` role requires Prometheus >= v3.2.0.
     pub role: ScrapeConfigOpenstackSdConfigsRole,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -9987,11 +9989,8 @@ pub struct ScrapeConfigOpenstackSdConfigsPassword {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigOpenstackSdConfigsRole {
     Instance,
-    #[serde(rename = "instance")]
-    InstanceX,
     Hypervisor,
-    #[serde(rename = "hypervisor")]
-    HypervisorX,
+    LoadBalancer,
 }
 
 /// TLS configuration applying to the target HTTP endpoint.

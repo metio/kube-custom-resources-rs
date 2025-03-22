@@ -72,6 +72,10 @@ pub struct PerconaXtraDBClusterRestoreBackupSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterRestoreBackupSourceAzure {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
+    pub block_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub concurrency: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
@@ -218,6 +222,10 @@ pub struct PerconaXtraDBClusterRestorePitrBackupSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterRestorePitrBackupSourceAzure {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
+    pub block_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub concurrency: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
@@ -259,13 +267,33 @@ pub struct PerconaXtraDBClusterRestoreResourcesClaims {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterRestoreStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSize")]
+    pub cluster_size: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub comments: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "haproxySize")]
+    pub haproxy_size: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lastscheduled: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxysqlSize")]
+    pub proxysql_size: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unsafeFlags")]
+    pub unsafe_flags: Option<PerconaXtraDBClusterRestoreStatusUnsafeFlags>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaXtraDBClusterRestoreStatusUnsafeFlags {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupIfUnhealthy")]
+    pub backup_if_unhealthy: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySize")]
+    pub proxy_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pxcSize")]
+    pub pxc_size: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<bool>,
 }
 

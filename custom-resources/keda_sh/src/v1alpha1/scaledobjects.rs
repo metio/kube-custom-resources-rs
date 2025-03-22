@@ -183,9 +183,24 @@ pub struct ScaledObjectAdvancedScalingModifiers {
 /// Fallback is the spec for fallback options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectFallback {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub behavior: Option<ScaledObjectFallbackBehavior>,
     #[serde(rename = "failureThreshold")]
     pub failure_threshold: i32,
     pub replicas: i32,
+}
+
+/// Fallback is the spec for fallback options
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScaledObjectFallbackBehavior {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "currentReplicas")]
+    CurrentReplicas,
+    #[serde(rename = "currentReplicasIfHigher")]
+    CurrentReplicasIfHigher,
+    #[serde(rename = "currentReplicasIfLower")]
+    CurrentReplicasIfLower,
 }
 
 /// ScaleTarget holds the reference to the scale target Object

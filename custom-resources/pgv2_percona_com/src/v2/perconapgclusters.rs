@@ -4093,7 +4093,6 @@ pub struct PerconaPGClusterDataSourcePgbackrest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaPGClusterDataSourcePgbackrestResources>,
     /// The name of an existing pgBackRest stanza to use as the data source for the new PostgresCluster.
-    /// Defaults to `db` if not provided.
     pub stanza: String,
     /// Tolerations of the pgBackRest restore Job.
     /// More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration
@@ -14430,6 +14429,8 @@ pub struct PerconaPGClusterStatusPgbouncer {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterStatusPostgres {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
+    pub image_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<Vec<PerconaPGClusterStatusPostgresInstances>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

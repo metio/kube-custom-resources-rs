@@ -40,6 +40,8 @@ pub enum MySqlOptionsVersion {
     r#_57,
     #[serde(rename = "80")]
     r#_80,
+    #[serde(rename = "84")]
+    r#_84,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

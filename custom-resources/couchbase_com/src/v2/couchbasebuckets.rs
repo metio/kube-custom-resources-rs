@@ -19,6 +19,12 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CouchbaseBucketSpec {
+    /// AutoCompaction allows the configuration of auto-compaction settings, including on what
+    /// conditions disk space is reclaimed and when it is allowed to run, on a per-bucket basis.
+    /// If any of these fields are configured, those that are not configured here will take the value set at the cluster level.
+    /// Excluding this field (which is the default), will set the autoCompactionSettings to false and the bucket will use cluster defaults.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCompaction")]
+    pub auto_compaction: Option<CouchbaseBucketAutoCompaction>,
     /// CompressionMode defines how Couchbase server handles document compression.  When
     /// off, documents are stored in memory, and transferred to the client uncompressed.
     /// When passive, documents are stored compressed in memory, and transferred to the
@@ -50,6 +56,9 @@ pub struct CouchbaseBucketSpec {
     /// "valueOnly".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionPolicy")]
     pub eviction_policy: Option<CouchbaseBucketEvictionPolicy>,
+    /// HistoryRetention configures settings for bucket history retention and default values for associated collections.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historyRetention")]
+    pub history_retention: Option<CouchbaseBucketHistoryRetention>,
     /// IOPriority controls how many threads a bucket has, per pod, to process reads and writes.
     /// This field must be "low" or "high", defaulting to "low".  Modification of this field will
     /// cause a temporary service disruption as threads are restarted.
@@ -121,6 +130,71 @@ pub struct CouchbaseBucketSpec {
     pub storage_backend: Option<CouchbaseBucketStorageBackend>,
 }
 
+/// AutoCompaction allows the configuration of auto-compaction settings, including on what
+/// conditions disk space is reclaimed and when it is allowed to run, on a per-bucket basis.
+/// If any of these fields are configured, those that are not configured here will take the value set at the cluster level.
+/// Excluding this field (which is the default), will set the autoCompactionSettings to false and the bucket will use cluster defaults.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseBucketAutoCompaction {
+    /// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseFragmentationThreshold")]
+    pub database_fragmentation_threshold: Option<CouchbaseBucketAutoCompactionDatabaseFragmentationThreshold>,
+    /// TimeWindow allows restriction of when compaction can occur.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeWindow")]
+    pub time_window: Option<CouchbaseBucketAutoCompactionTimeWindow>,
+    /// TombstonePurgeInterval controls how long to wait before purging tombstones.
+    /// This field must be in the range 1h-1440h, defaulting to the cluster level value.
+    /// More info:  https://golang.org/pkg/time/#ParseDuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tombstonePurgeInterval")]
+    pub tombstone_purge_interval: Option<String>,
+    /// ViewFragmentationThreshold defines triggers for when view compaction should start.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewFragmentationThreshold")]
+    pub view_fragmentation_threshold: Option<CouchbaseBucketAutoCompactionViewFragmentationThreshold>,
+}
+
+/// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseBucketAutoCompactionDatabaseFragmentationThreshold {
+    /// Percent specifies the level of view fragmentation that must be reached for View compaction to be automatically triggered.
+    /// This field must be in the range 0-100, defaulting to the cluster level value.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i64>,
+    /// Size the level of database fragmentation that must be reached for data compaction to be automatically triggered on the bucket.
+    /// More info:
+    /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
+}
+
+/// TimeWindow allows restriction of when compaction can occur.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseBucketAutoCompactionTimeWindow {
+    /// AbortCompactionOutsideWindow stops compaction processes when the
+    /// process moves outside the window, defaulting to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortCompactionOutsideWindow")]
+    pub abort_compaction_outside_window: Option<bool>,
+    /// End is a wallclock time, in the form HH:MM, when a compaction should stop.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub end: Option<String>,
+    /// Start is a wallclock time, in the form HH:MM, when a compaction is permitted to start.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub start: Option<String>,
+}
+
+/// ViewFragmentationThreshold defines triggers for when view compaction should start.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseBucketAutoCompactionViewFragmentationThreshold {
+    /// Percent specifies the percentage level of View fragmentation that must be reached for View compaction to be automatically triggered on the bucket
+    /// This field must be in the range 0-100, defaulting to the cluster level value.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i64>,
+    /// Size is the level of View fragmentation that must be reached for view compaction to be automatically triggered on the bucket.
+    /// More info:
+    /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
+}
+
 /// CouchbaseBucketSpec is the specification for a Couchbase bucket resource, and
 /// allows the bucket to be customized.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -151,6 +225,23 @@ pub enum CouchbaseBucketEvictionPolicy {
     ValueOnly,
     #[serde(rename = "fullEviction")]
     FullEviction,
+}
+
+/// HistoryRetention configures settings for bucket history retention and default values for associated collections.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseBucketHistoryRetention {
+    /// Bytes defines how much history an individual vbucket should aim to retain on disk in bytes. This field defaults to 0 and has a minimum working value of 2147483648.
+    /// This is only supported on buckets with storageBackend=magma.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bytes: Option<i64>,
+    /// CollectionHistoryDefault determines whether history retention is enabled for newly created collections by default. This field defaults to true.
+    /// This is only supported on buckets with storageBackend=magma.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionHistoryDefault")]
+    pub collection_history_default: Option<bool>,
+    /// Seconds defines how many seconds of history an individual vbucket should aim to retain on disk. This field defaults to 0.
+    /// This is only supported on buckets with storageBackend=magma.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub seconds: Option<i64>,
 }
 
 /// CouchbaseBucketSpec is the specification for a Couchbase bucket resource, and

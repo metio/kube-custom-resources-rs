@@ -37,7 +37,7 @@ pub struct FlowCollectorSpec {
     /// Kafka can provide better scalability, resiliency, and high availability (for more details, see https://www.redhat.com/en/topics/integration/what-is-apache-kafka).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentModel")]
     pub deployment_model: Option<FlowCollectorDeploymentModel>,
-    /// `exporters` define additional optional exporters for custom consumption or storage.
+    /// `exporters` defines additional optional exporters for custom consumption or storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporters: Option<Vec<FlowCollectorExporters>>,
     /// Kafka configuration, allowing to use Kafka as a broker as part of the flow collection pipeline. Available when the `spec.deploymentModel` is `Kafka`.
@@ -103,22 +103,20 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
     /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>
-    /// - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting
-    /// the kernel debug filesystem, so the eBPF agent pods have to run as privileged.
+    /// - `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting
+    /// the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
-    /// - `DNSTracking`: enable the DNS tracking feature.<br>
-    /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
-    /// - `NetworkEvents`: enable the network events monitoring feature, such as correlating flows and network policies.
-    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.
+    /// - `DNSTracking`: Enable the DNS tracking feature.<br>
+    /// - `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
+    /// - `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.
+    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
-    /// IMPORTANT: This feature is available as a Developer Preview.<br>
-    /// - `PacketTranslation`: enable enriching flows with packet's translation information. <br>
-    /// - `EbpfManager`: allow using eBPF manager to manage netobserv ebpf programs. <br>
-    /// IMPORTANT: This feature is available as a Developer Preview.<br>
-    /// - `UDNMapping`, to enable interfaces mappind to udn. <br>
-    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.
+    /// IMPORTANT: This feature is available as a Technology Preview.<br>
+    /// - `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>
+    /// - `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>
+    /// - `UDNMapping`: [Unsupported (*)]. Enable interfaces mapping to User Defined Networks (UDN). <br>
+    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
-    /// IMPORTANT: This feature is available as a Developer Preview.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
@@ -973,10 +971,13 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// `protocol` optionally defines a protocol to filter flows by. The available options are `TCP`, `UDP`, `ICMP`, `ICMPv6`, and `SCTP`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
-    /// `flowFilterRules` defines a list of ebpf agent flow filtering rules
+    /// `rules` defines a list of filtering rules on the eBPF Agents.
+    /// When filtering is enabled, by default, flows that don't match any rule are rejected.
+    /// To change the default, you can define a rule that accepts everything: `{ action: "Accept", cidr: "0.0.0.0/0" }`, and then refine with rejecting rules.
+    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<FlowCollectorAgentEbpfFlowFilterRules>>,
-    /// `sampling` sampling rate for the matched flow
+    /// `sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
     /// `sourcePorts` optionally defines the source ports to filter flows by.
@@ -1065,7 +1066,7 @@ pub struct FlowCollectorAgentEbpfFlowFilterRules {
     /// `protocol` optionally defines a protocol to filter flows by. The available options are `TCP`, `UDP`, `ICMP`, `ICMPv6`, and `SCTP`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterRulesProtocol>,
-    /// `sampling` sampling rate for the matched flow
+    /// `sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
     /// `sourcePorts` optionally defines the source ports to filter flows by.
@@ -3593,12 +3594,14 @@ pub struct FlowCollectorProcessor {
     /// `clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
-    /// IMPORTANT: This feature is available as a Developer Preview.
+    /// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
+    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deduper: Option<FlowCollectorProcessorDeduper>,
-    /// `filters` let you define custom filters to limit the amount of generated flows.
-    /// IMPORTANT: This feature is available as a Developer Preview.
+    /// `filters` lets you define custom filters to limit the amount of generated flows.
+    /// These filters provide more flexibility than the eBPF Agent filters (in `spec.agent.ebpf.flowFilter`), such as allowing to filter by Kubernetes namespace,
+    /// but with a lesser improvement in performance.
+    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<FlowCollectorProcessorFilters>>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -3622,9 +3625,9 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FlowCollectorProcessorLogLevel>,
     /// `logTypes` defines the desired record types to generate. Possible values are:<br>
-    /// - `Flows` (default) to export regular network flows.<br>
-    /// - `Conversations` to generate events for started conversations, ended conversations as well as periodic "tick" updates.<br>
-    /// - `EndedConversations` to generate only ended conversations events.<br>
+    /// - `Flows` to export regular network flows. This is the default.<br>
+    /// - `Conversations` to generate events for started conversations, ended conversations as well as periodic "tick" updates. Note that in this mode, Prometheus metrics are not accurate on long-standing conversations.<br>
+    /// - `EndedConversations` to generate only ended conversations events. Note that in this mode, Prometheus metrics are not accurate on long-standing conversations.<br>
     /// - `All` to generate both network flows and all conversations events. It is not recommended due to the impact on resources footprint.<br>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logTypes")]
     pub log_types: Option<FlowCollectorProcessorLogTypes>,
@@ -3685,7 +3688,7 @@ pub struct FlowCollectorProcessorAdvanced {
     /// scheduling controls how the pods are scheduled on nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorProcessorAdvancedScheduling>,
-    /// Define secondary networks to be checked for resources identification.
+    /// Defines secondary networks to be checked for resources identification.
     /// To guarantee a correct identification, indexed values must form an unique identifier across the cluster.
     /// If the same index is used by several resources, those resources might be incorrectly labeled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryNetworks")]
@@ -4453,13 +4456,13 @@ pub struct FlowCollectorProcessorAdvancedSecondaryNetworks {
     pub name: String,
 }
 
-/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
-/// IMPORTANT: This feature is available as a Developer Preview.
+/// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
+/// [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorDeduper {
     /// Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>
-    /// - Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially loosing some information such as the network interfaces used from peer, or network events.<br>
-    /// - Use `Sample` to randomly keep only 1 flow on 50 (by default) among the ones considered as duplicates. This is a compromise between dropping every duplicates or keeping every duplicates. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling are 50, the combined sampling is 1:2500.<br>
+    /// - Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially losing some information such as the network interfaces used from peer, or network events.<br>
+    /// - Use `Sample` to randomly keep only one flow on 50, which is the default, among the ones considered as duplicates. This is a compromise between dropping every duplicate or keeping every duplicate. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling values are `50`, the combined sampling is 1:2500.<br>
     /// - Use `Disabled` to turn off Processor-based de-duplication.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<FlowCollectorProcessorDeduperMode>,
@@ -4468,8 +4471,8 @@ pub struct FlowCollectorProcessorDeduper {
     pub sampling: Option<i32>,
 }
 
-/// `deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.
-/// IMPORTANT: This feature is available as a Developer Preview.
+/// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
+/// [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorDeduperMode {
     Disabled,
@@ -4477,13 +4480,13 @@ pub enum FlowCollectorProcessorDeduperMode {
     Sample,
 }
 
-/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorFilters {
     /// `filters` is a list of matches that must be all satisfied in order to remove a flow.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
     pub all_of: Option<Vec<FlowCollectorProcessorFiltersAllOf>>,
-    /// If specified, this filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
+    /// If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
     pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
     /// `sampling` is an optional sampling rate to apply to this filter.
@@ -4491,13 +4494,13 @@ pub struct FlowCollectorProcessorFilters {
     pub sampling: Option<i32>,
 }
 
-/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct FlowCollectorProcessorFiltersAllOf {
-    /// Name of the field to filter on
-    /// Refer to the documentation for the list of available fields: https://docs.openshift.com/container-platform/latest/observability/network_observability/json-flows-format-reference.html.
+    /// Name of the field to filter on.
+    /// Refer to the documentation for the list of available fields: https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc.
     pub field: String,
-    /// Type of matching to apply
+    /// Type of matching to apply.
     #[serde(rename = "matchType")]
     pub match_type: FlowCollectorProcessorFiltersAllOfMatchType,
     /// Value to filter on. When `matchType` is `Equal` or `NotEqual`, you can use field injection with `$(SomeField)` to refer to any other field of the flow.
@@ -4505,7 +4508,7 @@ pub struct FlowCollectorProcessorFiltersAllOf {
     pub value: Option<String>,
 }
 
-/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter
+/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorFiltersAllOfMatchType {
     Equal,
@@ -4516,7 +4519,7 @@ pub enum FlowCollectorProcessorFiltersAllOfMatchType {
     NotMatchRegex,
 }
 
-/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions
+/// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorFiltersOutputTarget {
     #[serde(rename = "")]
@@ -5104,7 +5107,7 @@ pub enum FlowCollectorPrometheusQuerierMode {
 /// `FlowCollectorStatus` defines the observed state of FlowCollector
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorStatus {
-    /// `conditions` represent the latest available observations of an object's state
+    /// `conditions` represents the latest available observations of an object's state
     pub conditions: Vec<Condition>,
     /// Namespace where console plugin and flowlogs-pipeline have been deployed.
     /// Deprecated: annotations are used instead

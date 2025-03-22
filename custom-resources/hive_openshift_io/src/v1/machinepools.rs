@@ -356,22 +356,13 @@ pub struct MachinePoolPlatformGcpOsDisk {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSizeGB")]
     pub disk_size_gb: Option<i64>,
     /// DiskType defines the type of disk.
-    /// The valid values are pd-standard and pd-ssd.
+    /// The valid values at this time are: pd-standard, pd-ssd, local-ssd, pd-balanced, hyperdisk-balanced.
     /// Defaulted internally to pd-ssd.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
-    pub disk_type: Option<MachinePoolPlatformGcpOsDiskDiskType>,
+    pub disk_type: Option<String>,
     /// EncryptionKey defines the KMS key to be used to encrypt the disk.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionKey")]
     pub encryption_key: Option<MachinePoolPlatformGcpOsDiskEncryptionKey>,
-}
-
-/// OSDisk defines the storage for instances.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MachinePoolPlatformGcpOsDiskDiskType {
-    #[serde(rename = "pd-ssd")]
-    PdSsd,
-    #[serde(rename = "pd-standard")]
-    PdStandard,
 }
 
 /// EncryptionKey defines the KMS key to be used to encrypt the disk.

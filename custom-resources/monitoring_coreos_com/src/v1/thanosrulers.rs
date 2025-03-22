@@ -101,6 +101,9 @@ pub struct ThanosRulerSpec {
     /// Defines the DNS policy for the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<ThanosRulerDnsPolicy>,
+    /// Indicates whether information about services should be injected into pod's environment variables
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
+    pub enable_service_links: Option<bool>,
     /// EnforcedNamespaceLabel enforces adding a namespace label of origin for each alert
     /// and metric that is user created. The label value will always be the namespace of the object that is
     /// being created.
@@ -268,6 +271,13 @@ pub struct ThanosRulerSpec {
     /// Thanos Ruler Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// The name of the service name used by the underlying StatefulSet(s) as the governing service.
+    /// If defined, the Service  must be created before the ThanosRuler resource in the same namespace and it must define a selector that matches the pod labels.
+    /// If empty, the operator will create and manage a headless service named `thanos-ruler-operated` for ThanosRuler resources.
+    /// When deploying multiple ThanosRuler resources in the same namespace, it is recommended to specify a different value for each.
+    /// See https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
     /// Storage spec to specify how storage shall be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ThanosRulerStorage>,

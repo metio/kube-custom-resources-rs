@@ -2490,6 +2490,8 @@ spec:
                     runAsUser:
                       format: "int64"
                       type: "integer"
+                    seLinuxChangePolicy:
+                      type: "string"
                     seLinuxOptions:
                       properties:
                         level:
@@ -3282,6 +3284,8 @@ spec:
                         runAsUser:
                           format: "int64"
                           type: "integer"
+                        seLinuxChangePolicy:
+                          type: "string"
                         seLinuxOptions:
                           properties:
                             level:
@@ -3337,6 +3341,14 @@ spec:
                       type: "object"
                     prometheusCR:
                       properties:
+                        allowNamespaces:
+                          items:
+                            type: "string"
+                          type: "array"
+                        denyNamespaces:
+                          items:
+                            type: "string"
+                          type: "array"
                         enabled:
                           type: "boolean"
                         podMonitorSelector:

@@ -13,10 +13,16 @@ use self::prelude::*;
 /// CohortSpec defines the desired state of Cohort
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1alpha1", kind = "Cohort", plural = "cohorts")]
+#[kube(status = "CohortStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CohortSpec {
+    /// fairSharing defines the properties of the Cohort when
+    /// participating in FairSharing. The values are only relevant
+    /// if FairSharing is enabled in the Kueue configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
+    pub fair_sharing: Option<CohortFairSharing>,
     /// Parent references the name of the Cohort's parent, if
     /// any. It satisfies one of three cases:
     /// 1) Unset. This Cohort is the root of its Cohort tree.
@@ -47,6 +53,25 @@ pub struct CohortSpec {
     /// will be rejected by the webhook.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroups")]
     pub resource_groups: Option<Vec<CohortResourceGroups>>,
+}
+
+/// fairSharing defines the properties of the Cohort when
+/// participating in FairSharing. The values are only relevant
+/// if FairSharing is enabled in the Kueue configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CohortFairSharing {
+    /// weight gives a comparative advantage to this ClusterQueue
+    /// or Cohort when competing for unused resources in the
+    /// Cohort.  The share is based on the dominant resource usage
+    /// above nominal quotas for each resource, divided by the
+    /// weight.  Admission prioritizes scheduling workloads from
+    /// ClusterQueues and Cohorts with the lowest share and
+    /// preempting workloads from the ClusterQueues and Cohorts
+    /// with the highest share.  A zero weight implies infinite
+    /// share value, meaning that this Node will always be at
+    /// disadvantage against other ClusterQueues and Cohorts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub weight: Option<IntOrString>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -118,5 +143,26 @@ pub struct CohortResourceGroupsFlavorsResources {
     /// allocated by a ClusterQueue in the cohort.
     #[serde(rename = "nominalQuota")]
     pub nominal_quota: IntOrString,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CohortStatus {
+    /// fairSharing contains the information about the current status of Fair Sharing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
+    pub fair_sharing: Option<CohortStatusFairSharing>,
+}
+
+/// fairSharing contains the information about the current status of Fair Sharing.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CohortStatusFairSharing {
+    /// WeightedShare represent the maximum of the ratios of usage
+    /// above nominal quota to the lendable resources in the
+    /// Cohort, among all the resources provided by the Node, and
+    /// divided by the weight.  If zero, it means that the usage of
+    /// the Node is below the nominal quota.  If the Node has a
+    /// weight of zero, this will return 9223372036854775807, the
+    /// maximum possible share value.
+    #[serde(rename = "weightedShare")]
+    pub weighted_share: i64,
 }
 

@@ -36,10 +36,8 @@ pub struct RedisOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum RedisOptionsVersion {
-    #[serde(rename = "626")]
-    r#_626,
-    #[serde(rename = "704")]
-    r#_704,
+    #[serde(rename = "724")]
+    r#_724,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

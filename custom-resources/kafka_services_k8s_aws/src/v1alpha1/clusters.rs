@@ -355,12 +355,15 @@ pub struct ClusterStatus {
     pub bootstrap_broker_string_vpc_connectivity_saslscram: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapBrokerStringVPCConnectivityTLS")]
     pub bootstrap_broker_string_vpc_connectivity_tls: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// The current version of the MSK cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
+    pub current_version: Option<String>,
     /// The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,
     /// FAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING.
     #[serde(default, skip_serializing_if = "Option::is_none")]

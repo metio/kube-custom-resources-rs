@@ -13,6 +13,24 @@ use self::prelude::*;
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceInterpreterWebhookConfigurationWebhooks {
     /// ClientConfig defines how to communicate with the hook.
+    /// It supports two mutually exclusive configuration modes:
+    /// 
+    /// 1. URL - Directly specify the webhook URL with format `scheme://host:port/path`.
+    ///    Example: https://webhook.example.com:8443/my-interpreter
+    /// 
+    /// 2. Service - Reference a Kubernetes Service that exposes the webhook.
+    ///    When using Service reference, Karmada resolves the endpoint through following steps:
+    ///    a) First attempts to locate the Service in karmada-apiserver
+    ///    b) If found, constructs URL based on Service type:
+    ///       - ClusterIP/LoadBalancer/NodePort: Uses ClusterIP with port from Service spec
+    ///         (Note: Services with ClusterIP "None" are rejected), Example:
+    ///         `https://<cluster ip>:<port>`
+    ///       - ExternalName: Uses external DNS name format: `https://<external name>:<port>`
+    ///    c) If NOT found in karmada-apiserver, falls back to standard Kubernetes
+    ///       service DNS name format: `https://<service>.<namespace>.svc:<port>`
+    /// 
+    /// Note: When both URL and Service are specified, the Service reference takes precedence
+    ///       and the URL configuration will be ignored.
     #[serde(rename = "clientConfig")]
     pub client_config: ResourceInterpreterWebhookConfigurationWebhooksClientConfig,
     /// InterpreterContextVersions is an ordered list of preferred `ResourceInterpreterContext`
@@ -40,6 +58,24 @@ pub struct ResourceInterpreterWebhookConfigurationWebhooks {
 }
 
 /// ClientConfig defines how to communicate with the hook.
+/// It supports two mutually exclusive configuration modes:
+/// 
+/// 1. URL - Directly specify the webhook URL with format `scheme://host:port/path`.
+///    Example: https://webhook.example.com:8443/my-interpreter
+/// 
+/// 2. Service - Reference a Kubernetes Service that exposes the webhook.
+///    When using Service reference, Karmada resolves the endpoint through following steps:
+///    a) First attempts to locate the Service in karmada-apiserver
+///    b) If found, constructs URL based on Service type:
+///       - ClusterIP/LoadBalancer/NodePort: Uses ClusterIP with port from Service spec
+///         (Note: Services with ClusterIP "None" are rejected), Example:
+///         `https://<cluster ip>:<port>`
+///       - ExternalName: Uses external DNS name format: `https://<external name>:<port>`
+///    c) If NOT found in karmada-apiserver, falls back to standard Kubernetes
+///       service DNS name format: `https://<service>.<namespace>.svc:<port>`
+/// 
+/// Note: When both URL and Service are specified, the Service reference takes precedence
+///       and the URL configuration will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceInterpreterWebhookConfigurationWebhooksClientConfig {
     /// `caBundle` is a PEM encoded CA bundle which will be used to validate the webhook's server certificate.

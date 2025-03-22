@@ -14,6 +14,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "metallb.io", version = "v1beta1", kind = "IPAddressPool", plural = "ipaddresspools")]
 #[kube(namespaced)]
+#[kube(status = "IPAddressPoolStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -134,5 +135,17 @@ pub struct IPAddressPoolServiceAllocationServiceSelectorsMatchExpressions {
 /// IPAddressPoolStatus defines the observed state of IPAddressPool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressPoolStatus {
+    /// AssignedIPv4 is the number of assigned IPv4 addresses.
+    #[serde(rename = "assignedIPv4")]
+    pub assigned_i_pv4: i64,
+    /// AssignedIPv6 is the number of assigned IPv6 addresses.
+    #[serde(rename = "assignedIPv6")]
+    pub assigned_i_pv6: i64,
+    /// AvailableIPv4 is the number of available IPv4 addresses.
+    #[serde(rename = "availableIPv4")]
+    pub available_i_pv4: i64,
+    /// AvailableIPv6 is the number of available IPv6 addresses.
+    #[serde(rename = "availableIPv6")]
+    pub available_i_pv6: i64,
 }
 

@@ -40,13 +40,11 @@ pub struct ClusterQueueSpec {
     /// 
     /// A cohort is a name that links CQs together, but it doesn't reference any
     /// object.
-    /// 
-    /// Validation of a cohort name is equivalent to that of object names:
-    /// subdomain in DNS (RFC 1123).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cohort: Option<String>,
-    /// fairSharing defines the properties of the ClusterQueue when participating in fair sharing.
-    /// The values are only relevant if fair sharing is enabled in the Kueue configuration.
+    /// fairSharing defines the properties of the ClusterQueue when
+    /// participating in FairSharing.  The values are only relevant
+    /// if FairSharing is enabled in the Kueue configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
     pub fair_sharing: Option<ClusterQueueFairSharing>,
     /// flavorFungibility defines whether a workload should try the next flavor
@@ -60,17 +58,22 @@ pub struct ClusterQueueSpec {
     /// If set to an empty selector `{}`, then all namespaces are eligible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterQueueNamespaceSelector>,
-    /// preemption describes policies to preempt Workloads from this ClusterQueue
-    /// or the ClusterQueue's cohort.
+    /// ClusterQueuePreemption contains policies to preempt Workloads from this
+    /// ClusterQueue or the ClusterQueue's cohort.
     /// 
-    /// Preemption can happen in two scenarios:
+    /// Preemption may be configured to work in the following scenarios:
     /// 
-    /// - When a Workload fits within the nominal quota of the ClusterQueue, but
-    ///   the quota is currently borrowed by other ClusterQueues in the cohort.
-    ///   Preempting Workloads in other ClusterQueues allows this ClusterQueue to
-    ///   reclaim its nominal quota.
-    /// - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-    ///   and there are admitted Workloads in the ClusterQueue with lower priority.
+    ///   - When a Workload fits within the nominal quota of the ClusterQueue, but
+    ///     the quota is currently borrowed by other ClusterQueues in the cohort.
+    ///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
+    ///     reclaim its nominal quota. Configured using reclaimWithinCohort.
+    ///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
+    ///     and there are admitted Workloads in the ClusterQueue with lower priority.
+    ///     Configured using withinClusterQueue.
+    ///   - When a Workload may fit while both borrowing and preempting
+    ///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
+    ///   - When FairSharing is enabled, to maintain fair distribution of
+    ///     unused resources. See FairSharing documentation.
     /// 
     /// The preemption algorithm tries to find a minimal set of Workloads to
     /// preempt to accomomdate the pending Workload, preempting Workloads with
@@ -128,18 +131,21 @@ pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
     pub on_flavors: Option<Vec<String>>,
 }
 
-/// fairSharing defines the properties of the ClusterQueue when participating in fair sharing.
-/// The values are only relevant if fair sharing is enabled in the Kueue configuration.
+/// fairSharing defines the properties of the ClusterQueue when
+/// participating in FairSharing.  The values are only relevant
+/// if FairSharing is enabled in the Kueue configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueFairSharing {
-    /// weight gives a comparative advantage to this ClusterQueue when competing for unused
-    /// resources in the cohort against other ClusterQueues.
-    /// The share of a ClusterQueue is based on the dominant resource usage above nominal
-    /// quotas for each resource, divided by the weight.
-    /// Admission prioritizes scheduling workloads from ClusterQueues with the lowest share
-    /// and preempting workloads from the ClusterQueues with the highest share.
-    /// A zero weight implies infinite share value, meaning that this ClusterQueue will always
-    /// be at disadvantage against other ClusterQueues.
+    /// weight gives a comparative advantage to this ClusterQueue
+    /// or Cohort when competing for unused resources in the
+    /// Cohort.  The share is based on the dominant resource usage
+    /// above nominal quotas for each resource, divided by the
+    /// weight.  Admission prioritizes scheduling workloads from
+    /// ClusterQueues and Cohorts with the lowest share and
+    /// preempting workloads from the ClusterQueues and Cohorts
+    /// with the highest share.  A zero weight implies infinite
+    /// share value, meaning that this Node will always be at
+    /// disadvantage against other ClusterQueues and Cohorts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<IntOrString>,
 }
@@ -217,25 +223,31 @@ pub struct ClusterQueueNamespaceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// preemption describes policies to preempt Workloads from this ClusterQueue
-/// or the ClusterQueue's cohort.
+/// ClusterQueuePreemption contains policies to preempt Workloads from this
+/// ClusterQueue or the ClusterQueue's cohort.
 /// 
-/// Preemption can happen in two scenarios:
+/// Preemption may be configured to work in the following scenarios:
 /// 
-/// - When a Workload fits within the nominal quota of the ClusterQueue, but
-///   the quota is currently borrowed by other ClusterQueues in the cohort.
-///   Preempting Workloads in other ClusterQueues allows this ClusterQueue to
-///   reclaim its nominal quota.
-/// - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///   and there are admitted Workloads in the ClusterQueue with lower priority.
+///   - When a Workload fits within the nominal quota of the ClusterQueue, but
+///     the quota is currently borrowed by other ClusterQueues in the cohort.
+///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
+///     reclaim its nominal quota. Configured using reclaimWithinCohort.
+///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
+///     and there are admitted Workloads in the ClusterQueue with lower priority.
+///     Configured using withinClusterQueue.
+///   - When a Workload may fit while both borrowing and preempting
+///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
+///   - When FairSharing is enabled, to maintain fair distribution of
+///     unused resources. See FairSharing documentation.
 /// 
 /// The preemption algorithm tries to find a minimal set of Workloads to
 /// preempt to accomomdate the pending Workload, preempting Workloads with
 /// lower priority first.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueuePreemption {
-    /// borrowWithinCohort provides configuration to allow preemption within
-    /// cohort while borrowing.
+    /// BorrowWithinCohort contains configuration which allows to preempt workloads
+    /// within cohort while borrowing. It only works with Classical Preemption,
+    /// __not__ with Fair Sharing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "borrowWithinCohort")]
     pub borrow_within_cohort: Option<ClusterQueuePreemptionBorrowWithinCohort>,
     /// reclaimWithinCohort determines whether a pending Workload can preempt
@@ -248,11 +260,11 @@ pub struct ClusterQueuePreemption {
     ///   Workloads in the cohort that have lower priority than the pending
     ///   Workload. **Fair Sharing** only preempt Workloads in the cohort that
     ///   have lower priority than the pending Workload and that satisfy the
-    ///   fair sharing preemptionStategies.
+    ///   Fair Sharing preemptionStategies.
     /// - `Any`: **Classic Preemption** if the pending Workload fits within
     ///    the nominal quota of its ClusterQueue, preempt any Workload in the
     ///    cohort, irrespective of priority. **Fair Sharing** preempt Workloads
-    ///    in the cohort that satisfy the fair sharing preemptionStrategies.
+    ///    in the cohort that satisfy the Fair Sharing preemptionStrategies.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reclaimWithinCohort")]
     pub reclaim_within_cohort: Option<ClusterQueuePreemptionReclaimWithinCohort>,
     /// withinClusterQueue determines whether a pending Workload that doesn't fit
@@ -269,8 +281,9 @@ pub struct ClusterQueuePreemption {
     pub within_cluster_queue: Option<ClusterQueuePreemptionWithinClusterQueue>,
 }
 
-/// borrowWithinCohort provides configuration to allow preemption within
-/// cohort while borrowing.
+/// BorrowWithinCohort contains configuration which allows to preempt workloads
+/// within cohort while borrowing. It only works with Classical Preemption,
+/// __not__ with Fair Sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueuePreemptionBorrowWithinCohort {
     /// maxPriorityThreshold allows to restrict the set of workloads which
@@ -291,25 +304,31 @@ pub struct ClusterQueuePreemptionBorrowWithinCohort {
     pub policy: Option<ClusterQueuePreemptionBorrowWithinCohortPolicy>,
 }
 
-/// borrowWithinCohort provides configuration to allow preemption within
-/// cohort while borrowing.
+/// BorrowWithinCohort contains configuration which allows to preempt workloads
+/// within cohort while borrowing. It only works with Classical Preemption,
+/// __not__ with Fair Sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterQueuePreemptionBorrowWithinCohortPolicy {
     Never,
     LowerPriority,
 }
 
-/// preemption describes policies to preempt Workloads from this ClusterQueue
-/// or the ClusterQueue's cohort.
+/// ClusterQueuePreemption contains policies to preempt Workloads from this
+/// ClusterQueue or the ClusterQueue's cohort.
 /// 
-/// Preemption can happen in two scenarios:
+/// Preemption may be configured to work in the following scenarios:
 /// 
-/// - When a Workload fits within the nominal quota of the ClusterQueue, but
-///   the quota is currently borrowed by other ClusterQueues in the cohort.
-///   Preempting Workloads in other ClusterQueues allows this ClusterQueue to
-///   reclaim its nominal quota.
-/// - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///   and there are admitted Workloads in the ClusterQueue with lower priority.
+///   - When a Workload fits within the nominal quota of the ClusterQueue, but
+///     the quota is currently borrowed by other ClusterQueues in the cohort.
+///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
+///     reclaim its nominal quota. Configured using reclaimWithinCohort.
+///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
+///     and there are admitted Workloads in the ClusterQueue with lower priority.
+///     Configured using withinClusterQueue.
+///   - When a Workload may fit while both borrowing and preempting
+///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
+///   - When FairSharing is enabled, to maintain fair distribution of
+///     unused resources. See FairSharing documentation.
 /// 
 /// The preemption algorithm tries to find a minimal set of Workloads to
 /// preempt to accomomdate the pending Workload, preempting Workloads with
@@ -321,17 +340,22 @@ pub enum ClusterQueuePreemptionReclaimWithinCohort {
     Any,
 }
 
-/// preemption describes policies to preempt Workloads from this ClusterQueue
-/// or the ClusterQueue's cohort.
+/// ClusterQueuePreemption contains policies to preempt Workloads from this
+/// ClusterQueue or the ClusterQueue's cohort.
 /// 
-/// Preemption can happen in two scenarios:
+/// Preemption may be configured to work in the following scenarios:
 /// 
-/// - When a Workload fits within the nominal quota of the ClusterQueue, but
-///   the quota is currently borrowed by other ClusterQueues in the cohort.
-///   Preempting Workloads in other ClusterQueues allows this ClusterQueue to
-///   reclaim its nominal quota.
-/// - When a Workload doesn't fit within the nominal quota of the ClusterQueue
-///   and there are admitted Workloads in the ClusterQueue with lower priority.
+///   - When a Workload fits within the nominal quota of the ClusterQueue, but
+///     the quota is currently borrowed by other ClusterQueues in the cohort.
+///     We preempt workloads in other ClusterQueues to allow this ClusterQueue to
+///     reclaim its nominal quota. Configured using reclaimWithinCohort.
+///   - When a Workload doesn't fit within the nominal quota of the ClusterQueue
+///     and there are admitted Workloads in the ClusterQueue with lower priority.
+///     Configured using withinClusterQueue.
+///   - When a Workload may fit while both borrowing and preempting
+///     low priority workloads in the Cohort. Configured using borrowWithinCohort.
+///   - When FairSharing is enabled, to maintain fair distribution of
+///     unused resources. See FairSharing documentation.
 /// 
 /// The preemption algorithm tries to find a minimal set of Workloads to
 /// preempt to accomomdate the pending Workload, preempting Workloads with
@@ -442,7 +466,7 @@ pub struct ClusterQueueStatus {
     /// current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// FairSharing contains the information about the current status of fair sharing.
+    /// fairSharing contains the information about the current status of Fair Sharing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fairSharing")]
     pub fair_sharing: Option<ClusterQueueStatusFairSharing>,
     /// flavorsReservation are the reserved quotas, by flavor, currently in use by the
@@ -470,15 +494,16 @@ pub struct ClusterQueueStatus {
     pub reserving_workloads: Option<i32>,
 }
 
-/// FairSharing contains the information about the current status of fair sharing.
+/// fairSharing contains the information about the current status of Fair Sharing.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFairSharing {
-    /// WeightedShare represent the maximum of the ratios of usage above nominal
-    /// quota to the lendable resources in the cohort, among all the resources
-    /// provided by the ClusterQueue, and divided by the weight.
-    /// If zero, it means that the usage of the ClusterQueue is below the nominal quota.
-    /// If the ClusterQueue has a weight of zero, this will return 9223372036854775807,
-    /// the maximum possible share value.
+    /// WeightedShare represent the maximum of the ratios of usage
+    /// above nominal quota to the lendable resources in the
+    /// Cohort, among all the resources provided by the Node, and
+    /// divided by the weight.  If zero, it means that the usage of
+    /// the Node is below the nominal quota.  If the Node has a
+    /// weight of zero, this will return 9223372036854775807, the
+    /// maximum possible share value.
     #[serde(rename = "weightedShare")]
     pub weighted_share: i64,
 }

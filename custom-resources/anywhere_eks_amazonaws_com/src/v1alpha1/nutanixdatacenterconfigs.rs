@@ -17,13 +17,17 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NutanixDatacenterConfigSpec {
-    /// AdditionalTrustBundle is the optional PEM-encoded certificate bundle for users that configured their Prism Central with certificates from non-publicly trusted CAs
+    /// AdditionalTrustBundle is the optional PEM-encoded certificate bundle for
+    /// users that configured their Prism Central with certificates from non-publicly
+    /// trusted CAs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalTrustBundle")]
     pub additional_trust_bundle: Option<String>,
-    /// CcmExcludeIPs is the optional list of IP addresses that should be excluded from the CCM IP pool for nodes. List should be valid IP addresses and IP address ranges.
+    /// CcmExcludeIPs is the optional list of IP addresses that should be excluded from the CCM IP pool for nodes.
+    /// List should be valid IP addresses and IP address ranges.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ccmExcludeNodeIPs")]
     pub ccm_exclude_node_i_ps: Option<Vec<String>>,
-    /// CredentialRef is the reference to the secret name that contains the credentials for the Nutanix Prism Central. The namespace for the secret is assumed to be a constant i.e. eksa-system.
+    /// CredentialRef is the reference to the secret name that contains the credentials
+    /// for the Nutanix Prism Central. The namespace for the secret is assumed to be a constant i.e. eksa-system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialRef")]
     pub credential_ref: Option<NutanixDatacenterConfigCredentialRef>,
     /// Endpoint is the Endpoint of Nutanix Prism Central
@@ -31,14 +35,21 @@ pub struct NutanixDatacenterConfigSpec {
     /// FailureDomains is the optional list of failure domains for the Nutanix Datacenter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<NutanixDatacenterConfigFailureDomains>>,
-    /// Insecure is the optional flag to skip TLS verification. Nutanix Prism Central installation by default ships with a self-signed certificate that will fail TLS verification because the certificate is not issued by a public CA and does not have the IP SANs with the Prism Central endpoint. To accommodate the scenario where the user has not changed the default Certificate that ships with Prism Central, we allow the user to skip TLS verification. This is not recommended for production use.
+    /// Insecure is the optional flag to skip TLS verification. Nutanix Prism
+    /// Central installation by default ships with a self-signed certificate
+    /// that will fail TLS verification because the certificate is not issued by
+    /// a public CA and does not have the IP SANs with the Prism Central endpoint.
+    /// To accommodate the scenario where the user has not changed the default
+    /// Certificate that ships with Prism Central, we allow the user to skip TLS
+    /// verification. This is not recommended for production use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
     /// Port is the Port of Nutanix Prism Central
     pub port: i64,
 }
 
-/// CredentialRef is the reference to the secret name that contains the credentials for the Nutanix Prism Central. The namespace for the secret is assumed to be a constant i.e. eksa-system.
+/// CredentialRef is the reference to the secret name that contains the credentials
+/// for the Nutanix Prism Central. The namespace for the secret is assumed to be a constant i.e. eksa-system.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NutanixDatacenterConfigCredentialRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,16 +59,17 @@ pub struct NutanixDatacenterConfigCredentialRef {
 }
 
 /// NutanixDatacenterFailureDomain defines the failure domain for the Nutanix Datacenter.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixDatacenterConfigFailureDomains {
     /// Cluster is the Prism Element cluster name or uuid that is connected to the Prism Central.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<NutanixDatacenterConfigFailureDomainsCluster>,
-    /// Name is the unique name of the failure domain. Name must be between 1 and 64 characters long. It must consist of only lower case alphanumeric characters and hyphens (-). It must start and end with an alphanumeric character.
+    pub cluster: NutanixDatacenterConfigFailureDomainsCluster,
+    /// Name is the unique name of the failure domain.
+    /// Name must be between 1 and 64 characters long.
+    /// It must consist of only lower case alphanumeric characters and hyphens (-).
+    /// It must start and end with an alphanumeric character.
     pub name: String,
     /// Subnets holds the list of subnets identifiers cluster's network subnets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub subnets: Option<Vec<NutanixDatacenterConfigFailureDomainsSubnets>>,
+    pub subnets: Vec<NutanixDatacenterConfigFailureDomainsSubnets>,
     /// Worker Machine Groups holds the list of worker machine group names that will use this failure domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerMachineGroups")]
     pub worker_machine_groups: Option<Vec<String>>,

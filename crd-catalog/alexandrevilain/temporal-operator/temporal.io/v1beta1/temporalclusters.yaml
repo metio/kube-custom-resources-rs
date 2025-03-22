@@ -54,6 +54,8 @@ spec:
                         deployment:
                           description: "Override configuration for the temporal service Deployment."
                           properties:
+                            jsonPatch:
+                              x-kubernetes-preserve-unknown-fields: true
                             metadata:
                               description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                               properties:
@@ -2325,6 +2327,8 @@ spec:
                             deployment:
                               description: "Override configuration for the temporal service Deployment."
                               properties:
+                                jsonPatch:
+                                  x-kubernetes-preserve-unknown-fields: true
                                 metadata:
                                   description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                                   properties:
@@ -2440,6 +2444,8 @@ spec:
                             deployment:
                               description: "Override configuration for the temporal service Deployment."
                               properties:
+                                jsonPatch:
+                                  x-kubernetes-preserve-unknown-fields: true
                                 metadata:
                                   description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                                   properties:
@@ -2559,6 +2565,8 @@ spec:
                             deployment:
                               description: "Override configuration for the temporal service Deployment."
                               properties:
+                                jsonPatch:
+                                  x-kubernetes-preserve-unknown-fields: true
                                 metadata:
                                   description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                                   properties:
@@ -2674,6 +2682,8 @@ spec:
                             deployment:
                               description: "Override configuration for the temporal service Deployment."
                               properties:
+                                jsonPatch:
+                                  x-kubernetes-preserve-unknown-fields: true
                                 metadata:
                                   description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                                   properties:
@@ -2771,6 +2781,8 @@ spec:
                         deployment:
                           description: "Override configuration for the temporal service Deployment."
                           properties:
+                            jsonPatch:
+                              x-kubernetes-preserve-unknown-fields: true
                             metadata:
                               description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                               properties:
@@ -2836,6 +2848,8 @@ spec:
                             deployment:
                               description: "Override configuration for the temporal service Deployment."
                               properties:
+                                jsonPatch:
+                                  x-kubernetes-preserve-unknown-fields: true
                                 metadata:
                                   description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                                   properties:
@@ -2978,6 +2992,8 @@ spec:
                         deployment:
                           description: "Override configuration for the temporal service Deployment."
                           properties:
+                            jsonPatch:
+                              x-kubernetes-preserve-unknown-fields: true
                             metadata:
                               description: "ObjectMetaOverride provides the ability to override an object metadata.\nIt's a subset of the fields included in k8s.io/apimachinery/pkg/apis/meta/v1.ObjectMeta."
                               properties:

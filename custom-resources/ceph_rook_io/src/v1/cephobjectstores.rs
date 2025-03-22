@@ -346,6 +346,12 @@ pub struct CephObjectStoreGateway {
     /// applied. Use with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rgwConfig")]
     pub rgw_config: Option<BTreeMap<String, String>>,
+    /// RgwConfigFromSecret works exactly like RgwConfig but takes config value from Secret Key reference.
+    /// Values are modified at runtime without RGW restart.
+    /// This feature is intended for advanced users. It allows breaking configurations to be easily
+    /// applied. Use with caution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rgwConfigFromSecret")]
+    pub rgw_config_from_secret: Option<BTreeMap<String, CephObjectStoreGatewayRgwConfigFromSecret>>,
     /// The port the rgw service will be listening on (https)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securePort")]
     pub secure_port: Option<i32>,
@@ -1028,6 +1034,27 @@ pub struct CephObjectStoreGatewayResourcesClaims {
     /// only the result of this request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request: Option<String>,
+}
+
+/// RgwConfigFromSecret works exactly like RgwConfig but takes config value from Secret Key reference.
+/// Values are modified at runtime without RGW restart.
+/// This feature is intended for advanced users. It allows breaking configurations to be easily
+/// applied. Use with caution.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephObjectStoreGatewayRgwConfigFromSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// The configuration related to add/set on each rgw service.

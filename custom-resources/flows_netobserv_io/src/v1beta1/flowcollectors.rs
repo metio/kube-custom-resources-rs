@@ -111,7 +111,7 @@ pub struct FlowCollectorAgentEbpf {
     /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
     /// - `PacketTranslation`: enable enriching flows with packet's translation information. <br>
     /// - `EbpfManager`: allow using eBPF manager to manage netobserv ebpf programs. <br>
-    /// - `UDNMapping`, to enable interfaces mappind to udn. <br>
+    /// - `UDNMapping`, to enable interfaces mapping to udn. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering
@@ -212,7 +212,9 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// `protocol` optionally defines a protocol to filter flows by. The available options are `TCP`, `UDP`, `ICMP`, `ICMPv6`, and `SCTP`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterProtocol>,
-    /// `flowFilterRules` defines a list of ebpf agent flow filtering rules
+    /// `rules` defines a list of filtering rules on the eBPF Agents.
+    /// When filtering is enabled, by default, flows that don't match any rule are rejected.
+    /// To change the default, you can define a rule that accepts everything: `{ action: "Accept", cidr: "0.0.0.0/0" }`, and then refine with rejecting rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<FlowCollectorAgentEbpfFlowFilterRules>>,
     /// `sampling` sampling rate for the matched flow

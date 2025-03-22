@@ -105,6 +105,9 @@ pub struct ClusterSecretStoreProvider {
     /// Chef configures this store to sync secrets with chef server
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub chef: Option<ClusterSecretStoreProviderChef>,
+    /// CloudruSM configures this store to sync secrets using the Cloud.ru Secret Manager provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cloudrusm: Option<ClusterSecretStoreProviderCloudrusm>,
     /// Conjur configures this store to sync secrets using conjur provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conjur: Option<ClusterSecretStoreProviderConjur>,
@@ -127,6 +130,9 @@ pub struct ClusterSecretStoreProvider {
     /// GCPSM configures this store to sync secrets using Google Cloud Platform Secret Manager provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gcpsm: Option<ClusterSecretStoreProviderGcpsm>,
+    /// Github configures this store to push Github Action secrets using Github API provider
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub github: Option<ClusterSecretStoreProviderGithub>,
     /// GitLab configures this store to sync secrets using GitLab Variables provider
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gitlab: Option<ClusterSecretStoreProviderGitlab>,
@@ -1080,6 +1086,67 @@ pub struct ClusterSecretStoreProviderChefAuthSecretRefPrivateKeySecretRef {
     pub namespace: Option<String>,
 }
 
+/// CloudruSM configures this store to sync secrets using the Cloud.ru Secret Manager provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderCloudrusm {
+    /// CSMAuth contains a secretRef for credentials.
+    pub auth: ClusterSecretStoreProviderCloudrusmAuth,
+    /// ProjectID is the project, which the secrets are stored in.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectID")]
+    pub project_id: Option<String>,
+}
+
+/// CSMAuth contains a secretRef for credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderCloudrusmAuth {
+    /// CSMAuthSecretRef holds secret references for Cloud.ru credentials.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<ClusterSecretStoreProviderCloudrusmAuthSecretRef>,
+}
+
+/// CSMAuthSecretRef holds secret references for Cloud.ru credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderCloudrusmAuthSecretRef {
+    /// The AccessKeyID is used for authentication
+    #[serde(rename = "accessKeyIDSecretRef")]
+    pub access_key_id_secret_ref: ClusterSecretStoreProviderCloudrusmAuthSecretRefAccessKeyIdSecretRef,
+    /// The AccessKeySecret is used for authentication
+    #[serde(rename = "accessKeySecretSecretRef")]
+    pub access_key_secret_secret_ref: ClusterSecretStoreProviderCloudrusmAuthSecretRefAccessKeySecretSecretRef,
+}
+
+/// The AccessKeyID is used for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderCloudrusmAuthSecretRefAccessKeyIdSecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// The AccessKeySecret is used for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderCloudrusmAuthSecretRefAccessKeySecretSecretRef {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// Conjur configures this store to sync secrets using conjur provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderConjur {
@@ -1559,6 +1626,59 @@ pub struct ClusterSecretStoreProviderGcpsmAuthWorkloadIdentityServiceAccountRef 
     pub namespace: Option<String>,
 }
 
+/// Github configures this store to push Github Action secrets using Github API provider
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGithub {
+    /// appID specifies the Github APP that will be used to authenticate the client
+    #[serde(rename = "appID")]
+    pub app_id: i64,
+    /// auth configures how secret-manager authenticates with a Github instance.
+    pub auth: ClusterSecretStoreProviderGithubAuth,
+    /// environment will be used to fetch secrets from a particular environment within a github repository
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment: Option<String>,
+    /// installationID specifies the Github APP installation that will be used to authenticate the client
+    #[serde(rename = "installationID")]
+    pub installation_id: i64,
+    /// organization will be used to fetch secrets from the Github organization
+    pub organization: String,
+    /// repository will be used to fetch secrets from the Github repository within an organization
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository: Option<String>,
+    /// Upload URL for enterprise instances. Default to URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadURL")]
+    pub upload_url: Option<String>,
+    /// URL configures the Github instance URL. Defaults to https://github.com/.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+/// auth configures how secret-manager authenticates with a Github instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGithubAuth {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "privateKey")]
+    pub private_key: ClusterSecretStoreProviderGithubAuthPrivateKey,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderGithubAuthPrivateKey {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// GitLab configures this store to sync secrets using GitLab Variables provider
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderGitlab {
@@ -1671,8 +1791,10 @@ pub struct ClusterSecretStoreProviderIbmAuthSecretRefSecretApiKeySecretRef {
 pub struct ClusterSecretStoreProviderInfisical {
     /// Auth configures how the Operator authenticates with the Infisical API
     pub auth: ClusterSecretStoreProviderInfisicalAuth,
+    /// HostAPI specifies the base URL of the Infisical API. If not provided, it defaults to "https://app.infisical.com/api".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAPI")]
     pub host_api: Option<String>,
+    /// SecretsScope defines the scope of the secrets within the workspace
     #[serde(rename = "secretsScope")]
     pub secrets_scope: ClusterSecretStoreProviderInfisicalSecretsScope,
 }
@@ -1730,14 +1852,22 @@ pub struct ClusterSecretStoreProviderInfisicalAuthUniversalAuthCredentialsClient
     pub namespace: Option<String>,
 }
 
+/// SecretsScope defines the scope of the secrets within the workspace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderInfisicalSecretsScope {
+    /// EnvironmentSlug is the required slug identifier for the environment.
     #[serde(rename = "environmentSlug")]
     pub environment_slug: String,
+    /// ExpandSecretReferences indicates whether secret references should be expanded. Defaults to true if not provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expandSecretReferences")]
+    pub expand_secret_references: Option<bool>,
+    /// ProjectSlug is the required slug identifier for the project.
     #[serde(rename = "projectSlug")]
     pub project_slug: String,
+    /// Recursive indicates whether the secrets should be fetched recursively. Defaults to false if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub recursive: Option<bool>,
+    /// SecretsPath specifies the path to the secrets within the workspace. Defaults to "/" if not provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsPath")]
     pub secrets_path: Option<String>,
 }
@@ -2527,7 +2657,8 @@ pub struct ClusterSecretStoreProviderSenhaseguraAuthClientSecretSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderVault {
     /// Auth configures how secret-manager authenticates with the Vault server.
-    pub auth: ClusterSecretStoreProviderVaultAuth,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<ClusterSecretStoreProviderVaultAuth>,
     /// PEM encoded CA bundle used to validate Vault server certificate. Only used
     /// if the Server URL is using HTTPS protocol. This parameter is ignored for
     /// plain HTTP protocol connection. If not set the system root certificates
@@ -3002,7 +3133,7 @@ pub struct ClusterSecretStoreProviderVaultAuthLdap {
     /// method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterSecretStoreProviderVaultAuthLdapSecretRef>,
-    /// Username is a LDAP user name used to authenticate using the LDAP Vault
+    /// Username is an LDAP username used to authenticate using the LDAP Vault
     /// authentication method
     pub username: String,
 }
@@ -3045,14 +3176,14 @@ pub struct ClusterSecretStoreProviderVaultAuthTokenSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderVaultAuthUserPass {
     /// Path where the UserPassword authentication backend is mounted
-    /// in Vault, e.g: "user"
+    /// in Vault, e.g: "userpass"
     pub path: String,
     /// SecretRef to a key in a Secret resource containing password for the
     /// user used to authenticate with Vault using the UserPass authentication
     /// method
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ClusterSecretStoreProviderVaultAuthUserPassSecretRef>,
-    /// Username is a user name used to authenticate using the UserPass Vault
+    /// Username is a username used to authenticate using the UserPass Vault
     /// authentication method
     pub username: String,
 }

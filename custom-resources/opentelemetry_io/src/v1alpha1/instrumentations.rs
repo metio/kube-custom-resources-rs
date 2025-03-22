@@ -30,6 +30,8 @@ pub struct InstrumentationSpec {
     pub exporter: Option<InstrumentationExporter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub go: Option<InstrumentationGo>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub java: Option<InstrumentationJava>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

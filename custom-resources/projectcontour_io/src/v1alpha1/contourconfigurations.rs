@@ -316,6 +316,9 @@ pub struct ContourConfigurationEnvoyHttps {
 /// Listener hold various configurable Envoy listener values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationEnvoyListener {
+    /// Compression defines configuration related to compression in the default HTTP Listener filters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression: Option<ContourConfigurationEnvoyListenerCompression>,
     /// ConnectionBalancer. If the value is exact, the listener will use the exact connection balancer
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/listener.proto#envoy-api-msg-listener-connectionbalanceconfig
     /// for more information.
@@ -387,6 +390,29 @@ pub struct ContourConfigurationEnvoyListener {
     /// Contour's default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useProxyProtocol")]
     pub use_proxy_protocol: Option<bool>,
+}
+
+/// Compression defines configuration related to compression in the default HTTP Listener filters.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourConfigurationEnvoyListenerCompression {
+    /// Algorithm selects the response compression type applied in the compression HTTP filter of the default Listener filters.
+    /// Values: `gzip` (default), `brotli`, `zstd`, `disabled`.
+    /// Setting this to `disabled` will make Envoy skip "Accept-Encoding: gzip,deflate" request header and always return uncompressed response.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub algorithm: Option<ContourConfigurationEnvoyListenerCompressionAlgorithm>,
+}
+
+/// Compression defines configuration related to compression in the default HTTP Listener filters.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ContourConfigurationEnvoyListenerCompressionAlgorithm {
+    #[serde(rename = "gzip")]
+    Gzip,
+    #[serde(rename = "brotli")]
+    Brotli,
+    #[serde(rename = "zstd")]
+    Zstd,
+    #[serde(rename = "disabled")]
+    Disabled,
 }
 
 /// SocketOptions defines configurable socket options for the listeners.
@@ -524,6 +550,16 @@ pub struct ContourConfigurationEnvoyNetwork {
     /// Contour's default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedHops")]
     pub num_trusted_hops: Option<i32>,
+    /// EnvoyStripTrailingHostDot defines if trailing dot of the host should be removed from host/authority header
+    /// before any processing of request by HTTP filters or routing. This
+    /// affects the upstream host header. Without setting this option to true, incoming
+    /// requests with host example.com. will not match against route with domains
+    /// match set to example.com.
+    /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=strip_trailing_host_dot
+    /// for more information.
+    /// Contour's default is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripTrailingHostDot")]
+    pub strip_trailing_host_dot: Option<bool>,
 }
 
 /// Service holds Envoy service parameters for setting Ingress status.

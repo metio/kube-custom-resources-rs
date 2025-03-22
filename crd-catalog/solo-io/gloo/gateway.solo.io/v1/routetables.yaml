@@ -828,6 +828,8 @@ spec:
                                   providers:
                                     additionalProperties:
                                       properties:
+                                        attachFailedStatusToMetadata:
+                                          type: "string"
                                         audiences:
                                           items:
                                             type: "string"
@@ -908,6 +910,8 @@ spec:
                                   providers:
                                     additionalProperties:
                                       properties:
+                                        attachFailedStatusToMetadata:
+                                          type: "string"
                                         audiences:
                                           items:
                                             type: "string"

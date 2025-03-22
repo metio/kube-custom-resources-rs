@@ -34,7 +34,6 @@ pub struct BackupSpec {
     /// DefaultVolumesToRestic specifies whether restic should be used to take a
     /// backup of all pod volumes by default.
     /// 
-    /// 
     /// Deprecated: this field is no longer used and will be removed entirely in future. Use DefaultVolumesToFsBackup instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVolumesToRestic")]
     pub default_volumes_to_restic: Option<bool>,

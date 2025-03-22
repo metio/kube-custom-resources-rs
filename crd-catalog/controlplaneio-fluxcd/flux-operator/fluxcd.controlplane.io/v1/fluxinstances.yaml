@@ -222,6 +222,15 @@ spec:
                     path:
                       description: "Path is the path to the source directory containing\nthe kustomize overlay or plain Kubernetes manifests."
                       type: "string"
+                    provider:
+                      description: "Provider specifies OIDC provider for source authentication.\nFor OCIRepository and Bucket the provider can be set to 'aws', 'azure' or 'gcp'.\nfor GitRepository the accepted value can be set to 'azure' or 'github'.\nTo disable OIDC authentication the provider can be set to 'generic' or left empty."
+                      enum:
+                        - "generic"
+                        - "aws"
+                        - "azure"
+                        - "gcp"
+                        - "github"
+                      type: "string"
                     pullSecret:
                       description: "PullSecret specifies the Kubernetes Secret containing the\nauthentication credentials for the source.\nFor Git over HTTP/S sources, the secret must contain username and password fields.\nFor Git over SSH sources, the secret must contain known_hosts and identity fields.\nFor OCI sources, the secret must be of type kubernetes.io/dockerconfigjson.\nFor Bucket sources, the secret must contain accesskey and secretkey fields."
                       type: "string"

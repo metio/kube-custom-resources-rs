@@ -32,6 +32,13 @@ pub struct ProviderSpec {
     /// Channel specifies the destination channel where events should be posted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
+    /// CommitStatusExpr is a CEL expression that evaluates to a string value
+    /// that can be used to generate a custom commit status message for use
+    /// with eligible Provider types (github, gitlab, gitea, bitbucketserver,
+    /// bitbucket, azuredevops). Supported variables are: event, provider,
+    /// and alert.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commitStatusExpr")]
+    pub commit_status_expr: Option<String>,
     /// Interval at which to reconcile the Provider with its Secret references.
     /// Deprecated and not used in v1beta3.
     #[serde(default, skip_serializing_if = "Option::is_none")]

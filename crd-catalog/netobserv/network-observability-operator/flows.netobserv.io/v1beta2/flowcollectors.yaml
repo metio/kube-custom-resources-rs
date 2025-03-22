@@ -666,9 +666,9 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods have to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Developer Preview.<br>\n- `PacketTranslation`: enable enriching flows with packet's translation information. <br>\n- `EbpfManager`: allow using eBPF manager to manage netobserv ebpf programs. <br>\nIMPORTANT: This feature is available as a Developer Preview.<br>\n- `UDNMapping`, to enable interfaces mappind to udn. <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Developer Preview.<br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: Enable the DNS tracking feature.<br>\n- `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Technology Preview.<br>\n- `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>\n- `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>\n- `UDNMapping`: [Unsupported (*)]. Enable interfaces mapping to User Defined Networks (UDN). <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature."
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track Network events [Developer Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information. <br>\n- `EbpfManager`, to enable using EBPF Manager to manage netobserv ebpf programs [Developer Preview].<br>\n- `UDNMapping`, to enable interfaces mappind to udn [Developer Preview]. <br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Technology Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information, such as Service NAT.<br>\n- `EbpfManager`, to enable using eBPF Manager to manage NetObserv eBPF programs. [Unsupported (*)].<br>\n- `UDNMapping`, to enable interfaces mapping to UDN. [Unsupported (*)].<br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
@@ -737,7 +737,7 @@ spec:
                                 - "SCTP"
                               type: "string"
                             rules:
-                              description: "`flowFilterRules` defines a list of ebpf agent flow filtering rules"
+                              description: "`rules` defines a list of filtering rules on the eBPF Agents.\nWhen filtering is enabled, by default, flows that don't match any rule are rejected.\nTo change the default, you can define a rule that accepts everything: `{ action: \"Accept\", cidr: \"0.0.0.0/0\" }`, and then refine with rejecting rules.\n[Unsupported (*)]."
                               items:
                                 description: "`EBPFFlowFilterRule` defines the desired eBPF agent configuration regarding flow filtering rule."
                                 properties:
@@ -793,7 +793,7 @@ spec:
                                       - "SCTP"
                                     type: "string"
                                   sampling:
-                                    description: "`sampling` sampling rate for the matched flow"
+                                    description: "`sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
                                     format: "int32"
                                     type: "integer"
                                   sourcePorts:
@@ -821,7 +821,7 @@ spec:
                               minItems: 1
                               type: "array"
                             sampling:
-                              description: "`sampling` sampling rate for the matched flow"
+                              description: "`sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`."
                               format: "int32"
                               type: "integer"
                             sourcePorts:
@@ -2117,7 +2117,7 @@ spec:
                     - "Kafka"
                   type: "string"
                 exporters:
-                  description: "`exporters` define additional optional exporters for custom consumption or storage."
+                  description: "`exporters` defines additional optional exporters for custom consumption or storage."
                   items:
                     description: "`FlowCollectorExporter` defines an additional exporter to send enriched flows to."
                     properties:
@@ -3543,7 +3543,7 @@ spec:
                               type: "array"
                           type: "object"
                         secondaryNetworks:
-                          description: "Define secondary networks to be checked for resources identification.\nTo guarantee a correct identification, indexed values must form an unique identifier across the cluster.\nIf the same index is used by several resources, those resources might be incorrectly labeled."
+                          description: "Defines secondary networks to be checked for resources identification.\nTo guarantee a correct identification, indexed values must form an unique identifier across the cluster.\nIf the same index is used by several resources, those resources might be incorrectly labeled."
                           items:
                             properties:
                               index:
@@ -3570,11 +3570,11 @@ spec:
                       description: "`clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined."
                       type: "string"
                     deduper:
-                      description: "`deduper` allows to sample or drop flows identified as duplicates, in order to save on resource usage.\nIMPORTANT: This feature is available as a Developer Preview."
+                      description: "`deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.\n[Unsupported (*)]."
                       properties:
                         mode:
                           default: "Disabled"
-                          description: "Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>\n- Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially loosing some information such as the network interfaces used from peer, or network events.<br>\n- Use `Sample` to randomly keep only 1 flow on 50 (by default) among the ones considered as duplicates. This is a compromise between dropping every duplicates or keeping every duplicates. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling are 50, the combined sampling is 1:2500.<br>\n- Use `Disabled` to turn off Processor-based de-duplication.<br>"
+                          description: "Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>\n- Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially losing some information such as the network interfaces used from peer, or network events.<br>\n- Use `Sample` to randomly keep only one flow on 50, which is the default, among the ones considered as duplicates. This is a compromise between dropping every duplicate or keeping every duplicate. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling values are `50`, the combined sampling is 1:2500.<br>\n- Use `Disabled` to turn off Processor-based de-duplication.<br>"
                           enum:
                             - "Disabled"
                             - "Drop"
@@ -3588,21 +3588,21 @@ spec:
                           type: "integer"
                       type: "object"
                     filters:
-                      description: "`filters` let you define custom filters to limit the amount of generated flows.\nIMPORTANT: This feature is available as a Developer Preview."
+                      description: "`filters` lets you define custom filters to limit the amount of generated flows.\nThese filters provide more flexibility than the eBPF Agent filters (in `spec.agent.ebpf.flowFilter`), such as allowing to filter by Kubernetes namespace,\nbut with a lesser improvement in performance.\n[Unsupported (*)]."
                       items:
-                        description: "`FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions"
+                        description: "`FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions."
                         properties:
                           allOf:
                             description: "`filters` is a list of matches that must be all satisfied in order to remove a flow."
                             items:
-                              description: "`FLPSingleFilter` defines the desired configuration for a single FLP-based filter"
+                              description: "`FLPSingleFilter` defines the desired configuration for a single FLP-based filter."
                               properties:
                                 field:
-                                  description: "Name of the field to filter on\nRefer to the documentation for the list of available fields: https://docs.openshift.com/container-platform/latest/observability/network_observability/json-flows-format-reference.html."
+                                  description: "Name of the field to filter on.\nRefer to the documentation for the list of available fields: https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc."
                                   type: "string"
                                 matchType:
                                   default: "Equal"
-                                  description: "Type of matching to apply"
+                                  description: "Type of matching to apply."
                                   enum:
                                     - "Equal"
                                     - "NotEqual"
@@ -3620,7 +3620,7 @@ spec:
                               type: "object"
                             type: "array"
                           outputTarget:
-                            description: "If specified, this filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted."
+                            description: "If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted."
                             enum:
                               - ""
                               - "Loki"
@@ -3959,7 +3959,7 @@ spec:
                       type: "string"
                     logTypes:
                       default: "Flows"
-                      description: "`logTypes` defines the desired record types to generate. Possible values are:<br>\n- `Flows` (default) to export regular network flows.<br>\n- `Conversations` to generate events for started conversations, ended conversations as well as periodic \"tick\" updates.<br>\n- `EndedConversations` to generate only ended conversations events.<br>\n- `All` to generate both network flows and all conversations events. It is not recommended due to the impact on resources footprint.<br>"
+                      description: "`logTypes` defines the desired record types to generate. Possible values are:<br>\n- `Flows` to export regular network flows. This is the default.<br>\n- `Conversations` to generate events for started conversations, ended conversations as well as periodic \"tick\" updates. Note that in this mode, Prometheus metrics are not accurate on long-standing conversations.<br>\n- `EndedConversations` to generate only ended conversations events. Note that in this mode, Prometheus metrics are not accurate on long-standing conversations.<br>\n- `All` to generate both network flows and all conversations events. It is not recommended due to the impact on resources footprint.<br>"
                       enum:
                         - "Flows"
                         - "Conversations"
@@ -4261,7 +4261,7 @@ spec:
               description: "`FlowCollectorStatus` defines the observed state of FlowCollector"
               properties:
                 conditions:
-                  description: "`conditions` represent the latest available observations of an object's state"
+                  description: "`conditions` represents the latest available observations of an object's state"
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:

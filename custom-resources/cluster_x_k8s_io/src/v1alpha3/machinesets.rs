@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachineSetSpec defines the desired state of MachineSet.
+/// spec is the desired state of MachineSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha3", kind = "MachineSet", plural = "machinesets")]
 #[kube(namespaced)]
@@ -48,7 +48,7 @@ pub struct MachineSetSpec {
     pub template: Option<MachineSetTemplate>,
 }
 
-/// MachineSetSpec defines the desired state of MachineSet.
+/// spec is the desired state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MachineSetDeletePolicy {
     Random,
@@ -94,7 +94,7 @@ pub struct MachineSetSelectorMatchExpressions {
 /// Object references to custom resources are treated as templates.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachineSetTemplateMetadata>,
@@ -104,7 +104,7 @@ pub struct MachineSetTemplate {
     pub spec: Option<MachineSetTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateMetadata {
@@ -344,7 +344,7 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// MachineSetStatus defines the observed state of MachineSet.
+/// status is the observed state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
     /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachineSet.

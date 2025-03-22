@@ -209,21 +209,27 @@ pub struct GatewaySpec {
     /// Implementations MAY merge separate Gateways onto a single set of
     /// Addresses if all Listeners across all Gateways are compatible.
     /// 
+    /// In a future release the MinItems=1 requirement MAY be dropped.
+    /// 
     /// Support: Core
     pub listeners: Vec<GatewayListeners>,
 }
 
-/// GatewayAddress describes an address that can be bound to a Gateway.
+/// GatewaySpecAddress describes an address that can be bound to a Gateway.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAddresses {
     /// Type of the address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    /// Value of the address. The validity of the values will depend
-    /// on the type and support by the controller.
+    /// When a value is unspecified, an implementation SHOULD automatically
+    /// assign an address matching the requested type if possible.
+    /// 
+    /// If an implementation does not support an empty value, they MUST set the
+    /// "Programmed" condition in status to False with a reason of "AddressNotAssigned".
     /// 
     /// Examples: `1.2.3.4`, `128::1`, `my-ip-address`.
-    pub value: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// Infrastructure defines infrastructure level attributes about this Gateway instance.
@@ -340,10 +346,31 @@ pub struct GatewayListeners {
     /// 
     /// * TLS: The Listener Hostname MUST match the SNI.
     /// * HTTP: The Listener Hostname MUST match the Host header of the request.
-    /// * HTTPS: The Listener Hostname SHOULD match at both the TLS and HTTP
-    ///   protocol layers as described above. If an implementation does not
-    ///   ensure that both the SNI and Host header match the Listener hostname,
-    ///   it MUST clearly document that.
+    /// * HTTPS: The Listener Hostname SHOULD match both the SNI and Host header.
+    ///   Note that this does not require the SNI and Host header to be the same.
+    ///   The semantics of this are described in more detail below.
+    /// 
+    /// To ensure security, Section 11.1 of RFC-6066 emphasizes that server
+    /// implementations that rely on SNI hostname matching MUST also verify
+    /// hostnames within the application protocol.
+    /// 
+    /// Section 9.1.2 of RFC-7540 provides a mechanism for servers to reject the
+    /// reuse of a connection by responding with the HTTP 421 Misdirected Request
+    /// status code. This indicates that the origin server has rejected the
+    /// request because it appears to have been misdirected.
+    /// 
+    /// To detect misdirected requests, Gateways SHOULD match the authority of
+    /// the requests with all the SNI hostname(s) configured across all the
+    /// Gateway Listeners on the same port and protocol:
+    /// 
+    /// * If another Listener has an exact match or more specific wildcard entry,
+    ///   the Gateway SHOULD return a 421.
+    /// * If the current Listener (selected by SNI matching during ClientHello)
+    ///   does not match the Host:
+    ///     * If another Listener does match the Host the Gateway SHOULD return a
+    ///       421.
+    ///     * If no other Listener matches the Host, the Gateway MUST return a
+    ///       404.
     /// 
     /// For HTTPRoute and TLSRoute resources, there is an interaction with the
     /// `spec.hostnames` array. When both listener and route specify hostnames,
@@ -479,6 +506,7 @@ pub enum GatewayListenersAllowedRoutesNamespacesFrom {
     All,
     Selector,
     Same,
+    None,
 }
 
 /// Selector must be specified when From is set to "Selector". In that case,

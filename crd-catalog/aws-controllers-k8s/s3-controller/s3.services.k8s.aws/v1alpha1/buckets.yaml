@@ -473,6 +473,9 @@ spec:
                 name:
                   description: "The name of the bucket to create.\n\nGeneral purpose buckets - For information about bucket naming restrictions,\nsee Bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)\nin the Amazon S3 User Guide.\n\nDirectory buckets - When you use this operation with a directory bucket,\nyou must use path-style requests in the format https://s3express-control.region-code.amazonaws.com/bucket-name\n. Virtual-hosted-style requests aren't supported. Directory bucket names\nmust be unique in the chosen Zone (Availability Zone or Local Zone). Bucket\nnames must also follow the format bucket-base-name--zone-id--x-s3 (for example,\nDOC-EXAMPLE-BUCKET--usw2-az1--x-s3). For information about bucket naming\nrestrictions, see Directory bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/directory-bucket-naming-rules.html)\nin the Amazon S3 User Guide"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 notification:
                   description: "A container for specifying the notification configuration of the bucket.\nIf this element is empty, notifications are turned off for the bucket."
                   properties:
@@ -840,7 +843,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

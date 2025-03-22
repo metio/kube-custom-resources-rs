@@ -442,6 +442,9 @@ pub struct MiniClusterFluxScheduler {
     /// Scheduler queue policy, defaults to "fcfs" can also be "easy"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuePolicy")]
     pub queue_policy: Option<String>,
+    /// Use sched-simple (no support for GPU)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub simple: Option<bool>,
 }
 
 /// Logging modes determine the output you see in the job log

@@ -18,19 +18,25 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CloudStackDatacenterConfigSpec {
-    /// Account typically represents a customer of the service provider or a department in a large organization. Multiple users can exist in an account, and all CloudStack resources belong to an account. Accounts have users and users have credentials to operate on resources within that account. If an account name is provided, a domain must also be provided. Deprecated: Please use AvailabilityZones instead
+    /// Account typically represents a customer of the service provider or a department in a large organization. Multiple users can exist in an account, and all CloudStack resources belong to an account. Accounts have users and users have credentials to operate on resources within that account. If an account name is provided, a domain must also be provided.
+    /// Deprecated: Please use AvailabilityZones instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     /// AvailabilityZones list of different partitions to distribute VMs across - corresponds to a list of CAPI failure domains
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZones")]
     pub availability_zones: Option<Vec<CloudStackDatacenterConfigAvailabilityZones>>,
-    /// Domain contains a grouping of accounts. Domains usually contain multiple accounts that have some logical relationship to each other and a set of delegated administrators with some authority over the domain and its subdomains This field is considered as a fully qualified domain name which is the same as the domain path without "ROOT/" prefix. For example, if "foo" is specified then a domain with "ROOT/foo" domain path is picked. The value "ROOT" is a special case that points to "the" ROOT domain of the CloudStack. That is, a domain with a path "ROOT/ROOT" is not allowed. Deprecated: Please use AvailabilityZones instead
+    /// Domain contains a grouping of accounts. Domains usually contain multiple accounts that have some logical relationship to each other and a set of delegated administrators with some authority over the domain and its subdomains
+    /// This field is considered as a fully qualified domain name which is the same as the domain path without "ROOT/" prefix. For example, if "foo" is specified then a domain with "ROOT/foo" domain path is picked.
+    /// The value "ROOT" is a special case that points to "the" ROOT domain of the CloudStack. That is, a domain with a path "ROOT/ROOT" is not allowed.
+    /// Deprecated: Please use AvailabilityZones instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
-    /// CloudStack Management API endpoint's IP. It is added to VM's noproxy list Deprecated: Please use AvailabilityZones instead
+    /// CloudStack Management API endpoint's IP. It is added to VM's noproxy list
+    /// Deprecated: Please use AvailabilityZones instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementApiEndpoint")]
     pub management_api_endpoint: Option<String>,
-    /// Zones is a list of one or more zones that are managed by a single CloudStack management endpoint. Deprecated: Please use AvailabilityZones instead
+    /// Zones is a list of one or more zones that are managed by a single CloudStack management endpoint.
+    /// Deprecated: Please use AvailabilityZones instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zones: Option<Vec<CloudStackDatacenterConfigZones>>,
 }
@@ -44,7 +50,9 @@ pub struct CloudStackDatacenterConfigAvailabilityZones {
     /// CredentialRef is used to reference a secret in the eksa-system namespace
     #[serde(rename = "credentialsRef")]
     pub credentials_ref: String,
-    /// Domain contains a grouping of accounts. Domains usually contain multiple accounts that have some logical relationship to each other and a set of delegated administrators with some authority over the domain and its subdomains This field is considered as a fully qualified domain name which is the same as the domain path without "ROOT/" prefix. For example, if "foo" is specified then a domain with "ROOT/foo" domain path is picked. The value "ROOT" is a special case that points to "the" ROOT domain of the CloudStack. That is, a domain with a path "ROOT/ROOT" is not allowed.
+    /// Domain contains a grouping of accounts. Domains usually contain multiple accounts that have some logical relationship to each other and a set of delegated administrators with some authority over the domain and its subdomains
+    /// This field is considered as a fully qualified domain name which is the same as the domain path without "ROOT/" prefix. For example, if "foo" is specified then a domain with "ROOT/foo" domain path is picked.
+    /// The value "ROOT" is a special case that points to "the" ROOT domain of the CloudStack. That is, a domain with a path "ROOT/ROOT" is not allowed.
     pub domain: String,
     /// CloudStack Management API endpoint's IP. It is added to VM's noproxy list
     #[serde(rename = "managementApiEndpoint")]
@@ -63,11 +71,13 @@ pub struct CloudStackDatacenterConfigAvailabilityZonesZone {
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name In multiple-zones situation, only 'Shared' network is supported.
+    /// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name
+    /// In multiple-zones situation, only 'Shared' network is supported.
     pub network: CloudStackDatacenterConfigAvailabilityZonesZoneNetwork,
 }
 
-/// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name In multiple-zones situation, only 'Shared' network is supported.
+/// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name
+/// In multiple-zones situation, only 'Shared' network is supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackDatacenterConfigAvailabilityZonesZoneNetwork {
     /// Id of a resource in the CloudStack environment. Mutually exclusive with Name
@@ -86,11 +96,13 @@ pub struct CloudStackDatacenterConfigZones {
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name In multiple-zones situation, only 'Shared' network is supported.
+    /// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name
+    /// In multiple-zones situation, only 'Shared' network is supported.
     pub network: CloudStackDatacenterConfigZonesNetwork,
 }
 
-/// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name In multiple-zones situation, only 'Shared' network is supported.
+/// Network is the name or UUID of the CloudStack network in which clusters should be created. It can either be an isolated or shared network. If it doesn’t already exist in CloudStack, it’ll automatically be created by CAPC as an isolated network. It can either be specified as a UUID or name
+/// In multiple-zones situation, only 'Shared' network is supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackDatacenterConfigZonesNetwork {
     /// Id of a resource in the CloudStack environment. Mutually exclusive with Name
@@ -104,7 +116,8 @@ pub struct CloudStackDatacenterConfigZonesNetwork {
 /// CloudStackDatacenterConfigStatus defines the observed state of CloudStackDatacenterConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackDatacenterConfigStatus {
-    /// FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// state, and will be set to a descriptive error message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.

@@ -35,7 +35,7 @@ pub struct MeshRateLimitSpec {
     pub to: Option<Vec<MeshRateLimitTo>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRateLimitFrom {
     /// Default is a configuration specific to the group of clients referenced in
     /// 'targetRef'
@@ -151,11 +151,10 @@ pub struct MeshRateLimitFromDefaultLocalTcpConnectionRate {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// clients.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRateLimitFromTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshRateLimitFromTargetRefKind>,
+    pub kind: MeshRateLimitFromTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -312,11 +311,10 @@ pub struct MeshRateLimitRulesDefaultLocalTcpConnectionRate {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRateLimitTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshRateLimitTargetRefKind>,
+    pub kind: MeshRateLimitTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -363,7 +361,7 @@ pub enum MeshRateLimitTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRateLimitTo {
     /// Default is a configuration specific to the group of clients referenced in
     /// 'targetRef'
@@ -479,11 +477,10 @@ pub struct MeshRateLimitToDefaultLocalTcpConnectionRate {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// clients.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRateLimitToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshRateLimitToTargetRefKind>,
+    pub kind: MeshRateLimitToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -164,7 +164,7 @@ pub struct SubnetStatus {
     /// for any stopped instances are considered unavailable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableIPAddressCount")]
     pub available_ip_address_count: Option<i64>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

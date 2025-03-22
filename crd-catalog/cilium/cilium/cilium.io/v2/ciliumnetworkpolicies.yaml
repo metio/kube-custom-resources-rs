@@ -506,7 +506,7 @@ spec:
                                       headerMatches:
                                         description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                         items:
-                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                           properties:
                                             mismatch:
                                               description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -1638,7 +1638,7 @@ spec:
                                       headerMatches:
                                         description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                         items:
-                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                           properties:
                                             mismatch:
                                               description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -2620,7 +2620,7 @@ spec:
                                         headerMatches:
                                           description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                           items:
-                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                             properties:
                                               mismatch:
                                                 description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -3752,7 +3752,7 @@ spec:
                                         headerMatches:
                                           description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                           items:
-                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                             properties:
                                               mismatch:
                                                 description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."

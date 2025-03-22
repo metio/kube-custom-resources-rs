@@ -1292,6 +1292,9 @@ pub struct NodeSLOResourceUsedThresholdWithBe {
     /// and avg(cpuusage) is calculated based on the most recent CPUEvictTimeWindowSeconds data
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictTimeWindowSeconds")]
     pub cpu_evict_time_window_seconds: Option<i64>,
+    /// cpu suppress min percentage (0,100)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuSuppressMinPercent")]
+    pub cpu_suppress_min_percent: Option<i64>,
     /// CPUSuppressPolicy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuSuppressPolicy")]
     pub cpu_suppress_policy: Option<String>,

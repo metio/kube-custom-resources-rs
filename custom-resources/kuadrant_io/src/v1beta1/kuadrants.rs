@@ -19,6 +19,14 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KuadrantSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub observability: Option<KuadrantObservability>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantObservability {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
 }
 
 /// KuadrantStatus defines the observed state of Kuadrant

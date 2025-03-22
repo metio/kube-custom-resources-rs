@@ -184,7 +184,7 @@ pub struct StageStatus {
     /// modify the $default stage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGatewayManaged")]
     pub api_gateway_managed: Option<bool>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

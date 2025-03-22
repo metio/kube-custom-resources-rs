@@ -36,16 +36,20 @@ pub struct PostgreSqlOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PostgreSqlOptionsVersion {
-    #[serde(rename = "14")]
-    r#_14,
-    #[serde(rename = "13")]
-    r#_13,
-    #[serde(rename = "12")]
-    r#_12,
     #[serde(rename = "11")]
     r#_11,
-    #[serde(rename = "10")]
-    r#_10,
+    #[serde(rename = "12")]
+    r#_12,
+    #[serde(rename = "13")]
+    r#_13,
+    #[serde(rename = "14")]
+    r#_14,
+    #[serde(rename = "15")]
+    r#_15,
+    #[serde(rename = "16")]
+    r#_16,
+    #[serde(rename = "17")]
+    r#_17,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

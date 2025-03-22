@@ -51,8 +51,9 @@ pub struct IngressRouteTCPRoutes {
     pub services: Option<Vec<IngressRouteTCPRoutesServices>>,
     /// Syntax defines the router's rule syntax.
     /// More info: https://doc.traefik.io/traefik/v3.3/routing/routers/#rulesyntax_1
+    /// Deprecated: Please do not use this field and rewrite the router rules to use the v3 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub syntax: Option<String>,
+    pub syntax: Option<IngressRouteTCPRoutesSyntax>,
 }
 
 /// ObjectReference is a generic reference to a Traefik resource.
@@ -120,6 +121,15 @@ pub struct IngressRouteTCPRoutesServicesProxyProtocol {
     /// Version defines the PROXY Protocol version to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<i64>,
+}
+
+/// RouteTCP holds the TCP route configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IngressRouteTCPRoutesSyntax {
+    #[serde(rename = "v3")]
+    V3,
+    #[serde(rename = "v2")]
+    V2,
 }
 
 /// TLS defines the TLS configuration on a layer 4 / TCP Route.

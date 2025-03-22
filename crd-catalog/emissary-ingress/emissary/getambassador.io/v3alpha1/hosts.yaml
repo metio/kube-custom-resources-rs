@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.13.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   name: "hosts.getambassador.io"
 spec:
   conversion:
@@ -49,10 +49,10 @@ spec:
           description: "Host is the Schema for the hosts API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -63,16 +63,16 @@ spec:
                   description: "Specifies whether/who to talk ACME with to automatically manage the $tlsSecret."
                   properties:
                     authority:
-                      description: "Specifies who to talk ACME with to get certs. Defaults to Let's Encrypt; if \"none\" (case-insensitive), do not try to do ACME for this Host."
+                      description: "Specifies who to talk ACME with to get certs. Defaults to Let's\nEncrypt; if \"none\" (case-insensitive), do not try to do ACME for\nthis Host."
                       type: "string"
                     email:
                       type: "string"
                     privateKeySecret:
-                      description: "Specifies the Kubernetes Secret to use to store the private key of the ACME account (essentially, where to store the auto-generated password for the auto-created ACME account).  You should not normally need to set this--the default value is based on a combination of the ACME authority being registered wit and the email address associated with the account. \n Note that this is a native-Kubernetes-style core.v1.LocalObjectReference, not an Ambassador-style `{name}.{namespace}` string.  Because we're opinionated, it does not support referencing a Secret in another namespace (because most native Kubernetes resources don't support that), but if we ever abandon that opinion and decide to support non-local references it, it would be by adding a `namespace:` field by changing it from a core.v1.LocalObjectReference to a core.v1.SecretReference, not by adopting the `{name}.{namespace}` notation."
+                      description: "Specifies the Kubernetes Secret to use to store the private key of the ACME\naccount (essentially, where to store the auto-generated password for the\nauto-created ACME account).  You should not normally need to set this--the\ndefault value is based on a combination of the ACME authority being registered\nwit and the email address associated with the account.\n\nNote that this is a native-Kubernetes-style core.v1.LocalObjectReference, not\nan Ambassador-style `{name}.{namespace}` string.  Because we're opinionated, it\ndoes not support referencing a Secret in another namespace (because most native\nKubernetes resources don't support that), but if we ever abandon that opinion\nand decide to support non-local references it, it would be by adding a\n`namespace:` field by changing it from a core.v1.LocalObjectReference to a\ncore.v1.SecretReference, not by adopting the `{name}.{namespace}` notation."
                       properties:
                         name:
                           default: ""
-                          description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                           type: "string"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
@@ -89,21 +89,21 @@ spec:
                   description: "Hostname by which the Ambassador can be reached."
                   type: "string"
                 mappingSelector:
-                  description: "Selector for Mappings we'll associate with this Host. At the moment, Selector and MappingSelector are synonyms, but that will change soon."
+                  description: "Selector for Mappings we'll associate with this Host. At the moment, Selector and\nMappingSelector are synonyms, but that will change soon."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                       items:
-                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                         properties:
                           key:
                             description: "key is the label key that the selector applies to."
                             type: "string"
                           operator:
-                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                             type: "string"
                           values:
-                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                             items:
                               type: "string"
                             type: "array"
@@ -117,7 +117,7 @@ spec:
                     matchLabels:
                       additionalProperties:
                         type: "string"
-                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
@@ -154,16 +154,16 @@ spec:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                       items:
-                        description: "A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
+                        description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
                         properties:
                           key:
                             description: "key is the label key that the selector applies to."
                             type: "string"
                           operator:
-                            description: "operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist."
+                            description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
                             type: "string"
                           values:
-                            description: "values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch."
+                            description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                             items:
                               type: "string"
                             type: "array"
@@ -177,12 +177,12 @@ spec:
                     matchLabels:
                       additionalProperties:
                         type: "string"
-                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is \"key\", the operator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                      description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                       type: "object"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 tls:
-                  description: "TLS configuration.  It is not valid to specify both `tlsContext` and `tls`."
+                  description: "TLS configuration.  It is not valid to specify both\n`tlsContext` and `tls`."
                   properties:
                     alpn_protocols:
                       type: "string"
@@ -216,16 +216,16 @@ spec:
                       type: "string"
                   type: "object"
                 tlsContext:
-                  description: "Name of the TLSContext the Host resource is linked with. It is not valid to specify both `tlsContext` and `tls`. \n Note that this is a native-Kubernetes-style core.v1.LocalObjectReference, not an Ambassador-style `{name}.{namespace}` string.  Because we're opinionated, it does not support referencing a Secret in another namespace (because most native Kubernetes resources don't support that), but if we ever abandon that opinion and decide to support non-local references it, it would be by adding a `namespace:` field by changing it from a core.v1.LocalObjectReference to a core.v1.SecretReference, not by adopting the `{name}.{namespace}` notation."
+                  description: "Name of the TLSContext the Host resource is linked with.\nIt is not valid to specify both `tlsContext` and `tls`.\n\nNote that this is a native-Kubernetes-style core.v1.LocalObjectReference, not\nan Ambassador-style `{name}.{namespace}` string.  Because we're opinionated, it\ndoes not support referencing a Secret in another namespace (because most native\nKubernetes resources don't support that), but if we ever abandon that opinion\nand decide to support non-local references it, it would be by adding a\n`namespace:` field by changing it from a core.v1.LocalObjectReference to a\ncore.v1.SecretReference, not by adopting the `{name}.{namespace}` notation."
                   properties:
                     name:
                       default: ""
-                      description: "Name of the referent. This field is effectively required, but due to backwards compatibility is allowed to be empty. Instances of this type with an empty value here are almost certainly wrong. TODO: Add other useful fields. apiVersion, kind, uid? More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                       type: "string"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 tlsSecret:
-                  description: "Name of the Kubernetes secret into which to save generated certificates.  If ACME is enabled (see $acmeProvider), then the default is $hostname; otherwise the default is \"\".  If the value is \"\", then we do not do TLS for this Host."
+                  description: "Name of the Kubernetes secret into which to save generated\ncertificates.  If ACME is enabled (see $acmeProvider), then the\ndefault is $hostname; otherwise the default is \"\".  If the value\nis \"\", then we do not do TLS for this Host."
                   properties:
                     name:
                       description: "name is unique within a namespace to reference a secret resource."
@@ -248,7 +248,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 phaseCompleted:
-                  description: "phaseCompleted and phasePending are valid when state==Pending or state==Error."
+                  description: "phaseCompleted and phasePending are valid when state==Pending or\nstate==Error."
                   enum:
                     - "NA"
                     - "DefaultsFilled"
@@ -257,7 +257,7 @@ spec:
                     - "ACMECertificateChallenge"
                   type: "string"
                 phasePending:
-                  description: "phaseCompleted and phasePending are valid when state==Pending or state==Error."
+                  description: "phaseCompleted and phasePending are valid when state==Pending or\nstate==Error."
                   enum:
                     - "NA"
                     - "DefaultsFilled"

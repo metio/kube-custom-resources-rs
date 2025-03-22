@@ -293,14 +293,14 @@ pub enum ChallengeSolverDns01AzureDnsEnvironment {
 /// If set, ClientID, ClientSecret and TenantID must not be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChallengeSolverDns01AzureDnsManagedIdentity {
-    /// client ID of the managed identity, can not be used at the same time as resourceID
+    /// client ID of the managed identity, cannot be used at the same time as resourceID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
-    /// resource ID of the managed identity, can not be used at the same time as clientID
+    /// resource ID of the managed identity, cannot be used at the same time as clientID
     /// Cannot be used for Azure Managed Service Identity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
     pub resource_id: Option<String>,
-    /// tenant ID of the managed identity, can not be used at the same time as resourceID
+    /// tenant ID of the managed identity, cannot be used at the same time as resourceID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
     pub tenant_id: Option<String>,
 }

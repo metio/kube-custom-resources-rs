@@ -1049,6 +1049,9 @@ pub struct TempoStackTemplateGateway {
     /// Ingress defines gateway Ingress options.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<TempoStackTemplateGatewayIngress>,
+    /// RBAC defines query RBAC options.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbac: Option<TempoStackTemplateGatewayRbac>,
 }
 
 /// TempoComponentSpec is embedded to extend this definition with further options.
@@ -1351,6 +1354,14 @@ pub enum TempoStackTemplateGatewayIngressType {
     Route,
     #[serde(rename = "")]
     KopiumEmpty,
+}
+
+/// RBAC defines query RBAC options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoStackTemplateGatewayRbac {
+    /// Enabled defines if the query RBAC should be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Ingester defines the ingester component spec.
