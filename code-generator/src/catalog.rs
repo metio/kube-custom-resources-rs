@@ -2124,6 +2124,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "kubernetes-sigs/application",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/application/blob/master/config/crd/bases/app.k8s.io_applications.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/aws-load-balancer-controller",
         license: APACHE_V2,
         urls: &[
