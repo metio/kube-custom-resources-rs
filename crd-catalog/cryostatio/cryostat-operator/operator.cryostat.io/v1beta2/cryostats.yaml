@@ -45,6 +45,9 @@ spec:
                 agentOptions:
                   description: "Options to control how the operator configures Cryostat Agents\nto communicate with this Cryostat instance."
                   properties:
+                    allowInsecure:
+                      description: "Allow insecure (non-TLS) HTTP connections to Cryostat Agents."
+                      type: "boolean"
                     disableHostnameVerification:
                       description: "Disables hostname verification when Cryostat connects to Agents over TLS.\nConsider enabling this if the Cryostat Agent fails to determine the hostname of your pod."
                       type: "boolean"
@@ -3484,7 +3487,7 @@ spec:
                       type: "array"
                   type: "object"
                 targetNamespaces:
-                  description: "List of namespaces whose workloads Cryostat should be\npermitted to access and profile. Defaults to this Cryostat's namespace.\nWarning: All Cryostat users will be able to create and manage\nrecordings for workloads in the listed namespaces.\nMore details: https://github.com/cryostatio/cryostat-operator/blob/v3.0.0/docs/config.md#data-isolation"
+                  description: "List of namespaces whose workloads Cryostat should be\npermitted to access and profile. Defaults to this Cryostat's namespace.\nWarning: All Cryostat users will be able to create and manage\nrecordings for workloads in the listed namespaces.\nMore details: https://github.com/cryostatio/cryostat-operator/blob/v4.0.0/docs/config.md#data-isolation"
                   items:
                     type: "string"
                   type: "array"

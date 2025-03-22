@@ -233,10 +233,12 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDrivers {
     /// Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
     pub auth_type: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAuthType>,
-    /// This represents the hub cluster ARN
-    /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
-    pub hub_cluster_arn: Option<String>,
+    /// AwsIrsa represents the configuration for awsisra driver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub awsisra: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAwsisra>,
+    /// CSR represents the configuration for csr driver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csr: Option<ClusterManagerRegistrationConfigurationRegistrationDriversCsr>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -245,6 +247,30 @@ pub enum ClusterManagerRegistrationConfigurationRegistrationDriversAuthType {
     Csr,
     #[serde(rename = "awsirsa")]
     Awsirsa,
+}
+
+/// AwsIrsa represents the configuration for awsisra driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversAwsisra {
+    /// AutoApprovedIdentities represent a list of approved arn patterns
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
+    pub auto_approved_identities: Option<Vec<String>>,
+    /// This represents the hub cluster ARN
+    /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
+    pub hub_cluster_arn: Option<String>,
+    /// List of tags to be added to AWS resources created by hub while processing awsirsa registration request
+    /// Example - "product:v1:tenant:app-name=My-App"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Vec<String>>,
+}
+
+/// CSR represents the configuration for csr driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversCsr {
+    /// AutoApprovedIdentities represent a list of approved users
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
+    pub auto_approved_identities: Option<Vec<String>>,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.

@@ -46,6 +46,13 @@ pub struct BGPPeerSpec {
     /// Requested BGP hold time, per RFC4271.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdTime")]
     pub hold_time: Option<String>,
+    /// Interface is the node interface over which the unnumbered BGP peering will
+    /// be established. No API validation takes place as that string value
+    /// represents an interface name on the host and if user provides an invalid
+    /// value, only the actual BGP session will not be established.
+    /// Address and Interface are mutually exclusive and one of them must be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     /// Requested BGP keepalive time, per RFC4271.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTime")]
     pub keepalive_time: Option<String>,
@@ -70,8 +77,8 @@ pub struct BGPPeerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerASN")]
     pub peer_asn: Option<i32>,
     /// Address to dial when establishing the session.
-    #[serde(rename = "peerAddress")]
-    pub peer_address: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerAddress")]
+    pub peer_address: Option<String>,
     /// Port to dial when establishing the session.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerPort")]
     pub peer_port: Option<i64>,

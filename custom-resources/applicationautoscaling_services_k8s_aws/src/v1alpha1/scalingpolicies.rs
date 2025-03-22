@@ -384,7 +384,7 @@ pub struct ScalingPolicyStatus {
     /// The CloudWatch alarms created for the target tracking scaling policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alarms: Option<Vec<ScalingPolicyStatusAlarms>>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

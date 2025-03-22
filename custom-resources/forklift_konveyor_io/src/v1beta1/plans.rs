@@ -27,9 +27,7 @@ pub struct PlanSpec {
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// Specify the disk bus which will be applied to all VMs disks in plan.
-    /// Possible options 'scsi', 'sata' and 'virtio'.
-    /// Defaults to 'virtio'.
+    /// Deprecated: this field will be deprecated in 2.8.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskBus")]
     pub disk_bus: Option<String>,
     /// Resource mapping.
@@ -37,6 +35,21 @@ pub struct PlanSpec {
     /// Determines if the plan should migrate shared disks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrateSharedDisks")]
     pub migrate_shared_disks: Option<bool>,
+    /// NetworkNameTemplate is a template for generating network interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .NetworkName: If target network is multus, name of the Multus network attachment definition, empty otherwise.
+    ///   - .NetworkNamespace: If target network is multus, namespace where the network attachment definition is located.
+    ///   - .NetworkType: type of the network ("Multus" or "Pod")
+    ///   - .NetworkIndex: sequential index of the network interface (0-based)
+    /// The template can be used to customize network interface names based on target network configuration.
+    /// Note:
+    ///   - This template can be overridden at the individual VM level
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "net-{{.NetworkIndex}}"
+    ///   "{{if eq .NetworkType "Pod"}}pod{{else}}multus-{{.NetworkIndex}}{{end}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNameTemplate")]
+    pub network_name_template: Option<String>,
     /// Preserve the CPU model and flags the VM runs with in its oVirt cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveClusterCpuModel")]
     pub preserve_cluster_cpu_model: Option<bool>,
@@ -45,6 +58,19 @@ pub struct PlanSpec {
     pub preserve_static_i_ps: Option<bool>,
     /// Providers.
     pub provider: PlanProvider,
+    /// PVCNameTemplate is a template for generating PVC names for VM disks.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .VmName: name of the VM
+    ///   - .PlanName: name of the migration plan
+    ///   - .DiskIndex: initial volume index of the disk
+    ///   - .RootDiskIndex: index of the root disk
+    /// Note:
+    ///   This template can be overridden at the individual VM level.
+    /// Examples:
+    ///   "{{.VmName}}-disk-{{.DiskIndex}}"
+    ///   "{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNameTemplate")]
+    pub pvc_name_template: Option<String>,
     /// Target namespace.
     #[serde(rename = "targetNamespace")]
     pub target_namespace: String,
@@ -53,6 +79,18 @@ pub struct PlanSpec {
     pub transfer_network: Option<ObjectReference>,
     /// List of VMs.
     pub vms: Vec<PlanVms>,
+    /// VolumeNameTemplate is a template for generating volume interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .PVCName: name of the PVC mounted to the VM using this volume
+    ///   - .VolumeIndex: sequential index of the volume interface (0-based)
+    /// Note:
+    ///   - This template can be overridden at the individual VM level
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "disk-{{.VolumeIndex}}"
+    ///   "pvc-{{.PVCName}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNameTemplate")]
+    pub volume_name_template: Option<String>,
     /// Whether this is a warm migration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warm: Option<bool>,
@@ -292,12 +330,57 @@ pub struct PlanVms {
     /// Only relevant for an openshift source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// NetworkNameTemplate is a template for generating network interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .NetworkName: If target network is multus, name of the Multus network attachment definition, empty otherwise.
+    ///   - .NetworkNamespace: If target network is multus, namespace where the network attachment definition is located.
+    ///   - .NetworkType: type of the network ("Multus" or "Pod")
+    ///   - .NetworkIndex: sequential index of the network interface (0-based)
+    /// The template can be used to customize network interface names based on target network configuration.
+    /// Note:
+    ///   - This template will override at the plan level template
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "net-{{.NetworkIndex}}"
+    ///   "{{if eq .NetworkType "Pod"}}pod{{else}}multus-{{.NetworkIndex}}{{end}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNameTemplate")]
+    pub network_name_template: Option<String>,
+    /// PVCNameTemplate is a template for generating PVC names for VM disks.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .VmName: name of the VM
+    ///   - .PlanName: name of the migration plan
+    ///   - .DiskIndex: initial volume index of the disk
+    ///   - .RootDiskIndex: index of the root disk
+    /// Note:
+    ///   This template overrides the plan level template.
+    /// Examples:
+    ///   "{{.VmName}}-disk-{{.DiskIndex}}"
+    ///   "{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNameTemplate")]
+    pub pvc_name_template: Option<String>,
     /// Choose the primary disk the VM boots from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDisk")]
     pub root_disk: Option<String>,
+    /// TargetName specifies a custom name for the VM in the target cluster.
+    /// If not provided, the original VM name will be used and automatically adjusted to meet k8s DNS1123 requirements.
+    /// If provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
+    pub target_name: Option<String>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// VolumeNameTemplate is a template for generating volume interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .PVCName: name of the PVC mounted to the VM using this volume
+    ///   - .VolumeIndex: sequential index of the volume interface (0-based)
+    /// Note:
+    ///   - This template will override at the plan level template
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "disk-{{.VolumeIndex}}"
+    ///   "pvc-{{.PVCName}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNameTemplate")]
+    pub volume_name_template: Option<String>,
 }
 
 /// Plan hook.
@@ -560,6 +643,21 @@ pub struct PlanStatusMigrationVms {
     /// Only relevant for an openshift source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// NetworkNameTemplate is a template for generating network interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .NetworkName: If target network is multus, name of the Multus network attachment definition, empty otherwise.
+    ///   - .NetworkNamespace: If target network is multus, namespace where the network attachment definition is located.
+    ///   - .NetworkType: type of the network ("Multus" or "Pod")
+    ///   - .NetworkIndex: sequential index of the network interface (0-based)
+    /// The template can be used to customize network interface names based on target network configuration.
+    /// Note:
+    ///   - This template will override at the plan level template
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "net-{{.NetworkIndex}}"
+    ///   "{{if eq .NetworkType "Pod"}}pod{{else}}multus-{{.NetworkIndex}}{{end}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNameTemplate")]
+    pub network_name_template: Option<String>,
     /// The new name of the VM after matching DNS1123 requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newName")]
     pub new_name: Option<String>,
@@ -570,6 +668,19 @@ pub struct PlanStatusMigrationVms {
     pub phase: String,
     /// Migration pipeline.
     pub pipeline: Vec<PlanStatusMigrationVmsPipeline>,
+    /// PVCNameTemplate is a template for generating PVC names for VM disks.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .VmName: name of the VM
+    ///   - .PlanName: name of the migration plan
+    ///   - .DiskIndex: initial volume index of the disk
+    ///   - .RootDiskIndex: index of the root disk
+    /// Note:
+    ///   This template overrides the plan level template.
+    /// Examples:
+    ///   "{{.VmName}}-disk-{{.DiskIndex}}"
+    ///   "{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNameTemplate")]
+    pub pvc_name_template: Option<String>,
     /// Source VM power state before migration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restorePowerState")]
     pub restore_power_state: Option<String>,
@@ -579,9 +690,26 @@ pub struct PlanStatusMigrationVms {
     /// Started timestamp.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started: Option<String>,
+    /// TargetName specifies a custom name for the VM in the target cluster.
+    /// If not provided, the original VM name will be used and automatically adjusted to meet k8s DNS1123 requirements.
+    /// If provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
+    pub target_name: Option<String>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// VolumeNameTemplate is a template for generating volume interface names in the target virtual machine.
+    /// It follows Go template syntax and has access to the following variables:
+    ///   - .PVCName: name of the PVC mounted to the VM using this volume
+    ///   - .VolumeIndex: sequential index of the volume interface (0-based)
+    /// Note:
+    ///   - This template will override at the plan level template
+    ///   - If not specified on VM level and on Plan leverl, default naming conventions will be used
+    /// Examples:
+    ///   "disk-{{.VolumeIndex}}"
+    ///   "pvc-{{.PVCName}}"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNameTemplate")]
+    pub volume_name_template: Option<String>,
     /// Warm migration status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warm: Option<PlanStatusMigrationVmsWarm>,

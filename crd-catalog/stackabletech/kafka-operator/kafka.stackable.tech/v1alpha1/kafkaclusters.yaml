@@ -603,7 +603,7 @@ spec:
                     - "roleGroups"
                   type: "object"
                 clusterConfig:
-                  description: "Kafka settings that affect all roles and role groups. The settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level."
+                  description: "Kafka settings that affect all roles and role groups.\n\nThe settings in the `clusterConfig` are cluster wide settings that do not need to be configurable at role or role group level."
                   properties:
                     authentication:
                       default: []

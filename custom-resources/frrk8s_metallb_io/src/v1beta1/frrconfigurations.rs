@@ -121,7 +121,8 @@ pub struct FRRConfigurationBgpRoutersImports {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FRRConfigurationBgpRoutersNeighbors {
     /// Address is the IP address to establish the session with.
-    pub address: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub address: Option<String>,
     /// ASN is the AS number to use for the local end of the session.
     /// ASN and DynamicASN are mutually exclusive and one of them must be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -156,6 +157,13 @@ pub struct FRRConfigurationBgpRoutersNeighbors {
     /// Defaults to 180s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdTime")]
     pub hold_time: Option<String>,
+    /// Interface is the node interface over which the unnumbered BGP peering will
+    /// be established. No API validation takes place as that string value
+    /// represents an interface name on the host and if user provides an invalid
+    /// value, only the actual BGP session will not be established.
+    /// Address and Interface are mutually exclusive and one of them must be specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
     /// KeepaliveTime is the requested BGP keepalive time, per RFC4271.
     /// Defaults to 60s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepaliveTime")]

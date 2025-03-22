@@ -57,6 +57,9 @@ spec:
                 fileSystemID:
                   description: "The ID of the EFS file system that the access point provides access to."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 fileSystemRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
@@ -84,6 +87,9 @@ spec:
                       format: "int64"
                       type: "integer"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 rootDirectory:
                   description: "Specifies the directory on the EFS file system that the access point exposes\nas the root directory of your file system to NFS clients using the access\npoint. The clients using the access point can only access the root directory\nand below. If the RootDirectory > Path specified does not exist, Amazon EFS\ncreates it and applies the CreationInfo settings when a client connects to\nan access point. When specifying a RootDirectory, you must provide the Path,\nand the CreationInfo.\n\nAmazon EFS creates a root directory only if you have provided the CreationInfo:\nOwnUid, OwnGID, and permissions for the directory. If you do not provide\nthis information, Amazon EFS does not create the root directory. If the root\ndirectory does not exist, attempts to mount using the access point will fail."
                   properties:
@@ -102,6 +108,9 @@ spec:
                     path:
                       type: "string"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 tags:
                   description: "Creates tags associated with the access point. Each tag is a key-value pair,\neach key must be unique. For more information, see Tagging Amazon Web Services\nresources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide."
                   items:
@@ -137,7 +146,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

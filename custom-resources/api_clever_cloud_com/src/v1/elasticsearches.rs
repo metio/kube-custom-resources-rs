@@ -38,8 +38,6 @@ pub struct ElasticSearchOptions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ElasticSearchOptionsVersion {
-    #[serde(rename = "6")]
-    r#_6,
     #[serde(rename = "7")]
     r#_7,
     #[serde(rename = "8")]

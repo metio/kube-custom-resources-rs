@@ -53,6 +53,7 @@ pub struct DatabaseClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseClusterBackup {
     /// Enabled is a flag to enable backups
+    /// Deprecated. Please use db.spec.backup.schedules[].enabled to control each schedule separately and db.spec.backup.pitr.enabled to control PITR.
     pub enabled: bool,
     /// PITR is the configuration of the point in time recovery
     #[serde(default, skip_serializing_if = "Option::is_none")]

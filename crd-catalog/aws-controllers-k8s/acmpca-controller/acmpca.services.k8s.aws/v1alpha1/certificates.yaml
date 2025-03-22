@@ -219,9 +219,15 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 certificateAuthorityARN:
                   description: "The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).\nThis must be of the form:\n\narn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 certificateAuthorityRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
@@ -250,8 +256,14 @@ spec:
                     - "key"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 certificateSigningRequest:
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 certificateSigningRequestRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
@@ -267,9 +279,15 @@ spec:
                 signingAlgorithm:
                   description: "The name of the algorithm that will be used to sign the certificate to be\nissued.\n\nThis parameter should not be confused with the SigningAlgorithm parameter\nused to sign a CSR in the CreateCertificateAuthority action.\n\nThe specified signing algorithm family (RSA or ECDSA) must match the algorithm\nfamily of the CA's secret key."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 templateARN:
                   description: "Specifies a custom configuration template to use when issuing a certificate.\nIf this parameter is not provided, Amazon Web Services Private CA defaults\nto the EndEntityCertificate/V1 template. For CA certificates, you should\nchoose the shortest path length that meets your needs. The path length is\nindicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).\n\nNote: The CA depth configured on a subordinate CA certificate must not exceed\nthe limit set by its parents in the CA hierarchy.\n\nFor a list of TemplateArn values supported by Amazon Web Services Private\nCA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html)."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 validity:
                   description: "Information describing the end of the validity period of the certificate.\nThis parameter sets the “Not After” date for the certificate.\n\nCertificate validity is the period of time during which a certificate is\nvalid. Validity can be expressed as an explicit date and time when the certificate\nexpires, or as a span of time after issuance, stated in days, months, or\nyears. For more information, see Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280.\n\nThis value is unaffected when ValidityNotBefore is also specified. For example,\nif Validity is set to 20 days in the future, the certificate will expire\n20 days from issuance time regardless of the ValidityNotBefore value.\n\nThe end of the validity period configured on a certificate must not exceed\nthe limit set on its parents in the CA hierarchy."
                   properties:
@@ -279,6 +297,9 @@ spec:
                       format: "int64"
                       type: "integer"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 validityNotBefore:
                   description: "Information describing the start of the validity period of the certificate.\nThis parameter sets the “Not Before\" date for the certificate.\n\nBy default, when issuing a certificate, Amazon Web Services Private CA sets\nthe \"Not Before\" date to the issuance time minus 60 minutes. This compensates\nfor clock inconsistencies across computer systems. The ValidityNotBefore\nparameter can be used to customize the “Not Before” value.\n\nUnlike the Validity parameter, the ValidityNotBefore parameter is optional.\n\nThe ValidityNotBefore value is expressed as an explicit date and time, using\nthe Validity type value ABSOLUTE. For more information, see Validity (https://docs.aws.amazon.com/privateca/latest/APIReference/API_Validity.html)\nin this API reference and Validity (https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.5)\nin RFC 5280."
                   properties:
@@ -288,6 +309,9 @@ spec:
                       format: "int64"
                       type: "integer"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
               required:
                 - "signingAlgorithm"
                 - "validity"
@@ -312,7 +336,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

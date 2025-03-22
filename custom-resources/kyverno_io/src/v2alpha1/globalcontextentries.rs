@@ -30,6 +30,9 @@ pub struct GlobalContextEntrySpec {
     /// Mutually exclusive with APICall.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesResource")]
     pub kubernetes_resource: Option<GlobalContextEntryKubernetesResource>,
+    /// Projections defines the list of JMESPath expressions to extract values from the cached resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projections: Option<Vec<GlobalContextEntryProjections>>,
 }
 
 /// Stores results from an API call which will be cached.
@@ -134,6 +137,15 @@ pub struct GlobalContextEntryKubernetesResource {
     pub resource: String,
     /// Version defines the version of the resource.
     pub version: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GlobalContextEntryProjections {
+    /// JMESPath is the JMESPath expression to extract the value from the cached resource.
+    #[serde(rename = "jmesPath")]
+    pub jmes_path: String,
+    /// Name is the name to use for the extracted value in the context.
+    pub name: String,
 }
 
 /// Status contains globalcontextentry runtime data.

@@ -97,7 +97,7 @@ pub struct BackendTLSPolicyValidation {
     /// 
     /// If CACertificateRefs is empty or unspecified, then WellKnownCACertificates must be
     /// specified. Only one of CACertificateRefs or WellKnownCACertificates may be specified,
-    /// not both. If CACertifcateRefs is empty or unspecified, the configuration for
+    /// not both. If CACertificateRefs is empty or unspecified, the configuration for
     /// WellKnownCACertificates MUST be honored instead if supported by the implementation.
     /// 
     /// References to a resource in a different namespace are invalid for the
@@ -118,17 +118,17 @@ pub struct BackendTLSPolicyValidation {
     /// backends:
     /// 
     /// 1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).
-    /// 2. If SubjectAltNames is not specified, Hostname MUST be used for
+    /// 2. Hostname MUST be used for authentication and MUST match the certificate served by the matching backend, unless SubjectAltNames is specified.
     ///    authentication and MUST match the certificate served by the matching
     ///    backend.
     /// 
     /// Support: Core
     pub hostname: String,
     /// SubjectAltNames contains one or more Subject Alternative Names.
-    /// When specified, the certificate served from the backend MUST have at least one
-    /// Subject Alternate Name matching one of the specified SubjectAltNames.
+    /// When specified the certificate served from the backend MUST
+    /// have at least one Subject Alternate Name matching one of the specified SubjectAltNames.
     /// 
-    /// Support: Core
+    /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<BackendTLSPolicyValidationSubjectAltNames>>,
     /// WellKnownCACertificates specifies whether system CA certificates may be used in

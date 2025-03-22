@@ -38,6 +38,10 @@ pub enum PerconaServerMongoDBBackupType {
     Logical,
     #[serde(rename = "physical")]
     Physical,
+    #[serde(rename = "incremental")]
+    Incremental,
+    #[serde(rename = "incremental-base")]
+    IncrementalBase,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

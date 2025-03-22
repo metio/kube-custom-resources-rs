@@ -22,6 +22,8 @@ pub struct CcRuntimeSpec {
     /// if not specified, all worker nodes are selected
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ccNodeSelector")]
     pub cc_node_selector: Option<CcRuntimeCcNodeSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ccTolerations")]
+    pub cc_tolerations: Option<Vec<CcRuntimeCcTolerations>>,
     /// CcInstallConfig is a placeholder struct
     pub config: CcRuntimeConfig,
     #[serde(rename = "runtimeName")]
@@ -59,12 +61,39 @@ pub struct CcRuntimeCcNodeSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CcRuntimeCcTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// CcInstallConfig is a placeholder struct
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct CcRuntimeConfig {
-    /// This specifies the registry secret to pull of the container images
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ImagePullSecret")]
-    pub image_pull_secret: Option<CcRuntimeConfigImagePullSecret>,
     /// This specifies the command for cleanup on the nodes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupCmd")]
     pub cleanup_cmd: Option<Vec<String>>,
@@ -90,6 +119,9 @@ pub struct CcRuntimeConfig {
     /// PullPolicy describes a policy for if/when to pull a container image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// This specifies the registry secret to pull of the container images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
+    pub image_pull_secret: Option<CcRuntimeConfigImagePullSecret>,
     /// This specifies the command for installation of the runtime on the nodes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installCmd")]
     pub install_cmd: Option<Vec<String>>,
@@ -138,18 +170,6 @@ pub struct CcRuntimeConfig {
     /// when the uninstallation  is done
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uninstallDoneLabel")]
     pub uninstall_done_label: Option<BTreeMap<String, String>>,
-}
-
-/// This specifies the registry secret to pull of the container images
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CcRuntimeConfigImagePullSecret {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -250,6 +270,18 @@ pub struct CcRuntimeConfigEnvironmentVariablesValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// This specifies the registry secret to pull of the container images
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CcRuntimeConfigImagePullSecret {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// CcInstallConfig is a placeholder struct

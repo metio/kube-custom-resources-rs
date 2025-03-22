@@ -130,6 +130,9 @@ spec:
                       nullable: true
                       type: "object"
                   type: "object"
+                postCompleteDelay:
+                  nullable: true
+                  type: "string"
                 prepare:
                   nullable: true
                   properties:
@@ -613,6 +616,25 @@ spec:
                 version:
                   nullable: true
                   type: "string"
+                window:
+                  nullable: true
+                  properties:
+                    days:
+                      items:
+                        nullable: true
+                        type: "string"
+                      nullable: true
+                      type: "array"
+                    endTime:
+                      nullable: true
+                      type: "string"
+                    startTime:
+                      nullable: true
+                      type: "string"
+                    timeZone:
+                      nullable: true
+                      type: "string"
+                  type: "object"
               required:
                 - "upgrade"
               type: "object"

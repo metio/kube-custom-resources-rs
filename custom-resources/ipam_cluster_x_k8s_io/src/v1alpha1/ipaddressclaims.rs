@@ -10,7 +10,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// IPAddressClaimSpec is the desired state of an IPAddressClaim.
+/// spec is the desired state of IPAddressClaim.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ipam.cluster.x-k8s.io", version = "v1alpha1", kind = "IPAddressClaim", plural = "ipaddressclaims")]
 #[kube(namespaced)]
@@ -38,7 +38,7 @@ pub struct IPAddressClaimPoolRef {
     pub name: String,
 }
 
-/// IPAddressClaimStatus is the observed status of a IPAddressClaim.
+/// status is the observed state of IPAddressClaim.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimStatus {
     /// addressRef is a reference to the address that was created for this claim.

@@ -308,6 +308,9 @@ pub enum ClusterAvailabilityPolicy {
 /// Specifies the backup configuration of the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBackup {
+    /// Specifies the backup method to use, if not set, use the first continuous method.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continuousMethod")]
+    pub continuous_method: Option<String>,
     /// The cron expression for the schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronExpression")]
     pub cron_expression: Option<String>,
@@ -2064,6 +2067,12 @@ pub struct ClusterComponentSpecsInstancesSchedulingPolicyTopologySpreadConstrain
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -5196,6 +5205,12 @@ pub struct ClusterComponentSpecsUserResourceRefsSecretRefsSecretItems {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -9931,6 +9946,12 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadCo
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -13075,6 +13096,12 @@ pub struct ClusterShardingSpecsTemplateUserResourceRefsSecretRefsSecretItems {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingSpecsTemplateVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 

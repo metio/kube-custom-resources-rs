@@ -23,7 +23,7 @@ spec:
       name: "v1alpha2"
       schema:
         openAPIV3Schema:
-          description: "Module is the Schema for the modules API\nModule implements the API-driven Run Workflow\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/run/api"
+          description: "Module implements API-driven Run Workflows.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/run/api"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

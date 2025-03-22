@@ -2327,12 +2327,16 @@ pub struct APIManagerApicastStagingSpecTopologySpreadConstraintsLabelSelectorMat
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIManagerBackend {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRedisTLSEnabled")]
+    pub backend_redis_tls_enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cronSpec")]
     pub cron_spec: Option<APIManagerBackendCronSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerSpec")]
     pub listener_spec: Option<APIManagerBackendListenerSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuesRedisTLSEnabled")]
+    pub queues_redis_tls_enabled: Option<bool>,
     /// Affinity is a group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisAffinity")]
     pub redis_affinity: Option<APIManagerBackendRedisAffinity>,
@@ -6225,6 +6229,10 @@ pub struct APIManagerSystem {
     /// Deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sphinxSpec")]
     pub sphinx_spec: Option<APIManagerSystemSphinxSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemDatabaseTLSEnabled")]
+    pub system_database_tls_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemRedisTLSEnabled")]
+    pub system_redis_tls_enabled: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -13986,6 +13994,8 @@ pub struct APIManagerZync {
     pub postgre_sql_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queSpec")]
     pub que_spec: Option<APIManagerZyncQueSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "zyncDatabaseTLSEnabled")]
+    pub zync_database_tls_enabled: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

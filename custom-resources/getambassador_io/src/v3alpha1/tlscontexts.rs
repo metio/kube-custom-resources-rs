@@ -19,8 +19,11 @@ use self::prelude::*;
 pub struct TLSContextSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alpn_protocols: Option<String>,
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
-    ///  ambassador_id: - "default"
+    /// AmbassadorID declares which Ambassador instances should pay
+    /// attention to this resource. If no value is provided, the default is:
+    /// 
+    /// 	ambassador_id:
+    /// 	- "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

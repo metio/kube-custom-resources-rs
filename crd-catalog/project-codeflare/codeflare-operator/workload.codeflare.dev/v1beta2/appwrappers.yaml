@@ -77,6 +77,18 @@ spec:
                                 type: "string"
                               description: "NodeSelectors to be added to the PodSpecTemplate"
                               type: "object"
+                            schedulingGates:
+                              description: "SchedulingGates to be added to the PodSpecTemplate"
+                              items:
+                                description: "PodSchedulingGate is associated to a Pod to guard its scheduling."
+                                properties:
+                                  name:
+                                    description: "Name of the scheduling gate.\nEach scheduling gate must have a unique name field."
+                                    type: "string"
+                                required:
+                                  - "name"
+                                type: "object"
+                              type: "array"
                             tolerations:
                               description: "Tolerations to be added to the PodSpecTemplate"
                               items:

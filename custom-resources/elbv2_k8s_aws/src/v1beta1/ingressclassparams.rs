@@ -17,6 +17,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IngressClassParamsSpec {
+    /// PrefixListsIDs defines the security group prefix lists for all Ingresses that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "PrefixListsIDs")]
+    pub prefix_lists_i_ds: Option<Vec<String>>,
     /// CertificateArn specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateArn")]
     pub certificate_arn: Option<Vec<String>>,
@@ -29,6 +32,9 @@ pub struct IngressClassParamsSpec {
     /// IPAddressType defines the ip address type for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<IngressClassParamsIpAddressType>,
+    /// IPAMConfiguration defines the IPAM settings for a Load Balancer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipamConfiguration")]
+    pub ipam_configuration: Option<IngressClassParamsIpamConfiguration>,
     /// Listeners define a list of listeners with their protocol, port and attributes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<IngressClassParamsListeners>>,
@@ -72,6 +78,14 @@ pub enum IngressClassParamsIpAddressType {
     Dualstack,
     #[serde(rename = "dualstack-without-public-ipv4")]
     DualstackWithoutPublicIpv4,
+}
+
+/// IPAMConfiguration defines the IPAM settings for a Load Balancer.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IngressClassParamsIpamConfiguration {
+    /// IPv4IPAMPoolId defines the IPAM pool ID used for IPv4 Addresses on the ALB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv4IPAMPoolId")]
+    pub ipv4_ipam_pool_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

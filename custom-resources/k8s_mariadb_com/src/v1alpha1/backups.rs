@@ -565,6 +565,9 @@ pub struct BackupStagingStorageVolume {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<BackupStagingStorageVolumeEmptyDir>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<BackupStagingStorageVolumeHostPath>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<BackupStagingStorageVolumeNfs>,
@@ -603,6 +606,14 @@ pub struct BackupStagingStorageVolumeEmptyDir {
     pub medium: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStagingStorageVolumeHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
@@ -782,6 +793,9 @@ pub struct BackupStorageVolume {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<BackupStorageVolumeEmptyDir>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<BackupStorageVolumeHostPath>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<BackupStorageVolumeNfs>,
@@ -820,6 +834,14 @@ pub struct BackupStorageVolumeEmptyDir {
     pub medium: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupStorageVolumeHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.

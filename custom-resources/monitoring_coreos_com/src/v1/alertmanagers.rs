@@ -22,6 +22,13 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct AlertmanagerSpec {
+    /// AdditionalArgs allows setting additional arguments for the 'Alertmanager' container.
+    /// It is intended for e.g. activating hidden flags which are not supported by
+    /// the dedicated configuration options yet. The arguments are passed as-is to the
+    /// Alertmanager container which may cause issues if they are invalid or not supported
+    /// by the given Alertmanager version.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalArgs")]
+    pub additional_args: Option<Vec<AlertmanagerAdditionalArgs>>,
     /// AdditionalPeers allows injecting a set of additional Alertmanagers to peer with to form a highly available cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalPeers")]
     pub additional_peers: Option<Vec<String>>,
@@ -73,6 +80,11 @@ pub struct AlertmanagerSpec {
     /// Interval between pushpull attempts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPushpullInterval")]
     pub cluster_pushpull_interval: Option<String>,
+    /// Configures the mutual TLS configuration for the Alertmanager cluster's gossip protocol.
+    /// 
+    /// It requires Alertmanager >= 0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTLS")]
+    pub cluster_tls: Option<AlertmanagerClusterTls>,
     /// ConfigMaps is a list of ConfigMaps in the same namespace as the Alertmanager
     /// object, which shall be mounted into the Alertmanager Pods.
     /// Each ConfigMap is added to the StatefulSet definition as a volume named `configmap-<configmap-name>`.
@@ -117,6 +129,9 @@ pub struct AlertmanagerSpec {
     /// It requires Alertmanager >= 0.27.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
     pub enable_features: Option<Vec<String>>,
+    /// Indicates whether information about services should be injected into pod's environment variables
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
+    pub enable_service_links: Option<bool>,
     /// The external URL the Alertmanager instances will be available under. This is
     /// necessary to generate correct URLs. This is necessary if Alertmanager is not
     /// served from root of a DNS name.
@@ -235,6 +250,13 @@ pub struct AlertmanagerSpec {
     /// Prometheus Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// The name of the service name used by the underlying StatefulSet(s) as the governing service.
+    /// If defined, the Service  must be created before the Alertmanager resource in the same namespace and it must define a selector that matches the pod labels.
+    /// If empty, the operator will create and manage a headless service named `alertmanager-operated` for Alermanager resources.
+    /// When deploying multiple Alertmanager resources in the same namespace, it is recommended to specify a different value for each.
+    /// See https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
     /// SHA of Alertmanager container image to be deployed. Defaults to the value of `version`.
     /// Similar to a tag, but the SHA explicitly deploys an immutable container image.
     /// Version and Tag are ignored if SHA is set.
@@ -272,6 +294,16 @@ pub struct AlertmanagerSpec {
     /// Defines the web command line flags when starting Alertmanager.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub web: Option<AlertmanagerWeb>,
+}
+
+/// Argument as part of the AdditionalArgs list.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAdditionalArgs {
+    /// Name of the argument, e.g. "scrape.discovery-reload-interval".
+    pub name: String,
+    /// Argument value, e.g. 30s. Can be empty for name-only arguments (e.g. --storage.tsdb.no-lockfile)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// If specified, the pod's scheduling constraints.
@@ -1888,6 +1920,376 @@ pub struct AlertmanagerAlertmanagerConfigurationTemplatesConfigMap {
 /// Secret containing data to use for the targets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationTemplatesSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Configures the mutual TLS configuration for the Alertmanager cluster's gossip protocol.
+/// 
+/// It requires Alertmanager >= 0.24.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTls {
+    /// Client-side configuration for mutual TLS.
+    pub client: AlertmanagerClusterTlsClient,
+    /// Server-side configuration for mutual TLS.
+    pub server: AlertmanagerClusterTlsServer,
+}
+
+/// Client-side configuration for mutual TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClient {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<AlertmanagerClusterTlsClientCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<AlertmanagerClusterTlsClientCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<AlertmanagerClusterTlsClientKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<AlertmanagerClusterTlsClientMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<AlertmanagerClusterTlsClientMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerClusterTlsClientCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerClusterTlsClientCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerClusterTlsClientCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerClusterTlsClientCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsClientKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client-side configuration for mutual TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerClusterTlsClientMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// Client-side configuration for mutual TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AlertmanagerClusterTlsClientMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// Server-side configuration for mutual TLS.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServer {
+    /// Secret or ConfigMap containing the TLS certificate for the web server.
+    /// 
+    /// Either `keySecret` or `keyFile` must be defined.
+    /// 
+    /// It is mutually exclusive with `certFile`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<AlertmanagerClusterTlsServerCert>,
+    /// Path to the TLS certificate file in the container for the web server.
+    /// 
+    /// Either `keySecret` or `keyFile` must be defined.
+    /// 
+    /// It is mutually exclusive with `cert`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// List of supported cipher suites for TLS versions up to TLS 1.2.
+    /// 
+    /// If not defined, the Go default cipher suites are used.
+    /// Available cipher suites are documented in the Go documentation:
+    /// https://golang.org/pkg/crypto/tls/#pkg-constants
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
+    pub cipher_suites: Option<Vec<String>>,
+    /// The server policy for client TLS authentication.
+    /// 
+    /// For more detail on clientAuth options:
+    /// https://golang.org/pkg/crypto/tls/#ClientAuthType
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuthType")]
+    pub client_auth_type: Option<String>,
+    /// Path to the CA certificate file for client certificate authentication to
+    /// the server.
+    /// 
+    /// It is mutually exclusive with `client_ca`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCAFile")]
+    pub client_ca_file: Option<String>,
+    /// Secret or ConfigMap containing the CA certificate for client certificate
+    /// authentication to the server.
+    /// 
+    /// It is mutually exclusive with `clientCAFile`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub client_ca: Option<AlertmanagerClusterTlsServerClientCa>,
+    /// Elliptic curves that will be used in an ECDHE handshake, in preference
+    /// order.
+    /// 
+    /// Available curves are documented in the Go documentation:
+    /// https://golang.org/pkg/crypto/tls/#CurveID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "curvePreferences")]
+    pub curve_preferences: Option<Vec<String>>,
+    /// Path to the TLS private key file in the container for the web server.
+    /// 
+    /// If defined, either `cert` or `certFile` must be defined.
+    /// 
+    /// It is mutually exclusive with `keySecret`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Secret containing the TLS private key for the web server.
+    /// 
+    /// Either `cert` or `certFile` must be defined.
+    /// 
+    /// It is mutually exclusive with `keyFile`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<AlertmanagerClusterTlsServerKeySecret>,
+    /// Maximum TLS version that is acceptable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<String>,
+    /// Minimum TLS version that is acceptable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<String>,
+    /// Controls whether the server selects the client's most preferred cipher
+    /// suite, or the server's most preferred cipher suite.
+    /// 
+    /// If true then the server's preference, as expressed in
+    /// the order of elements in cipherSuites, is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferServerCipherSuites")]
+    pub prefer_server_cipher_suites: Option<bool>,
+}
+
+/// Secret or ConfigMap containing the TLS certificate for the web server.
+/// 
+/// Either `keySecret` or `keyFile` must be defined.
+/// 
+/// It is mutually exclusive with `certFile`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerClusterTlsServerCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerClusterTlsServerCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret or ConfigMap containing the CA certificate for client certificate
+/// authentication to the server.
+/// 
+/// It is mutually exclusive with `clientCAFile`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerClientCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<AlertmanagerClusterTlsServerClientCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<AlertmanagerClusterTlsServerClientCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerClientCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerClientCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the TLS private key for the web server.
+/// 
+/// Either `cert` or `certFile` must be defined.
+/// 
+/// It is mutually exclusive with `keyFile`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerClusterTlsServerKeySecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.

@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachineDeploymentSpec defines the desired state of MachineDeployment.
+/// spec is the desired state of MachineDeployment.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha3", kind = "MachineDeployment", plural = "machinedeployments")]
 #[kube(namespaced)]
@@ -146,7 +146,7 @@ pub struct MachineDeploymentStrategyRollingUpdate {
 /// template describes the machines that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachineDeploymentTemplateMetadata>,
@@ -156,7 +156,7 @@ pub struct MachineDeploymentTemplate {
     pub spec: Option<MachineDeploymentTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateMetadata {
@@ -396,7 +396,7 @@ pub struct MachineDeploymentTemplateSpecInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// MachineDeploymentStatus defines the observed state of MachineDeployment.
+/// status is the observed state of MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStatus {
     /// availableReplicas is the total number of available machines (ready for at least minReadySeconds)

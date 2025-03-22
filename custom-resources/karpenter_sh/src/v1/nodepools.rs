@@ -277,6 +277,10 @@ pub struct NodePoolStatus {
     /// Conditions contains signals for health and readiness
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// NodeClassObservedGeneration represents the observed nodeClass generation for referenced nodeClass. If this does not match
+    /// the actual NodeClass Generation, NodeRegistrationHealthy status condition on the NodePool will be reset
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeClassObservedGeneration")]
+    pub node_class_observed_generation: Option<i64>,
     /// Resources is the list of resources that have been provisioned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,

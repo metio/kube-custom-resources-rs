@@ -20,7 +20,8 @@ pub struct AWSIamConfigSpec {
     /// AWSRegion defines a region in an AWS partition
     #[serde(rename = "awsRegion")]
     pub aws_region: String,
-    /// BackendMode defines multiple backends for aws-iam-authenticator server The server searches for mappings in order
+    /// BackendMode defines multiple backends for aws-iam-authenticator server
+    /// The server searches for mappings in order
     #[serde(rename = "backendMode")]
     pub backend_mode: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mapRoles")]

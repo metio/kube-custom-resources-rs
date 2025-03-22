@@ -29,6 +29,8 @@ pub struct PerconaXtraDBClusterBackupSpec {
     pub starting_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendedDeadlineSeconds")]
+    pub suspended_deadline_seconds: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -143,6 +145,10 @@ pub struct PerconaXtraDBClusterBackupStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaXtraDBClusterBackupStatusAzure {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockSize")]
+    pub block_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub concurrency: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]

@@ -193,6 +193,9 @@ pub struct JobSetReplicatedJobs {
     /// This API is mutually exclusive with the StartupPolicy API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
     pub depends_on: Option<Vec<JobSetReplicatedJobsDependsOn>>,
+    /// GroupName defines the name of the group this ReplicatedJob belongs to. Defaults to "default"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupName")]
+    pub group_name: Option<String>,
     /// Name is the name of the entry and will be used as a suffix
     /// for the Job name.
     pub name: String,

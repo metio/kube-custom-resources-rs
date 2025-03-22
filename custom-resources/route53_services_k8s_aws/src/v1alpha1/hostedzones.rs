@@ -130,7 +130,7 @@ pub struct HostedZoneStatus {
     /// zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "callerReference")]
     pub caller_reference: Option<String>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
@@ -141,6 +141,9 @@ pub struct HostedZoneStatus {
     /// and Comment elements don't appear in the response.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<HostedZoneStatusConfig>,
+    /// A complex type that describes the name servers for this hosted zone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delegationSet")]
+    pub delegation_set: Option<HostedZoneStatusDelegationSet>,
     /// The ID that Amazon Route 53 assigned to the hosted zone when you created
     /// it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -186,6 +189,17 @@ pub struct HostedZoneStatusConfig {
     pub comment: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateZone")]
     pub private_zone: Option<bool>,
+}
+
+/// A complex type that describes the name servers for this hosted zone.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HostedZoneStatusDelegationSet {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "callerReference")]
+    pub caller_reference: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameServers")]
+    pub name_servers: Option<Vec<String>>,
 }
 
 /// If the hosted zone was created by another service, the service that created

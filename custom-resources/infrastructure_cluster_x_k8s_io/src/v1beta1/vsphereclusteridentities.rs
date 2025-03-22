@@ -77,5 +77,17 @@ pub struct VSphereClusterIdentityStatus {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// v1beta2 groups all the fields that will be added or modified in VSphereClusterIdentity's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<VSphereClusterIdentityStatusV1beta2>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in VSphereClusterIdentity's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereClusterIdentityStatusV1beta2 {
+    /// conditions represents the observations of a VSphereClusterIdentity's current state.
+    /// Known condition types are Available and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// CacheParameterGroupSpec defines the desired state of CacheParameterGroup.
 /// 
-/// 
 /// Represents the output of a CreateCacheParameterGroup operation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "CacheParameterGroup", plural = "cacheparametergroups")]
@@ -25,9 +24,8 @@ pub struct CacheParameterGroupSpec {
     /// The name of the cache parameter group family that the cache parameter group
     /// can be used with.
     /// 
-    /// 
     /// Valid values are: memcached1.4 | memcached1.5 | memcached1.6 | redis2.6 |
-    /// redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x
+    /// redis2.8 | redis3.2 | redis4.0 | redis5.0 | redis6.x | redis7
     #[serde(rename = "cacheParameterGroupFamily")]
     pub cache_parameter_group_family: String,
     /// A user-specified name for the cache parameter group.
@@ -77,7 +75,7 @@ pub struct CacheParameterGroupStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CacheParameterGroupStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
@@ -106,7 +104,6 @@ pub struct CacheParameterGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

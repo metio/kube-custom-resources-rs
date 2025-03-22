@@ -20,7 +20,7 @@ spec:
       name: "v1alpha2"
       schema:
         openAPIV3Schema:
-          description: "Workspace is the Schema for the workspaces API"
+          description: "Workspace manages HCP Terraform Workspaces.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -463,6 +463,21 @@ spec:
                   required:
                     - "secretKeyRef"
                   type: "object"
+                variableSets:
+                  description: "HCP Terraform variable sets let you reuse variables in an efficient and centralized way.\nMore information\n  - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets"
+                  items:
+                    properties:
+                      id:
+                        description: "ID of the variable set.\nMust match pattern: `varset-[a-zA-Z0-9]+$`\nMore information:\n  - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets"
+                        pattern: "varset-[a-zA-Z0-9]+$"
+                        type: "string"
+                      name:
+                        description: "Name of the variable set.\nMore information:\n  - https://developer.hashicorp.com/terraform/tutorials/cloud/cloud-multiple-variable-sets"
+                        minLength: 1
+                        type: "string"
+                    type: "object"
+                  minItems: 1
+                  type: "array"
                 versionControl:
                   description: "Settings for the workspace's VCS repository, enabling the UI/VCS-driven run workflow.\nOmit this argument to utilize the CLI-driven and API-driven workflows, where runs are not driven by webhooks on your VCS provider.\nMore information:\n  - https://www.terraform.io/cloud-docs/run/ui\n  - https://www.terraform.io/cloud-docs/vcs"
                   properties:
@@ -470,6 +485,10 @@ spec:
                       description: "The repository branch that Run will execute from. This defaults to the repository's default branch (e.g. main)."
                       minLength: 1
                       type: "string"
+                    fileTriggersEnabled:
+                      default: false
+                      description: "File triggers allow you to queue runs in HCP Terraform when files in your VCS repository change.\nDefault: `false`.\nMore informarion:\n - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering"
+                      type: "boolean"
                     oAuthTokenID:
                       description: "The VCS Connection (OAuth Connection + Token) to use.\nMust match pattern: `^ot-[a-zA-Z0-9]+$`"
                       pattern: "^ot-[a-zA-Z0-9]+$"
@@ -482,6 +501,18 @@ spec:
                       default: true
                       description: "Whether this workspace allows automatic speculative plans on PR.\nDefault: `true`.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/run/ui#speculative-plans-on-pull-requests\n  - https://developer.hashicorp.com/terraform/cloud-docs/run/remote-operations#speculative-plans"
                       type: "boolean"
+                    triggerPatterns:
+                      description: "The list of pattern triggers that will queue runs in HCP Terraform when files in your VCS repository change.\n`spec.versionControl.fileTriggersEnabled` must be set to `true`.\nMore informarion:\n - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering"
+                      items:
+                        type: "string"
+                      minItems: 1
+                      type: "array"
+                    triggerPrefixes:
+                      description: "The list of pattern prefixes that will queue runs in HCP Terraform when files in your VCS repository change.\n`spec.versionControl.fileTriggersEnabled` must be set to `true`.\nMore informarion:\n - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering"
+                      items:
+                        type: "string"
+                      minItems: 1
+                      type: "array"
                   type: "object"
                 workingDirectory:
                   description: "The directory where Terraform will execute, specified as a relative path from the root of the configuration directory.\nMore information:\n  - https://www.terraform.io/cloud-docs/workspaces/settings#terraform-working-directory"
@@ -546,6 +577,16 @@ spec:
                   description: "Workspace last update timestamp."
                   format: "int64"
                   type: "integer"
+                variableSet:
+                  description: "Variable Sets."
+                  items:
+                    properties:
+                      id:
+                        type: "string"
+                      name:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 variables:
                   description: "Workspace variables."
                   items:

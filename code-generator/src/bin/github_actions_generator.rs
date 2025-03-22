@@ -10,7 +10,6 @@ use std::io::Result;
 
 fn main() -> Result<()> {
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
-    let verify_template = format!("{}/code-generator/src/templates/verify-crd.yml.hbs", root);
     let release_template = format!("{}/code-generator/src/templates/release-crd.yml.hbs", root);
     let custom_resources_root =
         fs::canonicalize(format!("{}/custom-resources", root)).expect("canonicalize failed");
@@ -21,9 +20,6 @@ fn main() -> Result<()> {
     handlebars.set_strict_mode(true);
 
     handlebars
-        .register_template_file("verify-crd", &verify_template)
-        .expect("register template failed");
-    handlebars
         .register_template_file("release-crd", &release_template)
         .expect("register template failed");
 
@@ -32,11 +28,6 @@ fn main() -> Result<()> {
         let group_name = group_path.file_name().unwrap().to_str().unwrap();
 
         let cargo_toml_file = group_path.join("Cargo.toml");
-        let verify_action = format!(
-            "{}/verify-{}.yml",
-            github_actions_root.display(),
-            group_name
-        );
         let release_action = format!(
             "{}/release-{}.yml",
             github_actions_root.display(),
@@ -65,25 +56,12 @@ fn main() -> Result<()> {
                 .create(true)
                 .write(true)
                 .truncate(true)
-                .open(verify_action)
-                .expect("unable to open file");
-            handlebars
-                .render_to_write("verify-crd", &data, &file)
-                .expect("error rendering template");
-
-            let file = OpenOptions::new()
-                .create(true)
-                .write(true)
-                .truncate(true)
                 .open(release_action)
                 .expect("unable to open file");
             handlebars
                 .render_to_write("release-crd", &data, &file)
                 .expect("error rendering template");
         } else {
-            if fs::exists(&verify_action).expect("unable to open file") {
-                fs::remove_file(&verify_action)?;
-            }
             if fs::exists(&release_action).expect("unable to open file") {
                 fs::remove_file(&release_action)?;
             }

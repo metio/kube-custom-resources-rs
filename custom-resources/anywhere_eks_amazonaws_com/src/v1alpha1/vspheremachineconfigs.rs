@@ -40,7 +40,8 @@ pub struct VSphereMachineConfigSpec {
     pub storage_policy_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
-    /// Template field is the template to use for provisioning the VM. It must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+    /// Template field is the template to use for provisioning the VM. It must include the Kubernetes
+    /// version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,7 +60,8 @@ pub enum VSphereMachineConfigCloneMode {
 /// HostOSConfiguration defines the configuration settings on the host OS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineConfigHostOsConfiguration {
-    /// BottlerocketConfiguration defines the Bottlerocket configuration on the host OS. These settings only take effect when the `osFamily` is bottlerocket.
+    /// BottlerocketConfiguration defines the Bottlerocket configuration on the host OS.
+    /// These settings only take effect when the `osFamily` is bottlerocket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bottlerocketConfiguration")]
     pub bottlerocket_configuration: Option<VSphereMachineConfigHostOsConfigurationBottlerocketConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certBundles")]
@@ -69,7 +71,8 @@ pub struct VSphereMachineConfigHostOsConfiguration {
     pub ntp_configuration: Option<VSphereMachineConfigHostOsConfigurationNtpConfiguration>,
 }
 
-/// BottlerocketConfiguration defines the Bottlerocket configuration on the host OS. These settings only take effect when the `osFamily` is bottlerocket.
+/// BottlerocketConfiguration defines the Bottlerocket configuration on the host OS.
+/// These settings only take effect when the `osFamily` is bottlerocket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfiguration {
     /// Boot defines the boot settings for bottlerocket.
@@ -107,13 +110,16 @@ pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfigurationKuber
     /// ClusterDNSIPs defines IP addresses of the DNS servers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDNSIPs")]
     pub cluster_dnsi_ps: Option<Vec<String>>,
-    /// ClusterDomain defines the DNS domain for the cluster, allowing all Kubernetes-run containers to search this domain before the host’s search domains
+    /// ClusterDomain defines the DNS domain for the cluster, allowing all Kubernetes-run containers
+    /// to search this domain before the host’s search domains
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDomain")]
     pub cluster_domain: Option<String>,
-    /// ContainerLogMaxFiles specifies the maximum number of container log files that can be present for a container
+    /// ContainerLogMaxFiles specifies the maximum number of container log
+    /// files that can be present for a container
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerLogMaxFiles")]
     pub container_log_max_files: Option<i64>,
-    /// ContainerLogMaxSize is a quantity defining the maximum size of the container log file before it is rotated
+    /// ContainerLogMaxSize is a quantity defining the maximum size of
+    /// the container log file before it is rotated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerLogMaxSize")]
     pub container_log_max_size: Option<String>,
     /// CPUCFSQuota enables CPU CFS quota enforcement for containers that specify CPU limits
@@ -122,7 +128,8 @@ pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfigurationKuber
     /// CPUManagerPolicy is the name of the policy to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuManagerPolicy")]
     pub cpu_manager_policy: Option<String>,
-    /// CPUManagerPolicyOptions is a set of key=value which allows to set extra options to fine tune the behaviour of the cpu manager policies
+    /// CPUManagerPolicyOptions is a set of key=value which allows to set extra options to
+    /// fine tune the behaviour of the cpu manager policies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuManagerPolicyOptions")]
     pub cpu_manager_policy_options: Option<BTreeMap<String, String>>,
     /// CPUManagerReconcilePeriod is the reconciliation period for the CPU Manager.
@@ -137,16 +144,19 @@ pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfigurationKuber
     /// EvictionHard is a map of signal names to quantities that defines hard eviction thresholds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionHard")]
     pub eviction_hard: Option<BTreeMap<String, String>>,
-    /// EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in response to a soft eviction threshold being met.
+    /// EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use
+    /// when terminating pods in response to a soft eviction threshold being met.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionMaxPodGracePeriod")]
     pub eviction_max_pod_grace_period: Option<i64>,
     /// EvictionSoft is a map of signal names to quantities that defines soft eviction thresholds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoft")]
     pub eviction_soft: Option<BTreeMap<String, String>>,
-    /// EvictionSoftGracePeriod is a map of signal names to quantities that defines grace periods for each soft eviction signal.
+    /// EvictionSoftGracePeriod is a map of signal names to quantities that defines grace periods
+    /// for each soft eviction signal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionSoftGracePeriod")]
     pub eviction_soft_grace_period: Option<BTreeMap<String, String>>,
-    /// ImageGCHighThresholdPercent is the percent of disk usage after which image garbage collection is always run.
+    /// ImageGCHighThresholdPercent is the percent of disk usage after which image garbage
+    /// collection is always run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageGCHighThresholdPercent")]
     pub image_gc_high_threshold_percent: Option<i64>,
     /// ImageGCLowThresholdPercent is the percent of disk usage before which image garbage collection is never run.
@@ -158,7 +168,8 @@ pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfigurationKuber
     /// KubeAPIQPS is the QPS to use while talking with kubernetes apiserver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i64>,
-    /// KubeReserved is a set of ResourceName=ResourceQuantity pairs that describe resources reserved for kubernetes system components
+    /// KubeReserved is a set of ResourceName=ResourceQuantity pairs that describe resources
+    /// reserved for kubernetes system components
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeReserved")]
     pub kube_reserved: Option<BTreeMap<String, String>>,
     /// MaxPods defines the maximum number of pods that can run on a node.
@@ -179,19 +190,23 @@ pub struct VSphereMachineConfigHostOsConfigurationBottlerocketConfigurationKuber
     /// RegistryPullQPS is the limit of registry pulls per second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryPullQPS")]
     pub registry_pull_qps: Option<i64>,
-    /// ShutdownGracePeriod specifies the total duration that the node should delay the shutdown and total grace period for pod termination during a node shutdown.
+    /// ShutdownGracePeriod specifies the total duration that the node should delay
+    /// the shutdown and total grace period for pod termination during a node shutdown.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownGracePeriod")]
     pub shutdown_grace_period: Option<String>,
-    /// ShutdownGracePeriodCriticalPods specifies the duration used to terminate critical pods during a node shutdown.
+    /// ShutdownGracePeriodCriticalPods specifies the duration used to terminate
+    /// critical pods during a node shutdown.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownGracePeriodCriticalPods")]
     pub shutdown_grace_period_critical_pods: Option<String>,
-    /// SystemReserved is a set of ResourceName=ResourceQuantity pairs that describe resources reserved for non-kubernetes components.
+    /// SystemReserved is a set of ResourceName=ResourceQuantity pairs that describe
+    /// resources reserved for non-kubernetes components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemReserved")]
     pub system_reserved: Option<BTreeMap<String, String>>,
     /// TopologyManagerPolicy is the name of the topology manager policy to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyManagerPolicy")]
     pub topology_manager_policy: Option<String>,
-    /// TopologyManagerScope represents the scope of topology hint generation that topology manager requests and hint providers generate.
+    /// TopologyManagerScope represents the scope of topology hint generation
+    /// that topology manager requests and hint providers generate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyManagerScope")]
     pub topology_manager_scope: Option<String>,
 }

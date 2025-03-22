@@ -511,6 +511,21 @@ spec:
                     type: "object"
                   minItems: 1
                   type: "array"
+                schedulePriority:
+                  description: "SchedulePriority defines how Karmada should resolve the priority and preemption policy\nfor workload scheduling.\n\nThis setting is useful for controlling the scheduling behavior of offline workloads.\nBy setting a higher or lower priority, users can control which workloads are scheduled first.\nAdditionally, it allows specifying a preemption policy where higher-priority workloads can\npreempt lower-priority ones in scenarios of resource contention.\n\nNote: This feature is currently in the alpha stage. The priority-based scheduling functionality is\ncontrolled by the PriorityBasedScheduling feature gate, and preemption is controlled by the\nPriorityBasedPreemptiveScheduling feature gate. Currently, only priority-based scheduling is\nsupported. Preemption functionality is not yet available and will be introduced in future\nreleases as the feature matures."
+                  properties:
+                    priorityClassName:
+                      description: "PriorityClassName specifies which PriorityClass to use. Its behavior depends on PriorityClassSource:\n\nBehavior of PriorityClassName:\n\nFor KubePriorityClass:\n- When specified: Uses the named Kubernetes PriorityClass.\n\nFor PodPriorityClass:\n- Uses PriorityClassName from the PodTemplate.\n- Not yet implemented.\n\nFor FederatedPriorityClass:\n- Not yet implemented."
+                      type: "string"
+                    priorityClassSource:
+                      description: "PriorityClassSource specifies where Karmada should look for the PriorityClass definition.\nAvailable options:\n- KubePriorityClass: Uses Kubernetes PriorityClass (scheduling.k8s.io/v1)\n- PodPriorityClass: Uses PriorityClassName from PodTemplate: PodSpec.PriorityClassName (not yet implemented)\n- FederatedPriorityClass: Uses Karmada FederatedPriorityClass (not yet implemented)"
+                      enum:
+                        - "KubePriorityClass"
+                      type: "string"
+                  required:
+                    - "priorityClassName"
+                    - "priorityClassSource"
+                  type: "object"
                 schedulerName:
                   default: "default-scheduler"
                   description: "SchedulerName represents which scheduler to proceed the scheduling.\nIf specified, the policy will be dispatched by specified scheduler.\nIf not specified, the policy will be dispatched by default scheduler."

@@ -33,6 +33,14 @@ pub struct BGPConfigurationSpec {
     /// ListenPort is the port where BGP protocol should listen. Defaults to 179
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenPort")]
     pub listen_port: Option<i64>,
+    /// The virtual IPv4 address of the node with which its local workload is expected to peer.
+    /// It is recommended to use a link-local address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localWorkloadPeeringIPV4")]
+    pub local_workload_peering_ipv4: Option<String>,
+    /// The virtual IPv6 address of the node with which its local workload is expected to peer.
+    /// It is recommended to use a link-local address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localWorkloadPeeringIPV6")]
+    pub local_workload_peering_ipv6: Option<String>,
     /// LogSeverityScreen is the log severity above which logs are sent to the stdout. [Default: INFO]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverityScreen")]
     pub log_severity_screen: Option<String>,

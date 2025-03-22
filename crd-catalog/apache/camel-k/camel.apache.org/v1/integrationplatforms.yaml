@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "integrationplatforms.camel.apache.org"
 spec:
   group: "camel.apache.org"
@@ -136,7 +136,7 @@ spec:
                                 type: "string"
                               name:
                                 default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -192,7 +192,7 @@ spec:
                                     type: "string"
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -209,7 +209,7 @@ spec:
                                     type: "string"
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -236,7 +236,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -253,7 +253,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -274,7 +274,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -291,7 +291,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -644,7 +644,7 @@ spec:
                           format: "int64"
                           type: "integer"
                         auto:
-                          description: "Automatically deploy the integration as CronJob when all routes are\neither starting from a periodic consumer (only `cron`, `timer` and `quartz` are supported) or a passive consumer (e.g. `direct` is a passive consumer).\n\n\nIt's required that all periodic consumers have the same period, and it can be expressed as cron schedule (e.g. `1m` can be expressed as `0/1 * * * *`,\nwhile `35m` or `50s` cannot)."
+                          description: "Automatically deploy the integration as CronJob when all routes are\neither starting from a periodic consumer (only `cron`, `timer` and `quartz` are supported) or a passive consumer (e.g. `direct` is a passive consumer).\n\nIt's required that all periodic consumers have the same period, and it can be expressed as cron schedule (e.g. `1m` can be expressed as `0/1 * * * *`,\nwhile `35m` or `50s` cannot)."
                           type: "boolean"
                         backoffLimit:
                           description: "Specifies the number of retries before marking the job failed.\nIt defaults to 2."
@@ -769,7 +769,7 @@ spec:
                           type: "array"
                       type: "object"
                     error-handler:
-                      description: "The configuration of Error Handler trait"
+                      description: "The configuration of Error Handler trait\nDeprecated: no longer in use."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
@@ -1149,16 +1149,16 @@ spec:
                           description: "The annotations added to route.\nThis can be used to set knative service specific annotations\nCLI usage example: -t \"knative-service.annotations.'haproxy.router.openshift.io/balance'=true\""
                           type: "object"
                         auto:
-                          description: "Automatically deploy the integration as Knative service when all conditions hold:\n\n\n* Integration is using the Knative profile\n* All routes are either starting from an HTTP based consumer or a passive consumer (e.g. `direct` is a passive consumer)"
+                          description: "Automatically deploy the integration as Knative service when all conditions hold:\n\n* Integration is using the Knative profile\n* All routes are either starting from an HTTP based consumer or a passive consumer (e.g. `direct` is a passive consumer)"
                           type: "boolean"
                         autoscalingMetric:
-                          description: "Configures the Knative autoscaling metric property (e.g. to set `concurrency` based or `cpu` based autoscaling).\n\n\nRefer to the Knative documentation for more information."
+                          description: "Configures the Knative autoscaling metric property (e.g. to set `concurrency` based or `cpu` based autoscaling).\n\nRefer to the Knative documentation for more information."
                           type: "string"
                         autoscalingTarget:
-                          description: "Sets the allowed concurrency level or CPU percentage (depending on the autoscaling metric) for each Pod.\n\n\nRefer to the Knative documentation for more information."
+                          description: "Sets the allowed concurrency level or CPU percentage (depending on the autoscaling metric) for each Pod.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         class:
-                          description: "Configures the Knative autoscaling class property (e.g. to set `hpa.autoscaling.knative.dev` or `kpa.autoscaling.knative.dev` autoscaling).\n\n\nRefer to the Knative documentation for more information."
+                          description: "Configures the Knative autoscaling class property (e.g. to set `hpa.autoscaling.knative.dev` or `kpa.autoscaling.knative.dev` autoscaling).\n\nRefer to the Knative documentation for more information."
                           enum:
                             - "kpa.autoscaling.knative.dev"
                             - "hpa.autoscaling.knative.dev"
@@ -1171,20 +1171,20 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         maxScale:
-                          description: "An upper bound for the number of Pods that can be running in parallel for the integration.\nKnative has its own cap value that depends on the installation.\n\n\nRefer to the Knative documentation for more information."
+                          description: "An upper bound for the number of Pods that can be running in parallel for the integration.\nKnative has its own cap value that depends on the installation.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         minScale:
-                          description: "The minimum number of Pods that should be running at any time for the integration. It's **zero** by default, meaning that\nthe integration is scaled down to zero when not used for a configured amount of time.\n\n\nRefer to the Knative documentation for more information."
+                          description: "The minimum number of Pods that should be running at any time for the integration. It's **zero** by default, meaning that\nthe integration is scaled down to zero when not used for a configured amount of time.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         rolloutDuration:
                           description: "Enables to gradually shift traffic to the latest Revision and sets the rollout duration.\nIt's disabled by default and must be expressed as a Golang `time.Duration` string representation,\nrounded to a second precision."
                           type: "string"
                         timeoutSeconds:
-                          description: "The maximum duration in seconds that the request instance is allowed to respond to a request.\nThis field propagates to the integration pod's terminationGracePeriodSeconds\n\n\nRefer to the Knative documentation for more information."
+                          description: "The maximum duration in seconds that the request instance is allowed to respond to a request.\nThis field propagates to the integration pod's terminationGracePeriodSeconds\n\nRefer to the Knative documentation for more information."
                           format: "int64"
                           type: "integer"
                         visibility:
-                          description: "Setting `cluster-local`, Knative service becomes a private service.\nSpecifically, this option applies the `networking.knative.dev/visibility` label to Knative service.\n\n\nRefer to the Knative documentation for more information."
+                          description: "Setting `cluster-local`, Knative service becomes a private service.\nSpecifically, this option applies the `networking.knative.dev/visibility` label to Knative service.\n\nRefer to the Knative documentation for more information."
                           enum:
                             - "cluster-local"
                           type: "string"
@@ -1476,38 +1476,38 @@ spec:
                           description: "To configure the host exposed by the route."
                           type: "string"
                         tlsCACertificate:
-                          description: "The TLS CA certificate contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS CA certificate contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCACertificateSecret:
-                          description: "The secret name and key reference to the TLS CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCertificate:
-                          description: "The TLS certificate contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS certificate contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCertificateSecret:
-                          description: "The secret name and key reference to the TLS certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsDestinationCACertificate:
-                          description: "The destination CA certificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The destination CA certificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsDestinationCACertificateSecret:
-                          description: "The secret name and key reference to the destination CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the destination CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsInsecureEdgeTerminationPolicy:
-                          description: "To configure how to deal with insecure traffic, e.g. `Allow`, `Disable` or `Redirect` traffic.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "To configure how to deal with insecure traffic, e.g. `Allow`, `Disable` or `Redirect` traffic.\n\nRefer to the OpenShift route documentation for additional information."
                           enum:
                             - "None"
                             - "Allow"
                             - "Redirect"
                           type: "string"
                         tlsKey:
-                          description: "The TLS certificate key contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS certificate key contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsKeySecret:
-                          description: "The secret name and key reference to the TLS certificate key. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS certificate key. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsTermination:
-                          description: "The TLS termination type, like `edge`, `passthrough` or `reencrypt`.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS termination type, like `edge`, `passthrough` or `reencrypt`.\n\nRefer to the OpenShift route documentation for additional information."
                           enum:
                             - "edge"
                             - "reencrypt"
@@ -1573,7 +1573,7 @@ spec:
                           type: "string"
                       type: "object"
                     service-binding:
-                      description: "The configuration of Service Binding trait"
+                      description: "The configuration of Service Binding trait\nDeprecated: no longer in use."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
@@ -1735,7 +1735,7 @@ spec:
                                 type: "string"
                               name:
                                 default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "Specify whether the Secret or its key must be defined"
@@ -1791,7 +1791,7 @@ spec:
                                     type: "string"
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1808,7 +1808,7 @@ spec:
                                     type: "string"
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1835,7 +1835,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -1852,7 +1852,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -1873,7 +1873,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the ConfigMap or its key must be defined"
@@ -1890,7 +1890,7 @@ spec:
                                   type: "string"
                                 name:
                                   default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                   type: "string"
                                 optional:
                                   description: "Specify whether the Secret or its key must be defined"
@@ -2285,7 +2285,7 @@ spec:
                           format: "int64"
                           type: "integer"
                         auto:
-                          description: "Automatically deploy the integration as CronJob when all routes are\neither starting from a periodic consumer (only `cron`, `timer` and `quartz` are supported) or a passive consumer (e.g. `direct` is a passive consumer).\n\n\nIt's required that all periodic consumers have the same period, and it can be expressed as cron schedule (e.g. `1m` can be expressed as `0/1 * * * *`,\nwhile `35m` or `50s` cannot)."
+                          description: "Automatically deploy the integration as CronJob when all routes are\neither starting from a periodic consumer (only `cron`, `timer` and `quartz` are supported) or a passive consumer (e.g. `direct` is a passive consumer).\n\nIt's required that all periodic consumers have the same period, and it can be expressed as cron schedule (e.g. `1m` can be expressed as `0/1 * * * *`,\nwhile `35m` or `50s` cannot)."
                           type: "boolean"
                         backoffLimit:
                           description: "Specifies the number of retries before marking the job failed.\nIt defaults to 2."
@@ -2410,7 +2410,7 @@ spec:
                           type: "array"
                       type: "object"
                     error-handler:
-                      description: "The configuration of Error Handler trait"
+                      description: "The configuration of Error Handler trait\nDeprecated: no longer in use."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."
@@ -2790,16 +2790,16 @@ spec:
                           description: "The annotations added to route.\nThis can be used to set knative service specific annotations\nCLI usage example: -t \"knative-service.annotations.'haproxy.router.openshift.io/balance'=true\""
                           type: "object"
                         auto:
-                          description: "Automatically deploy the integration as Knative service when all conditions hold:\n\n\n* Integration is using the Knative profile\n* All routes are either starting from an HTTP based consumer or a passive consumer (e.g. `direct` is a passive consumer)"
+                          description: "Automatically deploy the integration as Knative service when all conditions hold:\n\n* Integration is using the Knative profile\n* All routes are either starting from an HTTP based consumer or a passive consumer (e.g. `direct` is a passive consumer)"
                           type: "boolean"
                         autoscalingMetric:
-                          description: "Configures the Knative autoscaling metric property (e.g. to set `concurrency` based or `cpu` based autoscaling).\n\n\nRefer to the Knative documentation for more information."
+                          description: "Configures the Knative autoscaling metric property (e.g. to set `concurrency` based or `cpu` based autoscaling).\n\nRefer to the Knative documentation for more information."
                           type: "string"
                         autoscalingTarget:
-                          description: "Sets the allowed concurrency level or CPU percentage (depending on the autoscaling metric) for each Pod.\n\n\nRefer to the Knative documentation for more information."
+                          description: "Sets the allowed concurrency level or CPU percentage (depending on the autoscaling metric) for each Pod.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         class:
-                          description: "Configures the Knative autoscaling class property (e.g. to set `hpa.autoscaling.knative.dev` or `kpa.autoscaling.knative.dev` autoscaling).\n\n\nRefer to the Knative documentation for more information."
+                          description: "Configures the Knative autoscaling class property (e.g. to set `hpa.autoscaling.knative.dev` or `kpa.autoscaling.knative.dev` autoscaling).\n\nRefer to the Knative documentation for more information."
                           enum:
                             - "kpa.autoscaling.knative.dev"
                             - "hpa.autoscaling.knative.dev"
@@ -2812,20 +2812,20 @@ spec:
                           description: "Can be used to enable or disable a trait. All traits share this common property."
                           type: "boolean"
                         maxScale:
-                          description: "An upper bound for the number of Pods that can be running in parallel for the integration.\nKnative has its own cap value that depends on the installation.\n\n\nRefer to the Knative documentation for more information."
+                          description: "An upper bound for the number of Pods that can be running in parallel for the integration.\nKnative has its own cap value that depends on the installation.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         minScale:
-                          description: "The minimum number of Pods that should be running at any time for the integration. It's **zero** by default, meaning that\nthe integration is scaled down to zero when not used for a configured amount of time.\n\n\nRefer to the Knative documentation for more information."
+                          description: "The minimum number of Pods that should be running at any time for the integration. It's **zero** by default, meaning that\nthe integration is scaled down to zero when not used for a configured amount of time.\n\nRefer to the Knative documentation for more information."
                           type: "integer"
                         rolloutDuration:
                           description: "Enables to gradually shift traffic to the latest Revision and sets the rollout duration.\nIt's disabled by default and must be expressed as a Golang `time.Duration` string representation,\nrounded to a second precision."
                           type: "string"
                         timeoutSeconds:
-                          description: "The maximum duration in seconds that the request instance is allowed to respond to a request.\nThis field propagates to the integration pod's terminationGracePeriodSeconds\n\n\nRefer to the Knative documentation for more information."
+                          description: "The maximum duration in seconds that the request instance is allowed to respond to a request.\nThis field propagates to the integration pod's terminationGracePeriodSeconds\n\nRefer to the Knative documentation for more information."
                           format: "int64"
                           type: "integer"
                         visibility:
-                          description: "Setting `cluster-local`, Knative service becomes a private service.\nSpecifically, this option applies the `networking.knative.dev/visibility` label to Knative service.\n\n\nRefer to the Knative documentation for more information."
+                          description: "Setting `cluster-local`, Knative service becomes a private service.\nSpecifically, this option applies the `networking.knative.dev/visibility` label to Knative service.\n\nRefer to the Knative documentation for more information."
                           enum:
                             - "cluster-local"
                           type: "string"
@@ -3117,38 +3117,38 @@ spec:
                           description: "To configure the host exposed by the route."
                           type: "string"
                         tlsCACertificate:
-                          description: "The TLS CA certificate contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS CA certificate contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCACertificateSecret:
-                          description: "The secret name and key reference to the TLS CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCertificate:
-                          description: "The TLS certificate contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS certificate contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsCertificateSecret:
-                          description: "The secret name and key reference to the TLS certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsDestinationCACertificate:
-                          description: "The destination CA certificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The destination CA certificate provides the contents of the ca certificate of the final destination.  When using reencrypt\ntermination this file should be provided in order to have routers use it for health checks on the secure connection.\nIf this field is not specified, the router may provide its own destination CA and perform hostname validation using\nthe short service name (service.namespace.svc), which allows infrastructure generated certificates to automatically\nverify.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsDestinationCACertificateSecret:
-                          description: "The secret name and key reference to the destination CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the destination CA certificate. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsInsecureEdgeTerminationPolicy:
-                          description: "To configure how to deal with insecure traffic, e.g. `Allow`, `Disable` or `Redirect` traffic.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "To configure how to deal with insecure traffic, e.g. `Allow`, `Disable` or `Redirect` traffic.\n\nRefer to the OpenShift route documentation for additional information."
                           enum:
                             - "None"
                             - "Allow"
                             - "Redirect"
                           type: "string"
                         tlsKey:
-                          description: "The TLS certificate key contents.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS certificate key contents.\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsKeySecret:
-                          description: "The secret name and key reference to the TLS certificate key. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The secret name and key reference to the TLS certificate key. The format is \"secret-name[/key-name]\", the value represents the secret name, if there is only one key in the secret it will be read, otherwise you can set a key name separated with a \"/\".\n\nRefer to the OpenShift route documentation for additional information."
                           type: "string"
                         tlsTermination:
-                          description: "The TLS termination type, like `edge`, `passthrough` or `reencrypt`.\n\n\nRefer to the OpenShift route documentation for additional information."
+                          description: "The TLS termination type, like `edge`, `passthrough` or `reencrypt`.\n\nRefer to the OpenShift route documentation for additional information."
                           enum:
                             - "edge"
                             - "reencrypt"
@@ -3214,7 +3214,7 @@ spec:
                           type: "string"
                       type: "object"
                     service-binding:
-                      description: "The configuration of Service Binding trait"
+                      description: "The configuration of Service Binding trait\nDeprecated: no longer in use."
                       properties:
                         configuration:
                           description: "Legacy trait configuration parameters.\nDeprecated: for backward compatibility."

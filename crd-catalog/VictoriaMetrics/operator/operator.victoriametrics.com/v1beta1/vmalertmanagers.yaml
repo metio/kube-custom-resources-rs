@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.5"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmalertmanagers.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -234,9 +234,10 @@ spec:
                                   description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                   type: "string"
                                 status:
+                                  description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                   type: "string"
                                 type:
-                                  description: "PersistentVolumeClaimConditionType defines the condition of PV claim.\nValid values are:\n  - \"Resizing\", \"FileSystemResizePending\"\n\nIf RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:\n  - \"ControllerResizeError\", \"NodeResizeError\"\n\nIf VolumeAttributesClass feature gate is enabled, then following additional values can be expected:\n  - \"ModifyVolumeError\", \"ModifyingVolume\""
+                                  description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                   type: "string"
                               required:
                                 - "status"
@@ -407,6 +408,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                disableAutomountServiceAccountToken:
+                  description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
+                  type: "boolean"
                 disableNamespaceMatcher:
                   description: "DisableNamespaceMatcher disables top route namespace label matcher for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
                   type: "boolean"
@@ -433,9 +437,10 @@ spec:
                         description: "PodDNSConfigOption defines DNS resolver options of a pod."
                         properties:
                           name:
-                            description: "Required."
+                            description: "Name is this DNS resolver option's name.\nRequired."
                             type: "string"
                           value:
+                            description: "Value is this DNS resolver option's value."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -1171,9 +1176,10 @@ spec:
                                     description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                     type: "string"
                                   status:
+                                    description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                     type: "string"
                                   type:
-                                    description: "PersistentVolumeClaimConditionType defines the condition of PV claim.\nValid values are:\n  - \"Resizing\", \"FileSystemResizePending\"\n\nIf RecoverVolumeExpansionFailure feature gate is enabled, then following additional values can be expected:\n  - \"ControllerResizeError\", \"NodeResizeError\"\n\nIf VolumeAttributesClass feature gate is enabled, then following additional values can be expected:\n  - \"ModifyVolumeError\", \"ModifyingVolume\""
+                                    description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                     type: "string"
                                 required:
                                   - "status"

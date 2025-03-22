@@ -20,27 +20,41 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct NutanixMachineConfigSpec {
-    /// additionalCategories is a list of optional categories to be added to the VM. Categories must be created in Prism Central before they can be used.
+    /// additionalCategories is a list of optional categories to be added to the VM.
+    /// Categories must be created in Prism Central before they can be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalCategories")]
     pub additional_categories: Option<Vec<NutanixMachineConfigAdditionalCategories>>,
-    /// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+    /// cluster is to identify the cluster (the Prism Element under management
+    /// of the Prism Central), in which the Machine's VM will be created.
+    /// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+    /// or using the prism_central API.
     pub cluster: NutanixMachineConfigCluster,
     /// List of GPU devices that should be added to the VMs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gpus: Option<Vec<NutanixMachineConfigGpus>>,
-    /// image is to identify the OS image uploaded to the Prism Central (PC) The image identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API. It must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+    /// image is to identify the OS image uploaded to the Prism Central (PC)
+    /// The image identifier (uuid or name) can be obtained from the Prism Central console
+    /// or using the Prism Central API.
+    /// It must include the Kubernetes version(s). For example, a template used for
+    /// Kubernetes 1.27 could be ubuntu-2204-1.27.
     pub image: NutanixMachineConfigImage,
-    /// memorySize is the memory size (in Quantity format) of the VM The minimum memorySize is 2Gi bytes
+    /// memorySize is the memory size (in Quantity format) of the VM
+    /// The minimum memorySize is 2Gi bytes
     #[serde(rename = "memorySize")]
     pub memory_size: IntOrString,
     #[serde(rename = "osFamily")]
     pub os_family: String,
-    /// Project is an optional property that specifies the Prism Central project so that machine resources can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+    /// Project is an optional property that specifies the Prism Central project so that machine resources
+    /// can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console
+    /// or using the Prism Central API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub project: Option<NutanixMachineConfigProject>,
-    /// subnet is to identify the cluster's network subnet to use for the Machine's VM The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+    /// subnet is to identify the cluster's network subnet to use for the Machine's VM
+    /// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+    /// or using the Prism Central API.
     pub subnet: NutanixMachineConfigSubnet,
-    /// systemDiskSize is size (in Quantity format) of the system disk of the VM The minimum systemDiskSize is 20Gi bytes
+    /// systemDiskSize is size (in Quantity format) of the system disk of the VM
+    /// The minimum systemDiskSize is 20Gi bytes
     #[serde(rename = "systemDiskSize")]
     pub system_disk_size: IntOrString,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -57,14 +71,15 @@ pub struct NutanixMachineConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NutanixMachineConfigAdditionalCategories {
     /// key is the Key of the category in the Prism Central.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    pub key: String,
     /// value is the category value linked to the key in the Prism Central.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
-/// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+/// cluster is to identify the cluster (the Prism Element under management
+/// of the Prism Central), in which the Machine's VM will be created.
+/// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the prism_central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixMachineConfigCluster {
     /// name is the resource name in the PC
@@ -78,7 +93,10 @@ pub struct NutanixMachineConfigCluster {
     pub uuid: Option<String>,
 }
 
-/// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
+/// cluster is to identify the cluster (the Prism Element under management
+/// of the Prism Central), in which the Machine's VM will be created.
+/// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the prism_central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NutanixMachineConfigClusterType {
     #[serde(rename = "uuid")]
@@ -110,7 +128,11 @@ pub enum NutanixMachineConfigGpusType {
     Name,
 }
 
-/// image is to identify the OS image uploaded to the Prism Central (PC) The image identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API. It must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+/// image is to identify the OS image uploaded to the Prism Central (PC)
+/// The image identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
+/// It must include the Kubernetes version(s). For example, a template used for
+/// Kubernetes 1.27 could be ubuntu-2204-1.27.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixMachineConfigImage {
     /// name is the resource name in the PC
@@ -124,7 +146,11 @@ pub struct NutanixMachineConfigImage {
     pub uuid: Option<String>,
 }
 
-/// image is to identify the OS image uploaded to the Prism Central (PC) The image identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API. It must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+/// image is to identify the OS image uploaded to the Prism Central (PC)
+/// The image identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
+/// It must include the Kubernetes version(s). For example, a template used for
+/// Kubernetes 1.27 could be ubuntu-2204-1.27.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NutanixMachineConfigImageType {
     #[serde(rename = "uuid")]
@@ -133,7 +159,9 @@ pub enum NutanixMachineConfigImageType {
     Name,
 }
 
-/// Project is an optional property that specifies the Prism Central project so that machine resources can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+/// Project is an optional property that specifies the Prism Central project so that machine resources
+/// can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixMachineConfigProject {
     /// name is the resource name in the PC
@@ -147,7 +175,9 @@ pub struct NutanixMachineConfigProject {
     pub uuid: Option<String>,
 }
 
-/// Project is an optional property that specifies the Prism Central project so that machine resources can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+/// Project is an optional property that specifies the Prism Central project so that machine resources
+/// can be linked to it. The project identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NutanixMachineConfigProjectType {
     #[serde(rename = "uuid")]
@@ -156,7 +186,9 @@ pub enum NutanixMachineConfigProjectType {
     Name,
 }
 
-/// subnet is to identify the cluster's network subnet to use for the Machine's VM The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+/// subnet is to identify the cluster's network subnet to use for the Machine's VM
+/// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct NutanixMachineConfigSubnet {
     /// name is the resource name in the PC
@@ -170,7 +202,9 @@ pub struct NutanixMachineConfigSubnet {
     pub uuid: Option<String>,
 }
 
-/// subnet is to identify the cluster's network subnet to use for the Machine's VM The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API.
+/// subnet is to identify the cluster's network subnet to use for the Machine's VM
+/// The cluster identifier (uuid or name) can be obtained from the Prism Central console
+/// or using the Prism Central API.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum NutanixMachineConfigSubnetType {
     #[serde(rename = "uuid")]
@@ -190,7 +224,8 @@ pub struct NutanixMachineConfigUsers {
 /// NutanixMachineConfigStatus defines the observed state of NutanixMachineConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NutanixMachineConfigStatus {
-    /// Addresses contains the Nutanix VM associated addresses. Address type is one of Hostname, ExternalIP, InternalIP, ExternalDNS, InternalDNS
+    /// Addresses contains the Nutanix VM associated addresses.
+    /// Address type is one of Hostname, ExternalIP, InternalIP, ExternalDNS, InternalDNS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<NutanixMachineConfigStatusAddresses>>,
     /// Conditions defines current service state of the NutanixMachine.
@@ -223,22 +258,33 @@ pub struct NutanixMachineConfigStatusNodeRef {
     /// API version of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
+    /// If referring to a piece of an object instead of an entire object, this string
+    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
+    /// For example, if the object reference is to a container within a pod, this would take on a value like:
+    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
+    /// the event) or if no container name is specified "spec.containers[2]" (container with
+    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
+    /// referencing a part of an object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
-    /// Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind of the referent.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+    /// Specific resourceVersion to which this reference is made, if any.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
-    /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
+    /// UID of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }

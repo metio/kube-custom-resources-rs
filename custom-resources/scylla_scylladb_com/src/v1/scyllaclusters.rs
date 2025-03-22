@@ -261,6 +261,9 @@ pub struct ScyllaClusterDatacenterRacks {
     /// AgentVolumeMounts to be added to Agent container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentVolumeMounts")]
     pub agent_volume_mounts: Option<Vec<ScyllaClusterDatacenterRacksAgentVolumeMounts>>,
+    /// exposeOptions specifies rack-specific parameters related to exposing ScyllaDBDatacenter backends.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeOptions")]
+    pub expose_options: Option<ScyllaClusterDatacenterRacksExposeOptions>,
     /// members is the number of Scylla instances in this rack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<i32>,
@@ -377,6 +380,25 @@ pub struct ScyllaClusterDatacenterRacksAgentVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// exposeOptions specifies rack-specific parameters related to exposing ScyllaDBDatacenter backends.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScyllaClusterDatacenterRacksExposeOptions {
+    /// nodeService controls properties of Service dedicated for each ScyllaDBDatacenter node in given rack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeService")]
+    pub node_service: Option<ScyllaClusterDatacenterRacksExposeOptionsNodeService>,
+}
+
+/// nodeService controls properties of Service dedicated for each ScyllaDBDatacenter node in given rack.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ScyllaClusterDatacenterRacksExposeOptionsNodeService {
+    /// annotations is a custom key value map that gets merged with managed object annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// labels is a custom key value map that gets merged with managed object labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// placement describes restrictions for the nodes Scylla is scheduled on.

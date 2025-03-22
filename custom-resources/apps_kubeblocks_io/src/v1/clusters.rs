@@ -205,6 +205,9 @@ pub struct ClusterComponentSpecs {
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterComponentSpecsEnv>>,
+    /// Provides fine-grained control over the spec update process of all instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
+    pub instance_update_strategy: Option<ClusterComponentSpecsInstanceUpdateStrategy>,
     /// Allows for the customization of configuration values for each instance within a Component.
     /// An instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).
     /// While instances typically share a common configuration as defined in the ClusterComponentSpec,
@@ -257,8 +260,6 @@ pub struct ClusterComponentSpecs {
     /// 
     /// Setting instances to offline allows for a controlled scale-in process, preserving their data and maintaining
     /// ordinal consistency within the Cluster.
-    /// Note that offline instances and their associated resources, such as PVCs, are not automatically deleted.
-    /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
@@ -266,6 +267,14 @@ pub struct ClusterComponentSpecs {
     /// The default Concurrency is 100%.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
     pub parallel_pod_management_concurrency: Option<IntOrString>,
+    /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+    /// volume claims created from volumeClaimTemplates. By default, all persistent
+    /// volume claims are created as needed and retained until manually deleted. This
+    /// policy allows the lifecycle to be altered, for example by deleting persistent
+    /// volume claims when their workload is deleted, or when their pod is scaled
+    /// down.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
+    pub persistent_volume_claim_retention_policy: Option<ClusterComponentSpecsPersistentVolumeClaimRetentionPolicy>,
     /// PodUpdatePolicy indicates how pods should be updated
     /// 
     /// 
@@ -368,15 +377,37 @@ pub struct ClusterComponentSpecs {
     pub volumes: Option<Vec<ClusterComponentSpecsVolumes>>,
 }
 
-/// ClusterComponentConfig represents a config with its source bound.
+/// ClusterComponentConfig represents a configuration for a component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsConfigs {
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ClusterComponentSpecsConfigsConfigMap>,
+    /// ExternalManaged indicates whether the configuration is managed by an external system.
+    /// When set to true, the controller will use the user-provided template and reconfigure action,
+    /// ignoring the default template and update behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
+    pub external_managed: Option<bool>,
     /// The name of the config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+    /// 
+    /// 
+    /// The container executing this action has access to following variables:
+    /// 
+    /// 
+    /// - KB_CONFIG_FILES_CREATED: file1,file2...
+    /// - KB_CONFIG_FILES_REMOVED: file1,file2...
+    /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
+    /// 
+    /// 
+    /// Note: This field is immutable once it has been set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reconfigure: Option<ClusterComponentSpecsConfigsReconfigure>,
+    /// Variables are key-value pairs for dynamic configuration values that can be provided by the user.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<BTreeMap<String, String>>,
 }
 
 /// ConfigMap source for the config.
@@ -428,6 +459,273 @@ pub struct ClusterComponentSpecsConfigsConfigMapItems {
     /// May not contain the path element '..'.
     /// May not start with the string '..'.
     pub path: String,
+}
+
+/// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_CONFIG_FILES_CREATED: file1,file2...
+/// - KB_CONFIG_FILES_REMOVED: file1,file2...
+/// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigure {
+    /// Defines the command to run.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ClusterComponentSpecsConfigsReconfigureExec>,
+    /// Specifies the state that the cluster must reach before the Action is executed.
+    /// Currently, this is only applicable to the `postProvision` action.
+    /// 
+    /// 
+    /// The conditions are as follows:
+    /// 
+    /// 
+    /// - `Immediately`: Executed right after the Component object is created.
+    ///   The readiness of the Component and its resources is not guaranteed at this stage.
+    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
+    ///   runtime resources (e.g. Pods) are in a ready state.
+    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
+    ///   This process does not affect the readiness state of the Component or the Cluster.
+    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
+    ///   This execution does not alter the Component or the Cluster's state of readiness.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
+    pub pre_condition: Option<String>,
+    /// Defines the strategy to be taken when retrying the Action after a failure.
+    /// 
+    /// 
+    /// It specifies the conditions under which the Action should be retried and the limits to apply,
+    /// such as the maximum number of retries and backoff strategy.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ClusterComponentSpecsConfigsReconfigureRetryPolicy>,
+    /// Specifies the maximum duration in seconds that the Action is allowed to run.
+    /// 
+    /// 
+    /// If the Action does not complete within this time frame, it will be terminated.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExec {
+    /// Args represents the arguments that are passed to the `command` for execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Specifies the command to be executed inside the container.
+    /// The working directory for this command is the container's root directory('/').
+    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
+    /// If the shell is required, it must be explicitly invoked in the command.
+    /// 
+    /// 
+    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
+    /// 
+    /// 
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<String>,
+    /// Represents a list of environment variables that will be injected into the container.
+    /// These variables enable the container to adapt its behavior based on the environment it's running in.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterComponentSpecsConfigsReconfigureExecEnv>>,
+    /// Specifies the container image to be used for running the Action.
+    /// 
+    /// 
+    /// When specified, a dedicated container will be created using this image to execute the Action.
+    /// All actions with same image will share the same container.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ClusterComponentSpecsConfigsReconfigureExecTargetPodSelector>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterComponentSpecsConfigsReconfigureExecEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterComponentSpecsConfigsReconfigureExecEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterComponentSpecsConfigsReconfigureExecEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterComponentSpecsConfigsReconfigureExecEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterComponentSpecsConfigsReconfigureExecEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureExecEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsConfigsReconfigureExecTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+/// Defines the strategy to be taken when retrying the Action after a failure.
+/// 
+/// 
+/// It specifies the conditions under which the Action should be retried and the limits to apply,
+/// such as the maximum number of retries and backoff strategy.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsConfigsReconfigureRetryPolicy {
+    /// Defines the maximum number of retry attempts that should be made for a given Action.
+    /// This value is set to 0 by default, indicating that no retries will be made.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Indicates the duration of time to wait between each retry attempt.
+    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<i64>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -526,6 +824,45 @@ pub struct ClusterComponentSpecsEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+/// Provides fine-grained control over the spec update process of all instances.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstanceUpdateStrategy {
+    /// Specifies how the rolling update should be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterComponentSpecsInstanceUpdateStrategyRollingUpdate>,
+    /// Indicates the type of the update strategy.
+    /// Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<ClusterComponentSpecsInstanceUpdateStrategyType>,
+}
+
+/// Specifies how the rolling update should be applied.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstanceUpdateStrategyRollingUpdate {
+    /// The maximum number of instances that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired instances (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up. This can not be 0.
+    /// Defaults to 1. The field applies to all instances. That means if there is any unavailable pod,
+    /// it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// Indicates the number of instances that should be updated during a rolling update.
+    /// The remaining instances will remain untouched. This is helpful in defining how many instances
+    /// should participate in the update process.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired instances (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up.
+    /// The default value is ComponentSpec.Replicas (i.e., update all instances).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<IntOrString>,
+}
+
+/// Provides fine-grained control over the spec update process of all instances.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsInstanceUpdateStrategyType {
+    RollingUpdate,
+    OnDelete,
+}
+
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsInstances {
@@ -537,9 +874,6 @@ pub struct ClusterComponentSpecsInstances {
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterComponentSpecsInstancesEnv>>,
-    /// Specifies an override for the first container's image in the Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
     /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels.
     /// Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -572,18 +906,6 @@ pub struct ClusterComponentSpecsInstances {
     /// Specifies the scheduling policy for the Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterComponentSpecsInstancesSchedulingPolicy>,
-    /// Defines VolumeClaimTemplates to override.
-    /// Add new or override existing volume claim templates.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
-    pub volume_claim_templates: Option<Vec<ClusterComponentSpecsInstancesVolumeClaimTemplates>>,
-    /// Defines VolumeMounts to override.
-    /// Add new or override existing volume mounts of the first container in the Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<ClusterComponentSpecsInstancesVolumeMounts>>,
-    /// Defines Volumes to override.
-    /// Add new or override existing volumes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<ClusterComponentSpecsInstancesVolumes>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -1664,1706 +1986,6 @@ pub struct ClusterComponentSpecsInstancesSchedulingPolicyTopologySpreadConstrain
     pub values: Option<Vec<String>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumeClaimTemplates {
-    /// Refers to the name of a volumeMount defined in either:
-    /// 
-    /// 
-    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
-    /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
-    /// 
-    /// 
-    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
-    pub name: String,
-    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
-    /// with the mount name specified in the `name` field.
-    /// 
-    /// 
-    /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-    /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec>,
-}
-
-/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
-/// with the mount name specified in the `name` field.
-/// 
-/// 
-/// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-/// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec {
-    /// Contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    /// Represents the minimum resources the volume should have.
-    /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-    /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecResources>,
-    /// The name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// 
-    /// 
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    /// Defines what type of volume is required by the claim, either Block or Filesystem.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-}
-
-/// Represents the minimum resources the volume should have.
-/// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-/// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// VolumeMount describes a mounting of a Volume within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must
-    /// not contain ':'.
-    #[serde(rename = "mountPath")]
-    pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host
-    /// to container and the other way around.
-    /// When not set, MountPropagationNone is used.
-    /// This field is beta in 1.10.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
-    pub mount_propagation: Option<String>,
-    /// This must match the Name of a Volume.
-    pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified).
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted.
-    /// Defaults to "" (volume's root).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
-    pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted.
-    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
-    /// Defaults to "" (volume's root).
-    /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
-    pub sub_path_expr: Option<String>,
-}
-
-/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<ClusterComponentSpecsInstancesVolumesAwsElasticBlockStore>,
-    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<ClusterComponentSpecsInstancesVolumesAzureDisk>,
-    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<ClusterComponentSpecsInstancesVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<ClusterComponentSpecsInstancesVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<ClusterComponentSpecsInstancesVolumesCinder>,
-    /// configMap represents a configMap that should populate this volume
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterComponentSpecsInstancesVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<ClusterComponentSpecsInstancesVolumesCsi>,
-    /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterComponentSpecsInstancesVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<ClusterComponentSpecsInstancesVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver.
-    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
-    /// and deleted when the pod is removed.
-    /// 
-    /// 
-    /// Use this if:
-    /// a) the volume is only needed while the pod runs,
-    /// b) features of normal volumes like restoring from snapshot or capacity
-    ///    tracking are needed,
-    /// c) the storage driver is specified through a storage class, and
-    /// d) the storage driver supports dynamic volume provisioning through
-    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
-    ///    information on the connection between this volume type
-    ///    and PersistentVolumeClaim).
-    /// 
-    /// 
-    /// Use PersistentVolumeClaim or one of the vendor-specific
-    /// APIs for volumes that persist for longer than the lifecycle
-    /// of an individual pod.
-    /// 
-    /// 
-    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
-    /// be used that way - see the documentation of the driver for
-    /// more information.
-    /// 
-    /// 
-    /// A pod can use both types of ephemeral volumes and
-    /// persistent volumes at the same time.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<ClusterComponentSpecsInstancesVolumesEphemeral>,
-    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<ClusterComponentSpecsInstancesVolumesFc>,
-    /// flexVolume represents a generic volume resource that is
-    /// provisioned/attached using an exec based plugin.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<ClusterComponentSpecsInstancesVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<ClusterComponentSpecsInstancesVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<ClusterComponentSpecsInstancesVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
-    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
-    /// into the Pod's container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<ClusterComponentSpecsInstancesVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<ClusterComponentSpecsInstancesVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host
-    /// machine that is directly exposed to the container. This is generally
-    /// used for system agents or other privileged things that are allowed
-    /// to see the host machine. Most containers will NOT need this.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<ClusterComponentSpecsInstancesVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<ClusterComponentSpecsInstancesVolumesIscsi>,
-    /// name of the volume.
-    /// Must be a DNS_LABEL and unique within the pod.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<ClusterComponentSpecsInstancesVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a
-    /// PersistentVolumeClaim in the same namespace.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<ClusterComponentSpecsInstancesVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<ClusterComponentSpecsInstancesVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<ClusterComponentSpecsInstancesVolumesPortworxVolume>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<ClusterComponentSpecsInstancesVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<ClusterComponentSpecsInstancesVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<ClusterComponentSpecsInstancesVolumesRbd>,
-    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<ClusterComponentSpecsInstancesVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterComponentSpecsInstancesVolumesSecret>,
-    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<ClusterComponentSpecsInstancesVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<ClusterComponentSpecsInstancesVolumesVsphereVolume>,
-}
-
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
-    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesAzureDisk {
-    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
-    pub caching_mode: Option<String>,
-    /// diskName is the Name of the data disk in the blob storage
-    #[serde(rename = "diskName")]
-    pub disk_name: String,
-    /// diskURI is the URI of data disk in the blob storage
-    #[serde(rename = "diskURI")]
-    pub disk_uri: String,
-    /// fsType is Filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
-    #[serde(rename = "secretName")]
-    pub secret_name: String,
-    /// shareName is the azure share Name
-    #[serde(rename = "shareName")]
-    pub share_name: String,
-}
-
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    pub monitors: Vec<String>,
-    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
-    pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCephfsSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// cinder represents a cinder volume attached and mounted on kubelets host machine.
-/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCinder {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect
-    /// to OpenStack.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// secretRef is optional: points to a secret object containing parameters used to connect
-/// to OpenStack.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCinderSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// configMap represents a configMap that should populate this volume
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the ConfigMap,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesConfigMapItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume.
-    /// Consult with your admin for the correct name as registered in the cluster.
-    pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
-    /// If not provided, the empty value is passed to the associated CSI driver
-    /// which will determine the default filesystem to apply.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing
-    /// sensitive information to pass to the CSI driver to complete the CSI
-    /// NodePublishVolume and NodeUnpublishVolume calls.
-    /// This field is optional, and  may be empty if no secret is required. If the
-    /// secret object contains more than one secret, all secret references are passed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<ClusterComponentSpecsInstancesVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume.
-    /// Defaults to false (read/write).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI
-    /// driver. Consult your driver's documentation for supported values.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
-    pub volume_attributes: Option<BTreeMap<String, String>>,
-}
-
-/// nodePublishSecretRef is a reference to the secret object containing
-/// sensitive information to pass to the CSI driver to complete the CSI
-/// NodePublishVolume and NodeUnpublishVolume calls.
-/// This field is optional, and  may be empty if no secret is required. If the
-/// secret object contains more than one secret, all secret references are passed.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesCsiNodePublishSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// downwardAPI represents downward API about the pod that should populate this volume
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a
-    /// Optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// Items is a list of downward API volume file
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesDownwardApiItems>>,
-}
-
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterComponentSpecsInstancesVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
-    pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterComponentSpecsInstancesVolumesDownwardApiItemsResourceFieldRef>,
-}
-
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
-    /// The default is "" which means to use the node's default medium.
-    /// Must be an empty string (default) or Memory.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
-    /// The size limit is also applicable for memory medium.
-    /// The maximum usage on memory medium EmptyDir would be the minimum value between
-    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
-    /// The default is nil which means that the limit is undefined.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-/// ephemeral represents a volume that is handled by a cluster storage driver.
-/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
-/// and deleted when the pod is removed.
-/// 
-/// 
-/// Use this if:
-/// a) the volume is only needed while the pod runs,
-/// b) features of normal volumes like restoring from snapshot or capacity
-///    tracking are needed,
-/// c) the storage driver is specified through a storage class, and
-/// d) the storage driver supports dynamic volume provisioning through
-///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
-///    information on the connection between this volume type
-///    and PersistentVolumeClaim).
-/// 
-/// 
-/// Use PersistentVolumeClaim or one of the vendor-specific
-/// APIs for volumes that persist for longer than the lifecycle
-/// of an individual pod.
-/// 
-/// 
-/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
-/// be used that way - see the documentation of the driver for
-/// more information.
-/// 
-/// 
-/// A pod can use both types of ephemeral volumes and
-/// persistent volumes at the same time.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume.
-    /// The pod in which this EphemeralVolumeSource is embedded will be the
-    /// owner of the PVC, i.e. the PVC will be deleted together with the
-    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
-    /// `<volume name>` is the name from the `PodSpec.Volumes` array
-    /// entry. Pod validation will reject the pod if the concatenated name
-    /// is not valid for a PVC (for example, too long).
-    /// 
-    /// 
-    /// An existing PVC with that name that is not owned by the pod
-    /// will *not* be used for the pod to avoid using an unrelated
-    /// volume by mistake. Starting the pod is then blocked until
-    /// the unrelated PVC is removed. If such a pre-created PVC is
-    /// meant to be used by the pod, the PVC has to updated with an
-    /// owner reference to the pod once the pod exists. Normally
-    /// this should not be necessary, but it may be useful when
-    /// manually reconstructing a broken cluster.
-    /// 
-    /// 
-    /// This field is read-only and no changes will be made by Kubernetes
-    /// to the PVC after it has been created.
-    /// 
-    /// 
-    /// Required, must not be nil.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplate>,
-}
-
-/// Will be used to create a stand-alone PVC to provision the volume.
-/// The pod in which this EphemeralVolumeSource is embedded will be the
-/// owner of the PVC, i.e. the PVC will be deleted together with the
-/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
-/// `<volume name>` is the name from the `PodSpec.Volumes` array
-/// entry. Pod validation will reject the pod if the concatenated name
-/// is not valid for a PVC (for example, too long).
-/// 
-/// 
-/// An existing PVC with that name that is not owned by the pod
-/// will *not* be used for the pod to avoid using an unrelated
-/// volume by mistake. Starting the pod is then blocked until
-/// the unrelated PVC is removed. If such a pre-created PVC is
-/// meant to be used by the pod, the PVC has to updated with an
-/// owner reference to the pod once the pod exists. Normally
-/// this should not be necessary, but it may be useful when
-/// manually reconstructing a broken cluster.
-/// 
-/// 
-/// This field is read-only and no changes will be made by Kubernetes
-/// to the PVC after it has been created.
-/// 
-/// 
-/// Required, must not be nil.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC
-    /// when creating it. No other fields are allowed and will be rejected during
-    /// validation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is
-    /// copied unchanged into the PVC that gets created from this
-    /// template. The same fields as in a PersistentVolumeClaim
-    /// are also valid here.
-    pub spec: ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpec,
-}
-
-/// May contain labels and annotations that will be copied into the PVC
-/// when creating it. No other fields are allowed and will be rejected during
-/// validation.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub finalizers: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// The specification for the PersistentVolumeClaim. The entire content is
-/// copied unchanged into the PVC that gets created from this
-/// template. The same fields as in a PersistentVolumeClaim
-/// are also valid here.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either:
-    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-    /// * An existing PVC (PersistentVolumeClaim)
-    /// If the provisioner or an external controller can support the specified data source,
-    /// it will create a new volume based on the contents of the specified data source.
-    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-    /// volume is desired. This may be any object from a non-empty API group (non
-    /// core object) or a PersistentVolumeClaim object.
-    /// When this field is specified, volume binding will only succeed if the type of
-    /// the specified object matches some installed volume populator or dynamic
-    /// provisioner.
-    /// This field will replace the functionality of the dataSource field and as such
-    /// if both fields are non-empty, they must have the same value. For backwards
-    /// compatibility, when namespace isn't specified in dataSourceRef,
-    /// both fields (dataSource and dataSourceRef) will be set to the same
-    /// value automatically if one of them is empty and the other is non-empty.
-    /// When namespace is specified in dataSourceRef,
-    /// dataSource isn't set to the same value and must be empty.
-    /// There are three important differences between dataSource and dataSourceRef:
-    /// * While dataSource only allows two specific types of objects, dataSourceRef
-    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
-    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-    ///   preserves all values, and generates an error if a disallowed value is
-    ///   specified.
-    /// * While dataSource only allows local objects, dataSourceRef allows objects
-    ///   in any namespaces.
-    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-    /// that are lower than previous value but must still be higher than capacity recorded in the
-    /// status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
-    /// selector is a label query over volumes to consider for binding.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// If specified, the CSI driver will create or update the volume with the attributes defined
-    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
-    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
-    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
-    /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
-    /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-/// dataSource field can be used to specify either:
-/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-/// * An existing PVC (PersistentVolumeClaim)
-/// If the provisioner or an external controller can support the specified data source,
-/// it will create a new volume based on the contents of the specified data source.
-/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-}
-
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-/// volume is desired. This may be any object from a non-empty API group (non
-/// core object) or a PersistentVolumeClaim object.
-/// When this field is specified, volume binding will only succeed if the type of
-/// the specified object matches some installed volume populator or dynamic
-/// provisioner.
-/// This field will replace the functionality of the dataSource field and as such
-/// if both fields are non-empty, they must have the same value. For backwards
-/// compatibility, when namespace isn't specified in dataSourceRef,
-/// both fields (dataSource and dataSourceRef) will be set to the same
-/// value automatically if one of them is empty and the other is non-empty.
-/// When namespace is specified in dataSourceRef,
-/// dataSource isn't set to the same value and must be empty.
-/// There are three important differences between dataSource and dataSourceRef:
-/// * While dataSource only allows two specific types of objects, dataSourceRef
-///   allows any non-core object, as well as PersistentVolumeClaim objects.
-/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-///   preserves all values, and generates an error if a disallowed value is
-///   specified.
-/// * While dataSource only allows local objects, dataSourceRef allows objects
-///   in any namespaces.
-/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-    /// Namespace is the namespace of resource being referenced
-    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
-    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-/// that are lower than previous value but must still be higher than capacity recorded in the
-/// status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// selector is a label query over volumes to consider for binding.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesFc {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// lun is Optional: FC target lun number
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
-    pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids)
-    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub wwids: Option<Vec<String>>,
-}
-
-/// flexVolume represents a generic volume resource that is
-/// provisioned/attached using an exec based plugin.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesFlexVolume {
-    /// driver is the name of the driver to use for this volume.
-    pub driver: String,
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// options is Optional: this field holds extra command options if any.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing
-    /// sensitive information to pass to the plugin scripts. This may be
-    /// empty if no secret object is specified. If the secret object
-    /// contains more than one secret, all secrets are passed to the plugin
-    /// scripts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesFlexVolumeSecretRef>,
-}
-
-/// secretRef is Optional: secretRef is reference to the secret object containing
-/// sensitive information to pass to the plugin scripts. This may be
-/// empty if no secret object is specified. If the secret object
-/// contains more than one secret, all secrets are passed to the plugin
-/// scripts.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesFlexVolumeSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
-    /// should be considered as deprecated
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
-    pub dataset_name: Option<String>,
-    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
-    pub dataset_uuid: Option<String>,
-}
-
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
-    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(rename = "pdName")]
-    pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
-/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
-/// into the Pod's container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesGitRepo {
-    /// directory is the target directory name.
-    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
-    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
-    /// the subdirectory with the given name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub directory: Option<String>,
-    /// repository is the URL
-    pub repository: String,
-    /// revision is the commit hash for the specified revision.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision: Option<String>,
-}
-
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    pub endpoints: String,
-    /// path is the Glusterfs volume path.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// hostPath represents a pre-existing file or directory on the host
-/// machine that is directly exposed to the container. This is generally
-/// used for system agents or other privileged things that are allowed
-/// to see the host machine. Most containers will NOT need this.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesHostPath {
-    /// path of the directory on the host.
-    /// If the path is a symlink, it will follow the link to the real path.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    pub path: String,
-    /// type for HostPath Volume
-    /// Defaults to ""
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-/// iscsi represents an ISCSI Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://examples.k8s.io/volumes/iscsi/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesIscsi {
-    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
-    pub chap_auth_discovery: Option<bool>,
-    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
-    pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name.
-    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
-    /// <target portal>:<volume name> will be created for the connection.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
-    pub initiator_name: Option<String>,
-    /// iqn is the target iSCSI Qualified Name.
-    pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport.
-    /// Defaults to 'default' (tcp).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
-    pub iscsi_interface: Option<String>,
-    /// lun represents iSCSI Target Lun number.
-    pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
-    #[serde(rename = "targetPortal")]
-    pub target_portal: String,
-}
-
-/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesIscsiSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// nfs represents an NFS mount on the host that shares a pod's lifetime
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesNfs {
-    /// path that is exported by the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    pub server: String,
-}
-
-/// persistentVolumeClaimVolumeSource represents a reference to a
-/// PersistentVolumeClaim in the same namespace.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(rename = "claimName")]
-    pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts.
-    /// Default false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// pdID is the ID that identifies Photon Controller persistent disk
-    #[serde(rename = "pdID")]
-    pub pd_id: String,
-}
-
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeID uniquely identifies a Portworx volume
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// projected items for all in one resources secrets, configmaps, and downward API
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<ClusterComponentSpecsInstancesVolumesProjectedSources>>,
-}
-
-/// Projection that may be projected along with other supported volume types
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-    /// of ClusterTrustBundle objects in an auto-updating file.
-    /// 
-    /// 
-    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
-    /// 
-    /// ClusterTrustBundle objects can either be selected by name, or by the
-    /// combination of signer name and a label selector.
-    /// 
-    /// 
-    /// Kubelet performs aggressive normalization of the PEM contents written
-    /// into the pod filesystem.  Esoteric PEM features such as inter-block
-    /// comments and block headers are stripped.  Certificates are deduplicated.
-    /// The ordering of certificates within the file is arbitrary, and Kubelet
-    /// may change the order over time.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
-    pub cluster_trust_bundle: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesServiceAccountToken>,
-}
-
-/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-/// of ClusterTrustBundle objects in an auto-updating file.
-/// 
-/// 
-/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
-/// 
-/// ClusterTrustBundle objects can either be selected by name, or by the
-/// combination of signer name and a label selector.
-/// 
-/// 
-/// Kubelet performs aggressive normalization of the PEM contents written
-/// into the pod filesystem.  Esoteric PEM features such as inter-block
-/// comments and block headers are stripped.  Certificates are deduplicated.
-/// The ordering of certificates within the file is arbitrary, and Kubelet
-/// may change the order over time.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.  Only has
-    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-    /// interpreted as "match nothing".  If set but empty, interpreted as "match
-    /// everything".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
-    /// with signerName and labelSelector.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
-    /// aren't available.  If using name, then the named ClusterTrustBundle is
-    /// allowed not to exist.  If using signerName, then the combination of
-    /// signerName and labelSelector is allowed to match zero
-    /// ClusterTrustBundles.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
-    pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name.
-    /// Mutually-exclusive with name.  The contents of all selected
-    /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
-    pub signer_name: Option<String>,
-}
-
-/// Select all ClusterTrustBundles that match this label selector.  Only has
-/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-/// interpreted as "match nothing".  If set but empty, interpreted as "match
-/// everything".
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// configMap information about the configMap data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the ConfigMap,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesConfigMapItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// downwardAPI information about the downwardAPI data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItems>>,
-}
-
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
-    pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
-}
-
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// secret information about the secret data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the Secret,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesSecretItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// serviceAccountToken is information about the serviceAccountToken data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token
-    /// must identify itself with an identifier specified in the audience of the
-    /// token, and otherwise should reject the token. The audience defaults to the
-    /// identifier of the apiserver.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service
-    /// account token. As the token approaches expiration, the kubelet volume
-    /// plugin will proactively rotate the service account token. The kubelet will
-    /// start trying to rotate the token if the token is older than 80 percent of
-    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
-    /// and must be at least 10 minutes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
-    pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the
-    /// token into.
-    pub path: String,
-}
-
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesQuobyte {
-    /// group to map volume access to
-    /// Default is no group
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services
-    /// specified as a string as host:port pair (multiple entries are separated with commas)
-    /// which acts as the central registry for volumes
-    pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend
-    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tenant: Option<String>,
-    /// user to map volume access to
-    /// Defaults to serivceaccount user
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-    /// volume is a string that references an already created Quobyte volume by name.
-    pub volume: String,
-}
-
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// image is the rados image name.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    pub image: String,
-    /// keyring is the path to key ring for RBDUser.
-    /// Default is /etc/ceph/keyring.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    pub monitors: Vec<String>,
-    /// pool is the rados pool name.
-    /// Default is rbd.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided
-    /// overrides keyring.
-    /// Default is nil.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesRbdSecretRef>,
-    /// user is the rados user name.
-    /// Default is admin.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// secretRef is name of the authentication secret for RBDUser. If provided
-/// overrides keyring.
-/// Default is nil.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesRbdSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesScaleIo {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs".
-    /// Default is "xfs".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// gateway is the host address of the ScaleIO API Gateway.
-    pub gateway: String,
-    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
-    pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other
-    /// sensitive information. If this is not provided, Login operation will fail.
-    #[serde(rename = "secretRef")]
-    pub secret_ref: ClusterComponentSpecsInstancesVolumesScaleIoSecretRef,
-    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
-    pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
-    /// Default is ThinProvisioned.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
-    pub storage_mode: Option<String>,
-    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
-    pub storage_pool: Option<String>,
-    /// system is the name of the storage system as configured in ScaleIO.
-    pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system
-    /// that is associated with this volume source.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-/// secretRef references to the secret for ScaleIO user and other
-/// sensitive information. If this is not provided, Login operation will fail.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesScaleIoSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// secret represents a secret that should populate this volume.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values
-    /// for mode bits. Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the Secret,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterComponentSpecsInstancesVolumesSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
-    pub secret_name: Option<String>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesSecretItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesStorageos {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API
-    /// credentials.  If not specified, default values will be attempted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterComponentSpecsInstancesVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume
-    /// names are only unique within a namespace.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
-    /// namespace is specified then the Pod's namespace will be used.  This allows the
-    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
-    /// Set VolumeName to any name to override the default behaviour.
-    /// Set to "default" if you are not using namespaces within StorageOS.
-    /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
-    pub volume_namespace: Option<String>,
-}
-
-/// secretRef specifies the secret to use for obtaining the StorageOS API
-/// credentials.  If not specified, default values will be attempted.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesStorageosSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterComponentSpecsInstancesVolumesVsphereVolume {
-    /// fsType is filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
-    pub storage_policy_id: Option<String>,
-    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
-    pub storage_policy_name: Option<String>,
-    /// volumePath is the path that identifies vSphere volume vmdk
-    #[serde(rename = "volumePath")]
-    pub volume_path: String,
-}
-
 /// Specifies the configuration for the TLS certificates issuer.
 /// It allows defining the issuer name and the reference to the secret containing the TLS certificates and key.
 /// The secret should contain the CA certificate, TLS certificate, and private key in the specified keys.
@@ -3401,6 +2023,50 @@ pub struct ClusterComponentSpecsIssuerSecretRef {
     /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsPersistentVolumeClaimRetentionPolicy {
+    /// WhenDeleted specifies what happens to PVCs created from VolumeClaimTemplates when the workload is deleted.
+    /// The `Retain` policy causes PVCs to not be affected by workload deletion.
+    /// The default policy of `Delete` causes those PVCs to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
+    pub when_deleted: Option<ClusterComponentSpecsPersistentVolumeClaimRetentionPolicyWhenDeleted>,
+    /// WhenScaled specifies what happens to PVCs created from VolumeClaimTemplates when the workload is scaled down.
+    /// The `Retain` policy causes PVCs to not be affected by a scale down.
+    /// The default policy of `Delete` causes the associated PVCs for pods scaled down to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<ClusterComponentSpecsPersistentVolumeClaimRetentionPolicyWhenScaled>,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsPersistentVolumeClaimRetentionPolicyWhenDeleted {
+    Retain,
+    Delete,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterComponentSpecsPersistentVolumeClaimRetentionPolicyWhenScaled {
+    Retain,
+    Delete,
 }
 
 /// ClusterComponentSpec defines the specification of a Component within a Cluster.
@@ -4610,6 +3276,12 @@ pub struct ClusterComponentSpecsSystemAccountsSecretRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -7656,6 +6328,9 @@ pub struct ClusterShardingsTemplate {
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterShardingsTemplateEnv>>,
+    /// Provides fine-grained control over the spec update process of all instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
+    pub instance_update_strategy: Option<ClusterShardingsTemplateInstanceUpdateStrategy>,
     /// Allows for the customization of configuration values for each instance within a Component.
     /// An instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).
     /// While instances typically share a common configuration as defined in the ClusterComponentSpec,
@@ -7708,8 +6383,6 @@ pub struct ClusterShardingsTemplate {
     /// 
     /// Setting instances to offline allows for a controlled scale-in process, preserving their data and maintaining
     /// ordinal consistency within the Cluster.
-    /// Note that offline instances and their associated resources, such as PVCs, are not automatically deleted.
-    /// The administrator must manually manage the cleanup and removal of these resources when they are no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineInstances")]
     pub offline_instances: Option<Vec<String>>,
     /// Controls the concurrency of pods during initial scale up, when replacing pods on nodes,
@@ -7717,6 +6390,14 @@ pub struct ClusterShardingsTemplate {
     /// The default Concurrency is 100%.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parallelPodManagementConcurrency")]
     pub parallel_pod_management_concurrency: Option<IntOrString>,
+    /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+    /// volume claims created from volumeClaimTemplates. By default, all persistent
+    /// volume claims are created as needed and retained until manually deleted. This
+    /// policy allows the lifecycle to be altered, for example by deleting persistent
+    /// volume claims when their workload is deleted, or when their pod is scaled
+    /// down.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
+    pub persistent_volume_claim_retention_policy: Option<ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicy>,
     /// PodUpdatePolicy indicates how pods should be updated
     /// 
     /// 
@@ -7819,15 +6500,37 @@ pub struct ClusterShardingsTemplate {
     pub volumes: Option<Vec<ClusterShardingsTemplateVolumes>>,
 }
 
-/// ClusterComponentConfig represents a config with its source bound.
+/// ClusterComponentConfig represents a configuration for a component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateConfigs {
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ClusterShardingsTemplateConfigsConfigMap>,
+    /// ExternalManaged indicates whether the configuration is managed by an external system.
+    /// When set to true, the controller will use the user-provided template and reconfigure action,
+    /// ignoring the default template and update behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
+    pub external_managed: Option<bool>,
     /// The name of the config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+    /// 
+    /// 
+    /// The container executing this action has access to following variables:
+    /// 
+    /// 
+    /// - KB_CONFIG_FILES_CREATED: file1,file2...
+    /// - KB_CONFIG_FILES_REMOVED: file1,file2...
+    /// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
+    /// 
+    /// 
+    /// Note: This field is immutable once it has been set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reconfigure: Option<ClusterShardingsTemplateConfigsReconfigure>,
+    /// Variables are key-value pairs for dynamic configuration values that can be provided by the user.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<BTreeMap<String, String>>,
 }
 
 /// ConfigMap source for the config.
@@ -7879,6 +6582,273 @@ pub struct ClusterShardingsTemplateConfigsConfigMapItems {
     /// May not contain the path element '..'.
     /// May not start with the string '..'.
     pub path: String,
+}
+
+/// The custom reconfigure action to reload the service configuration whenever changes to this config are detected.
+/// 
+/// 
+/// The container executing this action has access to following variables:
+/// 
+/// 
+/// - KB_CONFIG_FILES_CREATED: file1,file2...
+/// - KB_CONFIG_FILES_REMOVED: file1,file2...
+/// - KB_CONFIG_FILES_UPDATED: file1:checksum1,file2:checksum2...
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigure {
+    /// Defines the command to run.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ClusterShardingsTemplateConfigsReconfigureExec>,
+    /// Specifies the state that the cluster must reach before the Action is executed.
+    /// Currently, this is only applicable to the `postProvision` action.
+    /// 
+    /// 
+    /// The conditions are as follows:
+    /// 
+    /// 
+    /// - `Immediately`: Executed right after the Component object is created.
+    ///   The readiness of the Component and its resources is not guaranteed at this stage.
+    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
+    ///   runtime resources (e.g. Pods) are in a ready state.
+    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
+    ///   This process does not affect the readiness state of the Component or the Cluster.
+    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
+    ///   This execution does not alter the Component or the Cluster's state of readiness.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
+    pub pre_condition: Option<String>,
+    /// Defines the strategy to be taken when retrying the Action after a failure.
+    /// 
+    /// 
+    /// It specifies the conditions under which the Action should be retried and the limits to apply,
+    /// such as the maximum number of retries and backoff strategy.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ClusterShardingsTemplateConfigsReconfigureRetryPolicy>,
+    /// Specifies the maximum duration in seconds that the Action is allowed to run.
+    /// 
+    /// 
+    /// If the Action does not complete within this time frame, it will be terminated.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExec {
+    /// Args represents the arguments that are passed to the `command` for execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Specifies the command to be executed inside the container.
+    /// The working directory for this command is the container's root directory('/').
+    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
+    /// If the shell is required, it must be explicitly invoked in the command.
+    /// 
+    /// 
+    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
+    /// 
+    /// 
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<String>,
+    /// Represents a list of environment variables that will be injected into the container.
+    /// These variables enable the container to adapt its behavior based on the environment it's running in.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterShardingsTemplateConfigsReconfigureExecEnv>>,
+    /// Specifies the container image to be used for running the Action.
+    /// 
+    /// 
+    /// When specified, a dedicated container will be created using this image to execute the Action.
+    /// All actions with same image will share the same container.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ClusterShardingsTemplateConfigsReconfigureExecTargetPodSelector>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterShardingsTemplateConfigsReconfigureExecEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureExecEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingsTemplateConfigsReconfigureExecTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+/// Defines the strategy to be taken when retrying the Action after a failure.
+/// 
+/// 
+/// It specifies the conditions under which the Action should be retried and the limits to apply,
+/// such as the maximum number of retries and backoff strategy.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateConfigsReconfigureRetryPolicy {
+    /// Defines the maximum number of retry attempts that should be made for a given Action.
+    /// This value is set to 0 by default, indicating that no retries will be made.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Indicates the duration of time to wait between each retry attempt.
+    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<i64>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -7977,6 +6947,45 @@ pub struct ClusterShardingsTemplateEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
+/// Provides fine-grained control over the spec update process of all instances.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstanceUpdateStrategy {
+    /// Specifies how the rolling update should be applied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterShardingsTemplateInstanceUpdateStrategyRollingUpdate>,
+    /// Indicates the type of the update strategy.
+    /// Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<ClusterShardingsTemplateInstanceUpdateStrategyType>,
+}
+
+/// Specifies how the rolling update should be applied.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstanceUpdateStrategyRollingUpdate {
+    /// The maximum number of instances that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired instances (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up. This can not be 0.
+    /// Defaults to 1. The field applies to all instances. That means if there is any unavailable pod,
+    /// it will be counted towards MaxUnavailable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+    /// Indicates the number of instances that should be updated during a rolling update.
+    /// The remaining instances will remain untouched. This is helpful in defining how many instances
+    /// should participate in the update process.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired instances (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding up.
+    /// The default value is ComponentSpec.Replicas (i.e., update all instances).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<IntOrString>,
+}
+
+/// Provides fine-grained control over the spec update process of all instances.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingsTemplateInstanceUpdateStrategyType {
+    RollingUpdate,
+    OnDelete,
+}
+
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateInstances {
@@ -7988,9 +6997,6 @@ pub struct ClusterShardingsTemplateInstances {
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ClusterShardingsTemplateInstancesEnv>>,
-    /// Specifies an override for the first container's image in the Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
     /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels.
     /// Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8023,18 +7029,6 @@ pub struct ClusterShardingsTemplateInstances {
     /// Specifies the scheduling policy for the Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterShardingsTemplateInstancesSchedulingPolicy>,
-    /// Defines VolumeClaimTemplates to override.
-    /// Add new or override existing volume claim templates.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
-    pub volume_claim_templates: Option<Vec<ClusterShardingsTemplateInstancesVolumeClaimTemplates>>,
-    /// Defines VolumeMounts to override.
-    /// Add new or override existing volume mounts of the first container in the Pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<ClusterShardingsTemplateInstancesVolumeMounts>>,
-    /// Defines Volumes to override.
-    /// Add new or override existing volumes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<ClusterShardingsTemplateInstancesVolumes>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -9115,1706 +8109,6 @@ pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstr
     pub values: Option<Vec<String>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplates {
-    /// Refers to the name of a volumeMount defined in either:
-    /// 
-    /// 
-    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
-    /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
-    /// 
-    /// 
-    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
-    pub name: String,
-    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
-    /// with the mount name specified in the `name` field.
-    /// 
-    /// 
-    /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-    /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec>,
-}
-
-/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
-/// with the mount name specified in the `name` field.
-/// 
-/// 
-/// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-/// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec {
-    /// Contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    /// Represents the minimum resources the volume should have.
-    /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-    /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources>,
-    /// The name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// 
-    /// 
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    /// Defines what type of volume is required by the claim, either Block or Filesystem.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-}
-
-/// Represents the minimum resources the volume should have.
-/// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-/// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// VolumeMount describes a mounting of a Volume within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must
-    /// not contain ':'.
-    #[serde(rename = "mountPath")]
-    pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host
-    /// to container and the other way around.
-    /// When not set, MountPropagationNone is used.
-    /// This field is beta in 1.10.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
-    pub mount_propagation: Option<String>,
-    /// This must match the Name of a Volume.
-    pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified).
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// Path within the volume from which the container's volume should be mounted.
-    /// Defaults to "" (volume's root).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
-    pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted.
-    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
-    /// Defaults to "" (volume's root).
-    /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
-    pub sub_path_expr: Option<String>,
-}
-
-/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumes {
-    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<ClusterShardingsTemplateInstancesVolumesAwsElasticBlockStore>,
-    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<ClusterShardingsTemplateInstancesVolumesAzureDisk>,
-    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<ClusterShardingsTemplateInstancesVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<ClusterShardingsTemplateInstancesVolumesCephfs>,
-    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<ClusterShardingsTemplateInstancesVolumesCinder>,
-    /// configMap represents a configMap that should populate this volume
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingsTemplateInstancesVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<ClusterShardingsTemplateInstancesVolumesCsi>,
-    /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingsTemplateInstancesVolumesDownwardApi>,
-    /// emptyDir represents a temporary directory that shares a pod's lifetime.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<ClusterShardingsTemplateInstancesVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver.
-    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
-    /// and deleted when the pod is removed.
-    /// 
-    /// 
-    /// Use this if:
-    /// a) the volume is only needed while the pod runs,
-    /// b) features of normal volumes like restoring from snapshot or capacity
-    ///    tracking are needed,
-    /// c) the storage driver is specified through a storage class, and
-    /// d) the storage driver supports dynamic volume provisioning through
-    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
-    ///    information on the connection between this volume type
-    ///    and PersistentVolumeClaim).
-    /// 
-    /// 
-    /// Use PersistentVolumeClaim or one of the vendor-specific
-    /// APIs for volumes that persist for longer than the lifecycle
-    /// of an individual pod.
-    /// 
-    /// 
-    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
-    /// be used that way - see the documentation of the driver for
-    /// more information.
-    /// 
-    /// 
-    /// A pod can use both types of ephemeral volumes and
-    /// persistent volumes at the same time.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<ClusterShardingsTemplateInstancesVolumesEphemeral>,
-    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<ClusterShardingsTemplateInstancesVolumesFc>,
-    /// flexVolume represents a generic volume resource that is
-    /// provisioned/attached using an exec based plugin.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<ClusterShardingsTemplateInstancesVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<ClusterShardingsTemplateInstancesVolumesFlocker>,
-    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<ClusterShardingsTemplateInstancesVolumesGcePersistentDisk>,
-    /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
-    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
-    /// into the Pod's container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<ClusterShardingsTemplateInstancesVolumesGitRepo>,
-    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<ClusterShardingsTemplateInstancesVolumesGlusterfs>,
-    /// hostPath represents a pre-existing file or directory on the host
-    /// machine that is directly exposed to the container. This is generally
-    /// used for system agents or other privileged things that are allowed
-    /// to see the host machine. Most containers will NOT need this.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<ClusterShardingsTemplateInstancesVolumesHostPath>,
-    /// iscsi represents an ISCSI Disk resource that is attached to a
-    /// kubelet's host machine and then exposed to the pod.
-    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<ClusterShardingsTemplateInstancesVolumesIscsi>,
-    /// name of the volume.
-    /// Must be a DNS_LABEL and unique within the pod.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    pub name: String,
-    /// nfs represents an NFS mount on the host that shares a pod's lifetime
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<ClusterShardingsTemplateInstancesVolumesNfs>,
-    /// persistentVolumeClaimVolumeSource represents a reference to a
-    /// PersistentVolumeClaim in the same namespace.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<ClusterShardingsTemplateInstancesVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<ClusterShardingsTemplateInstancesVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<ClusterShardingsTemplateInstancesVolumesPortworxVolume>,
-    /// projected items for all in one resources secrets, configmaps, and downward API
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<ClusterShardingsTemplateInstancesVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<ClusterShardingsTemplateInstancesVolumesQuobyte>,
-    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<ClusterShardingsTemplateInstancesVolumesRbd>,
-    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<ClusterShardingsTemplateInstancesVolumesScaleIo>,
-    /// secret represents a secret that should populate this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingsTemplateInstancesVolumesSecret>,
-    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<ClusterShardingsTemplateInstancesVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<ClusterShardingsTemplateInstancesVolumesVsphereVolume>,
-}
-
-/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesAwsElasticBlockStore {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
-    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    /// readOnly value true will force the readOnly setting in VolumeMounts.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesAzureDisk {
-    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
-    pub caching_mode: Option<String>,
-    /// diskName is the Name of the data disk in the blob storage
-    #[serde(rename = "diskName")]
-    pub disk_name: String,
-    /// diskURI is the URI of data disk in the blob storage
-    #[serde(rename = "diskURI")]
-    pub disk_uri: String,
-    /// fsType is Filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesAzureFile {
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
-    #[serde(rename = "secretName")]
-    pub secret_name: String,
-    /// shareName is the azure share Name
-    #[serde(rename = "shareName")]
-    pub share_name: String,
-}
-
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCephfs {
-    /// monitors is Required: Monitors is a collection of Ceph monitors
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    pub monitors: Vec<String>,
-    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
-    pub secret_file: Option<String>,
-    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCephfsSecretRef>,
-    /// user is optional: User is the rados user name, default is admin
-    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
-/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCephfsSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// cinder represents a cinder volume attached and mounted on kubelets host machine.
-/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCinder {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is optional: points to a secret object containing parameters used to connect
-    /// to OpenStack.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCinderSecretRef>,
-    /// volumeID used to identify the volume in cinder.
-    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// secretRef is optional: points to a secret object containing parameters used to connect
-/// to OpenStack.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCinderSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// configMap represents a configMap that should populate this volume
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesConfigMap {
-    /// defaultMode is optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the ConfigMap,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesConfigMapItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCsi {
-    /// driver is the name of the CSI driver that handles this volume.
-    /// Consult with your admin for the correct name as registered in the cluster.
-    pub driver: String,
-    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
-    /// If not provided, the empty value is passed to the associated CSI driver
-    /// which will determine the default filesystem to apply.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// nodePublishSecretRef is a reference to the secret object containing
-    /// sensitive information to pass to the CSI driver to complete the CSI
-    /// NodePublishVolume and NodeUnpublishVolume calls.
-    /// This field is optional, and  may be empty if no secret is required. If the
-    /// secret object contains more than one secret, all secret references are passed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCsiNodePublishSecretRef>,
-    /// readOnly specifies a read-only configuration for the volume.
-    /// Defaults to false (read/write).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeAttributes stores driver-specific properties that are passed to the CSI
-    /// driver. Consult your driver's documentation for supported values.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
-    pub volume_attributes: Option<BTreeMap<String, String>>,
-}
-
-/// nodePublishSecretRef is a reference to the secret object containing
-/// sensitive information to pass to the CSI driver to complete the CSI
-/// NodePublishVolume and NodeUnpublishVolume calls.
-/// This field is optional, and  may be empty if no secret is required. If the
-/// secret object contains more than one secret, all secret references are passed.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesCsiNodePublishSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// downwardAPI represents downward API about the pod that should populate this volume
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesDownwardApi {
-    /// Optional: mode bits to use on created files by default. Must be a
-    /// Optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// Items is a list of downward API volume file
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesDownwardApiItems>>,
-}
-
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingsTemplateInstancesVolumesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
-    pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef>,
-}
-
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// emptyDir represents a temporary directory that shares a pod's lifetime.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEmptyDir {
-    /// medium represents what type of storage medium should back this directory.
-    /// The default is "" which means to use the node's default medium.
-    /// Must be an empty string (default) or Memory.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub medium: Option<String>,
-    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
-    /// The size limit is also applicable for memory medium.
-    /// The maximum usage on memory medium EmptyDir would be the minimum value between
-    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
-    /// The default is nil which means that the limit is undefined.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
-    pub size_limit: Option<IntOrString>,
-}
-
-/// ephemeral represents a volume that is handled by a cluster storage driver.
-/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
-/// and deleted when the pod is removed.
-/// 
-/// 
-/// Use this if:
-/// a) the volume is only needed while the pod runs,
-/// b) features of normal volumes like restoring from snapshot or capacity
-///    tracking are needed,
-/// c) the storage driver is specified through a storage class, and
-/// d) the storage driver supports dynamic volume provisioning through
-///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
-///    information on the connection between this volume type
-///    and PersistentVolumeClaim).
-/// 
-/// 
-/// Use PersistentVolumeClaim or one of the vendor-specific
-/// APIs for volumes that persist for longer than the lifecycle
-/// of an individual pod.
-/// 
-/// 
-/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
-/// be used that way - see the documentation of the driver for
-/// more information.
-/// 
-/// 
-/// A pod can use both types of ephemeral volumes and
-/// persistent volumes at the same time.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume.
-    /// The pod in which this EphemeralVolumeSource is embedded will be the
-    /// owner of the PVC, i.e. the PVC will be deleted together with the
-    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
-    /// `<volume name>` is the name from the `PodSpec.Volumes` array
-    /// entry. Pod validation will reject the pod if the concatenated name
-    /// is not valid for a PVC (for example, too long).
-    /// 
-    /// 
-    /// An existing PVC with that name that is not owned by the pod
-    /// will *not* be used for the pod to avoid using an unrelated
-    /// volume by mistake. Starting the pod is then blocked until
-    /// the unrelated PVC is removed. If such a pre-created PVC is
-    /// meant to be used by the pod, the PVC has to updated with an
-    /// owner reference to the pod once the pod exists. Normally
-    /// this should not be necessary, but it may be useful when
-    /// manually reconstructing a broken cluster.
-    /// 
-    /// 
-    /// This field is read-only and no changes will be made by Kubernetes
-    /// to the PVC after it has been created.
-    /// 
-    /// 
-    /// Required, must not be nil.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplate>,
-}
-
-/// Will be used to create a stand-alone PVC to provision the volume.
-/// The pod in which this EphemeralVolumeSource is embedded will be the
-/// owner of the PVC, i.e. the PVC will be deleted together with the
-/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
-/// `<volume name>` is the name from the `PodSpec.Volumes` array
-/// entry. Pod validation will reject the pod if the concatenated name
-/// is not valid for a PVC (for example, too long).
-/// 
-/// 
-/// An existing PVC with that name that is not owned by the pod
-/// will *not* be used for the pod to avoid using an unrelated
-/// volume by mistake. Starting the pod is then blocked until
-/// the unrelated PVC is removed. If such a pre-created PVC is
-/// meant to be used by the pod, the PVC has to updated with an
-/// owner reference to the pod once the pod exists. Normally
-/// this should not be necessary, but it may be useful when
-/// manually reconstructing a broken cluster.
-/// 
-/// 
-/// This field is read-only and no changes will be made by Kubernetes
-/// to the PVC after it has been created.
-/// 
-/// 
-/// Required, must not be nil.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplate {
-    /// May contain labels and annotations that will be copied into the PVC
-    /// when creating it. No other fields are allowed and will be rejected during
-    /// validation.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
-    /// The specification for the PersistentVolumeClaim. The entire content is
-    /// copied unchanged into the PVC that gets created from this
-    /// template. The same fields as in a PersistentVolumeClaim
-    /// are also valid here.
-    pub spec: ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec,
-}
-
-/// May contain labels and annotations that will be copied into the PVC
-/// when creating it. No other fields are allowed and will be rejected during
-/// validation.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub finalizers: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// The specification for the PersistentVolumeClaim. The entire content is
-/// copied unchanged into the PVC that gets created from this
-/// template. The same fields as in a PersistentVolumeClaim
-/// are also valid here.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec {
-    /// accessModes contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
-    pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either:
-    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-    /// * An existing PVC (PersistentVolumeClaim)
-    /// If the provisioner or an external controller can support the specified data source,
-    /// it will create a new volume based on the contents of the specified data source.
-    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-    /// volume is desired. This may be any object from a non-empty API group (non
-    /// core object) or a PersistentVolumeClaim object.
-    /// When this field is specified, volume binding will only succeed if the type of
-    /// the specified object matches some installed volume populator or dynamic
-    /// provisioner.
-    /// This field will replace the functionality of the dataSource field and as such
-    /// if both fields are non-empty, they must have the same value. For backwards
-    /// compatibility, when namespace isn't specified in dataSourceRef,
-    /// both fields (dataSource and dataSourceRef) will be set to the same
-    /// value automatically if one of them is empty and the other is non-empty.
-    /// When namespace is specified in dataSourceRef,
-    /// dataSource isn't set to the same value and must be empty.
-    /// There are three important differences between dataSource and dataSourceRef:
-    /// * While dataSource only allows two specific types of objects, dataSourceRef
-    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
-    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-    ///   preserves all values, and generates an error if a disallowed value is
-    ///   specified.
-    /// * While dataSource only allows local objects, dataSourceRef allows objects
-    ///   in any namespaces.
-    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-    /// that are lower than previous value but must still be higher than capacity recorded in the
-    /// status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
-    /// selector is a label query over volumes to consider for binding.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
-    pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// If specified, the CSI driver will create or update the volume with the attributes defined
-    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
-    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
-    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
-    /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
-    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
-    /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
-    pub volume_mode: Option<String>,
-    /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-/// dataSource field can be used to specify either:
-/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-/// * An existing PVC (PersistentVolumeClaim)
-/// If the provisioner or an external controller can support the specified data source,
-/// it will create a new volume based on the contents of the specified data source.
-/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-}
-
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-/// volume is desired. This may be any object from a non-empty API group (non
-/// core object) or a PersistentVolumeClaim object.
-/// When this field is specified, volume binding will only succeed if the type of
-/// the specified object matches some installed volume populator or dynamic
-/// provisioner.
-/// This field will replace the functionality of the dataSource field and as such
-/// if both fields are non-empty, they must have the same value. For backwards
-/// compatibility, when namespace isn't specified in dataSourceRef,
-/// both fields (dataSource and dataSourceRef) will be set to the same
-/// value automatically if one of them is empty and the other is non-empty.
-/// When namespace is specified in dataSourceRef,
-/// dataSource isn't set to the same value and must be empty.
-/// There are three important differences between dataSource and dataSourceRef:
-/// * While dataSource only allows two specific types of objects, dataSourceRef
-///   allows any non-core object, as well as PersistentVolumeClaim objects.
-/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-///   preserves all values, and generates an error if a disallowed value is
-///   specified.
-/// * While dataSource only allows local objects, dataSourceRef allows objects
-///   in any namespaces.
-/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
-    pub kind: String,
-    /// Name is the name of resource being referenced
-    pub name: String,
-    /// Namespace is the namespace of resource being referenced
-    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
-    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-/// that are lower than previous value but must still be higher than capacity recorded in the
-/// status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// selector is a label query over volumes to consider for binding.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesFc {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// lun is Optional: FC target lun number
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lun: Option<i32>,
-    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
-    pub target_ww_ns: Option<Vec<String>>,
-    /// wwids Optional: FC volume world wide identifiers (wwids)
-    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub wwids: Option<Vec<String>>,
-}
-
-/// flexVolume represents a generic volume resource that is
-/// provisioned/attached using an exec based plugin.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesFlexVolume {
-    /// driver is the name of the driver to use for this volume.
-    pub driver: String,
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// options is Optional: this field holds extra command options if any.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub options: Option<BTreeMap<String, String>>,
-    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is Optional: secretRef is reference to the secret object containing
-    /// sensitive information to pass to the plugin scripts. This may be
-    /// empty if no secret object is specified. If the secret object
-    /// contains more than one secret, all secrets are passed to the plugin
-    /// scripts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesFlexVolumeSecretRef>,
-}
-
-/// secretRef is Optional: secretRef is reference to the secret object containing
-/// sensitive information to pass to the plugin scripts. This may be
-/// empty if no secret object is specified. If the secret object
-/// contains more than one secret, all secrets are passed to the plugin
-/// scripts.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesFlexVolumeSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesFlocker {
-    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
-    /// should be considered as deprecated
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
-    pub dataset_name: Option<String>,
-    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
-    pub dataset_uuid: Option<String>,
-}
-
-/// gcePersistentDisk represents a GCE Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesGcePersistentDisk {
-    /// fsType is filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// partition is the partition in the volume that you want to mount.
-    /// If omitted, the default is to mount by volume name.
-    /// Examples: For volume /dev/sda1, you specify the partition as "1".
-    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub partition: Option<i32>,
-    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(rename = "pdName")]
-    pub pd_name: String,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
-/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
-/// into the Pod's container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesGitRepo {
-    /// directory is the target directory name.
-    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
-    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
-    /// the subdirectory with the given name.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub directory: Option<String>,
-    /// repository is the URL
-    pub repository: String,
-    /// revision is the commit hash for the specified revision.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub revision: Option<String>,
-}
-
-/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesGlusterfs {
-    /// endpoints is the endpoint name that details Glusterfs topology.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    pub endpoints: String,
-    /// path is the Glusterfs volume path.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    pub path: String,
-    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// hostPath represents a pre-existing file or directory on the host
-/// machine that is directly exposed to the container. This is generally
-/// used for system agents or other privileged things that are allowed
-/// to see the host machine. Most containers will NOT need this.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesHostPath {
-    /// path of the directory on the host.
-    /// If the path is a symlink, it will follow the link to the real path.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    pub path: String,
-    /// type for HostPath Volume
-    /// Defaults to ""
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-/// iscsi represents an ISCSI Disk resource that is attached to a
-/// kubelet's host machine and then exposed to the pod.
-/// More info: https://examples.k8s.io/volumes/iscsi/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesIscsi {
-    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
-    pub chap_auth_discovery: Option<bool>,
-    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
-    pub chap_auth_session: Option<bool>,
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// initiatorName is the custom iSCSI Initiator Name.
-    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
-    /// <target portal>:<volume name> will be created for the connection.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
-    pub initiator_name: Option<String>,
-    /// iqn is the target iSCSI Qualified Name.
-    pub iqn: String,
-    /// iscsiInterface is the interface Name that uses an iSCSI transport.
-    /// Defaults to 'default' (tcp).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
-    pub iscsi_interface: Option<String>,
-    /// lun represents iSCSI Target Lun number.
-    pub lun: i32,
-    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub portals: Option<Vec<String>>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesIscsiSecretRef>,
-    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
-    /// is other than default (typically TCP ports 860 and 3260).
-    #[serde(rename = "targetPortal")]
-    pub target_portal: String,
-}
-
-/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesIscsiSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// nfs represents an NFS mount on the host that shares a pod's lifetime
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesNfs {
-    /// path that is exported by the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    pub path: String,
-    /// readOnly here will force the NFS export to be mounted with read-only permissions.
-    /// Defaults to false.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// server is the hostname or IP address of the NFS server.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
-    pub server: String,
-}
-
-/// persistentVolumeClaimVolumeSource represents a reference to a
-/// PersistentVolumeClaim in the same namespace.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesPersistentVolumeClaim {
-    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(rename = "claimName")]
-    pub claim_name: String,
-    /// readOnly Will force the ReadOnly setting in VolumeMounts.
-    /// Default false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-}
-
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesPhotonPersistentDisk {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// pdID is the ID that identifies Photon Controller persistent disk
-    #[serde(rename = "pdID")]
-    pub pd_id: String,
-}
-
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesPortworxVolume {
-    /// fSType represents the filesystem type to mount
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// volumeID uniquely identifies a Portworx volume
-    #[serde(rename = "volumeID")]
-    pub volume_id: String,
-}
-
-/// projected items for all in one resources secrets, configmaps, and downward API
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjected {
-    /// defaultMode are the mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSources>>,
-}
-
-/// Projection that may be projected along with other supported volume types
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-    /// of ClusterTrustBundle objects in an auto-updating file.
-    /// 
-    /// 
-    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    /// 
-    /// 
-    /// ClusterTrustBundle objects can either be selected by name, or by the
-    /// combination of signer name and a label selector.
-    /// 
-    /// 
-    /// Kubelet performs aggressive normalization of the PEM contents written
-    /// into the pod filesystem.  Esoteric PEM features such as inter-block
-    /// comments and block headers are stripped.  Certificates are deduplicated.
-    /// The ordering of certificates within the file is arbitrary, and Kubelet
-    /// may change the order over time.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
-    pub cluster_trust_bundle: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle>,
-    /// configMap information about the configMap data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMap>,
-    /// downwardAPI information about the downwardAPI data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApi>,
-    /// secret information about the secret data to project
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecret>,
-    /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesServiceAccountToken>,
-}
-
-/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
-/// of ClusterTrustBundle objects in an auto-updating file.
-/// 
-/// 
-/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-/// 
-/// 
-/// ClusterTrustBundle objects can either be selected by name, or by the
-/// combination of signer name and a label selector.
-/// 
-/// 
-/// Kubelet performs aggressive normalization of the PEM contents written
-/// into the pod filesystem.  Esoteric PEM features such as inter-block
-/// comments and block headers are stripped.  Certificates are deduplicated.
-/// The ordering of certificates within the file is arbitrary, and Kubelet
-/// may change the order over time.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle {
-    /// Select all ClusterTrustBundles that match this label selector.  Only has
-    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-    /// interpreted as "match nothing".  If set but empty, interpreted as "match
-    /// everything".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
-    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
-    /// with signerName and labelSelector.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
-    /// aren't available.  If using name, then the named ClusterTrustBundle is
-    /// allowed not to exist.  If using signerName, then the combination of
-    /// signerName and labelSelector is allowed to match zero
-    /// ClusterTrustBundles.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-    /// Relative path from the volume root to write the bundle.
-    pub path: String,
-    /// Select all ClusterTrustBundles that match this signer name.
-    /// Mutually-exclusive with name.  The contents of all selected
-    /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
-    pub signer_name: Option<String>,
-}
-
-/// Select all ClusterTrustBundles that match this label selector.  Only has
-/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
-/// interpreted as "match nothing".  If set but empty, interpreted as "match
-/// everything".
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// configMap information about the configMap data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMap {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// ConfigMap will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the ConfigMap,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMapItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional specify whether the ConfigMap or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMapItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// downwardAPI information about the downwardAPI data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApi {
-    /// Items is a list of DownwardAPIVolume file
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItems>>,
-}
-
-/// DownwardAPIVolumeFile represents information to create the file containing the pod field
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
-    /// Optional: mode bits used to set permissions on this file, must be an octal value
-    /// between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
-    pub path: String,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
-}
-
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// secret information about the secret data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecret {
-    /// items if unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the Secret,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecretItems>>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// optional field specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecretItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// serviceAccountToken is information about the serviceAccountToken data to project
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesServiceAccountToken {
-    /// audience is the intended audience of the token. A recipient of a token
-    /// must identify itself with an identifier specified in the audience of the
-    /// token, and otherwise should reject the token. The audience defaults to the
-    /// identifier of the apiserver.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub audience: Option<String>,
-    /// expirationSeconds is the requested duration of validity of the service
-    /// account token. As the token approaches expiration, the kubelet volume
-    /// plugin will proactively rotate the service account token. The kubelet will
-    /// start trying to rotate the token if the token is older than 80 percent of
-    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
-    /// and must be at least 10 minutes.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
-    pub expiration_seconds: Option<i64>,
-    /// path is the path relative to the mount point of the file to project the
-    /// token into.
-    pub path: String,
-}
-
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesQuobyte {
-    /// group to map volume access to
-    /// Default is no group
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
-    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// registry represents a single or multiple Quobyte Registry services
-    /// specified as a string as host:port pair (multiple entries are separated with commas)
-    /// which acts as the central registry for volumes
-    pub registry: String,
-    /// tenant owning the given Quobyte volume in the Backend
-    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tenant: Option<String>,
-    /// user to map volume access to
-    /// Defaults to serivceaccount user
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-    /// volume is a string that references an already created Quobyte volume by name.
-    pub volume: String,
-}
-
-/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesRbd {
-    /// fsType is the filesystem type of the volume that you want to mount.
-    /// Tip: Ensure that the filesystem type is supported by the host operating system.
-    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// image is the rados image name.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    pub image: String,
-    /// keyring is the path to key ring for RBDUser.
-    /// Default is /etc/ceph/keyring.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keyring: Option<String>,
-    /// monitors is a collection of Ceph monitors.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    pub monitors: Vec<String>,
-    /// pool is the rados pool name.
-    /// Default is rbd.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pool: Option<String>,
-    /// readOnly here will force the ReadOnly setting in VolumeMounts.
-    /// Defaults to false.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef is name of the authentication secret for RBDUser. If provided
-    /// overrides keyring.
-    /// Default is nil.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesRbdSecretRef>,
-    /// user is the rados user name.
-    /// Default is admin.
-    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// secretRef is name of the authentication secret for RBDUser. If provided
-/// overrides keyring.
-/// Default is nil.
-/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesRbdSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesScaleIo {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs".
-    /// Default is "xfs".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// gateway is the host address of the ScaleIO API Gateway.
-    pub gateway: String,
-    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
-    pub protection_domain: Option<String>,
-    /// readOnly Defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef references to the secret for ScaleIO user and other
-    /// sensitive information. If this is not provided, Login operation will fail.
-    #[serde(rename = "secretRef")]
-    pub secret_ref: ClusterShardingsTemplateInstancesVolumesScaleIoSecretRef,
-    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
-    pub ssl_enabled: Option<bool>,
-    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
-    /// Default is ThinProvisioned.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
-    pub storage_mode: Option<String>,
-    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
-    pub storage_pool: Option<String>,
-    /// system is the name of the storage system as configured in ScaleIO.
-    pub system: String,
-    /// volumeName is the name of a volume already created in the ScaleIO system
-    /// that is associated with this volume source.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-}
-
-/// secretRef references to the secret for ScaleIO user and other
-/// sensitive information. If this is not provided, Login operation will fail.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesScaleIoSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// secret represents a secret that should populate this volume.
-/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesSecret {
-    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values
-    /// for mode bits. Defaults to 0644.
-    /// Directories within the path are not affected by this setting.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    /// items If unspecified, each key-value pair in the Data field of the referenced
-    /// Secret will be projected into the volume as a file whose name is the
-    /// key and content is the value. If specified, the listed keys will be
-    /// projected into the specified paths, and unlisted keys will not be
-    /// present. If a key is specified which is not present in the Secret,
-    /// the volume setup will error unless it is marked optional. Paths must be
-    /// relative and may not contain the '..' path or start with '..'.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesSecretItems>>,
-    /// optional field specify whether the Secret or its keys must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-    /// secretName is the name of the secret in the pod's namespace to use.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
-    pub secret_name: Option<String>,
-}
-
-/// Maps a string key to a path within a volume.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesSecretItems {
-    /// key is the key to project.
-    pub key: String,
-    /// mode is Optional: mode bits used to set permissions on this file.
-    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
-    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
-    /// If not specified, the volume defaultMode will be used.
-    /// This might be in conflict with other options that affect the file
-    /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mode: Option<i32>,
-    /// path is the relative path of the file to map the key to.
-    /// May not be an absolute path.
-    /// May not contain the path element '..'.
-    /// May not start with the string '..'.
-    pub path: String,
-}
-
-/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesStorageos {
-    /// fsType is the filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// readOnly defaults to false (read/write). ReadOnly here will force
-    /// the ReadOnly setting in VolumeMounts.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// secretRef specifies the secret to use for obtaining the StorageOS API
-    /// credentials.  If not specified, default values will be attempted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesStorageosSecretRef>,
-    /// volumeName is the human-readable name of the StorageOS volume.  Volume
-    /// names are only unique within a namespace.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
-    pub volume_name: Option<String>,
-    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
-    /// namespace is specified then the Pod's namespace will be used.  This allows the
-    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
-    /// Set VolumeName to any name to override the default behaviour.
-    /// Set to "default" if you are not using namespaces within StorageOS.
-    /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
-    pub volume_namespace: Option<String>,
-}
-
-/// secretRef specifies the secret to use for obtaining the StorageOS API
-/// credentials.  If not specified, default values will be attempted.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesStorageosSecretRef {
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingsTemplateInstancesVolumesVsphereVolume {
-    /// fsType is filesystem type to mount.
-    /// Must be a filesystem type supported by the host operating system.
-    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
-    pub fs_type: Option<String>,
-    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
-    pub storage_policy_id: Option<String>,
-    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
-    pub storage_policy_name: Option<String>,
-    /// volumePath is the path that identifies vSphere volume vmdk
-    #[serde(rename = "volumePath")]
-    pub volume_path: String,
-}
-
 /// Specifies the configuration for the TLS certificates issuer.
 /// It allows defining the issuer name and the reference to the secret containing the TLS certificates and key.
 /// The secret should contain the CA certificate, TLS certificate, and private key in the specified keys.
@@ -10852,6 +8146,50 @@ pub struct ClusterShardingsTemplateIssuerSecretRef {
     /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicy {
+    /// WhenDeleted specifies what happens to PVCs created from VolumeClaimTemplates when the workload is deleted.
+    /// The `Retain` policy causes PVCs to not be affected by workload deletion.
+    /// The default policy of `Delete` causes those PVCs to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
+    pub when_deleted: Option<ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenDeleted>,
+    /// WhenScaled specifies what happens to PVCs created from VolumeClaimTemplates when the workload is scaled down.
+    /// The `Retain` policy causes PVCs to not be affected by a scale down.
+    /// The default policy of `Delete` causes the associated PVCs for pods scaled down to be deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenScaled>,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenDeleted {
+    Retain,
+    Delete,
+}
+
+/// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
+/// volume claims created from volumeClaimTemplates. By default, all persistent
+/// volume claims are created as needed and retained until manually deleted. This
+/// policy allows the lifecycle to be altered, for example by deleting persistent
+/// volume claims when their workload is deleted, or when their pod is scaled
+/// down.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenScaled {
+    Retain,
+    Delete,
 }
 
 /// The template for generating Components for shards, where each shard consists of one Component.
@@ -12071,6 +9409,12 @@ pub struct ClusterShardingsTemplateSystemAccountsSecretRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 

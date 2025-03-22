@@ -341,8 +341,30 @@ pub struct TableSseSpecification {
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]
     pub kms_master_key_id: Option<String>,
+    /// Reference field for KMSMasterKeyID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyRef")]
+    pub kms_master_key_ref: Option<TableSseSpecificationKmsMasterKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseType")]
     pub sse_type: Option<String>,
+}
+
+/// Reference field for KMSMasterKeyID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSseSpecificationKmsMasterKeyRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<TableSseSpecificationKmsMasterKeyRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSseSpecificationKmsMasterKeyRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The settings for DynamoDB Streams on the table. These settings consist of:
@@ -406,7 +428,7 @@ pub struct TableStatus {
     /// Contains information about the table archive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "archivalSummary")]
     pub archival_summary: Option<TableStatusArchivalSummary>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

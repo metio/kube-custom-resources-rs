@@ -200,6 +200,9 @@ pub struct PrometheusSpec {
     /// It requires Prometheus >= v2.33.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteWriteReceiver")]
     pub enable_remote_write_receiver: Option<bool>,
+    /// Indicates whether information about services should be injected into pod's environment variables
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
+    pub enable_service_links: Option<bool>,
     /// When defined, enforcedBodySizeLimit specifies a global limit on the size
     /// of uncompressed response body that will be accepted by Prometheus.
     /// Targets responding with a body larger than this many bytes will cause
@@ -755,7 +758,15 @@ pub struct PrometheusSpec {
     /// Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
-    /// Number of shards to distribute scraped targets onto.
+    /// ShardRetentionPolicy defines the retention policy for the Prometheus shards.
+    /// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
+    /// 
+    /// The final goals for this feature can be seen at https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,
+    /// however, the feature is not yet fully implemented in this PR. The limitation being:
+    /// * Retention duration is not settable, for now, shards are retained forever.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardRetentionPolicy")]
+    pub shard_retention_policy: Option<PrometheusShardRetentionPolicy>,
+    /// Number of shards to distribute the scraped targets onto.
     /// 
     /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
     /// being created.
@@ -765,11 +776,11 @@ pub struct PrometheusSpec {
     /// Note that scaling down shards will not reshard data onto the remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
-    /// instances. To query globally, use Thanos sidecar and Thanos querier or
-    /// remote write data to a central location.
-    /// Alerting and recording rules
+    /// instances. To query globally, use either
+    /// * Thanos sidecar + querier for query federation and Thanos Ruler for rules.
+    /// * Remote-write to send metrics to a central location.
     /// 
-    /// By default, the sharding is performed on:
+    /// By default, the sharding of targets is performed on:
     /// * The `__address__` target's metadata label for PodMonitor,
     /// ServiceMonitor and ScrapeConfig resources.
     /// * The `__param_target__` label for Probe resources.
@@ -6232,6 +6243,20 @@ pub struct PrometheusRemoteWrite {
     /// Timeout for requests to the remote write endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteTimeout")]
     pub remote_timeout: Option<String>,
+    /// When enabled:
+    ///     - The remote-write mechanism will resolve the hostname via DNS.
+    ///     - It will randomly select one of the resolved IP addresses and connect to it.
+    /// 
+    /// When disabled (default behavior):
+    ///     - The Go standard library will handle hostname resolution.
+    ///     - It will attempt connections to each resolved IP address sequentially.
+    /// 
+    /// Note: The connection timeout applies to the entire resolution and connection process.
+    ///       If disabled, the timeout is distributed across all connection attempts.
+    /// 
+    /// It requires Prometheus >= v3.1.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundRobinDNS")]
+    pub round_robin_dns: Option<bool>,
     /// Enables sending of exemplars over remote write. Note that
     /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
     /// option for exemplars to be scraped in the first place.
@@ -8150,6 +8175,35 @@ pub struct PrometheusServiceMonitorSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// ShardRetentionPolicy defines the retention policy for the Prometheus shards.
+/// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
+/// 
+/// The final goals for this feature can be seen at https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,
+/// however, the feature is not yet fully implemented in this PR. The limitation being:
+/// * Retention duration is not settable, for now, shards are retained forever.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusShardRetentionPolicy {
+    /// Defines the retention policy when the Prometheus shards are scaled down.
+    /// * `Delete`, the operator will delete the pods from the scaled-down shard(s).
+    /// * `Retain`, the operator will keep the pods from the scaled-down shard(s), so the data can still be queried.
+    /// 
+    /// If not defined, the operator assumes the `Delete` value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<PrometheusShardRetentionPolicyWhenScaled>,
+}
+
+/// ShardRetentionPolicy defines the retention policy for the Prometheus shards.
+/// (Alpha) Using this field requires the 'PrometheusShardRetentionPolicy' feature gate to be enabled.
+/// 
+/// The final goals for this feature can be seen at https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/proposals/202310-shard-autoscaling.md#graceful-scale-down-of-prometheus-servers,
+/// however, the feature is not yet fully implemented in this PR. The limitation being:
+/// * Retention duration is not settable, for now, shards are retained forever.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusShardRetentionPolicyWhenScaled {
+    Retain,
+    Delete,
 }
 
 /// Storage defines the storage used by Prometheus.

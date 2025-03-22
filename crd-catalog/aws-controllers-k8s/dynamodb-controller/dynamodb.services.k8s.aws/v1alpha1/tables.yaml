@@ -119,6 +119,9 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 localSecondaryIndexes:
                   description: "One or more local secondary indexes (the maximum is 5) to be created on the\ntable. Each index is scoped to a given partition key value. There is a 10\nGB size limit per partition key value; otherwise, the size of a local secondary\nindex is unconstrained.\n\nEach local secondary index in the array includes the following:\n\n   * IndexName - The name of the local secondary index. Must be unique only\n   for this table.\n\n   * KeySchema - Specifies the key schema for the local secondary index.\n   The key schema must begin with the same partition key as the table.\n\n   * Projection - Specifies attributes that are copied (projected) from the\n   table into the index. These are in addition to the primary key attributes\n   and index key attributes, which are automatically projected. Each attribute\n   specification is composed of: ProjectionType - One of the following: KEYS_ONLY\n   - Only the index and primary keys are projected into the index. INCLUDE\n   - Only the specified table attributes are projected into the index. The\n   list of projected attributes is in NonKeyAttributes. ALL - All of the\n   table attributes are projected into the index. NonKeyAttributes - A list\n   of one or more non-key attribute names that are projected into the secondary\n   index. The total count of attributes provided in NonKeyAttributes, summed\n   across all of the secondary indexes, must not exceed 100. If you project\n   the same attribute into two different indexes, this counts as two distinct\n   attributes when determining the total."
                   items:
@@ -148,6 +151,9 @@ spec:
                         type: "object"
                     type: "object"
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 provisionedThroughput:
                   description: "Represents the provisioned throughput settings for a specified table or index.\nThe settings can be modified using the UpdateTable operation.\n\nIf you set BillingMode as PROVISIONED, you must specify this property. If\nyou set BillingMode as PAY_PER_REQUEST, you cannot specify this property.\n\nFor current minimum and maximum provisioned throughput values, see Service,\nAccount, and Table Quotas (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html)\nin the Amazon DynamoDB Developer Guide."
                   properties:
@@ -165,6 +171,18 @@ spec:
                       type: "boolean"
                     kmsMasterKeyID:
                       type: "string"
+                    kmsMasterKeyRef:
+                      description: "Reference field for KMSMasterKeyID"
+                      properties:
+                        from:
+                          description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          type: "object"
+                      type: "object"
                     sseType:
                       type: "string"
                   type: "object"
@@ -237,7 +255,7 @@ spec:
                       type: "string"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

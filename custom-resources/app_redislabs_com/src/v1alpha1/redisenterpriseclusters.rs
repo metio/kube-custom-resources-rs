@@ -117,6 +117,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub redis_upgrade_policy: Option<RedisEnterpriseClusterRedisUpgradePolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
     pub resp3_default: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<RedisEnterpriseClusterSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3049,6 +3051,17 @@ pub enum RedisEnterpriseClusterRedisUpgradePolicy {
     Major,
     #[serde(rename = "latest")]
     Latest,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContext {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
+    pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
+    pub enabled: bool,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

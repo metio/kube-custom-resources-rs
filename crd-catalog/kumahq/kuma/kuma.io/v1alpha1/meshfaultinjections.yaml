@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.1"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "meshfaultinjections.kuma.io"
 spec:
   group: "kuma.io"
@@ -140,7 +140,6 @@ spec:
                                 - "Sidecar"
                                 - "Gateway"
                               type: "string"
-                            minItems: 1
                             type: "array"
                           sectionName:
                             description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -150,6 +149,8 @@ spec:
                               type: "string"
                             description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                             type: "object"
+                        required:
+                          - "kind"
                         type: "object"
                     required:
                       - "targetRef"
@@ -192,7 +193,6 @@ spec:
                           - "Sidecar"
                           - "Gateway"
                         type: "string"
-                      minItems: 1
                       type: "array"
                     sectionName:
                       description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -202,6 +202,8 @@ spec:
                         type: "string"
                       description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                       type: "object"
+                  required:
+                    - "kind"
                   type: "object"
                 to:
                   description: "To list makes a match between clients and corresponding configurations"
@@ -304,7 +306,6 @@ spec:
                                 - "Sidecar"
                                 - "Gateway"
                               type: "string"
-                            minItems: 1
                             type: "array"
                           sectionName:
                             description: "SectionName is used to target specific section of resource.\nFor example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected."
@@ -314,6 +315,8 @@ spec:
                               type: "string"
                             description: "Tags used to select a subset of proxies by tags. Can only be used with kinds\n`MeshSubset` and `MeshServiceSubset`"
                             type: "object"
+                        required:
+                          - "kind"
                         type: "object"
                     required:
                       - "targetRef"

@@ -50,6 +50,16 @@ pub struct ComponentDefinitionSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<ComponentDefinitionConfigs>>,
+    /// Specifies the config file templates and volume mount parameters used by the Component.
+    /// 
+    /// 
+    /// This field specifies a list of templates that will be rendered into Component containers' config files.
+    /// Each template is represented as a ConfigMap and may contain multiple config files, with each file being a key in the ConfigMap.
+    /// 
+    /// 
+    /// This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub configs2: Option<Vec<ComponentDefinitionConfigs2>>,
     /// Provides a brief and concise explanation of the Component's purpose, functionality, and any relevant details.
     /// It serves as a quick reference for users to understand the Component's role and characteristics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -170,6 +180,9 @@ pub struct ComponentDefinitionSpec {
     /// This ensures that the Pods in the Component has appropriate permissions to function.
     /// 
     /// 
+    /// To prevent privilege escalation, only permissions already owned by KubeBlocks can be added here.
+    /// 
+    /// 
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRules")]
     pub policy_rules: Option<Vec<ComponentDefinitionPolicyRules>>,
@@ -248,13 +261,6 @@ pub struct ComponentDefinitionSpec {
     pub runtime: ComponentDefinitionRuntime,
     /// Specifies groups of scripts, each provided via a ConfigMap, to be mounted as volumes in the container.
     /// These scripts can be executed during container startup or via specific actions.
-    /// 
-    /// 
-    /// Each script group is encapsulated in a ComponentTemplateSpec that includes:
-    /// 
-    /// 
-    /// - The ConfigMap containing the scripts.
-    /// - The mount point where the scripts will be mounted inside the container.
     /// 
     /// 
     /// This field is immutable.
@@ -5153,28 +5159,6 @@ pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneStdout {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionConfigs {
-    /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    /// 
-    /// 
-    /// This is useful when application images accept parameters through environment variables and
-    /// generate the final configuration file in the startup script based on these variables.
-    /// 
-    /// 
-    /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
-    /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
-    /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    /// 
-    /// 
-    /// Deprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.
-    /// Use `injectEnvTo` instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "asEnvFrom")]
-    pub as_env_from: Option<Vec<String>>,
-    /// Whether to store the final rendered parameters as a secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "asSecret")]
-    pub as_secret: Option<bool>,
-    /// Specifies the name of the referenced configuration constraints object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintRef")]
-    pub constraint_ref: Option<String>,
     /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
     /// However, certain database engines may require different file permissions.
     /// You can specify the desired file permissions here.
@@ -5193,55 +5177,50 @@ pub struct ComponentDefinitionConfigs {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specifies the containers to inject the ConfigMap parameters as environment variables.
-    /// 
-    /// 
-    /// This is useful when application images accept parameters through environment variables and
-    /// generate the final configuration file in the startup script based on these variables.
-    /// 
-    /// 
-    /// This field allows users to specify a list of container names, and KubeBlocks will inject the environment
-    /// variables converted from the ConfigMap into these designated containers. This provides a flexible way to
-    /// pass the configuration items from the ConfigMap to the container without modifying the image.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "injectEnvTo")]
-    pub inject_env_to: Option<Vec<String>>,
-    /// Specifies the configuration files within the ConfigMap that support dynamic updates.
-    /// 
-    /// 
-    /// A configuration template (provided in the form of a ConfigMap) may contain templates for multiple
-    /// configuration files.
-    /// Each configuration file corresponds to a key in the ConfigMap.
-    /// Some of these configuration files may support dynamic modification and reloading without requiring
-    /// a pod restart.
-    /// 
-    /// 
-    /// If empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,
-    /// and ConfigConstraint applies to all keys.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keys: Option<Vec<String>>,
     /// Specifies the name of the configuration template.
     pub name: String,
     /// Specifies the namespace of the referenced configuration template ConfigMap object.
     /// An empty namespace is equivalent to the "default" namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.
-    /// 
-    /// 
-    /// In some scenarios, the configuration may need to be updated to reflect the changes in resource allocation
-    /// or cluster topology. Examples:
-    /// 
-    /// 
-    /// - Redis: adjust maxmemory after v-scale operation.
-    /// - MySQL: increase max connections after v-scale operation.
-    /// - Zookeeper: update zoo.cfg with new node addresses after h-scale operation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reRenderResourceTypes")]
-    pub re_render_resource_types: Option<Vec<String>>,
     /// Specifies the name of the referenced configuration template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
     /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
     /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
+    /// The volume name must be defined in podSpec.containers[*].volumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionConfigs2 {
+    /// The operator attempts to set default file permissions (0444).
+    /// 
+    /// 
+    /// Must be specified as an octal value between 0000 and 0777 (inclusive),
+    /// or as a decimal value between 0 and 511 (inclusive).
+    /// YAML supports both octal and decimal values for file permissions.
+    /// 
+    /// 
+    /// Please note that this setting only affects the permissions of the files themselves.
+    /// Directories within the specified path are not impacted by this setting.
+    /// It's important to be aware that this setting might conflict with other options
+    /// that influence the file mode, such as fsGroup.
+    /// In such cases, the resulting file mode may have additional bits set.
+    /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// Specifies the name of the template.
+    pub name: String,
+    /// Specifies the namespace of the referenced template ConfigMap object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Specifies the name of the referenced template ConfigMap object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+    /// Refers to the volume name of PodTemplate. The file produced through the template will be mounted to
+    /// the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
@@ -15883,9 +15862,7 @@ pub struct ComponentDefinitionRuntimeVolumesVsphereVolume {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionScripts {
-    /// The operator attempts to set default file permissions for scripts (0555) and configurations (0444).
-    /// However, certain database engines may require different file permissions.
-    /// You can specify the desired file permissions here.
+    /// The operator attempts to set default file permissions (0444).
     /// 
     /// 
     /// Must be specified as an octal value between 0000 and 0777 (inclusive),
@@ -15901,17 +15878,16 @@ pub struct ComponentDefinitionScripts {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// Specifies the name of the configuration template.
+    /// Specifies the name of the template.
     pub name: String,
-    /// Specifies the namespace of the referenced configuration template ConfigMap object.
-    /// An empty namespace is equivalent to the "default" namespace.
+    /// Specifies the namespace of the referenced template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Specifies the name of the referenced configuration template ConfigMap object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
-    pub template_ref: Option<String>,
-    /// Refers to the volume name of PodTemplate. The configuration file produced through the configuration
-    /// template will be mounted to the corresponding volume. Must be a DNS_LABEL name.
+    /// Specifies the name of the referenced template ConfigMap object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
+    /// Refers to the volume name of PodTemplate. The file produced through the template will be mounted to
+    /// the corresponding volume. Must be a DNS_LABEL name.
     /// The volume name must be defined in podSpec.containers[*].volumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,

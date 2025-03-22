@@ -35,7 +35,7 @@ pub struct MeshTimeoutSpec {
     pub to: Option<Vec<MeshTimeoutTo>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTimeoutFrom {
     /// Default is a configuration specific to the group of clients referenced in
     /// 'targetRef'
@@ -97,11 +97,10 @@ pub struct MeshTimeoutFromDefaultHttp {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// clients.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTimeoutFromTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTimeoutFromTargetRefKind>,
+    pub kind: MeshTimeoutFromTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -204,11 +203,10 @@ pub struct MeshTimeoutRulesDefaultHttp {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTimeoutTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTimeoutTargetRefKind>,
+    pub kind: MeshTimeoutTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -255,7 +253,7 @@ pub enum MeshTimeoutTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTimeoutTo {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
@@ -317,11 +315,10 @@ pub struct MeshTimeoutToDefaultHttp {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTimeoutToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTimeoutToTargetRefKind>,
+    pub kind: MeshTimeoutToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

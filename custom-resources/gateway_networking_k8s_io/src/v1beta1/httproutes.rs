@@ -282,7 +282,7 @@ pub struct HTTPRouteRules {
     /// they are specified.
     /// 
     /// Implementations MAY choose to implement this ordering strictly, rejecting
-    /// any combination or order of filters that can not be supported. If implementations
+    /// any combination or order of filters that cannot be supported. If implementations
     /// choose a strict interpretation of filter ordering, they MUST clearly document
     /// that behavior.
     /// 
@@ -304,7 +304,7 @@ pub struct HTTPRouteRules {
     /// 
     /// All filters are expected to be compatible with each other except for the
     /// URLRewrite and RequestRedirect filters, which may not be combined. If an
-    /// implementation can not support other combinations of filters, they must clearly
+    /// implementation cannot support other combinations of filters, they must clearly
     /// document that limitation. In cases where incompatible or unsupported
     /// filters are specified and cause the `Accepted` condition to be set to status
     /// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -623,7 +623,7 @@ pub struct HTTPRouteRulesBackendRefsFiltersRequestHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefsFiltersRequestHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -639,7 +639,7 @@ pub struct HTTPRouteRulesBackendRefsFiltersRequestHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefsFiltersRequestHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -687,6 +687,21 @@ pub struct HTTPRouteRulesBackendRefsFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: HTTPRouteRulesBackendRefsFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<HTTPRouteRulesBackendRefsFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -754,6 +769,18 @@ pub struct HTTPRouteRulesBackendRefsFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+}
+
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HTTPRouteRulesBackendRefsFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
 }
 
 /// RequestRedirect defines a schema for a filter that responds to the
@@ -973,7 +1000,7 @@ pub struct HTTPRouteRulesBackendRefsFiltersResponseHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefsFiltersResponseHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -989,7 +1016,7 @@ pub struct HTTPRouteRulesBackendRefsFiltersResponseHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesBackendRefsFiltersResponseHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1258,7 +1285,7 @@ pub struct HTTPRouteRulesFiltersRequestHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesFiltersRequestHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1274,7 +1301,7 @@ pub struct HTTPRouteRulesFiltersRequestHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesFiltersRequestHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1322,6 +1349,21 @@ pub struct HTTPRouteRulesFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: HTTPRouteRulesFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<HTTPRouteRulesFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -1389,6 +1431,18 @@ pub struct HTTPRouteRulesFiltersRequestMirrorBackendRef {
     /// resource or this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+}
+
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HTTPRouteRulesFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
 }
 
 /// RequestRedirect defines a schema for a filter that responds to the
@@ -1608,7 +1662,7 @@ pub struct HTTPRouteRulesFiltersResponseHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesFiltersResponseHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1624,7 +1678,7 @@ pub struct HTTPRouteRulesFiltersResponseHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesFiltersResponseHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1769,7 +1823,7 @@ pub struct HTTPRouteRulesMatches {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPRouteRulesMatchesHeaders {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, only the first
     /// entry with an equivalent name MUST be considered for a match. Subsequent
@@ -2009,7 +2063,7 @@ pub struct HTTPRouteStatusParents {
     /// There are a number of cases where the "Accepted" condition may not be set
     /// due to lack of controller visibility, that includes when:
     /// 
-    /// * The Route refers to a non-existent parent.
+    /// * The Route refers to a nonexistent parent.
     /// * The Route is of a type that the controller does not support.
     /// * The Route is in a namespace the controller does not have access to.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -61,6 +61,12 @@ spec:
                   maximum: 65535.0
                   minimum: 1.0
                   type: "integer"
+                localWorkloadPeeringIPV4:
+                  description: "The virtual IPv4 address of the node with which its local workload is expected to peer.\nIt is recommended to use a link-local address."
+                  type: "string"
+                localWorkloadPeeringIPV6:
+                  description: "The virtual IPv6 address of the node with which its local workload is expected to peer.\nIt is recommended to use a link-local address."
+                  type: "string"
                 logSeverityScreen:
                   description: "LogSeverityScreen is the log severity above which logs are sent to the stdout. [Default: INFO]"
                   type: "string"

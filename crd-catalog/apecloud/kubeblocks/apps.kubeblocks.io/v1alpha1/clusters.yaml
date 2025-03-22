@@ -93,6 +93,9 @@ spec:
                 backup:
                   description: "Specifies the backup configuration of the Cluster."
                   properties:
+                    continuousMethod:
+                      description: "Specifies the backup method to use, if not set, use the first continuous method."
+                      type: "string"
                     cronExpression:
                       description: "The cron expression for the schedule. The timezone is in UTC. See https://en.wikipedia.org/wiki/Cron."
                       type: "string"
@@ -1139,6 +1142,16 @@ spec:
                               description: "Defines VolumeClaimTemplates to override.\nAdd new or override existing volume claim templates."
                               items:
                                 properties:
+                                  annotations:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Specifies the annotations for the PVC of the volume."
+                                    type: "object"
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    description: "Specifies the labels for the PVC of the volume."
+                                    type: "object"
                                   name:
                                     description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                                     type: "string"
@@ -3217,7 +3230,6 @@ spec:
                                 mountPoint:
                                   description: "MountPoint is the filesystem path where the volume will be mounted."
                                   maxLength: 256
-                                  pattern: "^/[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                                   type: "string"
                                 name:
                                   description: "Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards."
@@ -3250,7 +3262,6 @@ spec:
                                 mountPoint:
                                   description: "MountPoint is the filesystem path where the volume will be mounted."
                                   maxLength: 256
-                                  pattern: "^/[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                                   type: "string"
                                 name:
                                   description: "Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards."
@@ -3308,6 +3319,16 @@ spec:
                         description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\nEach template specifies the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes.\nThese templates are used to dynamically provision persistent volumes for the Component."
                         items:
                           properties:
+                            annotations:
+                              additionalProperties:
+                                type: "string"
+                              description: "Specifies the annotations for the PVC of the volume."
+                              type: "object"
+                            labels:
+                              additionalProperties:
+                                type: "string"
+                              description: "Specifies the labels for the PVC of the volume."
+                              type: "object"
                             name:
                               description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                               type: "string"
@@ -6199,6 +6220,16 @@ spec:
                                   description: "Defines VolumeClaimTemplates to override.\nAdd new or override existing volume claim templates."
                                   items:
                                     properties:
+                                      annotations:
+                                        additionalProperties:
+                                          type: "string"
+                                        description: "Specifies the annotations for the PVC of the volume."
+                                        type: "object"
+                                      labels:
+                                        additionalProperties:
+                                          type: "string"
+                                        description: "Specifies the labels for the PVC of the volume."
+                                        type: "object"
                                       name:
                                         description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                                         type: "string"
@@ -8277,7 +8308,6 @@ spec:
                                     mountPoint:
                                       description: "MountPoint is the filesystem path where the volume will be mounted."
                                       maxLength: 256
-                                      pattern: "^/[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                                       type: "string"
                                     name:
                                       description: "Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards."
@@ -8310,7 +8340,6 @@ spec:
                                     mountPoint:
                                       description: "MountPoint is the filesystem path where the volume will be mounted."
                                       maxLength: 256
-                                      pattern: "^/[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                                       type: "string"
                                     name:
                                       description: "Name is the name of the referenced ConfigMap or Secret object. It must conform to DNS label standards."
@@ -8368,6 +8397,16 @@ spec:
                             description: "Specifies a list of PersistentVolumeClaim templates that represent the storage requirements for the Component.\nEach template specifies the desired characteristics of a persistent volume, such as storage class,\nsize, and access modes.\nThese templates are used to dynamically provision persistent volumes for the Component."
                             items:
                               properties:
+                                annotations:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Specifies the annotations for the PVC of the volume."
+                                  type: "object"
+                                labels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "Specifies the labels for the PVC of the volume."
+                                  type: "object"
                                 name:
                                   description: "Refers to the name of a volumeMount defined in either:\n\n\n- `componentDefinition.spec.runtime.containers[*].volumeMounts`\n- `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)\n\n\nThe value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array."
                                   type: "string"

@@ -173,7 +173,6 @@ pub struct KameletDataTypesTypesSchemaProperties {
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
     /// 
-    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -294,7 +293,6 @@ pub struct KameletDefinitionProperties {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    /// 
     /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
@@ -478,7 +476,6 @@ pub struct KameletTypesSchemaProperties {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    /// 
     /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
@@ -697,7 +694,6 @@ pub struct KameletVersionsDataTypesTypesSchemaProperties {
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
     /// 
-    /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
     /// - email: an email address as parsed by Golang net/mail.ParseAddress
@@ -818,7 +814,6 @@ pub struct KameletVersionsDefinitionProperties {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    /// 
     /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI
@@ -1002,7 +997,6 @@ pub struct KameletVersionsTypesSchemaProperties {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclusiveMinimum")]
     pub exclusive_minimum: Option<bool>,
     /// format is an OpenAPI v3 format string. Unknown formats are ignored. The following formats are validated:
-    /// 
     /// 
     /// - bsonobjectid: a bson object ID, i.e. a 24 characters hex string
     /// - uri: an URI as parsed by Golang net/url.ParseRequestURI

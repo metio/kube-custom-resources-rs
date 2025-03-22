@@ -7047,6 +7047,11 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// within a PodSet. For example, in the context of JobSet this is jobset.sigs.k8s.io/job-index.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subGroupIndexLabel")]
     pub sub_group_index_label: Option<String>,
+    /// unconstrained indicates that Kueue has the freedom to schedule the PodSet within
+    /// the entire available capacity, without constraints on the compactness of the placement.
+    /// This is indicated by the `kueue.x-k8s.io/podset-unconstrained-topology` PodSet annotation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub unconstrained: Option<bool>,
 }
 
 /// WorkloadSpec defines the desired state of Workload

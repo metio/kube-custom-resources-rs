@@ -70,6 +70,43 @@ spec:
                           - "authenticationClass"
                         type: "object"
                       type: "array"
+                    authorization:
+                      description: "Authorization options for Superset.\n\nCurrently only role assignment is supported. This means that roles are assigned to users in OPA but, due to the way Superset is implemented, the database also needs to be updated to reflect these assignments. Therefore, user roles and permissions must already exist in the Superset database before they can be assigned to a user. Warning: Any user roles assigned with the Superset UI are discarded."
+                      nullable: true
+                      properties:
+                        roleMappingFromOpa:
+                          description: "Configure the OPA stacklet [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery) and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](https://docs.stackable.tech/home/nightly/concepts/opa) to learn how to deploy Rego authorization rules with OPA."
+                          properties:
+                            cache:
+                              default:
+                                entryTimeToLive: "30s"
+                                maxEntries: 10000
+                              description: "Configuration for an Superset internal cache for calls to OPA"
+                              properties:
+                                entryTimeToLive:
+                                  default: "30s"
+                                  description: "Time to live per entry"
+                                  type: "string"
+                                maxEntries:
+                                  default: 10000
+                                  description: "Maximum number of entries in the cache; If this threshold is reached then the least recently used item is removed."
+                                  format: "uint32"
+                                  minimum: 0.0
+                                  type: "integer"
+                              type: "object"
+                            configMapName:
+                              description: "The [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery) for the OPA stacklet that should be used for authorization requests."
+                              type: "string"
+                            package:
+                              description: "The name of the Rego package containing the Rego rules for the product."
+                              nullable: true
+                              type: "string"
+                          required:
+                            - "configMapName"
+                          type: "object"
+                      required:
+                        - "roleMappingFromOpa"
+                      type: "object"
                     clusterOperation:
                       default:
                         reconciliationPaused: false

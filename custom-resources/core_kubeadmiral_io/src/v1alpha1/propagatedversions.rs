@@ -28,7 +28,8 @@ pub struct PropagatedVersionStatusClusterVersions {
     /// The name of the cluster the version is for.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    /// The last version produced for the resource by a KubeAdmiral operation.
+    /// The last version produced for the resource by a KubeAdmiral
+    /// operation.
     pub version: String,
 }
 

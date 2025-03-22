@@ -609,6 +609,9 @@ pub struct RestoreStagingStorageVolume {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<RestoreStagingStorageVolumeEmptyDir>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<RestoreStagingStorageVolumeHostPath>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<RestoreStagingStorageVolumeNfs>,
@@ -647,6 +650,14 @@ pub struct RestoreStagingStorageVolumeEmptyDir {
     pub medium: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreStagingStorageVolumeHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
@@ -706,6 +717,9 @@ pub struct RestoreVolume {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<RestoreVolumeEmptyDir>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<RestoreVolumeHostPath>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<RestoreVolumeNfs>,
@@ -744,6 +758,14 @@ pub struct RestoreVolumeEmptyDir {
     pub medium: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
     pub size_limit: Option<IntOrString>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#hostpathvolumesource-v1-core
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RestoreVolumeHostPath {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.

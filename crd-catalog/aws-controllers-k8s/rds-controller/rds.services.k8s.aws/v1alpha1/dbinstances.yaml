@@ -43,6 +43,9 @@ spec:
                 availabilityZone:
                   description: "The Availability Zone (AZ) where the database will be created. For information\non Amazon Web Services Regions and Availability Zones, see Regions and Availability\nZones (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html).\n\nFor Amazon Aurora, each Aurora DB cluster hosts copies of its storage in\nthree separate Availability Zones. Specify one of these Availability Zones.\nAurora automatically chooses an appropriate Availability Zone if you don't\nspecify one.\n\nDefault: A random, system-chosen Availability Zone in the endpoint's Amazon\nWeb Services Region.\n\nConstraints:\n\n   * The AvailabilityZone parameter can't be specified if the DB instance\n   is a Multi-AZ deployment.\n\n   * The specified Availability Zone must be in the same Amazon Web Services\n   Region as the current endpoint.\n\nExample: us-east-1d"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 backupRetentionPeriod:
                   description: "The number of days for which automated backups are retained. Setting this\nparameter to a positive number enables backups. Setting this parameter to\n0 disables automated backups.\n\nThis setting doesn't apply to Amazon Aurora DB instances. The retention period\nfor automated backups is managed by the DB cluster.\n\nDefault: 1\n\nConstraints:\n\n   * Must be a value from 0 to 35.\n\n   * Can't be set to 0 if the DB instance is a source to read replicas.\n\n   * Can't be set to 0 for an RDS Custom for Oracle DB instance."
                   format: "int64"
@@ -398,7 +401,7 @@ spec:
                       type: "string"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

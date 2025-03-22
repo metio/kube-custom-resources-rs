@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "machinedeployments.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -61,7 +61,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "MachineDeploymentSpec defines the desired state of MachineDeployment."
+              description: "spec is the desired state of MachineDeployment."
               properties:
                 clusterName:
                   description: "clusterName is the name of the Cluster this object belongs to."
@@ -157,7 +157,7 @@ spec:
                   description: "template describes the machines that will be created."
                   properties:
                     metadata:
-                      description: "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
+                      description: "metadata is the standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
                       properties:
                         annotations:
                           additionalProperties:
@@ -260,7 +260,7 @@ spec:
                 - "template"
               type: "object"
             status:
-              description: "MachineDeploymentStatus defines the observed state of MachineDeployment."
+              description: "status is the observed state of MachineDeployment."
               properties:
                 availableReplicas:
                   description: "availableReplicas is the total number of available machines (ready for at least minReadySeconds)\ntargeted by this deployment."

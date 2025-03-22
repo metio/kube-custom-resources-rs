@@ -13,7 +13,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachineDeploymentSpec defines the desired state of MachineDeployment.
+/// spec is the desired state of MachineDeployment.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "MachineDeployment", plural = "machinedeployments")]
 #[kube(namespaced)]
@@ -247,7 +247,7 @@ pub enum MachineDeploymentStrategyType {
 /// template describes the machines that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachineDeploymentTemplateMetadata>,
@@ -257,7 +257,7 @@ pub struct MachineDeploymentTemplate {
     pub spec: Option<MachineDeploymentTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateMetadata {
@@ -438,14 +438,28 @@ pub struct MachineDeploymentTemplateSpecInfrastructureRef {
 /// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpecReadinessGates {
-    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+    /// conditionType refers to a condition with matching type in the Machine's condition list.
     /// If the conditions doesn't exist, it will be treated as unknown.
     /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
     #[serde(rename = "conditionType")]
     pub condition_type: String,
+    /// polarity of the conditionType specified in this readinessGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<MachineDeploymentTemplateSpecReadinessGatesPolarity>,
 }
 
-/// MachineDeploymentStatus defines the observed state of MachineDeployment.
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineDeploymentTemplateSpecReadinessGatesPolarity {
+    Positive,
+    Negative,
+}
+
+/// status is the observed state of MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStatus {
     /// availableReplicas is the total number of available machines (ready for at least minReadySeconds)
@@ -460,7 +474,7 @@ pub struct MachineDeploymentStatus {
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<MachineDeploymentStatusPhase>,
     /// readyReplicas is the total number of ready machines targeted by this deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
@@ -489,6 +503,16 @@ pub struct MachineDeploymentStatus {
     /// v1beta2 groups all the fields that will be added or modified in MachineDeployment's status with the V1Beta2 version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub v1beta2: Option<MachineDeploymentStatusV1beta2>,
+}
+
+/// status is the observed state of MachineDeployment.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineDeploymentStatusPhase {
+    ScalingUp,
+    ScalingDown,
+    Running,
+    Failed,
+    Unknown,
 }
 
 /// v1beta2 groups all the fields that will be added or modified in MachineDeployment's status with the V1Beta2 version.

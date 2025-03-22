@@ -485,6 +485,15 @@ spec:
                       type: "string"
                     type: "array"
                   type: "object"
+                description:
+                  properties:
+                    non_identifying_attributes:
+                      additionalProperties:
+                        type: "string"
+                      type: "object"
+                  required:
+                    - "non_identifying_attributes"
+                  type: "object"
                 endpoint:
                   type: "string"
                 env:
@@ -649,6 +658,8 @@ spec:
                     runAsUser:
                       format: "int64"
                       type: "integer"
+                    seLinuxChangePolicy:
+                      type: "string"
                     seLinuxOptions:
                       properties:
                         level:

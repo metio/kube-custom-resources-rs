@@ -282,7 +282,7 @@ pub struct GRPCRouteRules {
     /// Specifying the same filter multiple times is not supported unless explicitly
     /// indicated in the filter.
     /// 
-    /// If an implementation can not support a combination of filters, it must clearly
+    /// If an implementation cannot support a combination of filters, it must clearly
     /// document that limitation. In cases where incompatible or unsupported
     /// filters are specified and cause the `Accepted` condition to be set to status
     /// `False`, implementations may use the `IncompatibleFilters` reason to specify
@@ -570,7 +570,7 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -586,7 +586,7 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersRequestHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -634,6 +634,21 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -703,6 +718,18 @@ pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorBackendRef {
     pub port: Option<i32>,
 }
 
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GRPCRouteRulesBackendRefsFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
+}
+
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
 /// headers.
 /// 
@@ -769,7 +796,7 @@ pub struct GRPCRouteRulesBackendRefsFiltersResponseHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersResponseHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -785,7 +812,7 @@ pub struct GRPCRouteRulesBackendRefsFiltersResponseHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesBackendRefsFiltersResponseHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -965,7 +992,7 @@ pub struct GRPCRouteRulesFiltersRequestHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersRequestHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -981,7 +1008,7 @@ pub struct GRPCRouteRulesFiltersRequestHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersRequestHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1029,6 +1056,21 @@ pub struct GRPCRouteRulesFiltersRequestMirror {
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "backendRef")]
     pub backend_ref: GRPCRouteRulesFiltersRequestMirrorBackendRef,
+    /// Fraction represents the fraction of requests that should be
+    /// mirrored to BackendRef.
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fraction: Option<GRPCRouteRulesFiltersRequestMirrorFraction>,
+    /// Percent represents the percentage of requests that should be
+    /// mirrored to BackendRef. Its minimum value is 0 (indicating 0% of
+    /// requests) and its maximum value is 100 (indicating 100% of requests).
+    /// 
+    /// Only one of Fraction or Percent may be specified. If neither field
+    /// is specified, 100% of requests will be mirrored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<i32>,
 }
 
 /// BackendRef references a resource where mirrored requests are sent.
@@ -1098,6 +1140,18 @@ pub struct GRPCRouteRulesFiltersRequestMirrorBackendRef {
     pub port: Option<i32>,
 }
 
+/// Fraction represents the fraction of requests that should be
+/// mirrored to BackendRef.
+/// 
+/// Only one of Fraction or Percent may be specified. If neither field
+/// is specified, 100% of requests will be mirrored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GRPCRouteRulesFiltersRequestMirrorFraction {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub denominator: Option<i32>,
+    pub numerator: i32,
+}
+
 /// ResponseHeaderModifier defines a schema for a filter that modifies response
 /// headers.
 /// 
@@ -1164,7 +1218,7 @@ pub struct GRPCRouteRulesFiltersResponseHeaderModifier {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersResponseHeaderModifierAdd {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1180,7 +1234,7 @@ pub struct GRPCRouteRulesFiltersResponseHeaderModifierAdd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GRPCRouteRulesFiltersResponseHeaderModifierSet {
     /// Name is the name of the HTTP Header to be matched. Name matching MUST be
-    /// case insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
+    /// case-insensitive. (See https://tools.ietf.org/html/rfc7230#section-3.2).
     /// 
     /// If multiple entries specify equivalent header names, the first entry with
     /// an equivalent name MUST be considered for a match. Subsequent entries
@@ -1337,7 +1391,7 @@ pub struct GRPCRouteStatusParents {
     /// There are a number of cases where the "Accepted" condition may not be set
     /// due to lack of controller visibility, that includes when:
     /// 
-    /// * The Route refers to a non-existent parent.
+    /// * The Route refers to a nonexistent parent.
     /// * The Route is of a type that the controller does not support.
     /// * The Route is in a namespace the controller does not have access to.
     #[serde(default, skip_serializing_if = "Option::is_none")]

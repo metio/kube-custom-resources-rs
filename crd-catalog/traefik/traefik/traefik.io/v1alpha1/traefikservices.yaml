@@ -189,6 +189,9 @@ spec:
                               cookie:
                                 description: "Cookie defines the sticky cookie configuration."
                                 properties:
+                                  domain:
+                                    description: "Domain defines the host to which the cookie will be sent.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value"
+                                    type: "string"
                                   httpOnly:
                                     description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                                     type: "boolean"
@@ -203,6 +206,10 @@ spec:
                                     type: "string"
                                   sameSite:
                                     description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
+                                    enum:
+                                      - "none"
+                                      - "lax"
+                                      - "strict"
                                     type: "string"
                                   secure:
                                     description: "Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS)."
@@ -210,10 +217,16 @@ spec:
                                 type: "object"
                             type: "object"
                           strategy:
-                            description: "Strategy defines the load balancing strategy between the servers.\nRoundRobin is the only supported value at the moment."
+                            default: "wrr"
+                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin) and p2c (Power of two choices).\nRoundRobin value is deprecated and supported for backward compatibility."
+                            enum:
+                              - "wrr"
+                              - "p2c"
+                              - "RoundRobin"
                             type: "string"
                           weight:
                             description: "Weight defines the weight and should only be specified when Name references a TraefikService object\n(and to be precise, one that embeds a Weighted Round Robin)."
+                            minimum: 0.0
                             type: "integer"
                         required:
                           - "name"
@@ -259,6 +272,9 @@ spec:
                         cookie:
                           description: "Cookie defines the sticky cookie configuration."
                           properties:
+                            domain:
+                              description: "Domain defines the host to which the cookie will be sent.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value"
+                              type: "string"
                             httpOnly:
                               description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                               type: "boolean"
@@ -273,6 +289,10 @@ spec:
                               type: "string"
                             sameSite:
                               description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
+                              enum:
+                                - "none"
+                                - "lax"
+                                - "strict"
                               type: "string"
                             secure:
                               description: "Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS)."
@@ -280,10 +300,16 @@ spec:
                           type: "object"
                       type: "object"
                     strategy:
-                      description: "Strategy defines the load balancing strategy between the servers.\nRoundRobin is the only supported value at the moment."
+                      default: "wrr"
+                      description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin) and p2c (Power of two choices).\nRoundRobin value is deprecated and supported for backward compatibility."
+                      enum:
+                        - "wrr"
+                        - "p2c"
+                        - "RoundRobin"
                       type: "string"
                     weight:
                       description: "Weight defines the weight and should only be specified when Name references a TraefikService object\n(and to be precise, one that embeds a Weighted Round Robin)."
+                      minimum: 0.0
                       type: "integer"
                   required:
                     - "name"
@@ -387,6 +413,9 @@ spec:
                               cookie:
                                 description: "Cookie defines the sticky cookie configuration."
                                 properties:
+                                  domain:
+                                    description: "Domain defines the host to which the cookie will be sent.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value"
+                                    type: "string"
                                   httpOnly:
                                     description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                                     type: "boolean"
@@ -401,6 +430,10 @@ spec:
                                     type: "string"
                                   sameSite:
                                     description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
+                                    enum:
+                                      - "none"
+                                      - "lax"
+                                      - "strict"
                                     type: "string"
                                   secure:
                                     description: "Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS)."
@@ -408,10 +441,16 @@ spec:
                                 type: "object"
                             type: "object"
                           strategy:
-                            description: "Strategy defines the load balancing strategy between the servers.\nRoundRobin is the only supported value at the moment."
+                            default: "wrr"
+                            description: "Strategy defines the load balancing strategy between the servers.\nSupported values are: wrr (Weighed round-robin) and p2c (Power of two choices).\nRoundRobin value is deprecated and supported for backward compatibility."
+                            enum:
+                              - "wrr"
+                              - "p2c"
+                              - "RoundRobin"
                             type: "string"
                           weight:
                             description: "Weight defines the weight and should only be specified when Name references a TraefikService object\n(and to be precise, one that embeds a Weighted Round Robin)."
+                            minimum: 0.0
                             type: "integer"
                         required:
                           - "name"
@@ -423,6 +462,9 @@ spec:
                         cookie:
                           description: "Cookie defines the sticky cookie configuration."
                           properties:
+                            domain:
+                              description: "Domain defines the host to which the cookie will be sent.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value"
+                              type: "string"
                             httpOnly:
                               description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                               type: "boolean"
@@ -437,6 +479,10 @@ spec:
                               type: "string"
                             sameSite:
                               description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
+                              enum:
+                                - "none"
+                                - "lax"
+                                - "strict"
                               type: "string"
                             secure:
                               description: "Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS)."

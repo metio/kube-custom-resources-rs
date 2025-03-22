@@ -19,32 +19,49 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CloudStackMachineConfigSpec {
-    /// Defaults to `no`. Can be `pro` or `anti`. If set to `pro` or `anti`, will create an affinity group per machine set of the corresponding type
+    /// Defaults to `no`. Can be `pro` or `anti`. If set to `pro` or `anti`, will create an affinity
+    /// group per machine set of the corresponding type
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<String>,
-    /// AffinityGroupIds allows users to pass in a list of UUIDs for previously-created Affinity Groups. Any VM’s created with this spec will be added to the affinity group, which will dictate which physical host(s) they can be placed on. Affinity groups can be type “affinity” or “anti-affinity” in CloudStack. If they are type “anti-affinity”, all VM’s in the group must be on separate physical hosts for high availability. If they are type “affinity”, all VM’s in the group must be on the same physical host for improved performance
+    /// AffinityGroupIds allows users to pass in a list of UUIDs for previously-created Affinity
+    /// Groups. Any VM’s created with this spec will be added to the affinity group, which will
+    /// dictate which physical host(s) they can be placed on. Affinity groups can be type “affinity”
+    /// or “anti-affinity” in CloudStack. If they are type “anti-affinity”, all VM’s in the group
+    /// must be on separate physical hosts for high availability. If they are type “affinity”, all
+    /// VM’s in the group must be on the same physical host for improved performance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityGroupIds")]
     pub affinity_group_ids: Option<Vec<String>>,
-    /// ComputeOffering refers to a compute offering which has been previously registered in CloudStack. It represents a VM’s instance size including number of CPU’s, memory, and CPU speed. It can either be specified as a UUID or name
+    /// ComputeOffering refers to a compute offering which has been previously registered in
+    /// CloudStack. It represents a VM’s instance size including number of CPU’s, memory, and CPU
+    /// speed. It can either be specified as a UUID or name
     #[serde(rename = "computeOffering")]
     pub compute_offering: CloudStackMachineConfigComputeOffering,
-    /// DiskOffering refers to a disk offering which has been previously registered in CloudStack. It represents a disk offering with pre-defined size or custom specified disk size. It can either be specified as a UUID or name
+    /// DiskOffering refers to a disk offering which has been previously registered in CloudStack.
+    /// It represents a disk offering with pre-defined size or custom specified disk size. It can
+    /// either be specified as a UUID or name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskOffering")]
     pub disk_offering: Option<CloudStackMachineConfigDiskOffering>,
     /// Symlinks create soft symbolic links folders. One use case is to use data disk to store logs
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub symlinks: Option<BTreeMap<String, String>>,
-    /// Template refers to a VM image template which has been previously registered in CloudStack. It can either be specified as a UUID or name. When using a template name it must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+    /// Template refers to a VM image template which has been previously registered in CloudStack.
+    /// It can either be specified as a UUID or name.
+    /// When using a template name it must include the Kubernetes version(s). For example,
+    /// a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
     pub template: CloudStackMachineConfigTemplate,
-    /// UserCustomDetails allows users to pass in non-standard key value inputs, outside those defined [here](https://github.com/shapeblue/cloudstack/blob/main/api/src/main/java/com/cloud/vm/VmDetailConstants.java)
+    /// UserCustomDetails allows users to pass in non-standard key value inputs, outside those
+    /// defined [here](https://github.com/shapeblue/cloudstack/blob/main/api/src/main/java/com/cloud/vm/VmDetailConstants.java)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCustomDetails")]
     pub user_custom_details: Option<BTreeMap<String, String>>,
-    /// Users consists of an array of objects containing the username, as well as a list of their public keys. These users will be authorized to ssh into the machines
+    /// Users consists of an array of objects containing the username, as well as a list of their
+    /// public keys. These users will be authorized to ssh into the machines
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub users: Option<Vec<CloudStackMachineConfigUsers>>,
 }
 
-/// ComputeOffering refers to a compute offering which has been previously registered in CloudStack. It represents a VM’s instance size including number of CPU’s, memory, and CPU speed. It can either be specified as a UUID or name
+/// ComputeOffering refers to a compute offering which has been previously registered in
+/// CloudStack. It represents a VM’s instance size including number of CPU’s, memory, and CPU
+/// speed. It can either be specified as a UUID or name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackMachineConfigComputeOffering {
     /// Id of a resource in the CloudStack environment. Mutually exclusive with Name
@@ -55,7 +72,9 @@ pub struct CloudStackMachineConfigComputeOffering {
     pub name: Option<String>,
 }
 
-/// DiskOffering refers to a disk offering which has been previously registered in CloudStack. It represents a disk offering with pre-defined size or custom specified disk size. It can either be specified as a UUID or name
+/// DiskOffering refers to a disk offering which has been previously registered in CloudStack.
+/// It represents a disk offering with pre-defined size or custom specified disk size. It can
+/// either be specified as a UUID or name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackMachineConfigDiskOffering {
     /// disk size in GB, > 0 for customized disk offering; = 0 for non-customized disk offering
@@ -78,7 +97,10 @@ pub struct CloudStackMachineConfigDiskOffering {
     pub name: Option<String>,
 }
 
-/// Template refers to a VM image template which has been previously registered in CloudStack. It can either be specified as a UUID or name. When using a template name it must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
+/// Template refers to a VM image template which has been previously registered in CloudStack.
+/// It can either be specified as a UUID or name.
+/// When using a template name it must include the Kubernetes version(s). For example,
+/// a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackMachineConfigTemplate {
     /// Id of a resource in the CloudStack environment. Mutually exclusive with Name
@@ -100,7 +122,8 @@ pub struct CloudStackMachineConfigUsers {
 /// CloudStackMachineConfigStatus defines the observed state of CloudStackMachineConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CloudStackMachineConfigStatus {
-    /// FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// state, and will be set to a descriptive error message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// SpecValid is set to true if cloudstackmachineconfig is validated.

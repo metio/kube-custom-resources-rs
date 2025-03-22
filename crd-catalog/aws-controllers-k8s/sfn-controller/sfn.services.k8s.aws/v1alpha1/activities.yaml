@@ -32,6 +32,9 @@ spec:
                 name:
                   description: "The name of the activity to create. This name must be unique for your Amazon\nWeb Services account and region for 90 days. For more information, see Limits\nRelated to State Machine Executions (https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions)\nin the Step Functions Developer Guide.\n\nA name must not contain:\n\n   * white space"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 tags:
                   description: "The list of tags to add to a resource.\n\nAn array of key-value pairs. For more information, see Using Cost Allocation\nTags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)\nin the Amazon Web Services Billing and Cost Management User Guide, and Controlling\nAccess Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).\n\nTags may only contain Unicode letters, digits, white space, or these symbols:\n_ . : / = + - @."
                   items:
@@ -66,7 +69,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

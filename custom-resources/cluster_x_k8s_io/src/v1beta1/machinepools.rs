@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachinePoolSpec defines the desired state of MachinePool.
+/// spec is the desired state of MachinePool.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "MachinePool", plural = "machinepools")]
 #[kube(namespaced)]
@@ -48,7 +48,7 @@ pub struct MachinePoolSpec {
 /// template describes the machines that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplate {
-    /// Standard object's metadata.
+    /// metadata is the standard object's metadata.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MachinePoolTemplateMetadata>,
@@ -58,7 +58,7 @@ pub struct MachinePoolTemplate {
     pub spec: Option<MachinePoolTemplateSpec>,
 }
 
-/// Standard object's metadata.
+/// metadata is the standard object's metadata.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplateMetadata {
@@ -239,14 +239,28 @@ pub struct MachinePoolTemplateSpecInfrastructureRef {
 /// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolTemplateSpecReadinessGates {
-    /// conditionType refers to a positive polarity condition (status true means good) with matching type in the Machine's condition list.
+    /// conditionType refers to a condition with matching type in the Machine's condition list.
     /// If the conditions doesn't exist, it will be treated as unknown.
     /// Note: Both Cluster API conditions or conditions added by 3rd party controllers can be used as readiness gates.
     #[serde(rename = "conditionType")]
     pub condition_type: String,
+    /// polarity of the conditionType specified in this readinessGate.
+    /// Valid values are Positive, Negative and omitted.
+    /// When omitted, the default behaviour will be Positive.
+    /// A positive polarity means that the condition should report a true status under normal conditions.
+    /// A negative polarity means that the condition should report a false status under normal conditions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub polarity: Option<MachinePoolTemplateSpecReadinessGatesPolarity>,
 }
 
-/// MachinePoolStatus defines the observed state of MachinePool.
+/// MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolTemplateSpecReadinessGatesPolarity {
+    Positive,
+    Negative,
+}
+
+/// status is the observed state of MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatus {
     /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachinePool.
@@ -280,9 +294,8 @@ pub struct MachinePoolStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of cluster actuation.
-    /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub phase: Option<String>,
+    pub phase: Option<MachinePoolStatusPhase>,
     /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
@@ -301,6 +314,21 @@ pub struct MachinePoolStatus {
     /// v1beta2 groups all the fields that will be added or modified in MachinePool's status with the V1Beta2 version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub v1beta2: Option<MachinePoolStatusV1beta2>,
+}
+
+/// status is the observed state of MachinePool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolStatusPhase {
+    Pending,
+    Provisioning,
+    Provisioned,
+    Running,
+    ScalingUp,
+    ScalingDown,
+    Scaling,
+    Deleting,
+    Failed,
+    Unknown,
 }
 
 /// v1beta2 groups all the fields that will be added or modified in MachinePool's status with the V1Beta2 version.

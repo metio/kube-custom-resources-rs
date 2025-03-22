@@ -85,7 +85,8 @@ pub struct BackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAddress")]
     pub replica_address: Option<String>,
     /// The snapshot size.
-    pub size: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
     /// The snapshot creation time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCreatedAt")]
     pub snapshot_created_at: Option<String>,

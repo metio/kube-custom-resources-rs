@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "machines.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -58,7 +58,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "MachineSpec defines the desired state of Machine."
+              description: "spec is the desired state of Machine."
               properties:
                 bootstrap:
                   description: "bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
@@ -141,7 +141,7 @@ spec:
                 - "infrastructureRef"
               type: "object"
             status:
-              description: "MachineStatus defines the observed state of Machine."
+              description: "status is the observed state of Machine."
               properties:
                 addresses:
                   description: "addresses is a list of addresses assigned to the machine.\nThis field is copied from the infrastructure provider reference."

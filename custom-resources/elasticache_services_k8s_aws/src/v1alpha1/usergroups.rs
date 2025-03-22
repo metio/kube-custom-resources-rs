@@ -18,10 +18,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct UserGroupSpec {
-    /// The current supported value is Redis.
+    /// The current supported value is Redis user.
     pub engine: String,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
-    /// tag key must be accompanied by a tag value, although null is accepted.
+    /// tag key must be accompanied by a tag value, although null is accepted. Available
+    /// for Valkey and Redis OSS only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<UserGroupTags>>,
     /// The ID of the user group.
@@ -54,13 +55,13 @@ pub struct UserGroupStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserGroupStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The minimum engine version required, which is Redis 6.0
+    /// The minimum engine version required, which is Redis OSS 6.0
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     /// A list of updates being applied to the user group.
@@ -85,7 +86,6 @@ pub struct UserGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

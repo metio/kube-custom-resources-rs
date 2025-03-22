@@ -86,6 +86,9 @@ pub struct ResourceBindingSpec {
     pub reschedule_triggered_at: Option<String>,
     /// Resource represents the Kubernetes resource to be propagated.
     pub resource: ResourceBindingResource,
+    /// SchedulePriority represents the scheduling priority assigned to workloads.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulePriority")]
+    pub schedule_priority: Option<ResourceBindingSchedulePriority>,
     /// SchedulerName represents which scheduler to proceed the scheduling.
     /// It inherits directly from the associated PropagationPolicy(or ClusterPropagationPolicy).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
@@ -920,6 +923,16 @@ pub struct ResourceBindingResource {
     /// UID of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// SchedulePriority represents the scheduling priority assigned to workloads.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceBindingSchedulePriority {
+    /// Priority specifies the scheduling priority for the binding.
+    /// Higher values indicate a higher priority.
+    /// If not explicitly set, the default value is 0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i32>,
 }
 
 /// Suspension declares the policy for suspending different aspects of propagation.

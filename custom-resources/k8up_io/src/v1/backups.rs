@@ -30,6 +30,9 @@ pub struct BackupSpec {
     /// Backend contains the restic repo where the job should backup to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<BackupBackend>,
+    /// ClusterName sets the kubernetes cluster name to send to pushgateway for grouping metrics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
     /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
     /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]
@@ -40,6 +43,10 @@ pub struct BackupSpec {
     /// Deprecated: Use FailedJobsHistoryLimit and SuccessfulJobsHistoryLimit respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepJobs")]
     pub keep_jobs: Option<i64>,
+    /// LabelSelectors is a list of selectors that we filter for.
+    /// When defined, only PVCs and PreBackupPods matching them are backed up.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
+    pub label_selectors: Option<Vec<BackupLabelSelectors>>,
     /// PodConfigRef describes the pod spec with wich this action shall be executed.
     /// It takes precedence over the Resources or PodSecurityContext field.
     /// It does not allow changing the image or the command of the resulting pod.
@@ -425,6 +432,38 @@ pub struct BackupBackendVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupLabelSelectors {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<BackupLabelSelectorsMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BackupLabelSelectorsMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// PodConfigRef describes the pod spec with wich this action shall be executed.

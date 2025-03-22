@@ -140,6 +140,9 @@ pub struct PrometheusAgentSpec {
     /// It requires Prometheus >= v2.33.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRemoteWriteReceiver")]
     pub enable_remote_write_receiver: Option<bool>,
+    /// Indicates whether information about services should be injected into pod's environment variables
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
+    pub enable_service_links: Option<bool>,
     /// When defined, enforcedBodySizeLimit specifies a global limit on the size
     /// of uncompressed response body that will be accepted by Prometheus.
     /// Targets responding with a body larger than this many bytes will cause
@@ -639,7 +642,7 @@ pub struct PrometheusAgentSpec {
     /// See https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-id for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
-    /// Number of shards to distribute scraped targets onto.
+    /// Number of shards to distribute the scraped targets onto.
     /// 
     /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
     /// being created.
@@ -649,11 +652,11 @@ pub struct PrometheusAgentSpec {
     /// Note that scaling down shards will not reshard data onto the remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
-    /// instances. To query globally, use Thanos sidecar and Thanos querier or
-    /// remote write data to a central location.
-    /// Alerting and recording rules
+    /// instances. To query globally, use either
+    /// * Thanos sidecar + querier for query federation and Thanos Ruler for rules.
+    /// * Remote-write to send metrics to a central location.
     /// 
-    /// By default, the sharding is performed on:
+    /// By default, the sharding of targets is performed on:
     /// * The `__address__` target's metadata label for PodMonitor,
     /// ServiceMonitor and ScrapeConfig resources.
     /// * The `__param_target__` label for Probe resources.
@@ -4709,6 +4712,20 @@ pub struct PrometheusAgentRemoteWrite {
     /// Timeout for requests to the remote write endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteTimeout")]
     pub remote_timeout: Option<String>,
+    /// When enabled:
+    ///     - The remote-write mechanism will resolve the hostname via DNS.
+    ///     - It will randomly select one of the resolved IP addresses and connect to it.
+    /// 
+    /// When disabled (default behavior):
+    ///     - The Go standard library will handle hostname resolution.
+    ///     - It will attempt connections to each resolved IP address sequentially.
+    /// 
+    /// Note: The connection timeout applies to the entire resolution and connection process.
+    ///       If disabled, the timeout is distributed across all connection attempts.
+    /// 
+    /// It requires Prometheus >= v3.1.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundRobinDNS")]
+    pub round_robin_dns: Option<bool>,
     /// Enables sending of exemplars over remote write. Note that
     /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
     /// option for exemplars to be scraped in the first place.

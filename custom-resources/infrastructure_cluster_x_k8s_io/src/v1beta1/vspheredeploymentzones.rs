@@ -57,5 +57,17 @@ pub struct VSphereDeploymentZoneStatus {
     /// If set to false, it will be ignored by VSphereClusters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// v1beta2 groups all the fields that will be added or modified in VSphereDeploymentZone's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<VSphereDeploymentZoneStatusV1beta2>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in VSphereDeploymentZone's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereDeploymentZoneStatusV1beta2 {
+    /// conditions represents the observations of a VSphereDeploymentZone's current state.
+    /// Known condition types are Ready, VCenterAvailable, PlacementConstraintReady, FailureDomainValidated and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

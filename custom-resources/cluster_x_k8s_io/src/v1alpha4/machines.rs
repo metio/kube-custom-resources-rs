@@ -11,7 +11,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// MachineSpec defines the desired state of Machine.
+/// spec is the desired state of Machine.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha4", kind = "Machine", plural = "machines")]
 #[kube(namespaced)]
@@ -151,7 +151,7 @@ pub struct MachineInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// MachineStatus defines the observed state of Machine.
+/// status is the observed state of Machine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatus {
     /// addresses is a list of addresses assigned to the machine.

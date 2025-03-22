@@ -88,6 +88,9 @@ pub struct ArgoCDSpec {
     /// InitialSSHKnownHosts defines the SSH known hosts data upon creation of the cluster for connecting Git repositories via SSH.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialSSHKnownHosts")]
     pub initial_ssh_known_hosts: Option<ArgoCDInitialSshKnownHosts>,
+    /// InstallationID uniquely identifies an Argo CD instance in multi-instance clusters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installationID")]
+    pub installation_id: Option<String>,
     /// KustomizeBuildOptions is used to specify build options/parameters to use with `kustomize build`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kustomizeBuildOptions")]
     pub kustomize_build_options: Option<String>,

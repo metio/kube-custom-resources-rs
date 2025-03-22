@@ -107,6 +107,12 @@ pub struct LocalQueueStatusFlavors {
     /// resources used in the flavor.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<String>>,
+    /// topology is the topology that associated with this ResourceFlavor.
+    /// 
+    /// This is an alpha field and requires enabling the TopologyAwareScheduling
+    /// feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub topology: Option<LocalQueueStatusFlavorsTopology>,
 }
 
 /// The node this Taint is attached to has the "effect" on
@@ -126,6 +132,18 @@ pub struct LocalQueueStatusFlavorsNodeTaints {
     /// The taint value corresponding to the taint key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// topology is the topology that associated with this ResourceFlavor.
+/// 
+/// This is an alpha field and requires enabling the TopologyAwareScheduling
+/// feature gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LocalQueueStatusFlavorsTopology {
+    /// levels define the levels of topology.
+    pub levels: Vec<String>,
+    /// name is the name of the topology.
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

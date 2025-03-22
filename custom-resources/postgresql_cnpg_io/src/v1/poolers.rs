@@ -7579,6 +7579,8 @@ pub enum PoolerType {
     Rw,
     #[serde(rename = "ro")]
     Ro,
+    #[serde(rename = "r")]
+    R,
 }
 
 /// Most recently observed status of the Pooler. This data may not be up to

@@ -351,9 +351,12 @@ spec:
                 flowLogsGoldmaneServer:
                   description: "FlowLogGoldmaneServer is the flow server endpoint to which flow data should be published."
                   type: "string"
-                flowLogsMaxOriginalIPsIncluded:
-                  description: "FlowLogsMaxOriginalIPsIncluded specifies the number of unique IP addresses (if relevant) that should be included in Flow logs."
-                  type: "integer"
+                flowLogsPolicyEvaluationMode:
+                  description: "Continuous - Felix evaluates active flows on a regular basis to determine the rule\ntraces in the flow logs. Any policy updates that impact a flow will be reflected in the\npending_policies field, offering a near-real-time view of policy changes across flows.\nNone - Felix stops evaluating pending traces.\n[Default: Continuous]"
+                  enum:
+                    - "None"
+                    - "Continuous"
+                  type: "string"
                 genericXDPEnabled:
                   description: "GenericXDPEnabled enables Generic XDP so network cards that don't support XDP offload or driver\nmodes can use XDP. This is not recommended since it doesn't provide better performance than\niptables. [Default: false]"
                   type: "boolean"
@@ -514,9 +517,6 @@ spec:
                 netlinkTimeout:
                   description: "NetlinkTimeout is the timeout when talking to the kernel over the netlink protocol, used for programming\nroutes, rules, and other kernel objects. [Default: 10s]"
                   pattern: "^([0-9]+(\\\\.[0-9]+)?(ms|s|m|h))*$"
-                  type: "string"
-                nfNetlinkBufSize:
-                  description: "NfNetlinkBufSize controls the size of NFLOG messages that the kernel will try to send to Felix.  NFLOG messages\nare used to report flow verdicts from the kernel.  Warning: currently increasing the value may cause errors\ndue to a bug in the netlink library."
                   type: "string"
                 nftablesFilterAllowAction:
                   description: "NftablesFilterAllowAction controls the nftables action that Felix uses to represent the \"allow\" policy verdict\nin the filter table. The default is to `ACCEPT` the traffic, which is a terminal action.  Alternatively,\n`RETURN` can be used to return the traffic back to the top-level chain for further processing by your rules."

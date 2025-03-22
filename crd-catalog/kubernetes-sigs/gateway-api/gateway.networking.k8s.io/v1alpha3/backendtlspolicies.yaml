@@ -94,7 +94,7 @@ spec:
                   description: "Validation contains backend TLS validation configuration."
                   properties:
                     caCertificateRefs:
-                      description: "CACertificateRefs contains one or more references to Kubernetes objects that\ncontain a PEM-encoded TLS CA certificate bundle, which is used to\nvalidate a TLS handshake between the Gateway and backend Pod.\n\nIf CACertificateRefs is empty or unspecified, then WellKnownCACertificates must be\nspecified. Only one of CACertificateRefs or WellKnownCACertificates may be specified,\nnot both. If CACertifcateRefs is empty or unspecified, the configuration for\nWellKnownCACertificates MUST be honored instead if supported by the implementation.\n\nReferences to a resource in a different namespace are invalid for the\nmoment, although we will revisit this in the future.\n\nA single CACertificateRef to a Kubernetes ConfigMap kind has \"Core\" support.\nImplementations MAY choose to support attaching multiple certificates to\na backend, but this behavior is implementation-specific.\n\nSupport: Core - An optional single reference to a Kubernetes ConfigMap,\nwith the CA certificate in a key named `ca.crt`.\n\nSupport: Implementation-specific (More than one reference, or other kinds\nof resources)."
+                      description: "CACertificateRefs contains one or more references to Kubernetes objects that\ncontain a PEM-encoded TLS CA certificate bundle, which is used to\nvalidate a TLS handshake between the Gateway and backend Pod.\n\nIf CACertificateRefs is empty or unspecified, then WellKnownCACertificates must be\nspecified. Only one of CACertificateRefs or WellKnownCACertificates may be specified,\nnot both. If CACertificateRefs is empty or unspecified, the configuration for\nWellKnownCACertificates MUST be honored instead if supported by the implementation.\n\nReferences to a resource in a different namespace are invalid for the\nmoment, although we will revisit this in the future.\n\nA single CACertificateRef to a Kubernetes ConfigMap kind has \"Core\" support.\nImplementations MAY choose to support attaching multiple certificates to\na backend, but this behavior is implementation-specific.\n\nSupport: Core - An optional single reference to a Kubernetes ConfigMap,\nwith the CA certificate in a key named `ca.crt`.\n\nSupport: Implementation-specific (More than one reference, or other kinds\nof resources)."
                       items:
                         description: "LocalObjectReference identifies an API object within the namespace of the\nreferrer.\nThe API object must be valid in the cluster; the Group and Kind must\nbe registered in the cluster for this reference to be valid.\n\nReferences to objects with invalid Group and Kind are not valid, and must\nbe rejected by the implementation, with appropriate Conditions set\non the containing object."
                         properties:
@@ -122,13 +122,13 @@ spec:
                       maxItems: 8
                       type: "array"
                     hostname:
-                      description: "Hostname is used for two purposes in the connection between Gateways and\nbackends:\n\n1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).\n2. If SubjectAltNames is not specified, Hostname MUST be used for\n   authentication and MUST match the certificate served by the matching\n   backend.\n\nSupport: Core"
+                      description: "Hostname is used for two purposes in the connection between Gateways and\nbackends:\n\n1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).\n2. Hostname MUST be used for authentication and MUST match the certificate served by the matching backend, unless SubjectAltNames is specified.\n   authentication and MUST match the certificate served by the matching\n   backend.\n\nSupport: Core"
                       maxLength: 253
                       minLength: 1
                       pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                       type: "string"
                     subjectAltNames:
-                      description: "SubjectAltNames contains one or more Subject Alternative Names.\nWhen specified, the certificate served from the backend MUST have at least one\nSubject Alternate Name matching one of the specified SubjectAltNames.\n\nSupport: Core"
+                      description: "SubjectAltNames contains one or more Subject Alternative Names.\nWhen specified the certificate served from the backend MUST\nhave at least one Subject Alternate Name matching one of the specified SubjectAltNames.\n\nSupport: Extended"
                       items:
                         description: "SubjectAltName represents Subject Alternative Name."
                         properties:

@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClusterSpec defines the desired state of Cluster.
+/// spec is the desired state of Cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cluster.x-k8s.io", version = "v1alpha4", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
@@ -279,7 +279,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// ClusterStatus defines the observed state of Cluster.
+/// status is the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
     /// conditions defines current service state of the cluster.

@@ -32,11 +32,10 @@ pub struct MeshLoadBalancingStrategySpec {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshLoadBalancingStrategyTargetRefKind>,
+    pub kind: MeshLoadBalancingStrategyTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,7 +82,7 @@ pub enum MeshLoadBalancingStrategyTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyTo {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
@@ -486,11 +485,10 @@ pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZoneAffinityT
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshLoadBalancingStrategyToTargetRefKind>,
+    pub kind: MeshLoadBalancingStrategyToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

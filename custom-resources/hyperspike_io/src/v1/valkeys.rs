@@ -22,8 +22,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ValkeySpec {
     /// Anonymous Auth
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "anonymousAuth")]
-    pub anonymous_auth: Option<bool>,
+    #[serde(rename = "anonymousAuth")]
+    pub anonymous_auth: bool,
     /// Certificate Issuer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certIssuer")]
     pub cert_issuer: Option<String>,
@@ -31,8 +31,11 @@ pub struct ValkeySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certIssuerType")]
     pub cert_issuer_type: Option<ValkeyCertIssuerType>,
     /// Cluster Domain - used for DNS
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDomain")]
-    pub cluster_domain: Option<String>,
+    #[serde(rename = "clusterDomain")]
+    pub cluster_domain: String,
+    /// Which endpoint is shown as the preferred endpoint valid values are 'ip', 'hostname', or 'unknown-endpoint'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPreferredEndpointType")]
+    pub cluster_preferred_endpoint_type: Option<ValkeyClusterPreferredEndpointType>,
     /// Exporter Image to use
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exporterImage")]
     pub exporter_image: Option<String>,
@@ -42,12 +45,14 @@ pub struct ValkeySpec {
     /// Image to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Node Selector
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
     /// Number of shards
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<i32>,
     /// Enable prometheus
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub prometheus: Option<bool>,
+    pub prometheus: bool,
     /// Extra prometheus labels for operator targeting
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusLabels")]
     pub prometheus_labels: Option<BTreeMap<String, String>>,
@@ -66,9 +71,12 @@ pub struct ValkeySpec {
     /// TLS Support
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<bool>,
+    /// Tolerations
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<ValkeyTolerations>>,
     /// Turn on an init container to set permissions on the persistent volume
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePermissions")]
-    pub volume_permissions: Option<bool>,
+    #[serde(rename = "volumePermissions")]
+    pub volume_permissions: bool,
 }
 
 /// ValkeySpec defines the desired state of Valkey
@@ -78,8 +86,19 @@ pub enum ValkeyCertIssuerType {
     Issuer,
 }
 
+/// ValkeySpec defines the desired state of Valkey
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ValkeyClusterPreferredEndpointType {
+    #[serde(rename = "ip")]
+    Ip,
+    #[serde(rename = "hostname")]
+    Hostname,
+    #[serde(rename = "unknown-endpoint")]
+    UnknownEndpoint,
+}
+
 /// External access configuration
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ValkeyExternalAccess {
     /// Cert Issuer for external access TLS certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certIssuer")]
@@ -88,8 +107,7 @@ pub struct ValkeyExternalAccess {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certIssuerType")]
     pub cert_issuer_type: Option<ValkeyExternalAccessCertIssuerType>,
     /// Enable external access
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enabled: Option<bool>,
+    pub enabled: bool,
     /// Support External DNS
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
     pub external_dns: Option<bool>,
@@ -102,8 +120,8 @@ pub struct ValkeyExternalAccess {
     /// External access type
     /// LoadBalancer or Proxy, the LoadBalancer type will create a LoadBalancer service for each Valkey Shard (master node)
     /// The Proxy type will create a single LoadBalancer service and use an envoy proxy to route traffic to the Valkey Shards
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<ValkeyExternalAccessType>,
+    #[serde(rename = "type")]
+    pub r#type: ValkeyExternalAccessType,
 }
 
 /// External access configuration
@@ -137,8 +155,7 @@ pub struct ValkeyExternalAccessProxy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Replicas for the proxy
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
+    pub replicas: i32,
     /// Resources requirements and limits for the proxy container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ValkeyExternalAccessProxyResources>,
@@ -583,6 +600,36 @@ pub struct ValkeyStorageStatusModifyVolumeStatus {
     /// targetVolumeAttributesClassName is the name of the VolumeAttributesClass the PVC currently being reconciled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetVolumeAttributesClassName")]
     pub target_volume_attributes_class_name: Option<String>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValkeyTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// ValkeyStatus defines the observed state of Valkey

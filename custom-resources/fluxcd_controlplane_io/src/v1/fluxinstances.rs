@@ -234,6 +234,12 @@ pub struct FluxInstanceSync {
     /// Path is the path to the source directory containing
     /// the kustomize overlay or plain Kubernetes manifests.
     pub path: String,
+    /// Provider specifies OIDC provider for source authentication.
+    /// For OCIRepository and Bucket the provider can be set to 'aws', 'azure' or 'gcp'.
+    /// for GitRepository the accepted value can be set to 'azure' or 'github'.
+    /// To disable OIDC authentication the provider can be set to 'generic' or left empty.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub provider: Option<FluxInstanceSyncProvider>,
     /// PullSecret specifies the Kubernetes Secret containing the
     /// authentication credentials for the source.
     /// For Git over HTTP/S sources, the secret must contain username and password fields.
@@ -261,6 +267,24 @@ pub enum FluxInstanceSyncKind {
     OciRepository,
     GitRepository,
     Bucket,
+}
+
+/// Sync specifies the source for the cluster sync operation.
+/// When set, a Flux source (GitRepository, OCIRepository or Bucket)
+/// and Flux Kustomization are created to sync the cluster state
+/// with the source repository.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FluxInstanceSyncProvider {
+    #[serde(rename = "generic")]
+    Generic,
+    #[serde(rename = "aws")]
+    Aws,
+    #[serde(rename = "azure")]
+    Azure,
+    #[serde(rename = "gcp")]
+    Gcp,
+    #[serde(rename = "github")]
+    Github,
 }
 
 /// FluxInstanceStatus defines the observed state of FluxInstance

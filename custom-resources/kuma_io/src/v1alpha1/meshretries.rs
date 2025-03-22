@@ -31,11 +31,10 @@ pub struct MeshRetrySpec {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshRetryTargetRefKind>,
+    pub kind: MeshRetryTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -82,7 +81,7 @@ pub enum MeshRetryTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryTo {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
@@ -140,6 +139,7 @@ pub struct MeshRetryToDefaultGrpc {
 pub struct MeshRetryToDefaultGrpcBackOff {
     /// BaseInterval is an amount of time which should be taken between retries.
     /// Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
+    /// If not specified then the default value is "25ms".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries.
@@ -153,6 +153,7 @@ pub struct MeshRetryToDefaultGrpcBackOff {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRetryToDefaultGrpcRateLimitedBackOff {
     /// MaxInterval is a maximal amount of time which will be taken between retries.
+    /// If not specified then the default value is "300s".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset)
@@ -233,6 +234,7 @@ pub struct MeshRetryToDefaultHttp {
 pub struct MeshRetryToDefaultHttpBackOff {
     /// BaseInterval is an amount of time which should be taken between retries.
     /// Must be greater than zero. Values less than 1 ms are rounded up to 1 ms.
+    /// If not specified then the default value is "25ms".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseInterval")]
     pub base_interval: Option<String>,
     /// MaxInterval is a maximal amount of time which will be taken between retries.
@@ -267,6 +269,7 @@ pub enum MeshRetryToDefaultHttpHostSelectionPredicate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshRetryToDefaultHttpRateLimitedBackOff {
     /// MaxInterval is a maximal amount of time which will be taken between retries.
+    /// If not specified then the default value is "300s".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInterval")]
     pub max_interval: Option<String>,
     /// ResetHeaders specifies the list of headers (like Retry-After or X-RateLimit-Reset)
@@ -354,11 +357,10 @@ pub struct MeshRetryToDefaultTcp {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshRetryToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshRetryToTargetRefKind>,
+    pub kind: MeshRetryToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

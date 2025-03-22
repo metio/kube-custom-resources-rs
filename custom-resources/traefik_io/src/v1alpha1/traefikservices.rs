@@ -91,9 +91,10 @@ pub struct TraefikServiceMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// RoundRobin is the only supported value at the moment.
+    /// Supported values are: wrr (Weighed round-robin) and p2c (Power of two choices).
+    /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<String>,
+    pub strategy: Option<TraefikServiceMirroringStrategy>,
     /// Weight defines the weight and should only be specified when Name references a TraefikService object
     /// (and to be precise, one that embeds a Weighted Round Robin).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -206,9 +207,10 @@ pub struct TraefikServiceMirroringMirrors {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceMirroringMirrorsSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// RoundRobin is the only supported value at the moment.
+    /// Supported values are: wrr (Weighed round-robin) and p2c (Power of two choices).
+    /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<String>,
+    pub strategy: Option<TraefikServiceMirroringMirrorsStrategy>,
     /// Weight defines the weight and should only be specified when Name references a TraefikService object
     /// (and to be precise, one that embeds a Weighted Round Robin).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -289,6 +291,10 @@ pub struct TraefikServiceMirroringMirrorsSticky {
 /// Cookie defines the sticky cookie configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringMirrorsStickyCookie {
+    /// Domain defines the host to which the cookie will be sent.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
@@ -308,10 +314,31 @@ pub struct TraefikServiceMirroringMirrorsStickyCookie {
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
-    pub same_site: Option<String>,
+    pub same_site: Option<TraefikServiceMirroringMirrorsStickyCookieSameSite>,
     /// Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+/// Cookie defines the sticky cookie configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceMirroringMirrorsStickyCookieSameSite {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "lax")]
+    Lax,
+    #[serde(rename = "strict")]
+    Strict,
+}
+
+/// MirrorService holds the mirror configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceMirroringMirrorsStrategy {
+    #[serde(rename = "wrr")]
+    Wrr,
+    #[serde(rename = "p2c")]
+    P2c,
+    RoundRobin,
 }
 
 /// ResponseForwarding defines how Traefik forwards the response from the upstream Kubernetes Service to the client.
@@ -338,6 +365,10 @@ pub struct TraefikServiceMirroringSticky {
 /// Cookie defines the sticky cookie configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceMirroringStickyCookie {
+    /// Domain defines the host to which the cookie will be sent.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
@@ -357,10 +388,31 @@ pub struct TraefikServiceMirroringStickyCookie {
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
-    pub same_site: Option<String>,
+    pub same_site: Option<TraefikServiceMirroringStickyCookieSameSite>,
     /// Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+/// Cookie defines the sticky cookie configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceMirroringStickyCookieSameSite {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "lax")]
+    Lax,
+    #[serde(rename = "strict")]
+    Strict,
+}
+
+/// Mirroring defines the Mirroring service configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceMirroringStrategy {
+    #[serde(rename = "wrr")]
+    Wrr,
+    #[serde(rename = "p2c")]
+    P2c,
+    RoundRobin,
 }
 
 /// Weighted defines the Weighted Round Robin configuration.
@@ -427,9 +479,10 @@ pub struct TraefikServiceWeightedServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sticky: Option<TraefikServiceWeightedServicesSticky>,
     /// Strategy defines the load balancing strategy between the servers.
-    /// RoundRobin is the only supported value at the moment.
+    /// Supported values are: wrr (Weighed round-robin) and p2c (Power of two choices).
+    /// RoundRobin value is deprecated and supported for backward compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<String>,
+    pub strategy: Option<TraefikServiceWeightedServicesStrategy>,
     /// Weight defines the weight and should only be specified when Name references a TraefikService object
     /// (and to be precise, one that embeds a Weighted Round Robin).
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -510,6 +563,10 @@ pub struct TraefikServiceWeightedServicesSticky {
 /// Cookie defines the sticky cookie configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceWeightedServicesStickyCookie {
+    /// Domain defines the host to which the cookie will be sent.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
@@ -529,10 +586,31 @@ pub struct TraefikServiceWeightedServicesStickyCookie {
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
-    pub same_site: Option<String>,
+    pub same_site: Option<TraefikServiceWeightedServicesStickyCookieSameSite>,
     /// Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+/// Cookie defines the sticky cookie configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceWeightedServicesStickyCookieSameSite {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "lax")]
+    Lax,
+    #[serde(rename = "strict")]
+    Strict,
+}
+
+/// Service defines an upstream HTTP service to proxy traffic to.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceWeightedServicesStrategy {
+    #[serde(rename = "wrr")]
+    Wrr,
+    #[serde(rename = "p2c")]
+    P2c,
+    RoundRobin,
 }
 
 /// Sticky defines whether sticky sessions are enabled.
@@ -547,6 +625,10 @@ pub struct TraefikServiceWeightedSticky {
 /// Cookie defines the sticky cookie configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TraefikServiceWeightedStickyCookie {
+    /// Domain defines the host to which the cookie will be sent.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#domaindomain-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
@@ -566,9 +648,20 @@ pub struct TraefikServiceWeightedStickyCookie {
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
-    pub same_site: Option<String>,
+    pub same_site: Option<TraefikServiceWeightedStickyCookieSameSite>,
     /// Secure defines whether the cookie can only be transmitted over an encrypted connection (i.e. HTTPS).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
+}
+
+/// Cookie defines the sticky cookie configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TraefikServiceWeightedStickyCookieSameSite {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "lax")]
+    Lax,
+    #[serde(rename = "strict")]
+    Strict,
 }
 

@@ -32,7 +32,7 @@ pub struct MeshFaultInjectionSpec {
     pub to: Option<Vec<MeshFaultInjectionTo>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshFaultInjectionFrom {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
@@ -107,11 +107,10 @@ pub struct MeshFaultInjectionFromDefaultHttpResponseBandwidth {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshFaultInjectionFromTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshFaultInjectionFromTargetRefKind>,
+    pub kind: MeshFaultInjectionFromTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -160,11 +159,10 @@ pub enum MeshFaultInjectionFromTargetRefKind {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshFaultInjectionTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshFaultInjectionTargetRefKind>,
+    pub kind: MeshFaultInjectionTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -211,7 +209,7 @@ pub enum MeshFaultInjectionTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshFaultInjectionTo {
     /// Default is a configuration specific to the group of destinations referenced in
     /// 'targetRef'
@@ -286,11 +284,10 @@ pub struct MeshFaultInjectionToDefaultHttpResponseBandwidth {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshFaultInjectionToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshFaultInjectionToTargetRefKind>,
+    pub kind: MeshFaultInjectionToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -13,7 +13,6 @@ use self::prelude::*;
 /// AppArmorProfileSpec defines the desired state of AppArmorProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "AppArmorProfile", plural = "apparmorprofiles")]
-#[kube(namespaced)]
 #[kube(status = "AppArmorProfileStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]

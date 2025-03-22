@@ -33,8 +33,8 @@ pub struct MeshProxyPatchSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshProxyPatchDefault {
     /// AppendModifications is a list of modifications applied on the selected proxy.
-    #[serde(rename = "appendModifications")]
-    pub append_modifications: Vec<MeshProxyPatchDefaultAppendModifications>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appendModifications")]
+    pub append_modifications: Option<Vec<MeshProxyPatchDefaultAppendModifications>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -484,11 +484,10 @@ pub enum MeshProxyPatchDefaultAppendModificationsVirtualHostOperation {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshProxyPatchTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshProxyPatchTargetRefKind>,
+    pub kind: MeshProxyPatchTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

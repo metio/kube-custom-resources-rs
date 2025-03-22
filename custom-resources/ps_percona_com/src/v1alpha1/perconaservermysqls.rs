@@ -224,8 +224,7 @@ pub struct PerconaServerMySQLBackupPitrBinlogServer {
     pub server_id: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PerconaServerMySQLBackupPitrBinlogServerStartupProbe>,
     pub storage: PerconaServerMySQLBackupPitrBinlogServerStorage,
@@ -1925,8 +1924,7 @@ pub struct PerconaServerMySQLMysql {
     pub sidecar_volumes: Option<Vec<PerconaServerMySQLMysqlSidecarVolumes>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sidecars: Option<Vec<PerconaServerMySQLMysqlSidecars>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PerconaServerMySQLMysqlStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2415,8 +2413,6 @@ pub struct PerconaServerMySQLMysqlExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -4237,8 +4233,7 @@ pub struct PerconaServerMySQLOrchestrator {
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PerconaServerMySQLOrchestratorStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4725,8 +4720,6 @@ pub struct PerconaServerMySQLOrchestratorExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5327,8 +5320,7 @@ pub struct PerconaServerMySQLProxyHaproxy {
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PerconaServerMySQLProxyHaproxyStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5815,8 +5807,6 @@ pub struct PerconaServerMySQLProxyHaproxyExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -6297,8 +6287,7 @@ pub struct PerconaServerMySQLProxyRouter {
     pub scheduler_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<i32>,
+    pub size: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<PerconaServerMySQLProxyRouterStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6785,8 +6774,6 @@ pub struct PerconaServerMySQLProxyRouterExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]

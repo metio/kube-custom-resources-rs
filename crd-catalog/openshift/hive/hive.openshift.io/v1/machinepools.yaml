@@ -252,10 +252,7 @@ spec:
                               minimum: 16.0
                               type: "integer"
                             diskType:
-                              description: "DiskType defines the type of disk.\nThe valid values are pd-standard and pd-ssd.\nDefaulted internally to pd-ssd."
-                              enum:
-                                - "pd-ssd"
-                                - "pd-standard"
+                              description: "DiskType defines the type of disk.\nThe valid values at this time are: pd-standard, pd-ssd, local-ssd, pd-balanced, hyperdisk-balanced.\nDefaulted internally to pd-ssd."
                               type: "string"
                             encryptionKey:
                               description: "EncryptionKey defines the KMS key to be used to encrypt the disk."

@@ -16,8 +16,11 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct TracingServiceSpec {
-    /// AmbassadorID declares which Ambassador instances should pay attention to this resource. If no value is provided, the default is: 
-    ///  ambassador_id: - "default"
+    /// AmbassadorID declares which Ambassador instances should pay
+    /// attention to this resource. If no value is provided, the default is:
+    /// 
+    /// 	ambassador_id:
+    /// 	- "default"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ambassador_id: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -30,7 +33,8 @@ pub struct TracingServiceSpec {
     pub service: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stats_name: Option<String>,
-    /// Deprecated: tag_headers is deprecated. Use custom_tags instead. `tag_headers: ["header"]` can be defined as `custom_tags: [{"request_header": {"name": "header"}}]`.
+    /// Deprecated: tag_headers is deprecated. Use custom_tags instead.
+    /// `tag_headers: ["header"]` can be defined as `custom_tags: [{"request_header": {"name": "header"}}]`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag_headers: Option<Vec<String>>,
 }
@@ -70,19 +74,23 @@ pub enum TracingServiceConfigCollectorEndpointVersion {
 /// TracingCustomTag provides a data structure for capturing envoy's `type.tracing.v3.CustomTag`
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TracingServiceCustomTags {
-    /// Environment explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+    /// Environment explicitly specifies the protocol stack to set up. Exactly one of Literal,
+    /// Environment or Header must be supplied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<TracingServiceCustomTagsEnvironment>,
-    /// Literal explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+    /// Literal explicitly specifies the protocol stack to set up. Exactly one of Literal,
+    /// Environment or Header must be supplied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub literal: Option<TracingServiceCustomTagsLiteral>,
-    /// Header explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+    /// Header explicitly specifies the protocol stack to set up. Exactly one of Literal,
+    /// Environment or Header must be supplied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub request_header: Option<TracingServiceCustomTagsRequestHeader>,
     pub tag: String,
 }
 
-/// Environment explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+/// Environment explicitly specifies the protocol stack to set up. Exactly one of Literal,
+/// Environment or Header must be supplied.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TracingServiceCustomTagsEnvironment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -90,13 +98,15 @@ pub struct TracingServiceCustomTagsEnvironment {
     pub name: String,
 }
 
-/// Literal explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+/// Literal explicitly specifies the protocol stack to set up. Exactly one of Literal,
+/// Environment or Header must be supplied.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TracingServiceCustomTagsLiteral {
     pub value: String,
 }
 
-/// Header explicitly specifies the protocol stack to set up. Exactly one of Literal, Environment or Header must be supplied.
+/// Header explicitly specifies the protocol stack to set up. Exactly one of Literal,
+/// Environment or Header must be supplied.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TracingServiceCustomTagsRequestHeader {
     #[serde(default, skip_serializing_if = "Option::is_none")]

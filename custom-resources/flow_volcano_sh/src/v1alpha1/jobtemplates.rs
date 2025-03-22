@@ -206,6 +206,8 @@ pub struct JobTemplateTasksTemplateSpec {
     pub readiness_gates: Option<Vec<JobTemplateTasksTemplateSpecReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<JobTemplateTasksTemplateSpecResourceClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<JobTemplateTasksTemplateSpecResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -2291,6 +2293,23 @@ pub struct JobTemplateTasksTemplateSpecResourceClaims {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<JobTemplateTasksTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecResourcesClaims {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecSchedulingGates {
     pub name: String,
 }
@@ -2309,6 +2328,8 @@ pub struct JobTemplateTasksTemplateSpecSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<JobTemplateTasksTemplateSpecSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]

@@ -46,6 +46,9 @@ pub struct TempoMonolithicSpec {
     /// Observability defines the observability configuration of the Tempo deployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<TempoMonolithicObservability>,
+    /// Query defines query configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub query: Option<TempoMonolithicQuery>,
     /// Resources defines the compute resource requirements of the Tempo container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TempoMonolithicResources>,
@@ -1267,6 +1270,24 @@ pub struct TempoMonolithicObservabilityMetricsPrometheusRules {
 pub struct TempoMonolithicObservabilityMetricsServiceMonitors {
     /// Enabled defines if ServiceMonitor objects should be created for this Tempo deployment.
     pub enabled: bool,
+}
+
+/// Query defines query configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoMonolithicQuery {
+    /// RBAC defines query RBAC options.
+    /// This option can be used only with multi-tenancy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbac: Option<TempoMonolithicQueryRbac>,
+}
+
+/// RBAC defines query RBAC options.
+/// This option can be used only with multi-tenancy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoMonolithicQueryRbac {
+    /// Enabled defines if the query RBAC should be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 /// Resources defines the compute resource requirements of the Tempo container.

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "clusterresourcesets.addons.cluster.x-k8s.io"
 spec:
   group: "addons.cluster.x-k8s.io"
@@ -34,7 +34,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ClusterResourceSetSpec defines the desired state of ClusterResourceSet."
+              description: "spec is the desired state of ClusterResourceSet."
               properties:
                 clusterSelector:
                   description: "clusterSelector is the label selector for Clusters. The Clusters that are\nselected by this will be the ones affected by this ClusterResourceSet.\nIt must match the Cluster labels. This field is immutable.\nLabel selector cannot be empty."
@@ -82,12 +82,14 @@ spec:
                         type: "string"
                       name:
                         description: "name of the resource that is in the same namespace with ClusterResourceSet object."
+                        maxLength: 253
                         minLength: 1
                         type: "string"
                     required:
                       - "kind"
                       - "name"
                     type: "object"
+                  maxItems: 100
                   type: "array"
                 strategy:
                   description: "strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable."
@@ -99,7 +101,7 @@ spec:
                 - "clusterSelector"
               type: "object"
             status:
-              description: "ClusterResourceSetStatus defines the observed state of ClusterResourceSet."
+              description: "status is the observed state of ClusterResourceSet."
               properties:
                 conditions:
                   description: "conditions defines current state of the ClusterResourceSet."
@@ -112,18 +114,25 @@ spec:
                         type: "string"
                       message:
                         description: "message is a human readable message indicating details about the transition.\nThis field may be empty."
+                        maxLength: 10240
+                        minLength: 1
                         type: "string"
                       reason:
                         description: "reason is the reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
+                        maxLength: 256
+                        minLength: 1
                         type: "string"
                       severity:
                         description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        maxLength: 32
                         type: "string"
                       status:
                         description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
                         description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        maxLength: 256
+                        minLength: 1
                         type: "string"
                     required:
                       - "lastTransitionTime"

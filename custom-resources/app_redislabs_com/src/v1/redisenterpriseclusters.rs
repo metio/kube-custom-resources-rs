@@ -162,6 +162,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
     pub resp3_default: Option<bool>,
+    /// the security configuration that will be applied to RS pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<RedisEnterpriseClusterSecurityContext>,
     /// Name of the service account to use
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
@@ -3219,6 +3222,21 @@ pub enum RedisEnterpriseClusterRedisUpgradePolicy {
     Major,
     #[serde(rename = "latest")]
     Latest,
+}
+
+/// the security configuration that will be applied to RS pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContext {
+    /// Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
+    pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
+}
+
+/// Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
+    /// Whether RS containers has a read-only root filesystem. Default is false.
+    pub enabled: bool,
 }
 
 /// Customization options for operator-managed service resources created for Redis Enterprise clusters and databases

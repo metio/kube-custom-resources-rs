@@ -20,19 +20,27 @@ pub struct TinkerbellDatacenterConfigSpec {
     /// HookImagesURLPath can be used to override the default Hook images path to pull from a local server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookImagesURLPath")]
     pub hook_images_url_path: Option<String>,
-    /// HookIsoURL is the URL of ISO image that will one time boot. It can be used to override the default Hook OS ISO image to pull from a local server.
+    /// HookIsoURL is the URL of ISO image that will be used to provision the hardware
+    /// during one time boot process.
+    /// It can be used to override the default Hook OS ISO image to pull from a local server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookIsoURL")]
     pub hook_iso_url: Option<String>,
-    /// IsoBoot can be used to indicate that the hardware must boot using an ISO.
+    /// IsoBoot can be used to indicate that the hardware should boot using an ISO.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoBoot")]
     pub iso_boot: Option<bool>,
     /// LoadBalancerInterface can be used to configure a load balancer interface for the Tinkerbell stack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerInterface")]
     pub load_balancer_interface: Option<String>,
-    /// OSImageURL can be used to override the default OS image path to pull from a local server. OSImageURL is a URL to the OS image used during provisioning. To perform modular upgrades the OSImageURL must be specified on the TinkerbellMachineConfig objects. You cannot specify an OSImageURL on the TinkerbellDatacenterConfig and TinkerbellMachineConfigs simultaneously. It must include the Kubernetes version(s). For example, a URL used for Kubernetes 1.27 could be http://localhost:8080/ubuntu-2204-1.27.tgz
+    /// OSImageURL can be used to override the default OS image path to pull from a local server.
+    /// OSImageURL is a URL to the OS image used during provisioning. To perform modular upgrades
+    /// the OSImageURL must be specified on the TinkerbellMachineConfig objects. You cannot specify
+    /// an OSImageURL on the TinkerbellDatacenterConfig and TinkerbellMachineConfigs simultaneously.
+    /// It must include the Kubernetes version(s). For example, a URL used for Kubernetes 1.27 could
+    /// be http://localhost:8080/ubuntu-2204-1.27.tgz
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "osImageURL")]
     pub os_image_url: Option<String>,
-    /// SkipLoadBalancerDeployment when set to "true" can be used to skip deploying a load balancer to expose Tinkerbell stack. Users will need to deploy and configure a load balancer manually after the cluster is created.
+    /// SkipLoadBalancerDeployment when set to "true" can be used to skip deploying a load balancer to expose Tinkerbell stack.
+    /// Users will need to deploy and configure a load balancer manually after the cluster is created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLoadBalancerDeployment")]
     pub skip_load_balancer_deployment: Option<bool>,
     /// TinkerbellIP is used to configure a VIP for hosting the Tinkerbell services.
@@ -40,8 +48,9 @@ pub struct TinkerbellDatacenterConfigSpec {
     pub tinkerbell_ip: String,
 }
 
-/// TinkerbellDatacenterConfigStatus defines the observed state of TinkerbellDatacenterConfig 
-///  Important: Run "make generate" to regenerate code after modifying this file.
+/// TinkerbellDatacenterConfigStatus defines the observed state of TinkerbellDatacenterConfig
+/// 
+/// Important: Run "make generate" to regenerate code after modifying this file.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellDatacenterConfigStatus {
 }

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "clusterresourcesets.addons.cluster.x-k8s.io"
 spec:
   group: "addons.cluster.x-k8s.io"
@@ -35,7 +35,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ClusterResourceSetSpec defines the desired state of ClusterResourceSet."
+              description: "spec is the desired state of ClusterResourceSet."
               properties:
                 clusterSelector:
                   description: "clusterSelector is the label selector for Clusters. The Clusters that are\nselected by this will be the ones affected by this ClusterResourceSet.\nIt must match the Cluster labels. This field is immutable.\nLabel selector cannot be empty."
@@ -99,7 +99,7 @@ spec:
                 - "clusterSelector"
               type: "object"
             status:
-              description: "ClusterResourceSetStatus defines the observed state of ClusterResourceSet."
+              description: "status is the observed state of ClusterResourceSet."
               properties:
                 conditions:
                   description: "conditions defines current state of the ClusterResourceSet."

@@ -158,7 +158,7 @@ spec:
                   description: "The unique and consistent identifier of the Availability Zone in which the\nfile system is located, and is valid only for One Zone file systems. For\nexample, use1-az1 is an Availability Zone ID for the us-east-1 Amazon Web\nServices Region, and it has the same location in every Amazon Web Services\naccount."
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

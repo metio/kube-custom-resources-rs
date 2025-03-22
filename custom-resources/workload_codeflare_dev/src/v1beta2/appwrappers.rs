@@ -59,9 +59,20 @@ pub struct AppWrapperComponentsPodSetInfos {
     /// NodeSelectors to be added to the PodSpecTemplate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// SchedulingGates to be added to the PodSpecTemplate
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
+    pub scheduling_gates: Option<Vec<AppWrapperComponentsPodSetInfosSchedulingGates>>,
     /// Tolerations to be added to the PodSpecTemplate
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<AppWrapperComponentsPodSetInfosTolerations>>,
+}
+
+/// PodSchedulingGate is associated to a Pod to guard its scheduling.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppWrapperComponentsPodSetInfosSchedulingGates {
+    /// Name of the scheduling gate.
+    /// Each scheduling gate must have a unique name field.
+    pub name: String,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches

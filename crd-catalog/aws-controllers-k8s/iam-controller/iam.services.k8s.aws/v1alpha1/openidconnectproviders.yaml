@@ -53,6 +53,9 @@ spec:
                 url:
                   description: "The URL of the identity provider. The URL must begin with https:// and should\ncorrespond to the iss claim in the provider's OpenID Connect ID tokens. Per\nthe OIDC standard, path components are allowed but query parameters are not.\nTypically the URL consists of only a hostname, like https://server.example.org\nor https://example.com. The URL should not contain a port number.\n\nYou cannot register the same provider multiple times in a single Amazon Web\nServices account. If you try to submit a URL that has already been used for\nan OpenID Connect provider in the Amazon Web Services account, you will get\nan error."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
               required:
                 - "url"
               type: "object"
@@ -76,7 +79,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

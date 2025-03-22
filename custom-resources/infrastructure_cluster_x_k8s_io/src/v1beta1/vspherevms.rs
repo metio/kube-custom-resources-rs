@@ -575,6 +575,9 @@ pub struct VSphereVMStatus {
     /// modified by users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskRef")]
     pub task_ref: Option<String>,
+    /// v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<VSphereVMStatusV1beta2>,
     /// VMRef is the VM's Managed Object Reference on vSphere. It can be used by consumers
     /// to programatically get this VM representation on vSphere in case of the need to retrieve informations.
     /// This field is set once the machine is created and should not be changed
@@ -598,5 +601,15 @@ pub struct VSphereVMStatusNetwork {
     /// NetworkName is the name of the network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkName")]
     pub network_name: Option<String>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in VSphereVM's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VSphereVMStatusV1beta2 {
+    /// conditions represents the observations of a VSphereVM's current state.
+    /// Known condition types are Ready, VirtualMachineProvisioned, VCenterAvailable and IPAddressClaimsFulfilled,
+    /// GuestSoftPowerOffSucceeded, PCIDevicesDetached and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

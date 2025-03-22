@@ -139,6 +139,9 @@ pub struct ApplicationOperationSyncSource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationOperationSyncSourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -239,6 +242,12 @@ pub struct ApplicationOperationSyncSourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -423,6 +432,9 @@ pub struct ApplicationOperationSyncSources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationOperationSyncSourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -523,6 +535,12 @@ pub struct ApplicationOperationSyncSourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -752,6 +770,9 @@ pub struct ApplicationSpec {
     /// Source is a reference to the location of the application's manifests or chart
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<ApplicationSource>,
+    /// SourceHydrator provides a way to push hydrated manifests back to git before syncing them to the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHydrator")]
+    pub source_hydrator: Option<ApplicationSourceHydrator>,
     /// Sources is a reference to the location of the application's manifests or chart
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<ApplicationSources>>,
@@ -816,6 +837,9 @@ pub struct ApplicationSource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationSourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -916,6 +940,12 @@ pub struct ApplicationSourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -1085,6 +1115,54 @@ pub struct ApplicationSourcePluginParameters {
     pub string: Option<String>,
 }
 
+/// SourceHydrator provides a way to push hydrated manifests back to git before syncing them to the cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceHydrator {
+    /// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+    #[serde(rename = "drySource")]
+    pub dry_source: ApplicationSourceHydratorDrySource,
+    /// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+    /// have to move manifests to the SyncSource, e.g. by pull request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hydrateTo")]
+    pub hydrate_to: Option<ApplicationSourceHydratorHydrateTo>,
+    /// SyncSource specifies where to sync hydrated manifests from.
+    #[serde(rename = "syncSource")]
+    pub sync_source: ApplicationSourceHydratorSyncSource,
+}
+
+/// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceHydratorDrySource {
+    /// Path is a directory path within the Git repository where the manifests are located
+    pub path: String,
+    /// RepoURL is the URL to the git repository that contains the application manifests
+    #[serde(rename = "repoURL")]
+    pub repo_url: String,
+    /// TargetRevision defines the revision of the source to hydrate
+    #[serde(rename = "targetRevision")]
+    pub target_revision: String,
+}
+
+/// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+/// have to move manifests to the SyncSource, e.g. by pull request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceHydratorHydrateTo {
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
+}
+
+/// SyncSource specifies where to sync hydrated manifests from.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationSourceHydratorSyncSource {
+    /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
+    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    pub path: String,
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
+}
+
 /// ApplicationSource contains all required information about the source of an application
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationSources {
@@ -1100,6 +1178,9 @@ pub struct ApplicationSources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationSourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -1200,6 +1281,12 @@ pub struct ApplicationSourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -1465,6 +1552,9 @@ pub struct ApplicationStatus {
     /// Resources is a list of Kubernetes resources managed by this application
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ApplicationStatusResources>>,
+    /// SourceHydrator stores information about the current state of source hydration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHydrator")]
+    pub source_hydrator: Option<ApplicationStatusSourceHydrator>,
     /// SourceType specifies the type of this application
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
@@ -1495,6 +1585,9 @@ pub struct ApplicationStatusConditions {
 /// Health contains information about the application's current health status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusHealth {
+    /// LastTransitionTime is the time the HealthStatus was set or updated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
+    pub last_transition_time: Option<String>,
     /// Message is a human-readable informational message describing the health status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
@@ -1557,6 +1650,9 @@ pub struct ApplicationStatusHistorySource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusHistorySourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -1657,6 +1753,12 @@ pub struct ApplicationStatusHistorySourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -1841,6 +1943,9 @@ pub struct ApplicationStatusHistorySources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusHistorySourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -1941,6 +2046,12 @@ pub struct ApplicationStatusHistorySourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -2262,6 +2373,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusOperationStateOperationSyncSourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2362,6 +2476,12 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -2546,6 +2666,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusOperationStateOperationSyncSourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2646,6 +2769,12 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -2923,6 +3052,9 @@ pub struct ApplicationStatusOperationStateSyncResultSource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusOperationStateSyncResultSourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3023,6 +3155,12 @@ pub struct ApplicationStatusOperationStateSyncResultSourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -3207,6 +3345,9 @@ pub struct ApplicationStatusOperationStateSyncResultSources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusOperationStateSyncResultSourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3307,6 +3448,12 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -3493,6 +3640,8 @@ pub struct ApplicationStatusResources {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiresDeletionConfirmation")]
+    pub requires_deletion_confirmation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiresPruning")]
     pub requires_pruning: Option<bool>,
     /// SyncStatusCode is a type which represents possible comparison results
@@ -3507,12 +3656,168 @@ pub struct ApplicationStatusResources {
 /// HealthStatus contains information about the currently observed health state of an application or resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusResourcesHealth {
+    /// LastTransitionTime is the time the HealthStatus was set or updated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
+    pub last_transition_time: Option<String>,
     /// Message is a human-readable informational message describing the health status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// Status holds the status code of the application or resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+}
+
+/// SourceHydrator stores information about the current state of source hydration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydrator {
+    /// CurrentOperation holds the status of the hydrate operation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentOperation")]
+    pub current_operation: Option<ApplicationStatusSourceHydratorCurrentOperation>,
+    /// LastSuccessfulOperation holds info about the most recent successful hydration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccessfulOperation")]
+    pub last_successful_operation: Option<ApplicationStatusSourceHydratorLastSuccessfulOperation>,
+}
+
+/// CurrentOperation holds the status of the hydrate operation
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ApplicationStatusSourceHydratorCurrentOperation {
+    /// DrySHA holds the resolved revision (sha) of the dry source as of the most recent reconciliation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drySHA")]
+    pub dry_sha: Option<String>,
+    /// FinishedAt indicates when the hydrate operation finished
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finishedAt")]
+    pub finished_at: Option<String>,
+    /// HydratedSHA holds the resolved revision (sha) of the hydrated source as of the most recent reconciliation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hydratedSHA")]
+    pub hydrated_sha: Option<String>,
+    /// Message contains a message describing the current status of the hydrate operation
+    pub message: String,
+    /// Phase indicates the status of the hydrate operation
+    pub phase: ApplicationStatusSourceHydratorCurrentOperationPhase,
+    /// SourceHydrator holds the hydrator config used for the hydrate operation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHydrator")]
+    pub source_hydrator: Option<ApplicationStatusSourceHydratorCurrentOperationSourceHydrator>,
+    /// StartedAt indicates when the hydrate operation started
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startedAt")]
+    pub started_at: Option<String>,
+}
+
+/// CurrentOperation holds the status of the hydrate operation
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ApplicationStatusSourceHydratorCurrentOperationPhase {
+    Hydrating,
+    Failed,
+    Hydrated,
+}
+
+/// SourceHydrator holds the hydrator config used for the hydrate operation
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydrator {
+    /// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+    #[serde(rename = "drySource")]
+    pub dry_source: ApplicationStatusSourceHydratorCurrentOperationSourceHydratorDrySource,
+    /// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+    /// have to move manifests to the SyncSource, e.g. by pull request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hydrateTo")]
+    pub hydrate_to: Option<ApplicationStatusSourceHydratorCurrentOperationSourceHydratorHydrateTo>,
+    /// SyncSource specifies where to sync hydrated manifests from.
+    #[serde(rename = "syncSource")]
+    pub sync_source: ApplicationStatusSourceHydratorCurrentOperationSourceHydratorSyncSource,
+}
+
+/// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydratorDrySource {
+    /// Path is a directory path within the Git repository where the manifests are located
+    pub path: String,
+    /// RepoURL is the URL to the git repository that contains the application manifests
+    #[serde(rename = "repoURL")]
+    pub repo_url: String,
+    /// TargetRevision defines the revision of the source to hydrate
+    #[serde(rename = "targetRevision")]
+    pub target_revision: String,
+}
+
+/// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+/// have to move manifests to the SyncSource, e.g. by pull request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydratorHydrateTo {
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
+}
+
+/// SyncSource specifies where to sync hydrated manifests from.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorCurrentOperationSourceHydratorSyncSource {
+    /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
+    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    pub path: String,
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
+}
+
+/// LastSuccessfulOperation holds info about the most recent successful hydration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorLastSuccessfulOperation {
+    /// DrySHA holds the resolved revision (sha) of the dry source as of the most recent reconciliation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "drySHA")]
+    pub dry_sha: Option<String>,
+    /// HydratedSHA holds the resolved revision (sha) of the hydrated source as of the most recent reconciliation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hydratedSHA")]
+    pub hydrated_sha: Option<String>,
+    /// SourceHydrator holds the hydrator config used for the hydrate operation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceHydrator")]
+    pub source_hydrator: Option<ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydrator>,
+}
+
+/// SourceHydrator holds the hydrator config used for the hydrate operation
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydrator {
+    /// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+    #[serde(rename = "drySource")]
+    pub dry_source: ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorDrySource,
+    /// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+    /// have to move manifests to the SyncSource, e.g. by pull request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hydrateTo")]
+    pub hydrate_to: Option<ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorHydrateTo>,
+    /// SyncSource specifies where to sync hydrated manifests from.
+    #[serde(rename = "syncSource")]
+    pub sync_source: ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorSyncSource,
+}
+
+/// DrySource specifies where the dry "don't repeat yourself" manifest source lives.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorDrySource {
+    /// Path is a directory path within the Git repository where the manifests are located
+    pub path: String,
+    /// RepoURL is the URL to the git repository that contains the application manifests
+    #[serde(rename = "repoURL")]
+    pub repo_url: String,
+    /// TargetRevision defines the revision of the source to hydrate
+    #[serde(rename = "targetRevision")]
+    pub target_revision: String,
+}
+
+/// HydrateTo specifies an optional "staging" location to push hydrated manifests to. An external system would then
+/// have to move manifests to the SyncSource, e.g. by pull request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorHydrateTo {
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
+}
+
+/// SyncSource specifies where to sync hydrated manifests from.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ApplicationStatusSourceHydratorLastSuccessfulOperationSourceHydratorSyncSource {
+    /// Path is a directory path within the git repository where hydrated manifests should be committed to and synced
+    /// from. If hydrateTo is set, this is just the path from which hydrated manifests will be synced.
+    pub path: String,
+    /// TargetBranch is the branch to which hydrated manifests should be committed
+    #[serde(rename = "targetBranch")]
+    pub target_branch: String,
 }
 
 /// Summary contains a list of URLs and container images used by this application
@@ -3608,6 +3913,9 @@ pub struct ApplicationStatusSyncComparedToSource {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusSyncComparedToSourceKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3708,6 +4016,12 @@ pub struct ApplicationStatusSyncComparedToSourceHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,
@@ -3892,6 +4206,9 @@ pub struct ApplicationStatusSyncComparedToSources {
     /// Kustomize holds kustomize specific options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kustomize: Option<ApplicationStatusSyncComparedToSourcesKustomize>,
+    /// Name is used to refer to a source and is displayed in the UI. It is used in multi-source Applications.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Path is a directory path within the Git repository, and is only valid for applications sourced from Git.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3992,6 +4309,12 @@ pub struct ApplicationStatusSyncComparedToSourcesHelm {
     /// SkipCrds skips custom resource definition installation step (Helm's --skip-crds)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipCrds")]
     pub skip_crds: Option<bool>,
+    /// SkipSchemaValidation skips JSON schema validation (Helm's --skip-schema-validation)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSchemaValidation")]
+    pub skip_schema_validation: Option<bool>,
+    /// SkipTests skips test manifest installation step (Helm's --skip-tests).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipTests")]
+    pub skip_tests: Option<bool>,
     /// ValuesFiles is a list of Helm value files to use when generating a template
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFiles")]
     pub value_files: Option<Vec<String>>,

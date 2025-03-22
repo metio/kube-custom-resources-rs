@@ -635,12 +635,32 @@ spec:
                                     description: "APIServerDeploymentContainer is an API server Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the API server Deployment container by name.\nSupported values are: calico-apiserver, tigera-queryserver"
+                                        description: "Name is an enum which identifies the API server Deployment container by name.\nSupported values are: calico-apiserver, tigera-queryserver, calico-l7-admission-controller"
                                         enum:
                                           - "calico-apiserver"
                                           - "tigera-queryserver"
                                           - "calico-l7-admission-controller"
                                         type: "string"
+                                      ports:
+                                        description: "Ports allows customization of container's ports.\nIf specified, this overrides the named APIServer Deployment container's ports.\nIf omitted, the API server Deployment will use its default value for this container's port."
+                                        items:
+                                          properties:
+                                            containerPort:
+                                              description: "Number of port to expose on the pod's IP address.\nThis must be a valid port number, 0 < x < 65536."
+                                              format: "int32"
+                                              type: "integer"
+                                            name:
+                                              description: "Name is an enum which identifies the API server Deployment Container port by name.\nSupported values are: apiserver, queryserver, l7admctrl"
+                                              enum:
+                                                - "apiserver"
+                                                - "queryserver"
+                                                - "l7admctrl"
+                                              type: "string"
+                                          required:
+                                            - "containerPort"
+                                            - "name"
+                                          type: "object"
+                                        type: "array"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named API server Deployment container's resources.\nIf omitted, the API server Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:

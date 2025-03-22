@@ -99,6 +99,27 @@ pub struct KubeControllersConfigurationControllersNodeHostEndpoint {
     /// AutoCreate enables automatic creation of host endpoints for every node. [Default: Disabled]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreate")]
     pub auto_create: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefaultHostEndpoint")]
+    pub create_default_host_endpoint: Option<String>,
+    /// Templates contains definition for creating AutoHostEndpoints
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub templates: Option<Vec<KubeControllersConfigurationControllersNodeHostEndpointTemplates>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationControllersNodeHostEndpointTemplates {
+    /// GenerateName is appended to the end of the generated AutoHostEndpoint name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
+    pub generate_name: Option<String>,
+    /// InterfaceCIDRs contains a list of CIRDs used for matching nodeIPs to the AutoHostEndpoint
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceCIDRs")]
+    pub interface_cid_rs: Option<Vec<String>>,
+    /// Labels adds the specified labels to the generated AutoHostEndpoint, labels from node with the same name will be overwritten by values from the template label
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// NodeSelector allows the AutoHostEndpoint to be created only for specific nodes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<String>,
 }
 
 /// Policy enables and configures the policy controller. Enabled by default, set to nil to disable.
@@ -226,6 +247,27 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEnd
     /// AutoCreate enables automatic creation of host endpoints for every node. [Default: Disabled]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreate")]
     pub auto_create: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefaultHostEndpoint")]
+    pub create_default_host_endpoint: Option<String>,
+    /// Templates contains definition for creating AutoHostEndpoints
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub templates: Option<Vec<KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpointTemplates>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEndpointTemplates {
+    /// GenerateName is appended to the end of the generated AutoHostEndpoint name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
+    pub generate_name: Option<String>,
+    /// InterfaceCIDRs contains a list of CIRDs used for matching nodeIPs to the AutoHostEndpoint
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceCIDRs")]
+    pub interface_cid_rs: Option<Vec<String>>,
+    /// Labels adds the specified labels to the generated AutoHostEndpoint, labels from node with the same name will be overwritten by values from the template label
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// NodeSelector allows the AutoHostEndpoint to be created only for specific nodes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<String>,
 }
 
 /// Policy enables and configures the policy controller. Enabled by default, set to nil to disable.

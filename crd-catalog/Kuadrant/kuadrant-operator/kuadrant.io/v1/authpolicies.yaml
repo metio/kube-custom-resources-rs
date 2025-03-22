@@ -149,6 +149,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -198,6 +199,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -257,6 +259,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -271,6 +274,7 @@ spec:
                                 description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value that represents an identity.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -309,6 +313,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -374,6 +379,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -392,8 +398,21 @@ spec:
                               kubernetesSubjectAccessReview:
                                 description: "Authorization by Kubernetes SubjectAccessReview"
                                 properties:
+                                  authorizationGroups:
+                                    description: "Groups to check for existing permission in the Kubernetes RBAC alternatively to a specific user. This is typically obtained from a list of groups the user is a member of. Must be a static list of group names or dynamically resolve to one from the Authorization JSON."
+                                    properties:
+                                      expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
+                                        type: "string"
+                                      selector:
+                                        description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
+                                        type: "string"
+                                      value:
+                                        description: "Static value"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    type: "object"
                                   groups:
-                                    description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC."
+                                    description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC.\nDeprecated: Use authorizationGroups instead."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -404,6 +423,7 @@ spec:
                                         description: "API group of the resource.\nUse '*' for all API groups."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -416,6 +436,7 @@ spec:
                                         description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -428,6 +449,7 @@ spec:
                                         description: "Namespace where the user must have permissions on the resource."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -440,6 +462,7 @@ spec:
                                         description: "Resource kind\nUse '*' for all resource kinds."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -452,6 +475,7 @@ spec:
                                         description: "Subresource kind"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -464,6 +488,7 @@ spec:
                                         description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -477,6 +502,7 @@ spec:
                                     description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -504,6 +530,7 @@ spec:
                                         description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -516,6 +543,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -567,6 +595,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -652,6 +681,7 @@ spec:
                                         description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                         type: "string"
                                       urlExpression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                     type: "object"
                                   rego:
@@ -689,6 +719,7 @@ spec:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
                                         predicate:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -718,6 +749,7 @@ spec:
                                     description: "The name of the permission (or relation) on which to execute the check."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -732,6 +764,7 @@ spec:
                                       kind:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -743,6 +776,7 @@ spec:
                                       name:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -771,6 +805,7 @@ spec:
                                       kind:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -782,6 +817,7 @@ spec:
                                       name:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -823,6 +859,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -845,6 +882,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -867,6 +905,7 @@ spec:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -879,6 +918,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -930,6 +970,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1012,6 +1053,7 @@ spec:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
                                   urlExpression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                 type: "object"
                               metrics:
@@ -1051,6 +1093,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -1075,6 +1118,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1097,6 +1141,7 @@ spec:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1109,6 +1154,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1160,6 +1206,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1242,6 +1289,7 @@ spec:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
                                   urlExpression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                 type: "object"
                               metrics:
@@ -1309,6 +1357,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -1337,6 +1386,7 @@ spec:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
                                               expression:
+                                                description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                 type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1359,6 +1409,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1382,6 +1433,7 @@ spec:
                                         description: "Plain text content"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1423,6 +1475,7 @@ spec:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
                                             predicate:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -1439,6 +1492,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1495,6 +1549,7 @@ spec:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
                                               expression:
+                                                description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                 type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1517,6 +1572,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1540,6 +1596,7 @@ spec:
                                         description: "Plain text content"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1581,6 +1638,7 @@ spec:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
                                             predicate:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -1597,6 +1655,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1651,6 +1710,7 @@ spec:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1669,6 +1729,7 @@ spec:
                                   additionalProperties:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1683,6 +1744,7 @@ spec:
                                   description: "HTTP message to override the default denial message."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1699,6 +1761,7 @@ spec:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1717,6 +1780,7 @@ spec:
                                   additionalProperties:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1731,6 +1795,7 @@ spec:
                                   description: "HTTP message to override the default denial message."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1852,6 +1917,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1901,6 +1967,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1960,6 +2027,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -1974,6 +2042,7 @@ spec:
                                 description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value that represents an identity.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2012,6 +2081,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -2077,6 +2147,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2095,8 +2166,21 @@ spec:
                               kubernetesSubjectAccessReview:
                                 description: "Authorization by Kubernetes SubjectAccessReview"
                                 properties:
+                                  authorizationGroups:
+                                    description: "Groups to check for existing permission in the Kubernetes RBAC alternatively to a specific user. This is typically obtained from a list of groups the user is a member of. Must be a static list of group names or dynamically resolve to one from the Authorization JSON."
+                                    properties:
+                                      expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
+                                        type: "string"
+                                      selector:
+                                        description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
+                                        type: "string"
+                                      value:
+                                        description: "Static value"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    type: "object"
                                   groups:
-                                    description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC."
+                                    description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC.\nDeprecated: Use authorizationGroups instead."
                                     items:
                                       type: "string"
                                     type: "array"
@@ -2107,6 +2191,7 @@ spec:
                                         description: "API group of the resource.\nUse '*' for all API groups."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2119,6 +2204,7 @@ spec:
                                         description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2131,6 +2217,7 @@ spec:
                                         description: "Namespace where the user must have permissions on the resource."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2143,6 +2230,7 @@ spec:
                                         description: "Resource kind\nUse '*' for all resource kinds."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2155,6 +2243,7 @@ spec:
                                         description: "Subresource kind"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2167,6 +2256,7 @@ spec:
                                         description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2180,6 +2270,7 @@ spec:
                                     description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2207,6 +2298,7 @@ spec:
                                         description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2219,6 +2311,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2270,6 +2363,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2355,6 +2449,7 @@ spec:
                                         description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                         type: "string"
                                       urlExpression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                     type: "object"
                                   rego:
@@ -2392,6 +2487,7 @@ spec:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
                                         predicate:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -2421,6 +2517,7 @@ spec:
                                     description: "The name of the permission (or relation) on which to execute the check."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2435,6 +2532,7 @@ spec:
                                       kind:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2446,6 +2544,7 @@ spec:
                                       name:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2474,6 +2573,7 @@ spec:
                                       kind:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2485,6 +2585,7 @@ spec:
                                       name:
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2526,6 +2627,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -2548,6 +2650,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2570,6 +2673,7 @@ spec:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2582,6 +2686,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2633,6 +2738,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2715,6 +2821,7 @@ spec:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
                                   urlExpression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                 type: "object"
                               metrics:
@@ -2754,6 +2861,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -2778,6 +2886,7 @@ spec:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2800,6 +2909,7 @@ spec:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2812,6 +2922,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2863,6 +2974,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -2945,6 +3057,7 @@ spec:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
                                   urlExpression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                 type: "object"
                               metrics:
@@ -3012,6 +3125,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -3040,6 +3154,7 @@ spec:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
                                               expression:
+                                                description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                 type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3062,6 +3177,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3085,6 +3201,7 @@ spec:
                                         description: "Plain text content"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3126,6 +3243,7 @@ spec:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
                                             predicate:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -3142,6 +3260,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3198,6 +3317,7 @@ spec:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
                                               expression:
+                                                description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                 type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3220,6 +3340,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3243,6 +3364,7 @@ spec:
                                         description: "Plain text content"
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3284,6 +3406,7 @@ spec:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
                                             predicate:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -3300,6 +3423,7 @@ spec:
                                             additionalProperties:
                                               properties:
                                                 expression:
+                                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                                   type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3354,6 +3478,7 @@ spec:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3372,6 +3497,7 @@ spec:
                                   additionalProperties:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3386,6 +3512,7 @@ spec:
                                   description: "HTTP message to override the default denial message."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3402,6 +3529,7 @@ spec:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3420,6 +3548,7 @@ spec:
                                   additionalProperties:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3434,6 +3563,7 @@ spec:
                                   description: "HTTP message to override the default denial message."
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3552,6 +3682,7 @@ spec:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3601,6 +3732,7 @@ spec:
                             additionalProperties:
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3660,6 +3792,7 @@ spec:
                             additionalProperties:
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3674,6 +3807,7 @@ spec:
                             description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                             properties:
                               expression:
+                                description: "A Common Expression Language (CEL) expression that evaluates to a value that represents an identity.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                 type: "string"
                               selector:
                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3712,6 +3846,7 @@ spec:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
                                 predicate:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -3777,6 +3912,7 @@ spec:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3795,8 +3931,21 @@ spec:
                           kubernetesSubjectAccessReview:
                             description: "Authorization by Kubernetes SubjectAccessReview"
                             properties:
+                              authorizationGroups:
+                                description: "Groups to check for existing permission in the Kubernetes RBAC alternatively to a specific user. This is typically obtained from a list of groups the user is a member of. Must be a static list of group names or dynamically resolve to one from the Authorization JSON."
+                                properties:
+                                  expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
+                                    type: "string"
+                                  selector:
+                                    description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
+                                    type: "string"
+                                  value:
+                                    description: "Static value"
+                                    x-kubernetes-preserve-unknown-fields: true
+                                type: "object"
                               groups:
-                                description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC."
+                                description: "Groups the user must be a member of or, if `user` is omitted, the groups to check for authorization in the Kubernetes RBAC.\nDeprecated: Use authorizationGroups instead."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -3807,6 +3956,7 @@ spec:
                                     description: "API group of the resource.\nUse '*' for all API groups."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3819,6 +3969,7 @@ spec:
                                     description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3831,6 +3982,7 @@ spec:
                                     description: "Namespace where the user must have permissions on the resource."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3843,6 +3995,7 @@ spec:
                                     description: "Resource kind\nUse '*' for all resource kinds."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3855,6 +4008,7 @@ spec:
                                     description: "Subresource kind"
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3867,6 +4021,7 @@ spec:
                                     description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3880,6 +4035,7 @@ spec:
                                 description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3907,6 +4063,7 @@ spec:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3919,6 +4076,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -3970,6 +4128,7 @@ spec:
                                     additionalProperties:
                                       properties:
                                         expression:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4055,6 +4214,7 @@ spec:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
                                   urlExpression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                 type: "object"
                               rego:
@@ -4092,6 +4252,7 @@ spec:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
                                     predicate:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -4121,6 +4282,7 @@ spec:
                                 description: "The name of the permission (or relation) on which to execute the check."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4135,6 +4297,7 @@ spec:
                                   kind:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4146,6 +4309,7 @@ spec:
                                   name:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4174,6 +4338,7 @@ spec:
                                   kind:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4185,6 +4350,7 @@ spec:
                                   name:
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4226,6 +4392,7 @@ spec:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
                                 predicate:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -4248,6 +4415,7 @@ spec:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4270,6 +4438,7 @@ spec:
                                 description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4282,6 +4451,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4333,6 +4503,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4415,6 +4586,7 @@ spec:
                                 description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                 type: "string"
                               urlExpression:
+                                description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                 type: "string"
                             type: "object"
                           metrics:
@@ -4454,6 +4626,7 @@ spec:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
                                 predicate:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -4478,6 +4651,7 @@ spec:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4500,6 +4674,7 @@ spec:
                                 description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4512,6 +4687,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4563,6 +4739,7 @@ spec:
                                 additionalProperties:
                                   properties:
                                     expression:
+                                      description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                       type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4645,6 +4822,7 @@ spec:
                                 description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                 type: "string"
                               urlExpression:
+                                description: "A Common Expression Language (CEL) expression that evaluates to a string endpoint URL of the HTTP service to call.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                 type: "string"
                             type: "object"
                           metrics:
@@ -4712,6 +4890,7 @@ spec:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
                                 predicate:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -4740,6 +4919,7 @@ spec:
                                         description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4762,6 +4942,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4785,6 +4966,7 @@ spec:
                                     description: "Plain text content"
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4826,6 +5008,7 @@ spec:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
                                         predicate:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -4842,6 +5025,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4898,6 +5082,7 @@ spec:
                                         description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                         properties:
                                           expression:
+                                            description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                             type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4920,6 +5105,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4943,6 +5129,7 @@ spec:
                                     description: "Plain text content"
                                     properties:
                                       expression:
+                                        description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                         type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -4984,6 +5171,7 @@ spec:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
                                         predicate:
+                                          description: "A Common Expression Language (CEL) expression that evaluates to a boolean.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                           type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -5000,6 +5188,7 @@ spec:
                                         additionalProperties:
                                           properties:
                                             expression:
+                                              description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                               type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5054,6 +5243,7 @@ spec:
                               description: "HTTP response body to override the default denial body."
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5072,6 +5262,7 @@ spec:
                               additionalProperties:
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5086,6 +5277,7 @@ spec:
                               description: "HTTP message to override the default denial message."
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5102,6 +5294,7 @@ spec:
                               description: "HTTP response body to override the default denial body."
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5120,6 +5313,7 @@ spec:
                               additionalProperties:
                                 properties:
                                   expression:
+                                    description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                     type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
@@ -5134,6 +5328,7 @@ spec:
                               description: "HTTP message to override the default denial message."
                               properties:
                                 expression:
+                                  description: "A Common Expression Language (CEL) expression that evaluates to a value.\nString expressions are supported (https://pkg.go.dev/github.com/google/cel-go/ext#Strings)."
                                   type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."

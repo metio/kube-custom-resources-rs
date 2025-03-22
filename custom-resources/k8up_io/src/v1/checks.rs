@@ -29,6 +29,9 @@ pub struct CheckSpec {
     /// Backend contains the restic repo where the job should backup to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backend: Option<CheckBackend>,
+    /// ClusterName sets the kubernetes cluster name to send to pushgateway for grouping metrics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
     /// FailedJobsHistoryLimit amount of failed jobs to keep for later analysis.
     /// KeepJobs is used property is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedJobsHistoryLimit")]

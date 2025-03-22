@@ -199,17 +199,20 @@ pub struct PolicyRateLimit {
 /// RateLimitCondition defines a condition for a rate limit policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRateLimitCondition {
+    /// sets the rate limit in this policy to be the default if no conditions are met. In a group of policies with the same JWT condition, only one policy can be the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
-    /// JWTCondition defines a condition for a rate limit by JWT claim.
+    /// defines a JWT condition to rate limit against.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<PolicyRateLimitConditionJwt>,
 }
 
-/// JWTCondition defines a condition for a rate limit by JWT claim.
+/// defines a JWT condition to rate limit against.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRateLimitConditionJwt {
+    /// the JWT claim to be rate limit by. Nested claims should be separated by "."
     pub claim: String,
+    /// the value of the claim to match against.
     #[serde(rename = "match")]
     pub r#match: String,
 }

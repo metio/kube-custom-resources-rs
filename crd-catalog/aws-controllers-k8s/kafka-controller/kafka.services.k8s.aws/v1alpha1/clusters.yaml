@@ -273,7 +273,7 @@ spec:
                 bootstrapBrokerStringVPCConnectivityTLS:
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -298,6 +298,9 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                currentVersion:
+                  description: "The current version of the MSK cluster."
+                  type: "string"
                 state:
                   description: "The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,\nFAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING."
                   type: "string"

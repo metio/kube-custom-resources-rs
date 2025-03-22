@@ -48,11 +48,42 @@ pub struct SecretClassBackend {
 /// A new certificate and key pair will be generated and signed for each Pod, keys or certificates are never reused.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretClassBackendAutoTls {
+    /// Additional trust roots which are added to the provided `ca.crt` file.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalTrustRoots")]
+    pub additional_trust_roots: Option<Vec<SecretClassBackendAutoTlsAdditionalTrustRoots>>,
     /// Configures the certificate authority used to issue Pod certificates.
     pub ca: SecretClassBackendAutoTlsCa,
     /// Maximum lifetime the created certificates are allowed to have. In case consumers request a longer lifetime than allowed by this setting, the lifetime will be the minimum of both, so this setting takes precedence. The default value is 15 days.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxCertificateLifetime")]
     pub max_certificate_lifetime: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendAutoTlsAdditionalTrustRoots {
+    /// Reference (name and namespace) to a Kubernetes ConfigMap object where additional certificates are stored. The extensions of the keys denote its contents: A key suffixed with `.crt` contains a stack of base64 encoded DER certificates, a key suffixed with `.der` contains a binary DER certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<SecretClassBackendAutoTlsAdditionalTrustRootsConfigMap>,
+    /// Reference (name and namespace) to a Kubernetes Secret object where additional certificates are stored. The extensions of the keys denote its contents: A key suffixed with `.crt` contains a stack of base64 encoded DER certificates, a key suffixed with `.der` contains a binary DER certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<SecretClassBackendAutoTlsAdditionalTrustRootsSecret>,
+}
+
+/// Reference (name and namespace) to a Kubernetes ConfigMap object where additional certificates are stored. The extensions of the keys denote its contents: A key suffixed with `.crt` contains a stack of base64 encoded DER certificates, a key suffixed with `.der` contains a binary DER certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendAutoTlsAdditionalTrustRootsConfigMap {
+    /// Name of the ConfigMap being referred to.
+    pub name: String,
+    /// Namespace of the ConfigMap being referred to.
+    pub namespace: String,
+}
+
+/// Reference (name and namespace) to a Kubernetes Secret object where additional certificates are stored. The extensions of the keys denote its contents: A key suffixed with `.crt` contains a stack of base64 encoded DER certificates, a key suffixed with `.der` contains a binary DER certificate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretClassBackendAutoTlsAdditionalTrustRootsSecret {
+    /// Name of the Secret being referred to.
+    pub name: String,
+    /// Namespace of the Secret being referred to.
+    pub namespace: String,
 }
 
 /// Configures the certificate authority used to issue Pod certificates.

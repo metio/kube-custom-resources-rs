@@ -3308,6 +3308,16 @@ spec:
                   type: "string"
                 resp3Default:
                   type: "boolean"
+                securityContext:
+                  properties:
+                    readOnlyRootFilesystemPolicy:
+                      properties:
+                        enabled:
+                          type: "boolean"
+                      required:
+                        - "enabled"
+                      type: "object"
+                  type: "object"
                 serviceAccountName:
                   type: "string"
                 services:

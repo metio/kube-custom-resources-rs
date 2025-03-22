@@ -722,8 +722,8 @@ pub struct CiliumNetworkPolicyEgressToPortsRulesHttp {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicyEgressToPortsRulesHttpHeaderMatches {
@@ -747,8 +747,8 @@ pub struct CiliumNetworkPolicyEgressToPortsRulesHttpHeaderMatches {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumNetworkPolicyEgressToPortsRulesHttpHeaderMatchesMismatch {
@@ -2194,8 +2194,8 @@ pub struct CiliumNetworkPolicyIngressToPortsRulesHttp {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicyIngressToPortsRulesHttpHeaderMatches {
@@ -2219,8 +2219,8 @@ pub struct CiliumNetworkPolicyIngressToPortsRulesHttpHeaderMatches {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumNetworkPolicyIngressToPortsRulesHttpHeaderMatchesMismatch {
@@ -3541,8 +3541,8 @@ pub struct CiliumNetworkPolicysEgressToPortsRulesHttp {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicysEgressToPortsRulesHttpHeaderMatches {
@@ -3566,8 +3566,8 @@ pub struct CiliumNetworkPolicysEgressToPortsRulesHttpHeaderMatches {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumNetworkPolicysEgressToPortsRulesHttpHeaderMatchesMismatch {
@@ -5013,8 +5013,8 @@ pub struct CiliumNetworkPolicysIngressToPortsRulesHttp {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNetworkPolicysIngressToPortsRulesHttpHeaderMatches {
@@ -5038,8 +5038,8 @@ pub struct CiliumNetworkPolicysIngressToPortsRulesHttpHeaderMatches {
 }
 
 /// HeaderMatch extends the HeaderValue for matching requirement of a
-/// named header field against an immediate string, a secret value, or
-/// a regex.  If none of the optional fields is present, then the
+/// named header field against an immediate string or a secret value.
+/// If none of the optional fields is present, then the
 /// header value is not matched, only presence of the header is enough.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumNetworkPolicysIngressToPortsRulesHttpHeaderMatchesMismatch {

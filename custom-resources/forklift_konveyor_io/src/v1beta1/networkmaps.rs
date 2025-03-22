@@ -44,7 +44,11 @@ pub struct NetworkMapMapDestination {
     /// The namespace (multus only).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// The network type.
+    /// Type of network to use for the destination.
+    /// Valid values:
+    /// - pod: Use the Kubernetes pod network
+    /// - multus: Use a Multus additional network
+    /// - ignored: Network is excluded from mapping
     #[serde(rename = "type")]
     pub r#type: NetworkMapMapDestinationType,
 }
@@ -56,6 +60,8 @@ pub enum NetworkMapMapDestinationType {
     Pod,
     #[serde(rename = "multus")]
     Multus,
+    #[serde(rename = "ignored")]
+    Ignored,
 }
 
 /// Source network.

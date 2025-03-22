@@ -2220,6 +2220,10 @@ pub struct PolicyRulesValidateCel {
     /// Expressions is a list of CELExpression types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expressions: Option<Vec<PolicyRulesValidateCelExpressions>>,
+    /// Generate specifies whether to generate a Kubernetes ValidatingAdmissionPolicy from the rule.
+    /// Optional. Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generate: Option<bool>,
     /// ParamKind is a tuple of Group Kind and Version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "paramKind")]
     pub param_kind: Option<PolicyRulesValidateCelParamKind>,
@@ -6570,6 +6574,10 @@ pub struct PolicyStatusAutogenRulesValidateCel {
     /// Expressions is a list of CELExpression types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expressions: Option<Vec<PolicyStatusAutogenRulesValidateCelExpressions>>,
+    /// Generate specifies whether to generate a Kubernetes ValidatingAdmissionPolicy from the rule.
+    /// Optional. Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub generate: Option<bool>,
     /// ParamKind is a tuple of Group Kind and Version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "paramKind")]
     pub param_kind: Option<PolicyStatusAutogenRulesValidateCelParamKind>,

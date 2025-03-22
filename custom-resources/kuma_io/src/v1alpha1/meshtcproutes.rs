@@ -32,11 +32,10 @@ pub struct MeshTCPRouteSpec {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined in-place.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTCPRouteTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTCPRouteTargetRefKind>,
+    pub kind: MeshTCPRouteTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,12 +82,11 @@ pub enum MeshTCPRouteTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTCPRouteTo {
     /// Rules contains the routing rules applies to a combination of top-level
     /// targetRef and the targetRef in this entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<MeshTCPRouteToRules>>,
+    pub rules: Vec<MeshTCPRouteToRules>,
     /// TargetRef is a reference to the resource that represents a group of
     /// destinations.
     #[serde(rename = "targetRef")]
@@ -106,16 +104,15 @@ pub struct MeshTCPRouteToRules {
 /// policies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshTCPRouteToRulesDefault {
-    #[serde(rename = "backendRefs")]
-    pub backend_refs: Vec<MeshTCPRouteToRulesDefaultBackendRefs>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRefs")]
+    pub backend_refs: Option<Vec<MeshTCPRouteToRulesDefaultBackendRefs>>,
 }
 
 /// BackendRef defines where to forward traffic.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTCPRouteToRulesDefaultBackendRefs {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTCPRouteToRulesDefaultBackendRefsKind>,
+    pub kind: MeshTCPRouteToRulesDefaultBackendRefsKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -167,11 +164,10 @@ pub enum MeshTCPRouteToRulesDefaultBackendRefsKind {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshTCPRouteToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshTCPRouteToTargetRefKind>,
+    pub kind: MeshTCPRouteToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]

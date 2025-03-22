@@ -49,7 +49,8 @@ pub struct VSphereDatacenterConfigFailureDomains {
 /// VSphereDatacenterConfigStatus defines the observed state of VSphereDatacenterConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereDatacenterConfigStatus {
-    /// FailureMessage indicates that there is a fatal problem reconciling the state, and will be set to a descriptive error message.
+    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// state, and will be set to a descriptive error message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.

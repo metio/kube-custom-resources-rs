@@ -53,6 +53,9 @@ spec:
                 name:
                   description: "Specifies the name of the trail. The name must meet the following requirements:\n\n   * Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores\n   (_), or dashes (-)\n\n   * Start with a letter or number, and end with a letter or number\n\n   * Be between 3 and 128 characters\n\n   * Have no adjacent periods, underscores or dashes. Names like my-_namespace\n   and my--namespace are not valid.\n\n   * Not be in IP address format (for example, 192.168.5.4)"
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 s3BucketName:
                   description: "Specifies the name of the Amazon S3 bucket designated for publishing log\nfiles. For information about bucket naming rules, see Bucket naming rules\n(https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)\nin the Amazon Simple Storage Service User Guide."
                   type: "string"
@@ -96,7 +99,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

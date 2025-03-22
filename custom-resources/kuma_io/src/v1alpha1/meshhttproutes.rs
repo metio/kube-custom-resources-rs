@@ -32,11 +32,10 @@ pub struct MeshHTTPRouteSpec {
 /// TargetRef is a reference to the resource the policy takes an effect on.
 /// The resource could be either a real store object or virtual resource
 /// defined inplace.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshHTTPRouteTargetRefKind>,
+    pub kind: MeshHTTPRouteTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,7 +82,7 @@ pub enum MeshHTTPRouteTargetRefKind {
     Dataplane,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteTo {
     /// Hostnames is only valid when targeting MeshGateway and limits the
     /// effects of the rules to requests to this hostname.
@@ -93,12 +92,11 @@ pub struct MeshHTTPRouteTo {
     pub hostnames: Option<Vec<String>>,
     /// Rules contains the routing rules applies to a combination of top-level
     /// targetRef and the targetRef in this entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<MeshHTTPRouteToRules>>,
+    pub rules: Vec<MeshHTTPRouteToRules>,
     /// TargetRef is a reference to the resource that represents a group of
     /// request destinations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
-    pub target_ref: Option<MeshHTTPRouteToTargetRef>,
+    #[serde(rename = "targetRef")]
+    pub target_ref: MeshHTTPRouteToTargetRef,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -122,11 +120,10 @@ pub struct MeshHTTPRouteToRulesDefault {
 }
 
 /// BackendRef defines where to forward traffic.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultBackendRefs {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshHTTPRouteToRulesDefaultBackendRefsKind>,
+    pub kind: MeshHTTPRouteToRulesDefaultBackendRefsKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -223,7 +220,7 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestHeaderModifierSet {
     pub value: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
     /// BackendRef defines where to forward traffic.
     #[serde(rename = "backendRef")]
@@ -235,11 +232,10 @@ pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirror {
 }
 
 /// BackendRef defines where to forward traffic.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind>,
+    pub kind: MeshHTTPRouteToRulesDefaultFiltersRequestMirrorBackendRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -522,11 +518,10 @@ pub enum MeshHTTPRouteToRulesMatchesQueryParamsType {
 
 /// TargetRef is a reference to the resource that represents a group of
 /// request destinations.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshHTTPRouteToTargetRef {
     /// Kind of the referenced resource
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<MeshHTTPRouteToTargetRefKind>,
+    pub kind: MeshHTTPRouteToTargetRefKind,
     /// Labels are used to select group of MeshServices that match labels. Either Labels or
     /// Name and Namespace can be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
