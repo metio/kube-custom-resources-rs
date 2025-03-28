@@ -1966,91 +1966,31 @@ spec:
                       type: "object"
                   type: "object"
                 configs:
-                  description: "Specifies the configuration file templates and volume mount parameters used by the Component.\nIt also includes descriptions of the parameters in the ConfigMaps, such as value range limitations.\n\n\nThis field specifies a list of templates that will be rendered into Component containers' configuration files.\nEach template is represented as a ConfigMap and may contain multiple configuration files,\nwith each file being a key in the ConfigMap.\n\n\nThe rendered configuration files will be mounted into the Component's containers\n according to the specified volume mount parameters.\n\n\nThis field is immutable."
+                  description: "Specifies the config file templates and volume mount parameters used by the Component.\n\n\nThis field specifies a list of templates that will be rendered into Component containers' config files.\nEach template is represented as a ConfigMap and may contain multiple config files, with each file being a key in the ConfigMap.\n\n\nThis field is immutable."
                   items:
                     properties:
-                      asEnvFrom:
-                        description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image.\n\n\nDeprecated: `asEnvFrom` has been deprecated since 0.9.0 and will be removed in 0.10.0.\nUse `injectEnvTo` instead."
-                        items:
-                          type: "string"
-                        type: "array"
-                        x-kubernetes-list-type: "set"
-                      asSecret:
-                        description: "Whether to store the final rendered parameters as a secret."
-                        type: "boolean"
-                      constraintRef:
-                        description: "Specifies the name of the referenced configuration constraints object."
-                        maxLength: 63
-                        pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                        type: "string"
                       defaultMode:
-                        description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
+                        description: "The operator attempts to set default file permissions (0444).\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                         format: "int32"
                         type: "integer"
-                      injectEnvTo:
-                        description: "Specifies the containers to inject the ConfigMap parameters as environment variables.\n\n\nThis is useful when application images accept parameters through environment variables and\ngenerate the final configuration file in the startup script based on these variables.\n\n\nThis field allows users to specify a list of container names, and KubeBlocks will inject the environment\nvariables converted from the ConfigMap into these designated containers. This provides a flexible way to\npass the configuration items from the ConfigMap to the container without modifying the image."
-                        items:
-                          type: "string"
-                        type: "array"
-                        x-kubernetes-list-type: "set"
-                      keys:
-                        description: "Specifies the configuration files within the ConfigMap that support dynamic updates.\n\n\nA configuration template (provided in the form of a ConfigMap) may contain templates for multiple\nconfiguration files.\nEach configuration file corresponds to a key in the ConfigMap.\nSome of these configuration files may support dynamic modification and reloading without requiring\na pod restart.\n\n\nIf empty or omitted, all configuration files in the ConfigMap are assumed to support dynamic updates,\nand ConfigConstraint applies to all keys."
-                        items:
-                          type: "string"
-                        type: "array"
-                        x-kubernetes-list-type: "set"
-                      legacyRenderedConfigSpec:
-                        description: "Specifies the secondary rendered config spec for pod-specific customization.\n\n\nThe template is rendered inside the pod (by the \"config-manager\" sidecar container) and merged with the main\ntemplate's render result to generate the final configuration file.\n\n\nThis field is intended to handle scenarios where different pods within the same Component have\nvarying configurations. It allows for pod-specific customization of the configuration.\n\n\nNote: This field will be deprecated in future versions, and the functionality will be moved to\n`cluster.spec.componentSpecs[*].instances[*]`."
-                        properties:
-                          namespace:
-                            default: "default"
-                            description: "Specifies the namespace of the referenced configuration template ConfigMap object.\nAn empty namespace is equivalent to the \"default\" namespace."
-                            pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
-                            type: "string"
-                          policy:
-                            default: "none"
-                            description: "Defines the strategy for merging externally imported templates into component templates."
-                            enum:
-                              - "patch"
-                              - "replace"
-                              - "none"
-                            type: "string"
-                          templateRef:
-                            description: "Specifies the name of the referenced configuration template ConfigMap object."
-                            pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                            type: "string"
-                        required:
-                          - "templateRef"
-                        type: "object"
                       name:
-                        description: "Specifies the name of the configuration template."
+                        description: "Specifies the name of the template."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       namespace:
                         default: "default"
-                        description: "Specifies the namespace of the referenced configuration template ConfigMap object.\nAn empty namespace is equivalent to the \"default\" namespace."
+                        description: "Specifies the namespace of the referenced template ConfigMap object."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
-                      reRenderResourceTypes:
-                        description: "Specifies whether the configuration needs to be re-rendered after v-scale or h-scale operations to reflect changes.\n\n\nIn some scenarios, the configuration may need to be updated to reflect the changes in resource allocation\nor cluster topology. Examples:\n\n\n- Redis: adjust maxmemory after v-scale operation.\n- MySQL: increase max connections after v-scale operation.\n- Zookeeper: update zoo.cfg with new node addresses after h-scale operation."
-                        items:
-                          description: "RerenderResourceType defines the resource requirements for a component."
-                          enum:
-                            - "vscale"
-                            - "hscale"
-                            - "tls"
-                          type: "string"
-                        type: "array"
-                        x-kubernetes-list-type: "set"
-                      templateRef:
-                        description: "Specifies the name of the referenced configuration template ConfigMap object."
+                      template:
+                        description: "Specifies the name of the referenced template ConfigMap object."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       volumeName:
-                        description: "Refers to the volume name of PodTemplate. The configuration file produced through the configuration\ntemplate will be mounted to the corresponding volume. Must be a DNS_LABEL name.\nThe volume name must be defined in podSpec.containers[*].volumeMounts."
+                        description: "Refers to the volume name of PodTemplate. The file produced through the template will be mounted to\nthe corresponding volume. Must be a DNS_LABEL name.\nThe volume name must be defined in podSpec.containers[*].volumeMounts."
                         maxLength: 63
                         pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
@@ -2058,9 +1998,6 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
-                  x-kubernetes-list-map-keys:
-                    - "name"
-                  x-kubernetes-list-type: "map"
                 description:
                   description: "Provides a brief and concise explanation of the Component's purpose, functionality, and any relevant details.\nIt serves as a quick reference for users to understand the Component's role and characteristics."
                   maxLength: 256
@@ -2112,10 +2049,10 @@ spec:
                   description: "Specifies static labels that will be patched to all Kubernetes resources created for the Component.\n\n\nNote: If a label key in the `labels` field conflicts with any system labels or user-specified labels,\nit will be silently ignored to avoid overriding higher-priority labels.\n\n\nThis field is immutable."
                   type: "object"
                 lifecycleActions:
-                  description: "Defines a set of hooks and procedures that customize the behavior of a Component throughout its lifecycle.\nActions are triggered at specific lifecycle stages:\n\n\n  - `postProvision`: Defines the hook to be executed after the creation of a Component,\n    with `preCondition` specifying when the action should be fired relative to the Component's lifecycle stages:\n    `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.\n  - `preTerminate`: Defines the hook to be executed before terminating a Component.\n  - `roleProbe`: Defines the procedure which is invoked regularly to assess the role of replicas.\n  - `switchover`: Defines the procedure for a controlled transition of leadership from the current leader to a new replica.\n    This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,\n    such as before planned maintenance or upgrades on the current leader node.\n  - `memberJoin`: Defines the procedure to add a new replica to the replication group.\n  - `memberLeave`: Defines the method to remove a replica from the replication group.\n  - `readOnly`: Defines the procedure to switch a replica into the read-only state.\n  - `readWrite`: transition a replica from the read-only state back to the read-write state.\n  - `dataDump`: Defines the procedure to export the data from a replica.\n  - `dataLoad`: Defines the procedure to import data into a replica.\n  - `reconfigure`: Defines the procedure that update a replica with new configuration file.\n  - `accountProvision`: Defines the procedure to generate a new database account.\n\n\nThis field is immutable."
+                  description: "Defines a set of hooks and procedures that customize the behavior of a Component throughout its lifecycle.\nActions are triggered at specific lifecycle stages:\n\n\n  - `postProvision`: Defines the hook to be executed after the creation of a Component,\n    with `preCondition` specifying when the action should be fired relative to the Component's lifecycle stages:\n    `Immediately`, `RuntimeReady`, `ComponentReady`, and `ClusterReady`.\n  - `preTerminate`: Defines the hook to be executed before terminating a Component.\n  - `roleProbe`: Defines the procedure which is invoked regularly to assess the role of replicas.\n  - `switchover`: Defines the procedure for a controlled transition of a role to a new replica.\n    This approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,\n    such as before planned maintenance or upgrades on the current leader node.\n  - `memberJoin`: Defines the procedure to add a new replica to the replication group.\n  - `memberLeave`: Defines the method to remove a replica from the replication group.\n  - `readOnly`: Defines the procedure to switch a replica into the read-only state.\n  - `readWrite`: transition a replica from the read-only state back to the read-write state.\n  - `dataDump`: Defines the procedure to export the data from a replica.\n  - `dataLoad`: Defines the procedure to import data into a replica.\n  - `reconfigure`: Defines the procedure that update a replica with new configuration file.\n  - `accountProvision`: Defines the procedure to generate a new database account.\n\n\nThis field is immutable."
                   properties:
                     accountProvision:
-                      description: "Defines the procedure to generate a new database account.\n\n\nUse Case:\nThis action is designed to create system accounts that are utilized for replication, monitoring, backup,\nand other administrative tasks.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_ACCOUNT_NAME: The name of the system account to be created.\n- KB_ACCOUNT_PASSWORD: The password for the system account.  // TODO: how to pass the password securely?\n- KB_ACCOUNT_STATEMENT: The statement used to create the system account.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Defines the procedure to generate a new database account.\n\n\nUse Case:\nThis action is designed to create system accounts that are utilized for replication, monitoring, backup,\nand other administrative tasks.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_ACCOUNT_NAME: The name of the system account to be manipulated.\n- KB_ACCOUNT_PASSWORD: The password for the system account.\n- KB_ACCOUNT_STATEMENT: The statement used to manipulate the system account.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -2411,7 +2348,7 @@ spec:
                           type: "integer"
                       type: "object"
                     dataDump:
-                      description: "Defines the procedure for exporting the data from a replica.\n\n\nUse Case:\nThis action is intended for initializing a newly created replica with data. It involves exporting data\nfrom an existing replica and importing it into the new, empty replica. This is essential for synchronizing\nthe state of replicas across the system.\n\n\nApplicability:\nSome database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.\nIn such cases, this action may not be required.\n\n\nThe output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure\nthat only the necessary data is exported for import into the new replica.\n\n\nNote: This field is immutable once it has been set."
+                      description: "Defines the procedure for exporting the data from a replica.\n\n\nUse Case:\nThis action is intended for initializing a newly created replica with data. It involves exporting data\nfrom an existing replica and importing it into the new, empty replica. This is essential for synchronizing\nthe state of replicas across the system.\n\n\nApplicability:\nSome database engines or associated sidecar applications (e.g., Patroni) may already provide this functionality.\nIn such cases, this action may not be required.\n\n\nThe output should be a valid data dump streamed to stdout. It must exclude any irrelevant information to ensure\nthat only the necessary data is exported for import into the new replica.\n\n\nThe container executing this action has access to following environment variables:\n\n\n- KB_TARGET_POD_NAME: The name of the replica pod into which the data will be loaded.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -3827,7 +3764,7 @@ spec:
                           type: "integer"
                       type: "object"
                     switchover:
-                      description: "Defines the procedure for a controlled transition of leadership from the current leader to a new replica.\nThis approach aims to minimize downtime and maintain availability in systems with a leader-follower topology,\nduring events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations\ninvolving the current leader node.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod for the new leader candidate, which may not be specified (empty).\n- KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the new leader candidate's pod, which may not be specified (empty).\n\n\nNote: This field is immutable once it has been set."
+                      description: "Defines the procedure for a controlled transition of a role to a new replica.\nThis approach aims to minimize downtime and maintain availability\nduring events such as planned maintenance or when performing stop, shutdown, restart, or upgrade operations.\nIn a typical consensus system, this action is used to transfer leader role to another replica.\n\n\nThe container executing this action has access to following variables:\n\n\n- KB_SWITCHOVER_CANDIDATE_NAME: The name of the pod of the new role's candidate, which may not be specified (empty).\n- KB_SWITCHOVER_CANDIDATE_FQDN: The FQDN of the pod of the new role's candidate, which may not be specified (empty).\n- KB_SWITCHOVER_CURRENT_NAME: The name of the pod of the current role.\n- KB_SWITCHOVER_CURRENT_FQDN: The FQDN of the pod of the current role.\n- KB_SWITCHOVER_ROLE: The role that will be transferred to another replica.\n  This variable can be empty if, for example, role probe does not succeed.\n  It depends on the addon implementation what to do under such cases.\n\n\nNote: This field is immutable once it has been set."
                       properties:
                         exec:
                           description: "Defines the command to run.\n\n\nThis field cannot be updated."
@@ -3997,7 +3934,7 @@ spec:
                   description: "InstanceSet controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
                   type: "string"
                 policyRules:
-                  description: "Defines the namespaced policy rules required by the Component.\n\n\nThe `policyRules` field is an array of `rbacv1.PolicyRule` objects that define the policy rules\nneeded by the Component to operate within a namespace.\nThese policy rules determine the permissions and verbs the Component is allowed to perform on\nKubernetes resources within the namespace.\n\n\nThe purpose of this field is to automatically generate the necessary RBAC roles\nfor the Component based on the specified policy rules.\nThis ensures that the Pods in the Component has appropriate permissions to function.\n\n\nNote: This field is currently non-functional and is reserved for future implementation.\n\n\nThis field is immutable."
+                  description: "Defines the namespaced policy rules required by the Component.\n\n\nThe `policyRules` field is an array of `rbacv1.PolicyRule` objects that define the policy rules\nneeded by the Component to operate within a namespace.\nThese policy rules determine the permissions and verbs the Component is allowed to perform on\nKubernetes resources within the namespace.\n\n\nThe purpose of this field is to automatically generate the necessary RBAC roles\nfor the Component based on the specified policy rules.\nThis ensures that the Pods in the Component has appropriate permissions to function.\n\n\nTo prevent privilege escalation, only permissions already owned by KubeBlocks can be added here.\n\n\nThis field is immutable."
                   items:
                     description: "PolicyRule holds information that describes a policy rule, but does not contain information\nabout who the rule applies to or which namespace the rule applies to."
                     properties:
@@ -4055,30 +3992,27 @@ spec:
                     - message: "the minimum replicas limit should be no greater than the maximum"
                       rule: "self.minReplicas <= self.maxReplicas"
                 roles:
-                  description: "Enumerate all possible roles assigned to each replica of the Component, influencing its behavior.\n\n\nA replica can have zero to multiple roles.\nKubeBlocks operator determines the roles of each replica by invoking the `lifecycleActions.roleProbe` method.\nThis action returns a list of roles for each replica, and the returned roles must be predefined in the `roles` field.\n\n\nThe roles assigned to a replica can influence various aspects of the Component's behavior, such as:\n\n\n- Service selection: The Component's exposed Services may target replicas based on their roles using `roleSelector`.\n- Update order: The roles can determine the order in which replicas are updated during a Component update.\n  For instance, replicas with a \"follower\" role can be updated first, while the replica with the \"leader\"\n  role is updated last. This helps minimize the number of leader changes during the update process.\n\n\nThis field is immutable."
+                  description: "Enumerate all possible roles assigned to each replica of the Component, influencing its behavior.\n\n\nA replica can have zero or one role.\nKubeBlocks operator determines the role of each replica by invoking the `lifecycleActions.roleProbe` method.\nThis action returns the role for each replica, and the returned role must be predefined here.\n\n\nThe roles assigned to a replica can influence various aspects of the Component's behavior, such as:\n\n\n- Service selection: The Component's exposed Services may target replicas based on their roles using `roleSelector`.\n- Update order: The roles can determine the order in which replicas are updated during a Component update.\n  For instance, replicas with a \"follower\" role can be updated first, while the replica with the \"leader\"\n  role is updated last. This helps minimize the number of leader changes during the update process.\n\n\nThis field is immutable."
                   items:
-                    description: "ReplicaRole represents a role that can be assumed by a component instance."
+                    description: "ReplicaRole represents a role that can be assigned to a component instance, defining its behavior and responsibilities."
                     properties:
                       name:
-                        description: "Defines the role's identifier. It is used to set the \"apps.kubeblocks.io/role\" label value\non the corresponding object.\n\n\nThis field is immutable once set."
+                        description: "Name defines the role's unique identifier. This value is used to set the \"apps.kubeblocks.io/role\" label\non the corresponding object to identify its role.\n\n\nFor example, common role names include:\n- \"leader\": The primary/master instance that handles write operations\n- \"follower\": Secondary/replica instances that replicate data from the leader\n- \"learner\": Read-only instances that don't participate in elections\n\n\nThis field is immutable once set."
                         maxLength: 32
                         pattern: "^.*[^\\s]+.*$"
                         type: "string"
-                      serviceable:
+                      participatesInQuorum:
                         default: false
-                        description: "Indicates whether a replica assigned this role is capable of providing services.\n\n\nThis field is immutable once set."
+                        description: "ParticipatesInQuorum indicates if pods with this role are counted when determining quorum.\nThis affects update strategies that need to maintain quorum for availability. Roles participate\nin quorum should have higher update priority than roles do not participate in quorum.\nThe default value is false.\n\n\nFor example, in a 5-pod component where:\n- 2 learner pods (participatesInQuorum=false)\n- 2 follower pods (participatesInQuorum=true)\n- 1 leader pod (participatesInQuorum=true)\nThe quorum size would be 3 (based on the 3 participating pods), allowing parallel updates\nof 2 learners and 1 follower while maintaining quorum.\n\n\nThis field is immutable once set."
                         type: "boolean"
-                      votable:
-                        default: false
-                        description: "Specifies whether a replica with this role has voting rights.\nIn distributed systems, this typically means the replica can participate in consensus decisions,\nconfiguration changes, or other processes that require a quorum.\n\n\nThis field is immutable once set."
-                        type: "boolean"
-                      writable:
-                        default: false
-                        description: "Determines if a replica in this role has the authority to perform write operations.\nA writable replica can modify data, handle update operations.\n\n\nThis field is immutable once set."
-                        type: "boolean"
+                      updatePriority:
+                        default: 0
+                        description: "UpdatePriority determines the order in which pods with different roles are updated.\nPods are sorted by this priority (higher numbers = higher priority) and updated accordingly.\nRoles with the highest priority will be updated last.\nThe default priority is 0.\n\n\nFor example:\n- Leader role may have priority 2 (updated last)\n- Follower role may have priority 1 (updated before leader)\n- Learner role may have priority 0 (updated first)\n\n\nThis field is immutable once set."
+                        type: "integer"
                     required:
                       - "name"
                     type: "object"
+                  maxItems: 128
                   type: "array"
                 runtime:
                   description: "Specifies the PodSpec template used in the Component.\nIt includes the following elements:\n\n\n- Init containers\n- Containers\n    - Image\n    - Commands\n    - Args\n    - Envs\n    - Mounts\n    - Ports\n    - Security context\n    - Probes\n    - Lifecycle\n- Volumes\n\n\nThis field is intended to define static settings that remain consistent across all instantiated Components.\nDynamic settings such as CPU and memory resource limits, as well as scheduling settings (affinity,\ntoleration, priority), may vary among different instantiated Components.\nThey should be specified in the `cluster.spec.componentSpecs` (ClusterComponentSpec).\n\n\nSpecific instances of a Component may override settings defined here, such as using a different container image\nor modifying environment variable values.\nThese instance-specific overrides can be specified in `cluster.spec.componentSpecs[*].instances`.\n\n\nThis field is immutable and cannot be updated once set."
@@ -8519,31 +8453,31 @@ spec:
                   type: "object"
                   x-kubernetes-preserve-unknown-fields: true
                 scripts:
-                  description: "Specifies groups of scripts, each provided via a ConfigMap, to be mounted as volumes in the container.\nThese scripts can be executed during container startup or via specific actions.\n\n\nEach script group is encapsulated in a ComponentTemplateSpec that includes:\n\n\n- The ConfigMap containing the scripts.\n- The mount point where the scripts will be mounted inside the container.\n\n\nThis field is immutable."
+                  description: "Specifies groups of scripts, each provided via a ConfigMap, to be mounted as volumes in the container.\nThese scripts can be executed during container startup or via specific actions.\n\n\nThis field is immutable."
                   items:
                     properties:
                       defaultMode:
-                        description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
+                        description: "The operator attempts to set default file permissions (0444).\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
                         format: "int32"
                         type: "integer"
                       name:
-                        description: "Specifies the name of the configuration template."
+                        description: "Specifies the name of the template."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       namespace:
                         default: "default"
-                        description: "Specifies the namespace of the referenced configuration template ConfigMap object.\nAn empty namespace is equivalent to the \"default\" namespace."
+                        description: "Specifies the namespace of the referenced template ConfigMap object."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
-                      templateRef:
-                        description: "Specifies the name of the referenced configuration template ConfigMap object."
+                      template:
+                        description: "Specifies the name of the referenced template ConfigMap object."
                         maxLength: 63
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       volumeName:
-                        description: "Refers to the volume name of PodTemplate. The configuration file produced through the configuration\ntemplate will be mounted to the corresponding volume. Must be a DNS_LABEL name.\nThe volume name must be defined in podSpec.containers[*].volumeMounts."
+                        description: "Refers to the volume name of PodTemplate. The file produced through the template will be mounted to\nthe corresponding volume. Must be a DNS_LABEL name.\nThe volume name must be defined in podSpec.containers[*].volumeMounts."
                         maxLength: 63
                         pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
@@ -8551,9 +8485,6 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
-                  x-kubernetes-list-map-keys:
-                    - "name"
-                  x-kubernetes-list-type: "map"
                 serviceKind:
                   description: "Defines the type of well-known service protocol that the Component provides.\nIt specifies the standard or widely recognized protocol used by the Component to offer its Services.\n\n\nThe `serviceKind` field allows users to quickly identify the type of Service provided by the Component\nbased on common protocols or service types. This information helps in understanding the compatibility,\ninteroperability, and usage of the Component within a system.\n\n\nSome examples of well-known service protocols include:\n\n\n- \"MySQL\": Indicates that the Component provides a MySQL database service.\n- \"PostgreSQL\": Indicates that the Component offers a PostgreSQL database service.\n- \"Redis\": Signifies that the Component functions as a Redis key-value store.\n- \"ETCD\": Denotes that the Component serves as an ETCD distributed key-value store.\n\n\nThe `serviceKind` value is case-insensitive, allowing for flexibility in specifying the protocol name.\n\n\nWhen specifying the `serviceKind`, consider the following guidelines:\n\n\n- Use well-established and widely recognized protocol names or service types.\n- Ensure that the `serviceKind` accurately represents the primary service type offered by the Component.\n- If the Component provides multiple services, choose the most prominent or commonly used protocol.\n- Limit the `serviceKind` to a maximum of 32 characters for conciseness and readability.\n\n\nNote: The `serviceKind` field is optional and can be left empty if the Component does not fit into a well-known\nservice category or if the protocol is not widely recognized. It is primarily used to convey information about\nthe Component's service type to users and facilitate discovery and integration.\n\n\nThe `serviceKind` field is immutable and cannot be updated."
                   maxLength: 32
@@ -8792,26 +8723,49 @@ spec:
                             description: "Seed to generate the account's password.\nCannot be updated."
                             type: "string"
                         type: "object"
-                      secretRef:
-                        description: "Refers to the secret from which data will be copied to create the new account.\n\n\nThis field is immutable once set."
-                        properties:
-                          name:
-                            description: "The unique identifier of the secret."
-                            type: "string"
-                          namespace:
-                            description: "The namespace where the secret is located."
-                            type: "string"
-                        required:
-                          - "name"
-                          - "namespace"
-                        type: "object"
                       statement:
-                        description: "Defines the statement used to create the account with the necessary privileges.\n\n\nThis field is immutable once set."
-                        type: "string"
+                        description: "Defines the statements used to create, delete, and update the account.\n\n\nThis field is immutable once set."
+                        properties:
+                          create:
+                            description: "The statement to create a new account with the necessary privileges.\n\n\nThis field is immutable once set."
+                            type: "string"
+                          delete:
+                            description: "The statement to delete a account.\n\n\nThis field is immutable once set."
+                            type: "string"
+                          update:
+                            description: "The statement to update an existing account.\n\n\nThis field is immutable once set."
+                            type: "string"
+                        type: "object"
                     required:
                       - "name"
                     type: "object"
                   type: "array"
+                tls:
+                  description: "Specifies the TLS configuration for the Component.\n\n\nThis field is immutable."
+                  properties:
+                    caFile:
+                      description: "The CA file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    certFile:
+                      description: "The certificate file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    defaultMode:
+                      description: "The permissions for the mounted path. Defaults to 0600.\n\n\nThis field is immutable once set."
+                      format: "int32"
+                      type: "integer"
+                    keyFile:
+                      description: "The key file of the TLS.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    mountPath:
+                      description: "Specifies the mount path for the TLS secret to be mounted.\nSimilar to the volume, the controller will mount the created volume to the specified path within containers when the TLS is enabled.\n\n\nThis field is immutable once set."
+                      type: "string"
+                    volumeName:
+                      description: "Specifies the volume name for the TLS secret.\nThe controller will create a volume object with the specified name and add it to the pod when the TLS is enabled.\n\n\nThis field is immutable once set."
+                      type: "string"
+                  required:
+                    - "mountPath"
+                    - "volumeName"
+                  type: "object"
                 updateStrategy:
                   default: "Serial"
                   description: "Specifies the concurrency strategy for updating multiple instances of the Component.\nAvailable strategies:\n\n\n- `Serial`: Updates replicas one at a time, ensuring minimal downtime by waiting for each replica to become ready\n  before updating the next.\n- `Parallel`: Updates all replicas simultaneously, optimizing for speed but potentially reducing availability\n  during the update.\n- `BestEffortParallel`: Updates replicas concurrently with a limit on simultaneous updates to ensure a minimum\n  number of operational replicas for maintaining quorum.\n\t For example, in a 5-replica component, updating a maximum of 2 replicas simultaneously keeps\n\t at least 3 operational for quorum.\n\n\nThis field is immutable and defaults to 'Serial'."
@@ -8900,6 +8854,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -9015,6 +8972,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -9099,6 +9059,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -9178,6 +9141,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -9265,6 +9231,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -9298,6 +9267,66 @@ spec:
                                   - "Required"
                                   - "Optional"
                                 type: "string"
+                            type: "object"
+                          tlsVarRef:
+                            description: "Selects a defined var of the TLS."
+                            properties:
+                              compDef:
+                                description: "Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition\ncustom resource (CR) used by the component that the referent object resident in.\n\n\nIf not specified, the component itself will be used."
+                                type: "string"
+                              enabled:
+                                description: "VarOption defines whether a variable is required or optional."
+                                enum:
+                                  - "Required"
+                                  - "Optional"
+                                type: "string"
+                              multipleClusterObjectOption:
+                                description: "This option defines the behavior when multiple component objects match the specified @CompDef.\nIf not provided, an error will be raised when handling multiple matches."
+                                properties:
+                                  combinedOption:
+                                    description: "Define the options for handling combined variables.\nValid only when the strategy is set to \"combined\"."
+                                    properties:
+                                      flattenFormat:
+                                        description: "The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value."
+                                        properties:
+                                          delimiter:
+                                            default: ","
+                                            description: "Pair delimiter."
+                                            type: "string"
+                                          keyValueDelimiter:
+                                            default: ":"
+                                            description: "Key-value delimiter."
+                                            type: "string"
+                                        required:
+                                          - "delimiter"
+                                          - "keyValueDelimiter"
+                                        type: "object"
+                                      newVarSuffix:
+                                        description: "If set, the existing variable will be kept, and a new variable will be defined with the specified suffix\nin pattern: $(var.name)_$(suffix).\nThe new variable will be auto-created and placed behind the existing one.\nIf not set, the existing variable will be reused with the value format defined below."
+                                        type: "string"
+                                      valueFormat:
+                                        default: "Flatten"
+                                        description: "The format of the value that the operator will use to compose values from multiple components."
+                                        type: "string"
+                                    type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
+                                  strategy:
+                                    description: "Define the strategy for handling multiple cluster objects."
+                                    enum:
+                                      - "individual"
+                                      - "combined"
+                                    type: "string"
+                                required:
+                                  - "strategy"
+                                type: "object"
+                              name:
+                                description: "Name of the referent object."
+                                type: "string"
+                              optional:
+                                description: "Specify whether the object must be defined."
+                                type: "boolean"
                             type: "object"
                         type: "object"
                     required:

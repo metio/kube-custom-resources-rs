@@ -44,7 +44,7 @@ spec:
                               type: "string"
                           type: "object"
                         onSuccess:
-                          description: "A destination for events that were processed successfully."
+                          description: "A destination for events that were processed successfully.\n\nTo retain records of successful asynchronous invocations (https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),\nyou can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,\nor Amazon EventBridge event bus as the destination."
                           properties:
                             destination:
                               type: "string"
@@ -62,7 +62,7 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -82,6 +82,30 @@ spec:
                 name:
                   description: "The name of the alias."
                   type: "string"
+                permissions:
+                  description: "Permissions configures a set of Lambda permissions to grant to an alias."
+                  items:
+                    properties:
+                      action:
+                        type: "string"
+                      eventSourceToken:
+                        type: "string"
+                      functionURLAuthType:
+                        type: "string"
+                      principal:
+                        type: "string"
+                      principalOrgID:
+                        type: "string"
+                      revisionID:
+                        type: "string"
+                      sourceARN:
+                        type: "string"
+                      sourceAccount:
+                        type: "string"
+                      statementID:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 provisionedConcurrencyConfig:
                   description: "Configures provisioned concurrency to a function's alias\n\n- ProvisionedConcurrentExecutions\nThe amount of provisioned concurrency to allocate for the version or alias.\nMinimum value of 1 is required"
                   properties:
@@ -125,7 +149,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

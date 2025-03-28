@@ -806,6 +806,9 @@ spec:
                       description: "Keys describes a custom set of SSH Known Hosts that you would like to\nhave included in your ArgoCD server."
                       type: "string"
                   type: "object"
+                installationID:
+                  description: "InstallationID uniquely identifies an Argo CD instance in multi-instance clusters."
+                  type: "string"
                 kustomizeBuildOptions:
                   description: "KustomizeBuildOptions is used to specify build options/parameters to use with `kustomize build`."
                   type: "string"
@@ -2178,7 +2181,7 @@ spec:
                       description: "ServiceAccount defines the ServiceAccount user that you would like the Repo server to use"
                       type: "string"
                     sidecarContainers:
-                      description: "SidecarContainers defines the list of sidecar containers for the repo server deployment"
+                      description: "SidecarContainers defines the list of sidecar containers for the repo\nserver deployment. If the image field is omitted from a SidecarContainer,\nthe image for the repo server will be used."
                       items:
                         description: "A single application container that you want to run within a pod."
                         properties:
@@ -4630,6 +4633,50 @@ spec:
                 applicationSetController:
                   description: "ApplicationSetController is a simple, high-level summary of where the Argo CD applicationSet controller component is in its lifecycle.\nThere are four possible ApplicationSetController values:\nPending: The Argo CD applicationSet controller component has been accepted by the Kubernetes system, but one or more of the required resources have not been created.\nRunning: All of the required Pods for the Argo CD applicationSet controller component are in a Ready state.\nFailed: At least one of the  Argo CD applicationSet controller component Pods had a failure.\nUnknown: The state of the Argo CD applicationSet controller component could not be obtained."
                   type: "string"
+                conditions:
+                  description: "Conditions is an array of the ArgoCD's status conditions"
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
                 host:
                   description: "Host is the hostname of the Ingress."
                   type: "string"

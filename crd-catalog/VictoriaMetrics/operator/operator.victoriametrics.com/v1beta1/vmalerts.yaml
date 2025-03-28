@@ -2,19 +2,9 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmalerts.operator.victoriametrics.com"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "webhook-service"
-          namespace: "vm"
-          path: "/convert"
-      conversionReviewVersions:
-        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMAlert"
@@ -28,6 +18,13 @@ spec:
           jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
+        - description: "The desired replicas number of Alertmanagers"
+          jsonPath: ".spec.replicaCount"
+          name: "ReplicaCount"
+          type: "integer"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -71,6 +68,9 @@ spec:
                         properties:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                             type: "string"
                         required:
                           - "name"
@@ -193,6 +193,9 @@ spec:
                   required:
                     - "url"
                   type: "object"
+                disableAutomountServiceAccountToken:
+                  description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
+                  type: "boolean"
                 disableSelfServiceScrape:
                   description: "DisableSelfServiceScrape controls creation of VMServiceScrape by operator\nfor the application.\nHas priority over `VM_DISABLESELFSERVICESCRAPECREATION` operator env variable"
                   type: "boolean"
@@ -213,9 +216,10 @@ spec:
                         description: "PodDNSConfigOption defines DNS resolver options of a pod."
                         properties:
                           name:
-                            description: "Required."
+                            description: "Name is this DNS resolver option's name.\nRequired."
                             type: "string"
                           value:
+                            description: "Value is this DNS resolver option's value."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -262,6 +266,40 @@ spec:
                       - "name"
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
+                  type: "array"
+                extraEnvsFrom:
+                  description: "ExtraEnvsFrom defines source of env variables for the application container\ncould either be secret or configmap"
+                  items:
+                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    properties:
+                      configMapRef:
+                        description: "The ConfigMap to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the ConfigMap must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      prefix:
+                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        type: "string"
+                      secretRef:
+                        description: "The Secret to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                    type: "object"
                   type: "array"
                 hostAliases:
                   description: "HostAliases provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork."
@@ -339,6 +377,9 @@ spec:
                 license:
                   description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:
+                    forceOffline:
+                      description: "Enforce offline verification of the license key."
+                      type: "boolean"
                     key:
                       description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
@@ -359,6 +400,9 @@ spec:
                         - "key"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
+                    reloadInterval:
+                      description: "Interval to be used for checking for license key changes. Note that this is only applicable when using KeyRef."
+                      type: "string"
                   type: "object"
                 livenessProbe:
                   description: "LivenessProbe that will be added CRD pod"
@@ -379,8 +423,22 @@ spec:
                     - "FATAL"
                     - "PANIC"
                   type: "string"
+                managedMetadata:
+                  description: "ManagedMetadata defines metadata that will be added to the all objects\ncreated by operator for the given CustomResource"
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels Map of string keys and values that can be used to organize and categorize\n(scope and select) objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                      type: "object"
+                  type: "object"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
+                  description: "MinReadySeconds defines a minimum number of seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -943,6 +1001,9 @@ spec:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                             type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                            type: "string"
                         required:
                           - "name"
                         type: "object"
@@ -1220,28 +1281,65 @@ spec:
             status:
               description: "VMAlertStatus defines the observed state of VMAlert"
               properties:
-                availableReplicas:
-                  description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds)\ntargeted by this VMAlert cluster."
-                  format: "int32"
+                conditions:
+                  description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
+                  items:
+                    description: "Condition defines status condition of the resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      lastUpdateTime:
+                        description: "LastUpdateTime is the last time of given type update.\nThis value is used for status TTL update and removal"
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "Type of condition in CamelCase or in name.namespace.resource.victoriametrics.com/CamelCase."
+                        maxLength: 316
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "lastUpdateTime"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
                   type: "integer"
                 reason:
-                  description: "Reason defines fail reason for update process, effective only for statefulMode"
+                  description: "Reason defines human readable error reason"
                   type: "string"
-                replicas:
-                  description: "ReplicaCount Total number of non-terminated pods targeted by this VMAlert\ncluster (their labels match the selector)."
-                  format: "int32"
-                  type: "integer"
-                unavailableReplicas:
-                  description: "UnavailableReplicas Total number of unavailable pods targeted by this VMAlert cluster."
-                  format: "int32"
-                  type: "integer"
                 updateStatus:
-                  description: "UpdateStatus defines a status for update rollout, effective only for statefulMode"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
-                updatedReplicas:
-                  description: "UpdatedReplicas Total number of non-terminated pods targeted by this VMAlert\ncluster that have the desired version spec."
-                  format: "int32"
-                  type: "integer"
               type: "object"
           type: "object"
       served: true

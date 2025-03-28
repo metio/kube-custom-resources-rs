@@ -29,6 +29,20 @@ spec:
               type: "string"
             metadata:
               type: "object"
+            spec:
+              description: "spec defines the behavior of a ServiceExport."
+              properties:
+                exportedAnnotations:
+                  additionalProperties:
+                    type: "string"
+                  description: "exportedAnnotations describes the annotations exported. It is optional for implementation."
+                  type: "object"
+                exportedLabels:
+                  additionalProperties:
+                    type: "string"
+                  description: "exportedLabels describes the labels exported. It is optional for implementation."
+                  type: "object"
+              type: "object"
             status:
               description: "status describes the current state of an exported service.\nService configuration comes from the Service that had the same\nname and namespace as this ServiceExport.\nPopulated by the multi-cluster service implementation's controller."
               properties:

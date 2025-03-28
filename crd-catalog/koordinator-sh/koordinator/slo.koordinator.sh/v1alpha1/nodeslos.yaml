@@ -1244,6 +1244,12 @@ spec:
                       description: "when avg(cpuusage) > CPUEvictThresholdPercent, will start to evict pod by cpu,\nand avg(cpuusage) is calculated based on the most recent CPUEvictTimeWindowSeconds data"
                       format: "int64"
                       type: "integer"
+                    cpuSuppressMinPercent:
+                      description: "cpu suppress min percentage (0,100)"
+                      format: "int64"
+                      maximum: 100.0
+                      minimum: 0.0
+                      type: "integer"
                     cpuSuppressPolicy:
                       description: "CPUSuppressPolicy"
                       type: "string"

@@ -41,6 +41,9 @@ spec:
                 apiFqdnUrl:
                   description: "The URL of the cluster, will be used for the active-active database URL."
                   type: "string"
+                apiPort:
+                  description: "The port number of the cluster's URL used for connectivity/sync"
+                  type: "integer"
                 dbFqdnSuffix:
                   description: "The database URL suffix, will be used for the active-active database replication endpoint and replication endpoint SNI."
                   type: "string"
@@ -60,6 +63,9 @@ spec:
               type: "object"
             status:
               properties:
+                internalObservedSecretResourceVersion:
+                  description: "The observed secret resource version. Used for internal purposes only."
+                  type: "string"
                 local:
                   description: "Indicates whether this object represents a local or a remote cluster."
                   type: "boolean"

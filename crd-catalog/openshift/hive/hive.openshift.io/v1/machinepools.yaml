@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "machinepools.hive.openshift.io"
 spec:
   group: "hive.openshift.io"
@@ -206,6 +206,9 @@ spec:
                             - "sku"
                             - "version"
                           type: "object"
+                        outboundType:
+                          description: "OutboundType is a strategy for how egress from cluster is achieved. When not specified default is \"Loadbalancer\"."
+                          type: "string"
                         type:
                           description: "InstanceType defines the azure instance type.\neg. Standard_DS_V2"
                           type: "string"
@@ -249,10 +252,7 @@ spec:
                               minimum: 16.0
                               type: "integer"
                             diskType:
-                              description: "DiskType defines the type of disk.\nThe valid values are pd-standard and pd-ssd.\nDefaulted internally to pd-ssd."
-                              enum:
-                                - "pd-ssd"
-                                - "pd-standard"
+                              description: "DiskType defines the type of disk.\nThe valid values at this time are: pd-standard, pd-ssd, local-ssd, pd-balanced, hyperdisk-balanced.\nDefaulted internally to pd-ssd."
                               type: "string"
                             encryptionKey:
                               description: "EncryptionKey defines the KMS key to be used to encrypt the disk."
@@ -358,7 +358,7 @@ spec:
                       description: "OpenStack is the configuration used when installing on OpenStack."
                       properties:
                         additionalSecurityGroupIDs:
-                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the format sg-xxxx."
+                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the UUID format."
                           items:
                             type: "string"
                           type: "array"

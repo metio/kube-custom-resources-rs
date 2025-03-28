@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ClusterSpec defines the desired state of Cluster.\n\nReturns information about a cluster of either the provisioned or the serverless\ntype."
+              description: "ClusterSpec defines the desired state of Cluster.\n\nReturns information about a cluster."
               properties:
                 associatedSCRAMSecretRefs:
                   items:
@@ -48,10 +48,10 @@ spec:
                     type: "string"
                   type: "array"
                 brokerNodeGroupInfo:
-                  description: "Information about the brokers."
+                  description: "Information about the broker nodes in the cluster."
                   properties:
                     brokerAZDistribution:
-                      description: "The distribution of broker nodes across Availability Zones. By default, broker\nnodes are distributed among the Availability Zones of your Region. Currently,\nthe only supported value is DEFAULT. You can either specify this value explicitly\nor leave it out."
+                      description: "The distribution of broker nodes across Availability Zones. This is an optional\nparameter. If you don't specify it, Amazon MSK gives it the value DEFAULT.\nYou can also explicitly set this parameter to the value DEFAULT. No other\nvalues are currently allowed.\n\nAmazon MSK distributes the broker nodes evenly across the Availability Zones\nthat correspond to the subnets you provide when you create the cluster."
                       type: "string"
                     clientSubnets:
                       items:
@@ -61,7 +61,7 @@ spec:
                       description: "Information about the broker access configuration."
                       properties:
                         publicAccess:
-                          description: "Broker public access control."
+                          description: "Public access control for brokers."
                           properties:
                             type:
                               type: "string"
@@ -98,13 +98,16 @@ spec:
                   description: "Includes all client authentication related information."
                   properties:
                     sasl:
+                      description: "Details for client authentication using SASL."
                       properties:
                         iam:
+                          description: "Details for IAM access control."
                           properties:
                             enabled:
                               type: "boolean"
                           type: "object"
                         scram:
+                          description: "Details for SASL/SCRAM client authentication."
                           properties:
                             enabled:
                               type: "boolean"
@@ -121,14 +124,13 @@ spec:
                           type: "boolean"
                       type: "object"
                     unauthenticated:
-                      description: "Contains information about unauthenticated traffic to the cluster."
                       properties:
                         enabled:
                           type: "boolean"
                       type: "object"
                   type: "object"
                 configurationInfo:
-                  description: "Represents the configuration that you want MSK to use for the cluster."
+                  description: "Represents the configuration that you want MSK to use for the brokers in\na cluster."
                   properties:
                     arn:
                       type: "string"
@@ -162,13 +164,10 @@ spec:
                   description: "The version of Apache Kafka."
                   type: "string"
                 loggingInfo:
-                  description: "LoggingInfo details."
                   properties:
                     brokerLogs:
-                      description: "The broker logs configuration for this MSK cluster."
                       properties:
                         cloudWatchLogs:
-                          description: "Details of the CloudWatch Logs destination for broker logs."
                           properties:
                             enabled:
                               type: "boolean"
@@ -176,7 +175,6 @@ spec:
                               type: "string"
                           type: "object"
                         firehose:
-                          description: "Firehose details for BrokerLogs."
                           properties:
                             deliveryStream:
                               type: "string"
@@ -184,7 +182,6 @@ spec:
                               type: "boolean"
                           type: "object"
                         s3:
-                          description: "The details of the Amazon S3 destination for broker logs."
                           properties:
                             bucket:
                               type: "string"
@@ -199,7 +196,7 @@ spec:
                   description: "The name of the cluster."
                   type: "string"
                 numberOfBrokerNodes:
-                  description: "The number of Apache Kafka broker nodes in the Amazon MSK cluster."
+                  description: "The number of broker nodes in the cluster."
                   format: "int64"
                   type: "integer"
                 openMonitoring:
@@ -209,13 +206,13 @@ spec:
                       description: "Prometheus settings."
                       properties:
                         jmxExporter:
-                          description: "Indicates whether you want to enable or disable the JMX Exporter."
+                          description: "Indicates whether you want to turn on or turn off the JMX Exporter."
                           properties:
                             enabledInBroker:
                               type: "boolean"
                           type: "object"
                         nodeExporter:
-                          description: "Indicates whether you want to enable or disable the Node Exporter."
+                          description: "Indicates whether you want to turn on or turn off the Node Exporter."
                           properties:
                             enabledInBroker:
                               type: "boolean"
@@ -276,7 +273,7 @@ spec:
                 bootstrapBrokerStringVPCConnectivityTLS:
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -301,6 +298,9 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                currentVersion:
+                  description: "The current version of the MSK cluster."
+                  type: "string"
                 state:
                   description: "The state of the cluster. The possible states are ACTIVE, CREATING, DELETING,\nFAILED, HEALING, MAINTENANCE, REBOOTING_BROKER, and UPDATING."
                   type: "string"

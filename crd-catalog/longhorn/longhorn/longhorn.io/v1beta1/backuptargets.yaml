@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.8.0-dev"
+    app.kubernetes.io/version: "v1.9.0-dev"
     longhorn-manager: ""
   name: "backuptargets.longhorn.io"
 spec:
@@ -53,6 +53,8 @@ spec:
           jsonPath: ".status.lastSyncedAt"
           name: "LastSyncedAt"
           type: "string"
+      deprecated: true
+      deprecationWarning: "longhorn.io/v1beta1 BackupTarget is deprecated; use longhorn.io/v1beta2 BackupTarget instead"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -71,7 +73,7 @@ spec:
             status:
               x-kubernetes-preserve-unknown-fields: true
           type: "object"
-      served: true
+      served: false
       storage: false
       subresources:
         status: {}

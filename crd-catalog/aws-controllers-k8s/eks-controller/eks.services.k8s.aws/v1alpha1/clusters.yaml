@@ -62,8 +62,20 @@ spec:
                   description: "If you set this value to False when creating a cluster, the default networking\nadd-ons will not be installed.\n\nThe default networking addons include vpc-cni, coredns, and kube-proxy.\n\nUse this option when you plan to install third-party alternative add-ons\nor self-manage the default networking add-ons."
                   type: "boolean"
                 clientRequestToken:
-                  description: "A unique, case-sensitive identifier that you provide to ensure the idempotency\nof the request."
+                  description: "A unique, case-sensitive identifier that you provide to ensurethe idempotency\nof the request."
                   type: "string"
+                computeConfig:
+                  description: "Enable or disable the compute capability of EKS Auto Mode when creating your\nEKS Auto Mode cluster. If the compute capability is enabled, EKS Auto Mode\nwill create and delete EC2 Managed Instances in your Amazon Web Services\naccount"
+                  properties:
+                    enabled:
+                      type: "boolean"
+                    nodePools:
+                      items:
+                        type: "string"
+                      type: "array"
+                    nodeRoleARN:
+                      type: "string"
+                  type: "object"
                 encryptionConfig:
                   description: "The encryption configuration for the cluster."
                   items:
@@ -96,6 +108,12 @@ spec:
                 kubernetesNetworkConfig:
                   description: "The Kubernetes network configuration for the cluster."
                   properties:
+                    elasticLoadBalancing:
+                      description: "Indicates the current configuration of the load balancing capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nFor more information, see EKS Auto Mode load balancing capability in the\nEKS User Guide."
+                      properties:
+                        enabled:
+                          type: "boolean"
+                      type: "object"
                     ipFamily:
                       type: "string"
                     serviceIPv4CIDR:
@@ -118,7 +136,7 @@ spec:
                       type: "array"
                   type: "object"
                 name:
-                  description: "The unique name to give to your cluster."
+                  description: "The unique name to give to your cluster. The name can contain only alphanumeric\ncharacters (case-sensitive),hyphens, and underscores. It must start with\nan alphanumeric character and can't be longer than100 characters. The name\nmust be unique within the Amazon Web Services Region and Amazon Web Services\naccount that you're creating the cluster in."
                   type: "string"
                 outpostConfig:
                   description: "An object representing the configuration of your local Amazon EKS cluster\non an Amazon Web Services Outpost. Before creating a local cluster on an\nOutpost, review Local clusters for Amazon EKS on Amazon Web Services Outposts\n(https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html)\nin the Amazon EKS User Guide. This object isn't available for creating Amazon\nEKS clusters on the Amazon Web Services cloud."
@@ -134,6 +152,30 @@ spec:
                     outpostARNs:
                       items:
                         type: "string"
+                      type: "array"
+                  type: "object"
+                remoteNetworkConfig:
+                  description: "The configuration in the cluster for EKS Hybrid Nodes. You can't change or\nupdate this configuration after the cluster is created."
+                  properties:
+                    remoteNodeNetworks:
+                      items:
+                        description: "A network CIDR that can contain hybrid nodes."
+                        properties:
+                          cidrs:
+                            items:
+                              type: "string"
+                            type: "array"
+                        type: "object"
+                      type: "array"
+                    remotePodNetworks:
+                      items:
+                        description: "A network CIDR that can contain pods that run Kubernetes webhooks on hybrid\nnodes."
+                        properties:
+                          cidrs:
+                            items:
+                              type: "string"
+                            type: "array"
+                        type: "object"
                       type: "array"
                   type: "object"
                 resourcesVPCConfig:
@@ -201,6 +243,16 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                storageConfig:
+                  description: "Enable or disable the block storage capability of EKS Auto Mode when creating\nyour EKS Auto Mode cluster. If the block storage capability is enabled, EKS\nAuto Mode will create and delete EBS volumes in your Amazon Web Services\naccount."
+                  properties:
+                    blockStorage:
+                      description: "Indicates the current configuration of the block storage capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nIf the block storage capability is enabled, EKS Auto Mode will create and\ndelete EBS volumes in your Amazon Web Services account. For more information,\nsee EKS Auto Mode block storage capability in the EKS User Guide."
+                      properties:
+                        enabled:
+                          type: "boolean"
+                      type: "object"
+                  type: "object"
                 tags:
                   additionalProperties:
                     type: "string"
@@ -215,6 +267,12 @@ spec:
                 version:
                   description: "The desired Kubernetes version for your cluster. If you don't specify a value\nhere, the default version available in Amazon EKS is used.\n\nThe default version might not be the latest version available."
                   type: "string"
+                zonalShiftConfig:
+                  description: "Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,\nAmazon Web Services configures zonal autoshift for the cluster.\n\nZonal shift is a feature of Amazon Application Recovery Controller (ARC).\nARC zonal shift is designed to be a temporary measure that allows you to\nmove traffic for a resource away from an impaired AZ until the zonal shift\nexpires or you cancel it. You can extend the zonal shift if necessary.\n\nYou can start a zonal shift for an EKS cluster, or you can allow Amazon Web\nServices to do it for you by enabling zonal autoshift. This shift updates\nthe flow of east-to-west network traffic in your cluster to only consider\nnetwork endpoints for Pods running on worker nodes in healthy AZs. Additionally,\nany ALB or NLB handling ingress traffic for applications in your EKS cluster\nwill automatically route traffic to targets in the healthy AZs. For more\ninformation about zonal shift in EKS, see Learn about Amazon Application\nRecovery Controller (ARC) Zonal Shift in Amazon EKS (https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html)\nin the Amazon EKS User Guide ."
+                  properties:
+                    enabled:
+                      type: "boolean"
+                  type: "object"
               required:
                 - "name"
                 - "resourcesVPCConfig"
@@ -245,7 +303,7 @@ spec:
                       type: "string"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

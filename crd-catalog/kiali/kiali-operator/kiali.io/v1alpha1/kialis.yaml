@@ -19,7 +19,7 @@ spec:
               description: "This is the CRD for the resources called Kiali CRs. The Kiali Operator will watch for resources of this type and when it detects a Kiali CR has been added, deleted, or modified, it will install, uninstall, and update the associated Kiali Server installation. The settings here will configure the Kiali Server as well as the Kiali Operator. All of these settings will be stored in the Kiali ConfigMap. Do not modify the ConfigMap; it will be managed by the Kiali Operator. Only modify the Kiali CR when you want to change a configuration setting."
               properties:
                 additional_display_details:
-                  description: "A list of additional details that Kiali will look for in annotations. When found on any workload or service, Kiali will display the additional details in the respective workload or service details page. This is typically used to inject some CI metadata or documentation links into Kiali views. For example, by default, Kiali will recognize these annotations on a service or workload (e.g. a Deployment, StatefulSet, etc.):\n```\nannotations:\n  kiali.io/api-spec: http://list/to/my/api/doc\n  kiali.io/api-type: rest\n```\nNote that if you change this setting for your own custom annotations, keep in mind that it would override the current default. So you would have to add the default setting as shown in the example CR if you want to preserve the default links.\n"
+                  description: "A list of additional details that Kiali will look for in annotations. When found on any workload or service, Kiali will display the additional details in the respective workload or service details page. This is typically used to inject some CI metadata or documentation links into Kiali views. For example, by default, Kiali will recognize these annotations on a service or workload (e.g. a Deployment, StatefulSet, etc.):\n```\nspec:\n  annotations:\n    kiali.io/api-spec: http://list/to/my/api/doc\n    kiali.io/api-type: rest\n```\nNote that if you change this setting for your own custom annotations, keep in mind that it would override the current default. So you would have to add the default setting as shown in the example CR if you want to preserve the default links.\n"
                   items:
                     properties:
                       annotation:
@@ -148,7 +148,7 @@ spec:
                       type: "array"
                   type: "object"
                 custom_dashboards:
-                  description: "A list of user-defined custom monitoring dashboards that you can use to generate metrics charts\nfor your applications. The server has some built-in dashboards; if you define a custom dashboard here\nwith the same name as a built-in dashboard, your custom dashboard takes precedence and will overwrite\nthe built-in dashboard. You can disable one or more of the built-in dashboards by simply defining an\nempty dashboard.\n\nAn example of an additional user-defined dashboard,\n```\n- name: myapp\n  title: My App Metrics\n  items:\n  - chart:\n      name: \"Thread Count\"\n      spans: 4\n      metricName: \"thread-count\"\n      dataType: \"raw\"\n```\n\nAn example of disabling a built-in dashboard (in this case, disabling the Envoy dashboard),\n```\n- name: envoy\n```\n\nTo learn more about custom monitoring dashboards, see the documentation at https://kiali.io/docs/configuration/custom-dashboard/\n"
+                  description: "A list of user-defined custom monitoring dashboards that you can use to generate metrics charts\nfor your applications. The server has some built-in dashboards; if you define a custom dashboard here\nwith the same name as a built-in dashboard, your custom dashboard takes precedence and will overwrite\nthe built-in dashboard. You can disable one or more of the built-in dashboards by simply defining an\nempty dashboard.\n\nAn example of an additional user-defined dashboard,\n```\nspec:\n  custom_dashboards:\n  - name: myapp\n    title: My App Metrics\n    items:\n    - chart:\n        name: \"Thread Count\"\n        spans: 4\n        metricName: \"thread-count\"\n        dataType: \"raw\"\n```\n\nAn example of disabling a built-in dashboard (in this case, disabling the Envoy dashboard),\n```\nspec:\n  custom_dashboards:\n  - name: envoy\n```\n\nTo learn more about custom monitoring dashboards, see the documentation at https://kiali.io/docs/configuration/custom-dashboard/\n"
                   items:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
@@ -195,7 +195,7 @@ spec:
                         type: "object"
                       type: "array"
                     custom_secrets:
-                      description: "Defines additional secrets that are to be mounted in the Kiali pod.\n\nThese are useful to contain certs that are used by Kiali to securely connect to third party systems\n(for example, see `external_services.tracing.auth.ca_file`).\n\nThese secrets must be created by an external mechanism. Kiali will not generate these secrets; it\nis assumed these secrets are externally managed. You can define 0, 1, or more secrets.\nAn example configuration is,\n```\ncustom_secrets:\n- name: mysecret\n  mount: /mysecret-path\n- name: my-other-secret\n  mount: /my-other-secret-location\n  optional: true\n```\n"
+                      description: "Defines additional secrets that are to be mounted in the Kiali pod.\n\nThese are useful to contain certs that are used by Kiali to securely connect to third party systems\n(for example, see `external_services.tracing.auth.ca_file`).\n\nThese secrets must be created by an external mechanism. Kiali will not generate these secrets; it\nis assumed these secrets are externally managed. You can define 0, 1, or more secrets.\nAn example configuration is,\n```\nspec:\n  deployment:\n    custom_secrets:\n    - name: mysecret\n      mount: /mysecret-path\n    - name: my-other-secret\n      mount: /my-other-secret-location\n      optional: true\n```\n"
                       items:
                         properties:
                           csi:
@@ -306,7 +306,7 @@ spec:
                           type: "string"
                       type: "object"
                     host_aliases:
-                      description: "This is content for the Kubernetes 'hostAliases' setting for the Kiali server.\nThis allows you to modify the Kiali server pod '/etc/hosts' file.\nA typical way to configure this setting is,\n```\nhost_aliases:\n- ip: 192.168.1.100\n  hostnames:\n  - \"foo.local\"\n  - \"bar.local\"\n```\nFor details on the content of this setting, see https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/#adding-additional-entries-with-hostaliases\n"
+                      description: "This is content for the Kubernetes 'hostAliases' setting for the Kiali server.\nThis allows you to modify the Kiali server pod '/etc/hosts' file.\nA typical way to configure this setting is,\n```\nspec:\n  deployment:\n    host_aliases:\n    - ip: 192.168.1.100\n      hostnames:\n      - \"foo.local\"\n      - \"bar.local\"\n```\nFor details on the content of this setting, see https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/#adding-additional-entries-with-hostaliases\n"
                       items:
                         properties:
                           hostnames:
@@ -318,7 +318,7 @@ spec:
                         type: "object"
                       type: "array"
                     hpa:
-                      description: "Determines what (if any) HorizontalPodAutoscaler should be created to autoscale the Kiali pod.\nA typical way to configure HPA for Kiali is,\n```\nhpa:\n  api_version: \"autoscaling/v2\"\n  spec:\n    maxReplicas: 2\n    minReplicas: 1\n    metrics:\n    - type: Resource\n      resource:\n        name: cpu\n        target:\n          type: Utilization\n          averageUtilization: 50\n```\n"
+                      description: "Determines what (if any) HorizontalPodAutoscaler should be created to autoscale the Kiali pod.\nA typical way to configure HPA for Kiali is,\n```\nspec:\n  deployment:\n    hpa:\n      api_version: \"autoscaling/v2\"\n      spec:\n        maxReplicas: 2\n        minReplicas: 1\n        metrics:\n        - type: Resource\n          resource:\n            name: cpu\n            target:\n              type: Utilization\n              averageUtilization: 50\n```\n"
                       properties:
                         api_version:
                           description: "A specific HPA API version that can be specified in case there is some HPA feature you want to use that is only supported in that specific version. If value is an empty string, an attempt will be made to determine a valid version."
@@ -359,7 +359,7 @@ spec:
                           description: "Determines if the Kiali endpoint should be exposed externally. If 'true', an Ingress will be created if on Kubernetes or a Route if on OpenShift. If left undefined, this will be 'false' on Kubernetes and 'true' on OpenShift."
                           type: "boolean"
                         override_yaml:
-                          description: "Because an Ingress into a cluster can vary wildly in its desired configuration,\nthis setting provides a way to override complete portions of the Ingress resource\nconfiguration (Ingress on Kubernetes and Route on OpenShift). It is up to the user\nto ensure this override YAML configuration is valid and supports the cluster environment\nsince the operator will blindly copy this custom configuration into the resource it\ncreates.\n\nThis setting is not used if `deployment.ingress.enabled` is set to 'false'.\nNote that only 'metadata.annotations' and 'spec' is valid and only they will\nbe used to override those same sections in the created resource. You can define\neither one or both.\n\nNote that `override_yaml.metadata.labels` is not allowed - you cannot override the labels; to add\nlabels to the default set of labels, use the `deployment.ingress.additional_labels` setting.\nExample,\n```\noverride_yaml:\n  metadata:\n    annotations:\n      nginx.ingress.kubernetes.io/secure-backends: \"true\"\n      nginx.ingress.kubernetes.io/backend-protocol: \"HTTPS\"\n  spec:\n    rules:\n    - http:\n        paths:\n        - path: /kiali\n          pathType: Prefix\n          backend:\n            service\n              name: \"kiali\"\n              port:\n                number: 20001\n```\n"
+                          description: "Because an Ingress into a cluster can vary wildly in its desired configuration,\nthis setting provides a way to override complete portions of the Ingress resource\nconfiguration (Ingress on Kubernetes and Route on OpenShift). It is up to the user\nto ensure this override YAML configuration is valid and supports the cluster environment\nsince the operator will blindly copy this custom configuration into the resource it\ncreates.\n\nThis setting is not used if `deployment.ingress.enabled` is set to 'false'.\nNote that only 'metadata.annotations' and 'spec' is valid and only they will\nbe used to override those same sections in the created resource. You can define\neither one or both.\n\nNote that `override_yaml.metadata.labels` is not allowed - you cannot override the labels; to add\nlabels to the default set of labels, use the `deployment.ingress.additional_labels` setting.\nExample,\n```\nspec:\n  deployment:\n    ingress:\n      override_yaml:\n        metadata:\n          annotations:\n            nginx.ingress.kubernetes.io/secure-backends: \"true\"\n            nginx.ingress.kubernetes.io/backend-protocol: \"HTTPS\"\n        spec:\n          rules:\n          - http:\n              paths:\n              - path: /kiali\n                pathType: Prefix\n                backend:\n                  service\n                    name: \"kiali\"\n                    port:\n                      number: 20001\n```\n"
                           properties:
                             metadata:
                               properties:
@@ -420,6 +420,36 @@ spec:
                     priority_class_name:
                       description: "The priorityClassName used to assign the priority of the Kiali pod."
                       type: "string"
+                    probes:
+                      description: "Configures the liveness, readiness, and startup probes of the Kiali pod."
+                      properties:
+                        liveness:
+                          description: "Configures the liveness probe of the Kiali pod."
+                          properties:
+                            initial_delay_seconds:
+                              type: "integer"
+                            period_seconds:
+                              type: "integer"
+                          type: "object"
+                        readiness:
+                          description: "Configures the readiness probe of the Kiali pod."
+                          properties:
+                            initial_delay_seconds:
+                              type: "integer"
+                            period_seconds:
+                              type: "integer"
+                          type: "object"
+                        startup:
+                          description: "Configures the startup probe of the Kiali pod."
+                          properties:
+                            failure_threshold:
+                              type: "integer"
+                            initial_delay_seconds:
+                              type: "integer"
+                            period_seconds:
+                              type: "integer"
+                          type: "object"
+                      type: "object"
                     remote_cluster_resources_only:
                       description: "When `true`, only those resources necessary for a remote Kiali Server to access this cluster are created (such as the service account and roles/bindings). There will be no Kiali Server deployment/pod created when this is `true`."
                       type: "boolean"
@@ -427,7 +457,7 @@ spec:
                       description: "The replica count for the Kiail deployment. If `deployment.hpa` is specified, this setting is ignored."
                       type: "integer"
                     resources:
-                      description: "Defines compute resources that are to be given to the Kiali pod's container. The value is a dict as defined by Kubernetes. See the Kubernetes documentation (https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container).\nIf you set this to an empty dict (`{}`) then no resources will be defined in the Deployment.\nIf you do not set this at all, the default is,\n```\nrequests:\n  cpu: \"10m\"\n  memory: \"64Mi\"\nlimits:\n  memory: \"1Gi\"\n```\n"
+                      description: "Defines compute resources that are to be given to the Kiali pod's container. The value is a dict as defined by Kubernetes. See the Kubernetes documentation (https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container).\nIf you set this to an empty dict (`{}`) then no resources will be defined in the Deployment.\nIf you do not set this at all, the default is,\n```\nspec:\n  deployment:\n    resources:\n      requests:\n        cpu: \"10m\"\n        memory: \"64Mi\"\n      limits:\n        memory: \"1Gi\"\n```\n"
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                     secret_name:
@@ -446,6 +476,12 @@ spec:
                       type: "string"
                     tolerations:
                       description: "A list of tolerations which declare which node taints Kiali can tolerate. See the Kubernetes documentation on Taints and Tolerations for more details."
+                      items:
+                        type: "object"
+                        x-kubernetes-preserve-unknown-fields: true
+                      type: "array"
+                    topology_spread_constraints:
+                      description: "A list of constraints which control how the Kiali pods are spread across your cluster to help achieve high availability as well as efficient resource utilization. See the Kubernetes documentation on Topology Spread Constraints for more details."
                       items:
                         type: "object"
                         x-kubernetes-preserve-unknown-fields: true
@@ -716,6 +752,9 @@ spec:
                         url_service_version:
                           description: "The Istio service used to determine the Istio version. If empty, assumes the URL for the well-known Istio version endpoint."
                           type: "string"
+                        validation_reconcile_interval:
+                          description: "Configures how often Kiali will validate Istio configuration. Validations cannot be disabled at the moment but you can set this to a long period of time. Accepts a golang duration string e.g. '1h' or '30m'."
+                          type: "string"
                       type: "object"
                     prometheus:
                       description: "The Prometheus configuration defined here refers to the Prometheus instance that is used by Istio to store its telemetry."
@@ -817,6 +856,9 @@ spec:
                           description: "A set of name/value settings that will be passed as headers when requests are sent to the Tracing backend."
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
+                        disable_version_check:
+                          description: "When true, the version of the Tracing backend will not be retrieved. This will mean Kiali will not be able to display the version of your Tracing component in the Kiali UI. This may be needed in order to avoid Kiali reporting errors in cases where the full version endpoint is not accessible or is unknown. A common use case is when using Jaeger with gRPC and the HTTP endpoint is not deployed in the standard port (80). Defaults to `false`"
+                          type: "boolean"
                         enabled:
                           description: "When true, connections to the Tracing server are enabled. `internal_url` and/or `external_url` need to be provided."
                           type: "boolean"
@@ -851,6 +893,12 @@ spec:
                         tempo_config:
                           description: "Settings used to configure the access url to the Tempo Datasource in Grafana."
                           properties:
+                            cache_capacity:
+                              description: "When `cache_enabled` is true, the number of traces saved in the cache. 200 by default."
+                              type: "integer"
+                            cache_enabled:
+                              description: "A FIFO cache with the last `cache_capacity` traces viewed."
+                              type: "boolean"
                             datasource_uid:
                               description: "The unique identifier (uid) of the Tempo datasource in Grafana."
                               type: "string"
@@ -928,7 +976,7 @@ spec:
                   description: "Defines specific labels used by Istio that Kiali needs to know about."
                   properties:
                     app_label_name:
-                      description: "The name of the label used to define what application a workload belongs to. This is typically something like `app` or `app.kubernetes.io/name`."
+                      description: "If using a single scheme for app/version labeling, set this to the app label name being used. This is typically `app` or `app.kubernetes.io/name`. The default is unset, and Kiali will handle mixed schemes."
                       type: "string"
                     egress_gateway_label:
                       description: "The selector label for Egress Gateway workload. This is typically `istio=egressgateway`."
@@ -943,7 +991,7 @@ spec:
                       description: "The label used to identify the Istio revision."
                       type: "string"
                     version_label_name:
-                      description: "The name of the label used to define what version of the application a workload belongs to. This is typically something like `version` or `app.kubernetes.io/version`."
+                      description: "If using a single scheme for app/version labeling, set this to the version label name being used. This is typically `version` or `app.kubernetes.io/version`. The default is unset, and Kiali will handle mixed schemes."
                       type: "string"
                   type: "object"
                 istio_namespace:
@@ -1004,9 +1052,27 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            settings:
+                              description: "Various presentation options."
+                              properties:
+                                animation:
+                                  description: "The traffic animation style. Value must be one of: `dash` or `point`. Default is `point`."
+                                  enum:
+                                    - "dash"
+                                    - "point"
+                                  type: "string"
+                              type: "object"
                             traffic:
                               description: "These settings determine which rates are used to determine graph traffic."
                               properties:
+                                ambient:
+                                  description: "Ambient traffic is reported by ztunnel and/or waypoints. Value must be one of: `none`, `total`, `waypoint`, or `ztunnel`."
+                                  enum:
+                                    - "none"
+                                    - "total"
+                                    - "waypoint"
+                                    - "ztunnel"
+                                  type: "string"
                                 grpc:
                                   description: "gRPC traffic is measured in requests or sent/received/total messages. Value must be one of: `none`, `requests`, `sent`, `received`, or `total`."
                                   enum:
@@ -1059,7 +1125,7 @@ spec:
                               type: "boolean"
                           type: "object"
                         metrics_inbound:
-                          description: "Additional label aggregation for inbound metric pages in detail pages.\nYou will see these configurations in the 'Metric Settings' drop-down.\nAn example,\n```\nmetrics_inbound:\n  aggregations:\n  - display_name: Istio Network\n    label: topology_istio_io_network\n  - display_name: Istio Revision\n    label: istio_io_rev\n```\n"
+                          description: "Additional label aggregation for inbound metric pages in detail pages.\nYou will see these configurations in the 'Metric Settings' drop-down.\nAn example,\n```\nspec:\n  kiali_feature_flags:\n    ui_defaults:\n      metrics_inbound:\n        aggregations:\n        - display_name: Istio Network\n          label: topology_istio_io_network\n        - display_name: Istio Revision\n          label: istio_io_rev\n```\n"
                           properties:
                             aggregations:
                               items:
@@ -1072,7 +1138,7 @@ spec:
                               type: "array"
                           type: "object"
                         metrics_outbound:
-                          description: "Additional label aggregation for outbound metric pages in detail pages.\nYou will see these configurations in the 'Metric Settings' drop-down.\nAn example,\n```\nmetrics_outbound:\n  aggregations:\n  - display_name: Istio Network\n    label: topology_istio_io_network\n  - display_name: Istio Revision\n    label: istio_io_rev\n```\n"
+                          description: "Additional label aggregation for outbound metric pages in detail pages.\nYou will see these configurations in the 'Metric Settings' drop-down.\nAn example,\n```\nspec:\n  kiali_feature_flags:\n    ui_defaults:\n      metrics_outbound:\n        aggregations:\n        - display_name: Istio Network\n          label: topology_istio_io_network\n        - display_name: Istio Revision\n          label: istio_io_rev\n```\n"
                           properties:
                             aggregations:
                               items:
@@ -1235,6 +1301,9 @@ spec:
                           description: "When 'true', the profiler will be enabled and accessible at /debug/pprof/ on the Kiali endpoint."
                           type: "boolean"
                       type: "object"
+                    require_auth:
+                      description: "When true, the /api endpoint will require users to authenticate themselves. When false, users need not authenticate with Kiali in order to get basic runtime info about the server via the /api endpoint. This setting is ignored if auth.strategy is 'anonymous'."
+                      type: "boolean"
                     web_fqdn:
                       description: "Defines the public domain where Kiali is being served. This is the 'domain' part of the URL (usually it's a fully-qualified domain name). For example, `kiali.example.org`. When empty, Kiali will try to guess this value from HTTP headers. On non-OpenShift clusters, you must populate this value if you want to enable cross-linking between Kiali instances in a multi-cluster setup."
                       type: "string"

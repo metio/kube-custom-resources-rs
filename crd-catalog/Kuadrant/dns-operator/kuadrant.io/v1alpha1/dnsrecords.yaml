@@ -18,6 +18,31 @@ spec:
           jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
           name: "Ready"
           type: "string"
+        - description: "DNSRecord healthy."
+          jsonPath: ".status.conditions[?(@.type==\"Healthy\")].status"
+          name: "Healthy"
+          priority: 2
+          type: "string"
+        - description: "DNSRecord root host."
+          jsonPath: ".spec.rootHost"
+          name: "Root Host"
+          priority: 2
+          type: "string"
+        - description: "DNSRecord owner id."
+          jsonPath: ".status.ownerID"
+          name: "Owner ID"
+          priority: 2
+          type: "string"
+        - description: "DNSRecord zone domain name."
+          jsonPath: ".status.zoneDomainName"
+          name: "Zone Domain"
+          priority: 2
+          type: "string"
+        - description: "DNSRecord zone id."
+          jsonPath: ".status.zoneID"
+          name: "Zone ID"
+          priority: 2
+          type: "string"
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
@@ -88,26 +113,30 @@ spec:
                         - "name"
                       type: "object"
                     failureThreshold:
-                      description: "FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy"
+                      default: 5
+                      description: "FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy\nDefaults to 5"
                       type: "integer"
                       x-kubernetes-validations:
                         - message: "Failure threshold must be greater than 0"
                           rule: "self > 0"
                     interval:
-                      description: "Interval defines how frequently this probe should execute"
+                      default: "5m"
+                      description: "Interval defines how frequently this probe should execute\nDefaults to 5 minutes"
                       type: "string"
                     path:
                       description: "Path is the path to append to the host to reach the expected health check.\nMust start with \"?\" or \"/\", contain only valid URL characters and end with alphanumeric char or \"/\". For example \"/\" or \"/healthz\" are common"
                       pattern: "^(?:\\?|\\/)[\\w\\-.~:\\/?#\\[\\]@!$&'()*+,;=]+(?:[a-zA-Z0-9]|\\/){1}$"
                       type: "string"
                     port:
-                      description: "Port to connect to the host on. Must be either 80, 443 or 1024-49151"
+                      default: 443
+                      description: "Port to connect to the host on. Must be either 80, 443 or 1024-49151\nDefaults to port 443"
                       type: "integer"
                       x-kubernetes-validations:
                         - message: "Only ports 80, 443, 1024-49151 are allowed"
                           rule: "self in [80, 443] || (self >= 1024 && self <= 49151)"
                     protocol:
-                      description: "Protocol to use when connecting to the host, valid values are \"HTTP\" or \"HTTPS\""
+                      default: "HTTPS"
+                      description: "Protocol to use when connecting to the host, valid values are \"HTTP\" or \"HTTPS\"\nDefaults to HTTPS"
                       type: "string"
                       x-kubernetes-validations:
                         - message: "Only HTTP or HTTPS protocols are allowed"

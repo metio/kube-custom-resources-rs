@@ -20,6 +20,9 @@ spec:
         - jsonPath: ".spec.nodes"
           name: "Nodes"
           type: "string"
+        - jsonPath: ".status.licenseStatus.shardsUsage"
+          name: "Shards"
+          type: "string"
         - jsonPath: ".spec.redisEnterpriseImageSpec.versionTag"
           name: "Version"
           type: "string"
@@ -31,9 +34,6 @@ spec:
           type: "string"
         - jsonPath: ".status.licenseStatus.licenseState"
           name: "License State"
-          type: "string"
-        - jsonPath: ".status.licenseStatus.shardsLimit"
-          name: "Shards Limit"
           type: "string"
         - jsonPath: ".status.licenseStatus.expirationDate"
           name: "License Expiration Date"
@@ -382,6 +382,9 @@ spec:
                     cacheTTLSeconds:
                       description: "The maximum TTL of cached entries."
                       type: "integer"
+                    directoryTimeoutSeconds:
+                      description: "The connection timeout to the LDAP server when authenticating a user, in seconds"
+                      type: "integer"
                     enabledForControlPlane:
                       description: "Whether to enable LDAP for control plane access. Disabled by default."
                       type: "boolean"
@@ -607,9 +610,6 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
-                podSecurityPolicyName:
-                  description: "DEPRECATED PodSecurityPolicy support is removed in Kubernetes v1.25 and the use of this field is invalid for use when running on Kubernetes v1.25+. Future versions of the RedisEnterpriseCluster API will remove support for this field altogether. For migration instructions, see https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/ \n Name of pod security policy to use on pods"
-                  type: "string"
                 podStartingPolicy:
                   description: "Mitigation setting for STS pods stuck in \"ContainerCreating\""
                   properties:
@@ -3431,6 +3431,19 @@ spec:
                 resp3Default:
                   description: "Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info."
                   type: "boolean"
+                securityContext:
+                  description: "the security configuration that will be applied to RS pods."
+                  properties:
+                    readOnlyRootFilesystemPolicy:
+                      description: "Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly."
+                      properties:
+                        enabled:
+                          description: "Whether RS containers has a read-only root filesystem. Default is false."
+                          type: "boolean"
+                      required:
+                        - "enabled"
+                      type: "object"
+                  type: "object"
                 serviceAccountName:
                   description: "Name of the service account to use"
                   type: "string"
@@ -3457,6 +3470,12 @@ spec:
                 servicesRiggerSpec:
                   description: "Specification for service rigger"
                   properties:
+                    databaseServicePortPolicy:
+                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
+                      enum:
+                        - "DatabasePortForward"
+                        - "RedisDefaultPort"
+                      type: "string"
                     databaseServiceType:
                       description: "Service types for access to databases. should be a comma separated list. The possible values are cluster_ip, headless and load_balancer."
                       type: "string"
@@ -7324,6 +7343,17 @@ spec:
                       - "version"
                     type: "object"
                   type: "array"
+                certificatesStatus:
+                  description: "Stores information about cluster certificates and their update process. In Active-Active databases, this is used to detect updates to the certificates, and trigger synchronization across the participating clusters."
+                  properties:
+                    generation:
+                      description: "Generation stores the version of the cluster's Proxy and Syncer certificate secrets. In Active-Active databases, when a user updates the proxy or syncer certificate, a crdb-update command needs to be triggered to avoid potential sync issues. This helps the REAADB controller detect a change in a certificate and trigger a crdb-update. The version of the cluster's Proxy certificate secret."
+                      format: "int64"
+                      type: "integer"
+                    updateStatus:
+                      description: "The status of the cluster's certificates update"
+                      type: "string"
+                  type: "object"
                 ingressOrRouteMethodStatus:
                   description: "The ingressOrRouteSpec/ActiveActive spec method that exist"
                   type: "string"
@@ -7333,10 +7363,32 @@ spec:
                       type: "string"
                     expirationDate:
                       type: "string"
+                    features:
+                      items:
+                        type: "string"
+                      type: "array"
+                    flashShards:
+                      format: "int32"
+                      type: "integer"
+                    flashShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     licenseState:
                       type: "string"
+                    owner:
+                      type: "string"
+                    ramShards:
+                      format: "int32"
+                      type: "integer"
+                    ramShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     shardsLimit:
                       type: "integer"
+                    shardsUsage:
+                      type: "string"
                   type: "object"
                 managedAPIs:
                   description: "Indicates cluster APIs that are being managed by the operator. This only applies to cluster APIs which are optionally-managed by the operator, such as cluster LDAP configuration. Most other APIs are automatically managed by the operator, and are not listed here."

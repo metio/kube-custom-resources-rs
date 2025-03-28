@@ -127,7 +127,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 docker_image:
-                  default: "ghcr.io/zalando/spilo-16:3.3-p1"
+                  default: "ghcr.io/zalando/spilo-17:4.0-p2"
                   type: "string"
                 enable_crd_registration:
                   default: true
@@ -479,10 +479,10 @@ spec:
                         type: "string"
                       type: "array"
                     minimal_major_version:
-                      default: "12"
+                      default: "13"
                       type: "string"
                     target_major_version:
-                      default: "16"
+                      default: "17"
                       type: "string"
                   type: "object"
                 max_instances:

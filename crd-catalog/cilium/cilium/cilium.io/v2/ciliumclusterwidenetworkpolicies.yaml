@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.3"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "ciliumclusterwidenetworkpolicies.cilium.io"
 spec:
   group: "cilium.io"
@@ -36,6 +36,23 @@ spec:
             metadata:
               type: "object"
             spec:
+              anyOf:
+                - properties:
+                    ingress: {}
+                  required:
+                    - "ingress"
+                - properties:
+                    ingressDeny: {}
+                  required:
+                    - "ingressDeny"
+                - properties:
+                    egress: {}
+                  required:
+                    - "egress"
+                - properties:
+                    egressDeny: {}
+                  required:
+                    - "egressDeny"
               description: "Spec is the desired Cilium specific rule specification."
               oneOf:
                 - properties:
@@ -119,6 +136,10 @@ spec:
                                 cidrGroupRef: {}
                               required:
                                 - "cidrGroupRef"
+                            - properties:
+                                cidrGroupSelector: {}
+                              required:
+                                - "cidrGroupSelector"
                           properties:
                             cidr:
                               description: "CIDR is a CIDR prefix / IP Block."
@@ -129,6 +150,47 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
+                            cidrGroupSelector:
+                              description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        enum:
+                                          - "In"
+                                          - "NotIn"
+                                          - "Exists"
+                                          - "DoesNotExist"
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                    maxLength: 63
+                                    pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             except:
                               description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                               items:
@@ -215,10 +277,12 @@ spec:
                           properties:
                             matchName:
                               description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                              maxLength: 255
                               pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                               type: "string"
                             matchPattern:
-                              description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                              description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                              maxLength: 255
                               pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                               type: "string"
                           type: "object"
@@ -420,10 +484,12 @@ spec:
                                     properties:
                                       matchName:
                                         description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                                        maxLength: 255
                                         pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                                         type: "string"
                                       matchPattern:
-                                        description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                        description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                        maxLength: 255
                                         pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                         type: "string"
                                     type: "object"
@@ -436,7 +502,7 @@ spec:
                                       headerMatches:
                                         description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                         items:
-                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                           properties:
                                             mismatch:
                                               description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -603,9 +669,9 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       toServices:
-                        description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services without\nselectors.\n\nExample:\nAny endpoint with the label \"app=backend-app\" is allowed to\ninitiate connections to all cidrs backing the \"external-service\" service"
+                        description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
-                          description: "Service wraps around selectors for services"
+                          description: "Service selects policy targets that are bundled as part of a\nlogical load-balanced service.\n\nCurrently only Kubernetes-based Services are supported."
                           properties:
                             k8sService:
                               description: "K8sService selects service by name and namespace pair"
@@ -724,6 +790,10 @@ spec:
                                 cidrGroupRef: {}
                               required:
                                 - "cidrGroupRef"
+                            - properties:
+                                cidrGroupSelector: {}
+                              required:
+                                - "cidrGroupSelector"
                           properties:
                             cidr:
                               description: "CIDR is a CIDR prefix / IP Block."
@@ -734,6 +804,47 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
+                            cidrGroupSelector:
+                              description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        enum:
+                                          - "In"
+                                          - "NotIn"
+                                          - "Exists"
+                                          - "DoesNotExist"
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                    maxLength: 63
+                                    pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             except:
                               description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                               items:
@@ -953,9 +1064,9 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       toServices:
-                        description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services without\nselectors.\n\nExample:\nAny endpoint with the label \"app=backend-app\" is allowed to\ninitiate connections to all cidrs backing the \"external-service\" service"
+                        description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                         items:
-                          description: "Service wraps around selectors for services"
+                          description: "Service selects policy targets that are bundled as part of a\nlogical load-balanced service.\n\nCurrently only Kubernetes-based Services are supported."
                           properties:
                             k8sService:
                               description: "K8sService selects service by name and namespace pair"
@@ -1107,6 +1218,10 @@ spec:
                                 cidrGroupRef: {}
                               required:
                                 - "cidrGroupRef"
+                            - properties:
+                                cidrGroupSelector: {}
+                              required:
+                                - "cidrGroupSelector"
                           properties:
                             cidr:
                               description: "CIDR is a CIDR prefix / IP Block."
@@ -1117,6 +1232,47 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
+                            cidrGroupSelector:
+                              description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        enum:
+                                          - "In"
+                                          - "NotIn"
+                                          - "Exists"
+                                          - "DoesNotExist"
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                    maxLength: 63
+                                    pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             except:
                               description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                               items:
@@ -1460,10 +1616,12 @@ spec:
                                     properties:
                                       matchName:
                                         description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                                        maxLength: 255
                                         pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                                         type: "string"
                                       matchPattern:
-                                        description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                        description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                        maxLength: 255
                                         pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                         type: "string"
                                     type: "object"
@@ -1476,7 +1634,7 @@ spec:
                                       headerMatches:
                                         description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                         items:
-                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                          description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                           properties:
                                             mismatch:
                                               description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -1625,6 +1783,10 @@ spec:
                                 cidrGroupRef: {}
                               required:
                                 - "cidrGroupRef"
+                            - properties:
+                                cidrGroupSelector: {}
+                              required:
+                                - "cidrGroupSelector"
                           properties:
                             cidr:
                               description: "CIDR is a CIDR prefix / IP Block."
@@ -1635,6 +1797,47 @@ spec:
                               maxLength: 253
                               pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                               type: "string"
+                            cidrGroupSelector:
+                              description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                              properties:
+                                matchExpressions:
+                                  description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                  items:
+                                    description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                    properties:
+                                      key:
+                                        description: "key is the label key that the selector applies to."
+                                        type: "string"
+                                      operator:
+                                        description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                        enum:
+                                          - "In"
+                                          - "NotIn"
+                                          - "Exists"
+                                          - "DoesNotExist"
+                                        type: "string"
+                                      values:
+                                        description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                        x-kubernetes-list-type: "atomic"
+                                    required:
+                                      - "key"
+                                      - "operator"
+                                    type: "object"
+                                  type: "array"
+                                  x-kubernetes-list-type: "atomic"
+                                matchLabels:
+                                  additionalProperties:
+                                    description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                    maxLength: 63
+                                    pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                    type: "string"
+                                  description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                  type: "object"
+                              type: "object"
+                              x-kubernetes-map-type: "atomic"
                             except:
                               description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                               items:
@@ -1947,6 +2150,23 @@ spec:
             specs:
               description: "Specs is a list of desired Cilium specific rule specification."
               items:
+                anyOf:
+                  - properties:
+                      ingress: {}
+                    required:
+                      - "ingress"
+                  - properties:
+                      ingressDeny: {}
+                    required:
+                      - "ingressDeny"
+                  - properties:
+                      egress: {}
+                    required:
+                      - "egress"
+                  - properties:
+                      egressDeny: {}
+                    required:
+                      - "egressDeny"
                 description: "Rule is a policy rule which must be applied to all endpoints which match the\nlabels contained in the endpointSelector\n\nEach rule is split into an ingress section which contains all rules\napplicable at ingress, and an egress section applicable at egress. For rule\ntypes such as `L4Rule` and `CIDR` which can be applied at both ingress and\negress, both ingress and egress side have to either specifically allow the\nconnection or one side has to be omitted.\n\nEither ingress, egress, or both can be provided. If both ingress and egress\nare omitted, the rule has no effect."
                 oneOf:
                   - properties:
@@ -2030,6 +2250,10 @@ spec:
                                   cidrGroupRef: {}
                                 required:
                                   - "cidrGroupRef"
+                              - properties:
+                                  cidrGroupSelector: {}
+                                required:
+                                  - "cidrGroupSelector"
                             properties:
                               cidr:
                                 description: "CIDR is a CIDR prefix / IP Block."
@@ -2040,6 +2264,47 @@ spec:
                                 maxLength: 253
                                 pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
+                              cidrGroupSelector:
+                                description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          enum:
+                                            - "In"
+                                            - "NotIn"
+                                            - "Exists"
+                                            - "DoesNotExist"
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                      maxLength: 63
+                                      pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
                               except:
                                 description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                                 items:
@@ -2126,10 +2391,12 @@ spec:
                             properties:
                               matchName:
                                 description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                                maxLength: 255
                                 pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                                 type: "string"
                               matchPattern:
-                                description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                maxLength: 255
                                 pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                 type: "string"
                             type: "object"
@@ -2331,10 +2598,12 @@ spec:
                                       properties:
                                         matchName:
                                           description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                                          maxLength: 255
                                           pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                                           type: "string"
                                         matchPattern:
-                                          description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                          description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                          maxLength: 255
                                           pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                           type: "string"
                                       type: "object"
@@ -2347,7 +2616,7 @@ spec:
                                         headerMatches:
                                           description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                           items:
-                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                             properties:
                                               mismatch:
                                                 description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -2514,9 +2783,9 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         toServices:
-                          description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services without\nselectors.\n\nExample:\nAny endpoint with the label \"app=backend-app\" is allowed to\ninitiate connections to all cidrs backing the \"external-service\" service"
+                          description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
-                            description: "Service wraps around selectors for services"
+                            description: "Service selects policy targets that are bundled as part of a\nlogical load-balanced service.\n\nCurrently only Kubernetes-based Services are supported."
                             properties:
                               k8sService:
                                 description: "K8sService selects service by name and namespace pair"
@@ -2635,6 +2904,10 @@ spec:
                                   cidrGroupRef: {}
                                 required:
                                   - "cidrGroupRef"
+                              - properties:
+                                  cidrGroupSelector: {}
+                                required:
+                                  - "cidrGroupSelector"
                             properties:
                               cidr:
                                 description: "CIDR is a CIDR prefix / IP Block."
@@ -2645,6 +2918,47 @@ spec:
                                 maxLength: 253
                                 pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
+                              cidrGroupSelector:
+                                description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          enum:
+                                            - "In"
+                                            - "NotIn"
+                                            - "Exists"
+                                            - "DoesNotExist"
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                      maxLength: 63
+                                      pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
                               except:
                                 description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                                 items:
@@ -2864,9 +3178,9 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         toServices:
-                          description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services without\nselectors.\n\nExample:\nAny endpoint with the label \"app=backend-app\" is allowed to\ninitiate connections to all cidrs backing the \"external-service\" service"
+                          description: "ToServices is a list of services to which the endpoint subject\nto the rule is allowed to initiate connections.\nCurrently Cilium only supports toServices for K8s services."
                           items:
-                            description: "Service wraps around selectors for services"
+                            description: "Service selects policy targets that are bundled as part of a\nlogical load-balanced service.\n\nCurrently only Kubernetes-based Services are supported."
                             properties:
                               k8sService:
                                 description: "K8sService selects service by name and namespace pair"
@@ -3018,6 +3332,10 @@ spec:
                                   cidrGroupRef: {}
                                 required:
                                   - "cidrGroupRef"
+                              - properties:
+                                  cidrGroupSelector: {}
+                                required:
+                                  - "cidrGroupSelector"
                             properties:
                               cidr:
                                 description: "CIDR is a CIDR prefix / IP Block."
@@ -3028,6 +3346,47 @@ spec:
                                 maxLength: 253
                                 pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
+                              cidrGroupSelector:
+                                description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          enum:
+                                            - "In"
+                                            - "NotIn"
+                                            - "Exists"
+                                            - "DoesNotExist"
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                      maxLength: 63
+                                      pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
                               except:
                                 description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                                 items:
@@ -3371,10 +3730,12 @@ spec:
                                       properties:
                                         matchName:
                                           description: "MatchName matches literal DNS names. A trailing \".\" is automatically added\nwhen missing."
+                                          maxLength: 255
                                           pattern: "^([-a-zA-Z0-9_]+[.]?)+$"
                                           type: "string"
                                         matchPattern:
-                                          description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                          description: "MatchPattern allows using wildcards to match DNS names. All wildcards are\ncase insensitive. The wildcards are:\n- \"*\" matches 0 or more DNS valid characters, and may occur anywhere in\nthe pattern. As a special case a \"*\" as the leftmost character, without a\nfollowing \".\" matches all subdomains as well as the name to the right.\nA trailing \".\" is automatically added when missing.\n\nExamples:\n`*.cilium.io` matches subdomains of cilium at that level\n  www.cilium.io and blog.cilium.io match, cilium.io and google.com do not\n`*cilium.io` matches cilium.io and all subdomains ends with \"cilium.io\"\n  except those containing \".\" separator, subcilium.io and sub-cilium.io match,\n  www.cilium.io and blog.cilium.io does not\nsub*.cilium.io matches subdomains of cilium where the subdomain component\nbegins with \"sub\"\n  sub.cilium.io and subdomain.cilium.io match, www.cilium.io,\n  blog.cilium.io, cilium.io and google.com do not"
+                                          maxLength: 255
                                           pattern: "^([-a-zA-Z0-9_*]+[.]?)+$"
                                           type: "string"
                                       type: "object"
@@ -3387,7 +3748,7 @@ spec:
                                         headerMatches:
                                           description: "HeaderMatches is a list of HTTP headers which must be\npresent and match against the given values. Mismatch field can be used\nto specify what to do when there is no match."
                                           items:
-                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string, a secret value, or\na regex.  If none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
+                                            description: "HeaderMatch extends the HeaderValue for matching requirement of a\nnamed header field against an immediate string or a secret value.\nIf none of the optional fields is present, then the\nheader value is not matched, only presence of the header is enough."
                                             properties:
                                               mismatch:
                                                 description: "Mismatch identifies what to do in case there is no match. The default is\nto drop the request. Otherwise the overall rule is still considered as\nmatching, but the mismatches are logged in the access log."
@@ -3536,6 +3897,10 @@ spec:
                                   cidrGroupRef: {}
                                 required:
                                   - "cidrGroupRef"
+                              - properties:
+                                  cidrGroupSelector: {}
+                                required:
+                                  - "cidrGroupSelector"
                             properties:
                               cidr:
                                 description: "CIDR is a CIDR prefix / IP Block."
@@ -3546,6 +3911,47 @@ spec:
                                 maxLength: 253
                                 pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
+                              cidrGroupSelector:
+                                description: "CIDRGroupSelector selects CiliumCIDRGroups by their labels,\nrather than by name."
+                                properties:
+                                  matchExpressions:
+                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          enum:
+                                            - "In"
+                                            - "NotIn"
+                                            - "Exists"
+                                            - "DoesNotExist"
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchLabels:
+                                    additionalProperties:
+                                      description: "MatchLabelsValue represents the value from the MatchLabels {key,value} pair."
+                                      maxLength: 63
+                                      pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
+                                      type: "string"
+                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                                    type: "object"
+                                type: "object"
+                                x-kubernetes-map-type: "atomic"
                               except:
                                 description: "ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule\nis not allowed to initiate connections to. These CIDR prefixes should be\ncontained within Cidr, using ExceptCIDRs together with CIDRGroupRef is not\nsupported yet.\nThese exceptions are only applied to the Cidr in this CIDRRule, and do not\napply to any other CIDR prefixes in any other CIDRRules."
                                 items:

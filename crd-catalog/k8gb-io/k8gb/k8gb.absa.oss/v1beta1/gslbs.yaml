@@ -234,7 +234,7 @@ spec:
                       description: "Primary Geo Tag. Valid for failover strategy only"
                       type: "string"
                     splitBrainThresholdSeconds:
-                      description: "Split brain TXT record expiration in seconds"
+                      description: "Split brain TXT record expiration in seconds. The field is deprecated and not used."
                       type: "integer"
                     type:
                       description: "Load balancing strategy type:(roundRobin|failover)"
@@ -309,8 +309,6 @@ spec:
               required:
                 - "geoTag"
                 - "healthyRecords"
-                - "loadBalancer"
-                - "servers"
                 - "serviceHealth"
               type: "object"
           type: "object"

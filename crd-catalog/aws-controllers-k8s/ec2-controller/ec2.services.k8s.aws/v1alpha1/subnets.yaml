@@ -39,7 +39,7 @@ spec:
                 assignIPv6AddressOnCreation:
                   type: "boolean"
                 availabilityZone:
-                  description: "The Availability Zone or Local Zone for the subnet.\n\nDefault: Amazon Web Services selects one for you. If you create more than\none subnet in your VPC, we do not necessarily select a different zone for\neach subnet.\n\nTo create a subnet in a Local Zone, set this value to the Local Zone ID,\nfor example us-west-2-lax-1a. For information about the Regions that support\nLocal Zones, see Available Regions (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)\nin the Amazon Elastic Compute Cloud User Guide.\n\nTo create a subnet in an Outpost, set this value to the Availability Zone\nfor the Outpost and specify the Outpost ARN."
+                  description: "The Availability Zone or Local Zone for the subnet.\n\nDefault: Amazon Web Services selects one for you. If you create more than\none subnet in your VPC, we do not necessarily select a different zone for\neach subnet.\n\nTo create a subnet in a Local Zone, set this value to the Local Zone ID,\nfor example us-west-2-lax-1a. For information about the Regions that support\nLocal Zones, see Available Local Zones (https://docs.aws.amazon.com/local-zones/latest/ug/available-local-zones.html).\n\nTo create a subnet in an Outpost, set this value to the Availability Zone\nfor the Outpost and specify the Outpost ARN."
                   type: "string"
                 availabilityZoneID:
                   description: "The AZ ID or the Local Zone ID of the subnet."
@@ -58,7 +58,7 @@ spec:
                 hostnameType:
                   type: "string"
                 ipv6CIDRBlock:
-                  description: "The IPv6 network range for the subnet, in CIDR notation. The subnet size\nmust use a /64 prefix length.\n\nThis parameter is required for an IPv6 only subnet."
+                  description: "The IPv6 network range for the subnet, in CIDR notation. This parameter is\nrequired for an IPv6 only subnet."
                   type: "string"
                 ipv6Native:
                   description: "Indicates whether to create an IPv6 only subnet."
@@ -137,7 +137,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

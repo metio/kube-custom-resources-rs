@@ -483,6 +483,42 @@ spec:
                           - "authenticationClass"
                         type: "object"
                       type: "array"
+                    authorization:
+                      description: "Authorization options. Learn more in the [Airflow authorization usage guide](https://docs.stackable.tech/home/nightly/airflow/usage-guide/security#_authorization)."
+                      nullable: true
+                      properties:
+                        opa:
+                          description: "Configure the OPA stacklet [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery) and the name of the Rego package containing your authorization rules. Consult the [OPA authorization documentation](https://docs.stackable.tech/home/nightly/concepts/opa) to learn how to deploy Rego authorization rules with OPA."
+                          nullable: true
+                          properties:
+                            cache:
+                              default:
+                                entryTimeToLive: "30s"
+                                maxEntries: 10000
+                              description: "Least Recently Used (LRU) cache with per-entry time-to-live (TTL) value."
+                              properties:
+                                entryTimeToLive:
+                                  default: "30s"
+                                  description: "Time to live per entry"
+                                  type: "string"
+                                maxEntries:
+                                  default: 10000
+                                  description: "Maximum number of entries in the cache; If this threshold is reached then the least recently used item is removed."
+                                  format: "uint32"
+                                  minimum: 0.0
+                                  type: "integer"
+                              type: "object"
+                            configMapName:
+                              description: "The [discovery ConfigMap](https://docs.stackable.tech/home/nightly/concepts/service_discovery) for the OPA stacklet that should be used for authorization requests."
+                              type: "string"
+                            package:
+                              description: "The name of the Rego package containing the Rego rules for the product."
+                              nullable: true
+                              type: "string"
+                          required:
+                            - "configMapName"
+                          type: "object"
+                      type: "object"
                     credentialsSecret:
                       description: "The name of the Secret object containing the admin user credentials and database connection details. Read the [getting started guide first steps](https://docs.stackable.tech/home/nightly/airflow/getting_started/first_steps) to find out more."
                       type: "string"
@@ -492,38 +528,36 @@ spec:
                       items:
                         properties:
                           branch:
-                            description: "The branch to clone. Defaults to `main`. Since git-sync v4.x.x this field is mapped to the flag `--ref`."
-                            nullable: true
+                            default: "main"
+                            description: "The branch to clone. Defaults to `main`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--ref`."
                             type: "string"
                           credentialsSecret:
                             description: "The name of the Secret used to access the repository if it is not public. This should include two fields: `user` and `password`. The `password` field can either be an actual password (not recommended) or a GitHub token, as described [here](https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual)."
                             nullable: true
                             type: "string"
                           depth:
+                            default: 1
                             description: "The depth of syncing i.e. the number of commits to clone; defaults to 1."
-                            format: "uint8"
+                            format: "uint32"
                             minimum: 0.0
-                            nullable: true
                             type: "integer"
                           gitFolder:
-                            description: "The location of the DAG folder, relative to the synced repository root."
-                            nullable: true
+                            default: "/"
+                            description: "The location of the DAG folder, relative to the synced repository root.\n\nIt can optionally start with `/`, however, no trailing slash is recommended. An empty string (``) or slash (`/`) corresponds to the root folder in Git."
                             type: "string"
                           gitSyncConf:
                             additionalProperties:
                               type: "string"
+                            default: {}
                             description: "A map of optional configuration settings that are listed in the [git-sync documentation](https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual). Read the [git sync example](https://docs.stackable.tech/home/nightly/airflow/usage-guide/mounting-dags#_example)."
-                            nullable: true
                             type: "object"
                           repo:
                             description: "The git repository URL that will be cloned, for example: `https://github.com/stackabletech/airflow-operator`."
                             type: "string"
                           wait:
-                            description: "The synchronization interval in seconds; defaults to 20 seconds. Since git-sync v4.x.x this field is mapped to the flag `--period`."
-                            format: "uint16"
-                            minimum: 0.0
-                            nullable: true
-                            type: "integer"
+                            default: "20s"
+                            description: "The synchronization interval, e.g. `20s` or `5m`, defaults to `20s`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--period`."
+                            type: "string"
                         required:
                           - "repo"
                         type: "object"
@@ -590,7 +624,7 @@ spec:
                   description: "Specify which image to use, the easiest way is to only configure the `productVersion`. You can also configure a custom image registry to pull from, as well as completely custom images.\n\nConsult the [Product image selection documentation](https://docs.stackable.tech/home/nightly/concepts/product_image_selection) for details."
                   properties:
                     custom:
-                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `docker.stackable.tech/stackable/superset:1.4.1-stackable2.1.0`"
+                      description: "Overwrite the docker image. Specify the full docker image name, e.g. `oci.stackable.tech/sdp/superset:1.4.1-stackable2.1.0`"
                       type: "string"
                     productVersion:
                       description: "Version of the product, e.g. `1.4.1`."
@@ -617,7 +651,7 @@ spec:
                       nullable: true
                       type: "array"
                     repo:
-                      description: "Name of the docker repo, e.g. `docker.stackable.tech/stackable`"
+                      description: "Name of the docker repo, e.g. `oci.stackable.tech/sdp`"
                       nullable: true
                       type: "string"
                     stackableVersion:

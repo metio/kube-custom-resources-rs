@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "modelpackages.sagemaker.services.k8s.aws"
 spec:
   group: "sagemaker.services.k8s.aws"
@@ -31,7 +31,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ModelPackageSpec defines the desired state of ModelPackage.\n\n\nA versioned model that can be deployed for SageMaker inference."
+              description: "ModelPackageSpec defines the desired state of ModelPackage.\n\nA versioned model that can be deployed for SageMaker inference."
               properties:
                 additionalInferenceSpecifications:
                   description: "An array of additional Inference Specification objects. Each additional Inference\nSpecification specifies artifacts based on this model package that can be\nused on inference endpoints. Generally used with SageMaker Neo to store the\ncompiled artifacts."
@@ -106,7 +106,7 @@ spec:
                   description: "A description for the approval status of the model."
                   type: "string"
                 certifyForMarketplace:
-                  description: "Whether to certify the model package for listing on Amazon Web Services Marketplace.\n\n\nThis parameter is optional for unversioned models, and does not apply to\nversioned models."
+                  description: "Whether to certify the model package for listing on Amazon Web Services Marketplace.\n\nThis parameter is optional for unversioned models, and does not apply to\nversioned models."
                   type: "boolean"
                 clientToken:
                   description: "A unique token that guarantees that the call to this API is idempotent."
@@ -230,7 +230,7 @@ spec:
                       type: "object"
                   type: "object"
                 inferenceSpecification:
-                  description: "Specifies details about inference jobs that can be run with models based\non this model package, including the following:\n\n\n   * The Amazon ECR paths of containers that contain the inference code and\n   model artifacts.\n\n\n   * The instance types that the model package supports for transform jobs\n   and real-time endpoints used for inference.\n\n\n   * The input and output content formats that the model package supports\n   for inference."
+                  description: "Specifies details about inference jobs that you can run with models based\non this model package, including the following information:\n\n   * The Amazon ECR paths of containers that contain the inference code and\n   model artifacts.\n\n   * The instance types that the model package supports for transform jobs\n   and real-time endpoints used for inference.\n\n   * The input and output content formats that the model package supports\n   for inference."
                   properties:
                     containers:
                       items:
@@ -304,7 +304,7 @@ spec:
                       type: "string"
                   type: "object"
                 modelApprovalStatus:
-                  description: "Whether the model is approved for deployment.\n\n\nThis parameter is optional for versioned models, and does not apply to unversioned\nmodels.\n\n\nFor versioned models, the value of this parameter must be set to Approved\nto deploy the model."
+                  description: "Whether the model is approved for deployment.\n\nThis parameter is optional for versioned models, and does not apply to unversioned\nmodels.\n\nFor versioned models, the value of this parameter must be set to Approved\nto deploy the model."
                   type: "string"
                 modelMetrics:
                   description: "A structure that contains model metrics reports."
@@ -410,10 +410,10 @@ spec:
                   description: "A description of the model package."
                   type: "string"
                 modelPackageGroupName:
-                  description: "The name or Amazon Resource Name (ARN) of the model package group that this\nmodel version belongs to.\n\n\nThis parameter is required for versioned models, and does not apply to unversioned\nmodels."
+                  description: "The name or Amazon Resource Name (ARN) of the model package group that this\nmodel version belongs to.\n\nThis parameter is required for versioned models, and does not apply to unversioned\nmodels."
                   type: "string"
                 modelPackageName:
-                  description: "The name of the model package. The name must have 1 to 63 characters. Valid\ncharacters are a-z, A-Z, 0-9, and - (hyphen).\n\n\nThis parameter is required for unversioned models. It is not applicable to\nversioned models."
+                  description: "The name of the model package. The name must have 1 to 63 characters. Valid\ncharacters are a-z, A-Z, 0-9, and - (hyphen).\n\nThis parameter is required for unversioned models. It is not applicable to\nversioned models."
                   type: "string"
                 samplePayloadURL:
                   description: "The Amazon Simple Storage Service (Amazon S3) path where the sample payload\nis stored. This path must point to a single gzip compressed tar archive (.tar.gz\nsuffix). This archive can hold multiple files that are all equally used in\nthe load test. Each file in the archive must satisfy the size constraints\nof the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)\ncall."
@@ -436,9 +436,9 @@ spec:
                       type: "array"
                   type: "object"
                 tags:
-                  description: "A list of key value pairs associated with the model. For more information,\nsee Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide.\n\n\nIf you supply ModelPackageGroupName, your model package belongs to the model\ngroup you specify and uses the tags associated with the model group. In this\ncase, you cannot supply a tag argument."
+                  description: "A list of key value pairs associated with the model. For more information,\nsee Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)\nin the Amazon Web Services General Reference Guide.\n\nIf you supply ModelPackageGroupName, your model package belongs to the model\ngroup you specify and uses the tags associated with the model group. In this\ncase, you cannot supply a tag argument."
                   items:
-                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
+                    description: "A tag object that consists of a key and an optional value, used to manage\nmetadata for SageMaker Amazon Web Services resources.\n\nYou can add tags to notebook instances, training jobs, hyperparameter tuning\njobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,\nand endpoints. For more information on adding tags to SageMaker resources,\nsee AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).\n\nFor more information on adding metadata to your Amazon Web Services resources\nwith tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).\nFor advice on best practices for managing Amazon Web Services resources with\ntagging, see Tagging Best Practices: Implement an Effective Amazon Web Services\nResource Tagging Strategy (https://d1.awsstatic.com/whitepapers/aws-tagging-best-practices.pdf)."
                     properties:
                       key:
                         type: "string"
@@ -447,14 +447,14 @@ spec:
                     type: "object"
                   type: "array"
                 task:
-                  description: "The machine learning task your model package accomplishes. Common machine\nlearning tasks include object detection and image classification. The following\ntasks are supported by Inference Recommender: \"IMAGE_CLASSIFICATION\" | \"OBJECT_DETECTION\"\n| \"TEXT_GENERATION\" |\"IMAGE_SEGMENTATION\" | \"FILL_MASK\" | \"CLASSIFICATION\"\n| \"REGRESSION\" | \"OTHER\".\n\n\nSpecify \"OTHER\" if none of the tasks listed fit your use case."
+                  description: "The machine learning task your model package accomplishes. Common machine\nlearning tasks include object detection and image classification. The following\ntasks are supported by Inference Recommender: \"IMAGE_CLASSIFICATION\" | \"OBJECT_DETECTION\"\n| \"TEXT_GENERATION\" |\"IMAGE_SEGMENTATION\" | \"FILL_MASK\" | \"CLASSIFICATION\"\n| \"REGRESSION\" | \"OTHER\".\n\nSpecify \"OTHER\" if none of the tasks listed fit your use case."
                   type: "string"
                 validationSpecification:
                   description: "Specifies configurations for one or more transform jobs that SageMaker runs\nto test the model package."
                   properties:
                     validationProfiles:
                       items:
-                        description: "Contains data, such as the inputs and targeted instance types that are used\nin the process of validating the model package.\n\n\nThe data provided in the validation profile is made available to your buyers\non Amazon Web Services Marketplace."
+                        description: "Contains data, such as the inputs and targeted instance types that are used\nin the process of validating the model package.\n\nThe data provided in the validation profile is made available to your buyers\non Amazon Web Services Marketplace."
                         properties:
                           profileName:
                             type: "string"
@@ -532,7 +532,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -545,7 +545,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

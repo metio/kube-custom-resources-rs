@@ -60,7 +60,7 @@ spec:
                   description: "The JSON repository policy text to apply to the repository."
                   type: "string"
                 name:
-                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app)."
+                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app).\n\nThe repository name must start with a letter and can only contain lowercase\nletters, numbers, hyphens, underscores, and forward slashes."
                   type: "string"
                 policy:
                   description: "The JSON repository policy text to apply to the repository. For more information,\nsee Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)\nin the Amazon Elastic Container Registry User Guide."
@@ -102,7 +102,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

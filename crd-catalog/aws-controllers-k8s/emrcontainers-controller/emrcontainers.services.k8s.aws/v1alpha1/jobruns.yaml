@@ -38,9 +38,15 @@ spec:
               properties:
                 configurationOverrides:
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 executionRoleARN:
                   description: "The execution role ARN for the job run."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 jobDriver:
                   description: "The job driver for the job run."
                   properties:
@@ -57,12 +63,21 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 name:
                   description: "The name of the job run."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 releaseLabel:
                   description: "The Amazon EMR release version to use for the job run."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 tags:
                   additionalProperties:
                     type: "string"
@@ -71,6 +86,9 @@ spec:
                 virtualClusterID:
                   description: "The virtual cluster ID for which the job run request is submitted."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 virtualClusterRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
@@ -83,10 +101,6 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
-              required:
-                - "executionRoleARN"
-                - "jobDriver"
-                - "releaseLabel"
               type: "object"
             status:
               description: "JobRunStatus defines the observed state of JobRun"
@@ -108,7 +122,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

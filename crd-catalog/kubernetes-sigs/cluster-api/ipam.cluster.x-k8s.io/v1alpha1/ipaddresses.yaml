@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "ipaddresses.ipam.cluster.x-k8s.io"
 spec:
   group: "ipam.cluster.x-k8s.io"
@@ -46,10 +46,12 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "IPAddressSpec is the desired state of an IPAddress."
+              description: "spec is the desired state of IPAddress."
               properties:
                 address:
                   description: "address is the IP address."
+                  maxLength: 39
+                  minLength: 1
                   type: "string"
                 claimRef:
                   description: "claimRef is a reference to the claim this IPAddress was created for."
@@ -62,6 +64,8 @@ spec:
                   x-kubernetes-map-type: "atomic"
                 gateway:
                   description: "gateway is the network gateway of the network the address is from."
+                  maxLength: 39
+                  minLength: 1
                   type: "string"
                 poolRef:
                   description: "poolRef is a reference to the pool that this IPAddress was created from."

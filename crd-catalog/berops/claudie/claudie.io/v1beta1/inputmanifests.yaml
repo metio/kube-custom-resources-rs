@@ -101,6 +101,11 @@ spec:
                           dns:
                             description: "Specification of the loadbalancer's DNS record."
                             properties:
+                              alternativeNames:
+                                description: "Alternative names that will be created in addition to the hostname. Giving the ability\nto have a loadbalancer for multiple hostnames.\n- api.example.com\n- apiv2.example.com"
+                                items:
+                                  type: "string"
+                                type: "array"
                               dnsZone:
                                 description: "DNS zone inside of which the records will be created. GCP/AWS/OCI/Azure/Cloudflare/Hetzner DNS zone is accepted"
                                 type: "string"
@@ -155,6 +160,17 @@ spec:
                               - "tcp"
                               - "udp"
                             type: "string"
+                          settings:
+                            description: "Additional settings for a role."
+                            properties:
+                              proxyProtocol:
+                                type: "boolean"
+                              stickySessions:
+                                type: "boolean"
+                            required:
+                              - "proxyProtocol"
+                              - "stickySessions"
+                            type: "object"
                           targetPools:
                             description: "Defines nodepools of the targeted K8s cluster, from which nodes will be used for loadbalancing."
                             items:
@@ -360,7 +376,7 @@ spec:
                         minLength: 1
                         type: "string"
                       providerType:
-                        description: "ProviderType type of a provider.\nA list of available providers can be found at https://docs.claudie.io/v0.8.1/input-manifest/providers/aws/"
+                        description: "ProviderType type of a provider.\nA list of available providers can be found at https://docs.claudie.io/v0.9.7/input-manifest/providers/aws/"
                         enum:
                           - "gcp"
                           - "hetzner"

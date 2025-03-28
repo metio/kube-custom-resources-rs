@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   name: "kubevirtclustertemplates.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -37,17 +37,17 @@ spec:
                   description: "KubevirtClusterTemplateResource describes the data needed to create a KubevirtCluster from a template."
                   properties:
                     metadata:
-                      description: "ObjectMeta is metadata that all persisted resources must have, which includes all objects\nusers must create. This is a copy of customizable fields from metav1.ObjectMeta.\n\n\nObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`,\nwhich are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases\nand read-only fields which end up in the generated CRD validation, having it as a subset simplifies\nthe API and some issues that can impact user experience.\n\n\nDuring the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054)\nfor v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs,\nspecifically `spec.metadata.creationTimestamp in body must be of type string: \"null\"`.\nThe investigation showed that `controller-tools@v2` behaves differently than its previous version\nwhen handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package.\n\n\nIn more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta`\nhad validation properties, including for `creationTimestamp` (metav1.Time).\nThe `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null`\nwhich breaks validation because the field isn't marked as nullable.\n\n\nIn future versions, controller-tools@v2 might allow overriding the type and validation for embedded\ntypes. When that happens, this hack should be revisited."
+                      description: "ObjectMeta is metadata that all persisted resources must have, which includes all objects\nusers must create. This is a copy of customizable fields from metav1.ObjectMeta.\n\nObjectMeta is embedded in `Machine.Spec`, `MachineDeployment.Template` and `MachineSet.Template`,\nwhich are not top-level Kubernetes objects. Given that metav1.ObjectMeta has lots of special cases\nand read-only fields which end up in the generated CRD validation, having it as a subset simplifies\nthe API and some issues that can impact user experience.\n\nDuring the [upgrade to controller-tools@v2](https://github.com/kubernetes-sigs/cluster-api/pull/1054)\nfor v1alpha2, we noticed a failure would occur running Cluster API test suite against the new CRDs,\nspecifically `spec.metadata.creationTimestamp in body must be of type string: \"null\"`.\nThe investigation showed that `controller-tools@v2` behaves differently than its previous version\nwhen handling types from [metav1](k8s.io/apimachinery/pkg/apis/meta/v1) package.\n\nIn more details, we found that embedded (non-top level) types that embedded `metav1.ObjectMeta`\nhad validation properties, including for `creationTimestamp` (metav1.Time).\nThe `metav1.Time` type specifies a custom json marshaller that, when IsZero() is true, returns `null`\nwhich breaks validation because the field isn't marked as nullable.\n\nIn future versions, controller-tools@v2 might allow overriding the type and validation for embedded\ntypes. When that happens, this hack should be revisited."
                       properties:
                         annotations:
                           additionalProperties:
                             type: "string"
-                          description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                          description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         labels:
                           additionalProperties:
                             type: "string"
-                          description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                          description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
                           type: "object"
                       type: "object"
                     spec:
@@ -89,7 +89,7 @@ spec:
                               description: "API version of the referent."
                               type: "string"
                             fieldPath:
-                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                              description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                               type: "string"
                             kind:
                               description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
@@ -118,7 +118,7 @@ spec:
                                   description: "API version of the referent."
                                   type: "string"
                                 fieldPath:
-                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object.\nTODO: this design is not final and this field is subject to change in the future."
+                                  description: "If referring to a piece of an object instead of an entire object, this string\nshould contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].\nFor example, if the object reference is to a container within a pod, this would take on a value like:\n\"spec.containers{name}\" (where \"name\" refers to the name of the container that triggered\nthe event) or if no container name is specified \"spec.containers[2]\" (container with\nindex 2 in this pod). This syntax is chosen only to have some well-defined way of\nreferencing a part of an object."
                                   type: "string"
                                 kind:
                                   description: "Kind of the referent.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"

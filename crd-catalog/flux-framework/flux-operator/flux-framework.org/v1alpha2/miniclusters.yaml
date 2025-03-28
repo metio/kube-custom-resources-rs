@@ -362,6 +362,9 @@ spec:
                         queuePolicy:
                           description: "Scheduler queue policy, defaults to \"fcfs\" can also be \"easy\""
                           type: "string"
+                        simple:
+                          description: "Use sched-simple (no support for GPU)"
+                          type: "boolean"
                       type: "object"
                     submitCommand:
                       description: "Modify flux submit to be something else"

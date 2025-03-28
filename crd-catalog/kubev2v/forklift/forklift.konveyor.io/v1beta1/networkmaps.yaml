@@ -50,10 +50,11 @@ spec:
                             description: "The namespace (multus only)."
                             type: "string"
                           type:
-                            description: "The network type."
+                            description: "Type of network to use for the destination.\nValid values:\n- pod: Use the Kubernetes pod network\n- multus: Use a Multus additional network\n- ignored: Network is excluded from mapping"
                             enum:
                               - "pod"
                               - "multus"
+                              - "ignored"
                             type: "string"
                         required:
                           - "type"

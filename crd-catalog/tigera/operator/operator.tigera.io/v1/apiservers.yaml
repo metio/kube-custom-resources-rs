@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "apiservers.operator.tigera.io"
 spec:
   group: "operator.tigera.io"
@@ -255,13 +255,13 @@ spec:
                                                     type: "object"
                                                     x-kubernetes-map-type: "atomic"
                                                   matchLabelKeys:
-                                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                     items:
                                                       type: "string"
                                                     type: "array"
                                                     x-kubernetes-list-type: "atomic"
                                                   mismatchLabelKeys:
-                                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                     items:
                                                       type: "string"
                                                     type: "array"
@@ -360,13 +360,13 @@ spec:
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               matchLabelKeys:
-                                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                 items:
                                                   type: "string"
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               mismatchLabelKeys:
-                                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                 items:
                                                   type: "string"
                                                 type: "array"
@@ -464,13 +464,13 @@ spec:
                                                     type: "object"
                                                     x-kubernetes-map-type: "atomic"
                                                   matchLabelKeys:
-                                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                     items:
                                                       type: "string"
                                                     type: "array"
                                                     x-kubernetes-list-type: "atomic"
                                                   mismatchLabelKeys:
-                                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                     items:
                                                       type: "string"
                                                     type: "array"
@@ -569,13 +569,13 @@ spec:
                                                 type: "object"
                                                 x-kubernetes-map-type: "atomic"
                                               matchLabelKeys:
-                                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                 items:
                                                   type: "string"
                                                 type: "array"
                                                 x-kubernetes-list-type: "atomic"
                                               mismatchLabelKeys:
-                                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate."
+                                                description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set.\nThis is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default)."
                                                 items:
                                                   type: "string"
                                                 type: "array"
@@ -635,12 +635,32 @@ spec:
                                     description: "APIServerDeploymentContainer is an API server Deployment container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the API server Deployment container by name.\nSupported values are: calico-apiserver, tigera-queryserver"
+                                        description: "Name is an enum which identifies the API server Deployment container by name.\nSupported values are: calico-apiserver, tigera-queryserver, calico-l7-admission-controller"
                                         enum:
                                           - "calico-apiserver"
                                           - "tigera-queryserver"
                                           - "calico-l7-admission-controller"
                                         type: "string"
+                                      ports:
+                                        description: "Ports allows customization of container's ports.\nIf specified, this overrides the named APIServer Deployment container's ports.\nIf omitted, the API server Deployment will use its default value for this container's port."
+                                        items:
+                                          properties:
+                                            containerPort:
+                                              description: "Number of port to expose on the pod's IP address.\nThis must be a valid port number, 0 < x < 65536."
+                                              format: "int32"
+                                              type: "integer"
+                                            name:
+                                              description: "Name is an enum which identifies the API server Deployment Container port by name.\nSupported values are: apiserver, queryserver, l7admctrl"
+                                              enum:
+                                                - "apiserver"
+                                                - "queryserver"
+                                                - "l7admctrl"
+                                              type: "string"
+                                          required:
+                                            - "containerPort"
+                                            - "name"
+                                          type: "object"
+                                        type: "array"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named API server Deployment container's resources.\nIf omitted, the API server Deployment will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
                                         properties:
@@ -651,6 +671,9 @@ spec:
                                               properties:
                                                 name:
                                                   description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                                  type: "string"
+                                                request:
+                                                  description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                                   type: "string"
                                               required:
                                                 - "name"
@@ -703,6 +726,9 @@ spec:
                                                 name:
                                                   description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                                                   type: "string"
+                                                request:
+                                                  description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                                                  type: "string"
                                               required:
                                                 - "name"
                                               type: "object"
@@ -738,6 +764,9 @@ spec:
                                     type: "string"
                                   description: "NodeSelector is the API server pod's scheduling constraints.\nIf specified, each of the key/value pairs are added to the API server Deployment nodeSelector provided\nthe key does not already exist in the object's nodeSelector.\nIf used in conjunction with ControlPlaneNodeSelector, that nodeSelector is set on the API server Deployment\nand each of this field's key/value pairs are added to the API server Deployment nodeSelector provided\nthe key does not already exist in the object's nodeSelector.\nIf omitted, the API server Deployment will use its default value for nodeSelector.\nWARNING: Please note that this field will modify the default API server Deployment nodeSelector."
                                   type: "object"
+                                priorityClassName:
+                                  description: "PriorityClassName allows to specify a PriorityClass resource to be used."
+                                  type: "string"
                                 tolerations:
                                   description: "Tolerations is the API server pod's tolerations.\nIf specified, this overrides any tolerations that may be set on the API server Deployment.\nIf omitted, the API server Deployment will use its default value for tolerations.\nWARNING: Please note that this field will override the default API server Deployment tolerations."
                                   items:
@@ -835,6 +864,37 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                logging:
+                  properties:
+                    apiServer:
+                      properties:
+                        logSeverity:
+                          default: "Info"
+                          description: "LogSeverity defines log level for APIServer container."
+                          enum:
+                            - "Fatal"
+                            - "Error"
+                            - "Warn"
+                            - "Info"
+                            - "Debug"
+                            - "Trace"
+                          type: "string"
+                      type: "object"
+                    queryServer:
+                      properties:
+                        logSeverity:
+                          default: "Info"
+                          description: "LogSeverity defines log level for QueryServer container."
+                          enum:
+                            - "Fatal"
+                            - "Error"
+                            - "Warn"
+                            - "Info"
+                            - "Debug"
+                            - "Trace"
+                          type: "string"
+                      type: "object"
+                  type: "object"
               type: "object"
             status:
               description: "Most recently observed status for the Tigera API server."
@@ -842,7 +902,7 @@ spec:
                 conditions:
                   description: "Conditions represents the latest observed set of conditions for the component. A component may be one or more of\nReady, Progressing, Degraded or other customer types."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -871,7 +931,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

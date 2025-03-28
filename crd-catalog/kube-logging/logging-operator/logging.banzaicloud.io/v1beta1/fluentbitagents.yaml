@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.3"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "fluentbitagents.logging.banzaicloud.io"
 spec:
   group: "logging.banzaicloud.io"
@@ -1136,6 +1136,8 @@ spec:
                   type: "object"
                 disableKubernetesFilter:
                   type: "boolean"
+                disableVarLibDockerContainers:
+                  type: "boolean"
                 dnsConfig:
                   properties:
                     nameservers:
@@ -1162,6 +1164,8 @@ spec:
                 dnsPolicy:
                   type: "string"
                 enableUpstream:
+                  type: "boolean"
+                enabledIPv6:
                   type: "boolean"
                 envVars:
                   items:
@@ -1474,6 +1478,8 @@ spec:
                 flush:
                   format: "int32"
                   type: "integer"
+                forceHotReloadAfterGrace:
+                  type: "boolean"
                 forwardOptions:
                   properties:
                     Require_ack_response:
@@ -1581,6 +1587,8 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    storage.pause_on_chunks_overlimit:
+                      type: "string"
                     storage.type:
                       type: "string"
                   type: "object"
@@ -2465,6 +2473,8 @@ spec:
                   type: "object"
                 security:
                   properties:
+                    createOpenShiftSCC:
+                      type: "boolean"
                     podSecurityContext:
                       properties:
                         appArmorProfile:
@@ -2489,6 +2499,8 @@ spec:
                         runAsUser:
                           format: "int64"
                           type: "integer"
+                        seLinuxChangePolicy:
+                          type: "string"
                         seLinuxOptions:
                           properties:
                             level:

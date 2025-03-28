@@ -264,6 +264,9 @@ spec:
                           default: 86400
                           description: "MaxAge indicates the number of seconds until the session affinity cookie will expire."
                           type: "number"
+                        primaryCookieName:
+                          description: "CookieName is the key that will be used for the session affinity cookie."
+                          type: "string"
                       required:
                         - "cookieName"
                       type: "object"
@@ -285,6 +288,9 @@ spec:
                       description: "Webhook list for this canary"
                       items:
                         properties:
+                          disableTLS:
+                            description: "Disable TLS verification for this webhook"
+                            type: "boolean"
                           metadata:
                             additionalProperties:
                               type: "string"
@@ -345,9 +351,11 @@ spec:
                     primaryScalerReplicas:
                       properties:
                         maxReplicas:
-                          type: "number"
+                          minimum: 1.0
+                          type: "integer"
                         minReplicas:
-                          type: "number"
+                          minimum: 1.0
+                          type: "integer"
                       type: "object"
                   required:
                     - "apiVersion"
@@ -572,6 +580,9 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    headless:
+                      description: "Headless if set to true, generates headless Kubernetes services."
+                      type: "boolean"
                     hosts:
                       description: "The list of host names for this service"
                       items:
@@ -1150,7 +1161,6 @@ spec:
                   type: "object"
               required:
                 - "targetRef"
-                - "service"
                 - "analysis"
               type: "object"
             status:

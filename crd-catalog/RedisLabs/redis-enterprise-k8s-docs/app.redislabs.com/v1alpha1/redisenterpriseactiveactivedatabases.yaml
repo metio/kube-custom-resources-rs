@@ -60,7 +60,7 @@ spec:
                         - "participatingClusterName"
                       type: "object"
                     alertSettings:
-                      description: "Settings for database alerts"
+                      description: "Settings for database alerts. Note - Alert settings are not supported for Active-Active database."
                       properties:
                         bdb_backup_delayed:
                           description: "Periodic backup has been delayed for longer than specified threshold value [minutes]"
@@ -376,21 +376,18 @@ spec:
                       description: "memory size of database. use formats like 100MB, 0.1GB. minimum value in 100MB. When redis on flash (RoF) is enabled, this value refers to RAM+Flash memory, and it must not be below 1GB."
                       type: "string"
                     modulesList:
-                      description: "List of modules associated with database. Note - For Active-Active databases this feature is currently in preview. For this feature to take effect for Active-Active databases, set a boolean environment variable with the name \"ENABLE_ALPHA_FEATURES\" to True. This variable can be set via the redis-enterprise-operator pod spec, or through the operator-environment-config Config Map."
+                      description: "List of modules associated with the database. The list of valid modules for the specific cluster can be retrieved from the status of the REC object. Use the \"name\" and \"versions\" fields for the specific module configuration. If specifying an explicit version for a module, automatic modules versions upgrade must be disabled by setting the '.upgradeSpec.upgradeModulesToLatest' field in the REC to 'false'. Note that the option to specify module versions is deprecated, and will be removed in future releases."
                       items:
-                        description: "Redis Enterprise Module: https://redislabs.com/redis-enterprise/modules/"
+                        description: "Redis Enterprise module (see https://redis.io/docs/latest/develop/reference/modules/)"
                         properties:
                           config:
-                            description: "Module command line arguments e.g. VKEY_MAX_ENTITY_COUNT 30"
+                            description: "Module command line arguments e.g. VKEY_MAX_ENTITY_COUNT 30 30"
                             type: "string"
                           name:
-                            description: "The module's name e.g \"ft\" for redissearch"
-                            type: "string"
-                          uid:
-                            description: "Module's uid - do not set, for system use only nolint:staticcheck // custom json tag unknown to the linter"
+                            description: "The name of the module, e.g. \"search\" or \"ReJSON\". The complete list of modules available in the cluster can be retrieved from the '.status.modules' field in the REC."
                             type: "string"
                           version:
-                            description: "Module's semantic version e.g \"1.6.12\" - optional only in REDB, must be set in REAADB"
+                            description: "The semantic version of the module, e.g. '1.6.12'. Optional for REDB, must be set for REAADB. Note that this field is deprecated, and will be removed in future releases."
                             type: "string"
                         required:
                           - "name"
@@ -425,7 +422,7 @@ spec:
                         - "name"
                       type: "object"
                     redisVersion:
-                      description: "Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'"
+                      description: "Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'. Note - Specifying Redis version is currently not supported for Active-Active database."
                       type: "string"
                     replicaSources:
                       description: "What databases to replicate from"
@@ -509,7 +506,7 @@ spec:
                       description: "Specifications for DB upgrade."
                       properties:
                         upgradeModulesToLatest:
-                          description: "Upgrades the modules to the latest version that supportes the DB version during a DB upgrade action, to upgrade the DB version view the 'redisVersion' field. Note - This field is currently not supported for Active-Active databases."
+                          description: "Upgrades the modules to the latest version that supports the DB version during a DB upgrade action, to upgrade the DB version view the 'redisVersion' field. Note - This field is currently not supported for Active-Active databases."
                           type: "boolean"
                       required:
                         - "upgradeModulesToLatest"
@@ -519,6 +516,9 @@ spec:
                   description: "The list of instances/ clusters specifications and configurations."
                   items:
                     properties:
+                      externalReplicationPort:
+                        description: "The desired replication endpoint's port number for users who utilize LoadBalancers for sync between AA replicas and need to provide the specific port number that the LoadBalancer listens to."
+                        type: "integer"
                       name:
                         description: "The name of the remote cluster CR to link."
                         type: "string"
@@ -541,6 +541,10 @@ spec:
             status:
               description: "RedisEnterpriseActiveActiveDatabaseStatus defines the observed state of RedisEnterpriseActiveActiveDatabase"
               properties:
+                clusterCertificatesGeneration:
+                  description: "Versions of the cluster's Proxy and Syncer certificates. In Active-Active databases, these are used to detect updates to the certificates, and trigger synchronization across the participating clusters. ."
+                  format: "int64"
+                  type: "integer"
                 guid:
                   description: "The active-active database corresponding GUID."
                   type: "string"

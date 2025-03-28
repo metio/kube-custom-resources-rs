@@ -50,13 +50,13 @@ spec:
               description: "DatabaseClusterSpec defines the desired state of DatabaseCluster."
               properties:
                 allowUnsafeConfiguration:
-                  description: "AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use."
+                  description: "AllowUnsafeConfiguration field used to ensure that the user can create configurations unfit for production use.\n\nDeprecated: AllowUnsafeConfiguration will not be supported in the future releases."
                   type: "boolean"
                 backup:
                   description: "Backup is the backup specification"
                   properties:
                     enabled:
-                      description: "Enabled is a flag to enable backups"
+                      description: "Enabled is a flag to enable backups\nDeprecated. Please use db.spec.backup.schedules[].enabled to control each schedule separately and db.spec.backup.pitr.enabled to control PITR."
                       type: "boolean"
                     pitr:
                       description: "PITR is the configuration of the point in time recovery"
@@ -101,8 +101,6 @@ spec:
                           - "schedule"
                         type: "object"
                       type: "array"
-                  required:
-                    - "enabled"
                   type: "object"
                 dataSource:
                   description: "DataSource defines a data source for bootstraping a new cluster"

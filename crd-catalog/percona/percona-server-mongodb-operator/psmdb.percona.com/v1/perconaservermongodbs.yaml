@@ -49,6 +49,8 @@ spec:
                       properties:
                         backupOptions:
                           properties:
+                            numParallelCollections:
+                              type: "integer"
                             oplogSpanMin:
                               type: "number"
                             priority:
@@ -81,6 +83,8 @@ spec:
                             numDownloadWorkers:
                               type: "integer"
                             numInsertionWorkers:
+                              type: "integer"
+                            numParallelCollections:
                               type: "integer"
                           type: "object"
                       type: "object"
@@ -201,6 +205,8 @@ spec:
                         runAsUser:
                           format: "int64"
                           type: "integer"
+                        seLinuxChangePolicy:
+                          type: "string"
                         seLinuxOptions:
                           properties:
                             level:
@@ -307,6 +313,15 @@ spec:
                             required:
                               - "credentialsSecret"
                             type: "object"
+                          filesystem:
+                            properties:
+                              path:
+                                type: "string"
+                            required:
+                              - "path"
+                            type: "object"
+                          main:
+                            type: "boolean"
                           s3:
                             properties:
                               bucket:
@@ -381,9 +396,33 @@ spec:
                             enum:
                               - "logical"
                               - "physical"
+                              - "incremental"
+                              - "incremental-base"
                             type: "string"
                         required:
                           - "enabled"
+                          - "name"
+                        type: "object"
+                      type: "array"
+                    volumeMounts:
+                      items:
+                        properties:
+                          mountPath:
+                            type: "string"
+                          mountPropagation:
+                            type: "string"
+                          name:
+                            type: "string"
+                          readOnly:
+                            type: "boolean"
+                          recursiveReadOnly:
+                            type: "string"
+                          subPath:
+                            type: "string"
+                          subPathExpr:
+                            type: "string"
+                        required:
+                          - "mountPath"
                           - "name"
                         type: "object"
                       type: "array"
@@ -4194,6 +4233,8 @@ spec:
                               runAsUser:
                                 format: "int64"
                                 type: "integer"
+                              seLinuxChangePolicy:
+                                type: "string"
                               seLinuxOptions:
                                 properties:
                                   level:
@@ -6230,6 +6271,8 @@ spec:
                           runAsUser:
                             format: "int64"
                             type: "integer"
+                          seLinuxChangePolicy:
+                            type: "string"
                           seLinuxOptions:
                             properties:
                               level:
@@ -11954,6 +11997,8 @@ spec:
                                 runAsUser:
                                   format: "int64"
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  type: "string"
                                 seLinuxOptions:
                                   properties:
                                     level:
@@ -13990,6 +14035,8 @@ spec:
                             runAsUser:
                               format: "int64"
                               type: "integer"
+                            seLinuxChangePolicy:
+                              type: "string"
                             seLinuxOptions:
                               properties:
                                 level:
@@ -16768,6 +16815,8 @@ spec:
                             runAsUser:
                               format: "int64"
                               type: "integer"
+                            seLinuxChangePolicy:
+                              type: "string"
                             seLinuxOptions:
                               properties:
                                 level:
@@ -18734,7 +18783,6 @@ spec:
                         type: "array"
                     required:
                       - "name"
-                      - "passwordSecretRef"
                       - "roles"
                     type: "object"
                   type: "array"
@@ -18744,6 +18792,8 @@ spec:
             status:
               properties:
                 backup:
+                  type: "string"
+                backupConfigHash:
                   type: "string"
                 backupVersion:
                   type: "string"
@@ -18808,14 +18858,16 @@ spec:
                       initialized:
                         type: "boolean"
                       members:
-                        items:
+                        additionalProperties:
                           properties:
                             name:
                               type: "string"
-                            version:
+                            state:
+                              type: "integer"
+                            stateStr:
                               type: "string"
                           type: "object"
-                        type: "array"
+                        type: "object"
                       message:
                         type: "string"
                       ready:

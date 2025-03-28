@@ -30,6 +30,7 @@ spec:
               description: "AuthorizerSpec defines the desired state of Authorizer.\n\nRepresents an authorizer."
               properties:
                 apiID:
+                  description: "The API identifier."
                   type: "string"
                 apiRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -44,23 +45,31 @@ spec:
                       type: "object"
                   type: "object"
                 authorizerCredentialsARN:
+                  description: "Specifies the required credentials as an IAM role for API Gateway to invoke\nthe authorizer. To specify an IAM role for API Gateway to assume, use the\nrole's Amazon Resource Name (ARN). To use resource-based permissions on the\nLambda function, don't specify this parameter. Supported only for REQUEST\nauthorizers."
                   type: "string"
                 authorizerPayloadFormatVersion:
+                  description: "Specifies the format of the payload sent to an HTTP API Lambda authorizer.\nRequired for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0.\nTo learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)."
                   type: "string"
                 authorizerResultTTLInSeconds:
+                  description: "The time to live (TTL) for cached authorizer results, in seconds. If it equals\n0, authorization caching is disabled. If it is greater than 0, API Gateway\ncaches authorizer responses. The maximum value is 3600, or 1 hour. Supported\nonly for HTTP API Lambda authorizers."
                   format: "int64"
                   type: "integer"
                 authorizerType:
+                  description: "The authorizer type. Specify REQUEST for a Lambda function using incoming\nrequest parameters. Specify JWT to use JSON Web Tokens (supported only for\nHTTP APIs)."
                   type: "string"
                 authorizerURI:
+                  description: "The authorizer's Uniform Resource Identifier (URI). For REQUEST authorizers,\nthis must be a well-formed Lambda function URI, for example, arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:{account_id}:function:{lambda_function_name}/invocations.\nIn general, the URI has this form: arn:aws:apigateway:{region}:lambda:path/{service_api}\n, where {region} is the same as the region hosting the Lambda function, path\nindicates that the remaining substring in the URI should be treated as the\npath to the resource, including the initial /. For Lambda functions, this\nis usually of the form /2015-03-31/functions/[FunctionARN]/invocations. Supported\nonly for REQUEST authorizers."
                   type: "string"
                 enableSimpleResponses:
+                  description: "Specifies whether a Lambda authorizer returns a response in a simple format.\nBy default, a Lambda authorizer must return an IAM policy. If enabled, the\nLambda authorizer can return a boolean value instead of an IAM policy. Supported\nonly for HTTP APIs. To learn more, see Working with AWS Lambda authorizers\nfor HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)"
                   type: "boolean"
                 identitySource:
+                  description: "The identity source for which authorization is requested.\n\nFor a REQUEST authorizer, this is optional. The value is a set of one or\nmore mapping expressions of the specified request parameters. The identity\nsource can be headers, query string parameters, stage variables, and context\nparameters. For example, if an Auth header and a Name query string parameter\nare defined as identity sources, this value is route.request.header.Auth,\nroute.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection\nexpressions prefixed with $, for example, $request.header.Auth, $request.querystring.Name.\nThese parameters are used to perform runtime validation for Lambda-based\nauthorizers by verifying all of the identity-related request parameters are\npresent in the request, not null, and non-empty. Only when this is true does\nthe authorizer invoke the authorizer Lambda function. Otherwise, it returns\na 401 Unauthorized response without calling the Lambda function. For HTTP\nAPIs, identity sources are also used as the cache key when caching is enabled.\nTo learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html).\n\nFor JWT, a single entry that specifies where to extract the JSON Web Token\n(JWT) from inbound requests. Currently only header-based and query parameter-based\nselections are supported, for example $request.header.Authorization."
                   items:
                     type: "string"
                   type: "array"
                 identityValidationExpression:
+                  description: "This parameter is not used."
                   type: "string"
                 jwtConfiguration:
                   description: "Represents the configuration of a JWT authorizer. Required for the JWT authorizer\ntype. Supported only for HTTP APIs."
@@ -74,6 +83,7 @@ spec:
                       type: "string"
                   type: "object"
                 name:
+                  description: "The name of the authorizer."
                   type: "string"
               required:
                 - "authorizerType"
@@ -100,9 +110,10 @@ spec:
                     - "region"
                   type: "object"
                 authorizerID:
+                  description: "The authorizer identifier."
                   type: "string"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

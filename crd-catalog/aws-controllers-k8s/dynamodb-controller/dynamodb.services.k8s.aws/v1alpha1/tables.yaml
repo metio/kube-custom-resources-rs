@@ -49,7 +49,7 @@ spec:
                 attributeDefinitions:
                   description: "An array of attributes that describe the key schema for the table and indexes."
                   items:
-                    description: "Represents an attribute for describing the key schema for the table and indexes."
+                    description: "Represents an attribute for describing the schema for the table and indexes."
                     properties:
                       attributeName:
                         type: "string"
@@ -58,7 +58,7 @@ spec:
                     type: "object"
                   type: "array"
                 billingMode:
-                  description: "Controls how you are charged for read and write throughput and how you manage\ncapacity. This setting can be changed later.\n\n   * PROVISIONED - We recommend using PROVISIONED for predictable workloads.\n   PROVISIONED sets the billing mode to Provisioned Mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html#HowItWorks.ProvisionedThroughput.Manual).\n\n   * PAY_PER_REQUEST - We recommend using PAY_PER_REQUEST for unpredictable\n   workloads. PAY_PER_REQUEST sets the billing mode to On-Demand Mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadWriteCapacityMode.html#HowItWorks.OnDemand)."
+                  description: "Controls how you are charged for read and write throughput and how you manage\ncapacity. This setting can be changed later.\n\n   * PROVISIONED - We recommend using PROVISIONED for predictable workloads.\n   PROVISIONED sets the billing mode to Provisioned capacity mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/provisioned-capacity-mode.html).\n\n   * PAY_PER_REQUEST - We recommend using PAY_PER_REQUEST for unpredictable\n   workloads. PAY_PER_REQUEST sets the billing mode to On-demand capacity\n   mode (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html)."
                   type: "string"
                 continuousBackups:
                   description: "Represents the settings used to enable point in time recovery."
@@ -119,6 +119,9 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 localSecondaryIndexes:
                   description: "One or more local secondary indexes (the maximum is 5) to be created on the\ntable. Each index is scoped to a given partition key value. There is a 10\nGB size limit per partition key value; otherwise, the size of a local secondary\nindex is unconstrained.\n\nEach local secondary index in the array includes the following:\n\n   * IndexName - The name of the local secondary index. Must be unique only\n   for this table.\n\n   * KeySchema - Specifies the key schema for the local secondary index.\n   The key schema must begin with the same partition key as the table.\n\n   * Projection - Specifies attributes that are copied (projected) from the\n   table into the index. These are in addition to the primary key attributes\n   and index key attributes, which are automatically projected. Each attribute\n   specification is composed of: ProjectionType - One of the following: KEYS_ONLY\n   - Only the index and primary keys are projected into the index. INCLUDE\n   - Only the specified table attributes are projected into the index. The\n   list of projected attributes is in NonKeyAttributes. ALL - All of the\n   table attributes are projected into the index. NonKeyAttributes - A list\n   of one or more non-key attribute names that are projected into the secondary\n   index. The total count of attributes provided in NonKeyAttributes, summed\n   across all of the secondary indexes, must not exceed 100. If you project\n   the same attribute into two different indexes, this counts as two distinct\n   attributes when determining the total."
                   items:
@@ -148,6 +151,9 @@ spec:
                         type: "object"
                     type: "object"
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 provisionedThroughput:
                   description: "Represents the provisioned throughput settings for a specified table or index.\nThe settings can be modified using the UpdateTable operation.\n\nIf you set BillingMode as PROVISIONED, you must specify this property. If\nyou set BillingMode as PAY_PER_REQUEST, you cannot specify this property.\n\nFor current minimum and maximum provisioned throughput values, see Service,\nAccount, and Table Quotas (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html)\nin the Amazon DynamoDB Developer Guide."
                   properties:
@@ -165,6 +171,18 @@ spec:
                       type: "boolean"
                     kmsMasterKeyID:
                       type: "string"
+                    kmsMasterKeyRef:
+                      description: "Reference field for KMSMasterKeyID"
+                      properties:
+                        from:
+                          description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                          properties:
+                            name:
+                              type: "string"
+                            namespace:
+                              type: "string"
+                          type: "object"
+                      type: "object"
                     sseType:
                       type: "string"
                   type: "object"
@@ -180,8 +198,42 @@ spec:
                   description: "The table class of the new table. Valid values are STANDARD and STANDARD_INFREQUENT_ACCESS."
                   type: "string"
                 tableName:
-                  description: "The name of the table to create."
+                  description: "The name of the table to create. You can also provide the Amazon Resource\nName (ARN) of the table in this parameter."
                   type: "string"
+                tableReplicas:
+                  items:
+                    description: "Represents a replica to be created."
+                    properties:
+                      globalSecondaryIndexes:
+                        items:
+                          description: "Represents the properties of a replica global secondary index."
+                          properties:
+                            indexName:
+                              type: "string"
+                            provisionedThroughputOverride:
+                              description: "Replica-specific provisioned throughput settings. If not specified, uses\nthe source table's provisioned throughput settings."
+                              properties:
+                                readCapacityUnits:
+                                  format: "int64"
+                                  type: "integer"
+                              type: "object"
+                          type: "object"
+                        type: "array"
+                      kmsMasterKeyID:
+                        type: "string"
+                      provisionedThroughputOverride:
+                        description: "Replica-specific provisioned throughput settings. If not specified, uses\nthe source table's provisioned throughput settings."
+                        properties:
+                          readCapacityUnits:
+                            format: "int64"
+                            type: "integer"
+                        type: "object"
+                      regionName:
+                        type: "string"
+                      tableClassOverride:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 tags:
                   description: "A list of key-value pairs to label the table. For more information, see Tagging\nfor DynamoDB (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tagging.html)."
                   items:
@@ -237,7 +289,7 @@ spec:
                       type: "string"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

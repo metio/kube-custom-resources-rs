@@ -220,7 +220,7 @@ spec:
                       format: "int64"
                       type: "integer"
                     pgHealthCheckTimeout:
-                      description: "PGHealthCheckTimeout is the time (in minutes) that the operator will wait for the placement groups to become\nhealthy (active+clean) after a drain was completed and OSDs came back up. Rook will continue with the next drain\nif the timeout exceeds. It only works if managePodBudgets is true.\nNo values or 0 means that the operator will wait until the placement groups are healthy before unblocking the next drain."
+                      description: "DEPRECATED: PGHealthCheckTimeout is no longer implemented"
                       format: "int64"
                       type: "integer"
                     pgHealthyRegex:
@@ -292,7 +292,7 @@ spec:
                             description: "Probe describes a health check to be performed against a container to determine whether it is\nalive or ready to receive traffic."
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -306,7 +306,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -320,7 +320,7 @@ spec:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -370,7 +370,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -406,7 +406,7 @@ spec:
                             description: "Probe describes a health check to be performed against a container to determine whether it is\nalive or ready to receive traffic."
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -420,7 +420,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -434,7 +434,7 @@ spec:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -484,7 +484,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -591,6 +591,11 @@ spec:
                       maximum: 9.0
                       minimum: 0.0
                       type: "integer"
+                    externalMonIDs:
+                      description: "ExternalMonIDs - optional list of monitor IDs which are deployed externally and not managed by Rook.\nIf set, Rook will not remove mons with given IDs from quorum.\nThis parameter is used only for local Rook cluster running in normal mode\nand will be ignored if external or stretched mode is used.\nleading"
+                      items:
+                        type: "string"
+                      type: "array"
                     failureDomainLabel:
                       type: "string"
                     stretchCluster:
@@ -1887,6 +1892,14 @@ spec:
                       minimum: 0.0
                       nullable: true
                       type: "number"
+                    migration:
+                      description: "Migration handles the OSD migration"
+                      properties:
+                        confirmation:
+                          description: "A user confirmation to migrate the OSDs. It destroys each OSD one at a time, cleans up the backing disk\nand prepares OSD with same ID on that disk"
+                          pattern: "^$|^yes-really-migrate-osds$"
+                          type: "string"
+                      type: "object"
                     nearFullRatio:
                       description: "NearFullRatio is the ratio at which the cluster is considered nearly full and will raise a ceph health warning. Default is 0.85."
                       maximum: 1.0
@@ -3680,6 +3693,12 @@ spec:
                     osd:
                       description: "OSDStatus represents OSD status of the ceph Cluster"
                       properties:
+                        migrationStatus:
+                          description: "MigrationStatus status represents the current status of any OSD migration."
+                          properties:
+                            pending:
+                              type: "integer"
+                          type: "object"
                         storeType:
                           additionalProperties:
                             type: "integer"

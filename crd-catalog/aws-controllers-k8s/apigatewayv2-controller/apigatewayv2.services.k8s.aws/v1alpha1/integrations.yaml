@@ -30,6 +30,7 @@ spec:
               description: "IntegrationSpec defines the desired state of Integration.\n\nRepresents an integration."
               properties:
                 apiID:
+                  description: "The API identifier."
                   type: "string"
                 apiRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -44,6 +45,7 @@ spec:
                       type: "object"
                   type: "object"
                 connectionID:
+                  description: "The ID of the VPC link for a private integration. Supported only for HTTP\nAPIs."
                   type: "string"
                 connectionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -58,42 +60,57 @@ spec:
                       type: "object"
                   type: "object"
                 connectionType:
+                  description: "The type of the network connection to the integration endpoint. Specify INTERNET\nfor connections through the public routable internet or VPC_LINK for private\nconnections between API Gateway and resources in a VPC. The default value\nis INTERNET."
                   type: "string"
                 contentHandlingStrategy:
+                  description: "Supported only for WebSocket APIs. Specifies how to handle response payload\ncontent type conversions. Supported values are CONVERT_TO_BINARY and CONVERT_TO_TEXT,\nwith the following behaviors:\n\nCONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string\nto the corresponding binary blob.\n\nCONVERT_TO_TEXT: Converts a response payload from a binary blob to a Base64-encoded\nstring.\n\nIf this property is not defined, the response payload will be passed through\nfrom the integration response to the route response or method response without\nmodification."
                   type: "string"
                 credentialsARN:
+                  description: "Specifies the credentials required for the integration, if any. For AWS integrations,\nthree options are available. To specify an IAM Role for API Gateway to assume,\nuse the role's Amazon Resource Name (ARN). To require that the caller's identity\nbe passed through from the request, specify the string arn:aws:iam::*:user/*.\nTo use resource-based permissions on supported AWS services, specify null."
                   type: "string"
                 description:
+                  description: "The description of the integration."
                   type: "string"
                 integrationMethod:
+                  description: "Specifies the integration's HTTP method type."
                   type: "string"
                 integrationSubtype:
+                  description: "Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service\naction to invoke. To learn more, see Integration subtype reference (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html)."
                   type: "string"
                 integrationType:
+                  description: "The integration type of an integration. One of the following:\n\nAWS: for integrating the route or method request with an AWS service action,\nincluding the Lambda function-invoking action. With the Lambda function-invoking\naction, this is referred to as the Lambda custom integration. With any other\nAWS service action, this is known as AWS integration. Supported only for\nWebSocket APIs.\n\nAWS_PROXY: for integrating the route or method request with a Lambda function\nor other AWS service action. This integration is also referred to as a Lambda\nproxy integration.\n\nHTTP: for integrating the route or method request with an HTTP endpoint.\nThis integration is also referred to as the HTTP custom integration. Supported\nonly for WebSocket APIs.\n\nHTTP_PROXY: for integrating the route or method request with an HTTP endpoint,\nwith the client request passed through as-is. This is also referred to as\nHTTP proxy integration. For HTTP API private integrations, use an HTTP_PROXY\nintegration.\n\nMOCK: for integrating the route or method request with API Gateway as a \"loopback\"\nendpoint without invoking any backend. Supported only for WebSocket APIs."
                   type: "string"
                 integrationURI:
+                  description: "For a Lambda integration, specify the URI of a Lambda function.\n\nFor an HTTP integration, specify a fully-qualified URL.\n\nFor an HTTP API private integration, specify the ARN of an Application Load\nBalancer listener, Network Load Balancer listener, or AWS Cloud Map service.\nIf you specify the ARN of an AWS Cloud Map service, API Gateway uses DiscoverInstances\nto identify resources. You can use query parameters to target specific resources.\nTo learn more, see DiscoverInstances (https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html).\nFor private integrations, all resources must be owned by the same AWS account."
                   type: "string"
                 passthroughBehavior:
+                  description: "Specifies the pass-through behavior for incoming requests based on the Content-Type\nheader in the request, and the available mapping templates specified as the\nrequestTemplates property on the Integration resource. There are three valid\nvalues: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported only for WebSocket\nAPIs.\n\nWHEN_NO_MATCH passes the request body for unmapped content types through\nto the integration backend without transformation.\n\nNEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type\nresponse.\n\nWHEN_NO_TEMPLATES allows pass-through when the integration has no content\ntypes mapped to templates. However, if there is at least one content type\ndefined, unmapped content types will be rejected with the same HTTP 415 Unsupported\nMedia Type response."
                   type: "string"
                 payloadFormatVersion:
+                  description: "Specifies the format of the payload sent to an integration. Required for\nHTTP APIs."
                   type: "string"
                 requestParameters:
                   additionalProperties:
                     type: "string"
+                  description: "For WebSocket APIs, a key-value map specifying request parameters that are\npassed from the method request to the backend. The key is an integration\nrequest parameter name and the associated value is a method request parameter\nvalue or static value that must be enclosed within single quotes and pre-encoded\nas required by the backend. The method request parameter value must match\nthe pattern of method.request.{location}.{name} , where {location} is querystring,\npath, or header; and {name} must be a valid and unique method request parameter\nname.\n\nFor HTTP API integrations with a specified integrationSubtype, request parameters\nare a key-value map specifying parameters that are passed to AWS_PROXY integrations.\nYou can provide static values, or map request data, stage variables, or context\nvariables that are evaluated at runtime. To learn more, see Working with\nAWS service integrations for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html).\n\nFor HTTP API integrations without a specified integrationSubtype request\nparameters are a key-value map specifying how to transform HTTP requests\nbefore sending them to the backend. The key should follow the pattern <action>:<header|querystring|path>.<location>\nwhere action can be append, overwrite or remove. For values, you can provide\nstatic values, or map request data, stage variables, or context variables\nthat are evaluated at runtime. To learn more, see Transforming API requests\nand responses (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html)."
                   type: "object"
                 requestTemplates:
                   additionalProperties:
                     type: "string"
+                  description: "Represents a map of Velocity templates that are applied on the request payload\nbased on the value of the Content-Type header sent by the client. The content\ntype value is the key in this map, and the template (as a String) is the\nvalue. Supported only for WebSocket APIs."
                   type: "object"
                 responseParameters:
                   additionalProperties:
                     additionalProperties:
                       type: "string"
                     type: "object"
+                  description: "Supported only for HTTP APIs. You use response parameters to transform the\nHTTP response from a backend integration before returning the response to\nclients. Specify a key-value map from a selection key to response parameters.\nThe selection key must be a valid HTTP status code within the range of 200-599.\nResponse parameters are a key-value map. The key must match pattern <action>:<header>.<location>\nor overwrite.statuscode. The action can be append, overwrite or remove. The\nvalue can be a static value, or map to response data, stage variables, or\ncontext variables that are evaluated at runtime. To learn more, see Transforming\nAPI requests and responses (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html)."
                   type: "object"
                 templateSelectionExpression:
+                  description: "The template selection expression for the integration."
                   type: "string"
                 timeoutInMillis:
+                  description: "Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and\nbetween 50 and 30,000 milliseconds for HTTP APIs. The default timeout is\n29 seconds for WebSocket APIs and 30 seconds for HTTP APIs."
                   format: "int64"
                   type: "integer"
                 tlsConfig:
@@ -126,9 +143,10 @@ spec:
                     - "region"
                   type: "object"
                 apiGatewayManaged:
+                  description: "Specifies whether an integration is managed by API Gateway. If you created\nan API using using quick create, the resulting integration is managed by\nAPI Gateway. You can update a managed integration, but you can't delete it."
                   type: "boolean"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -154,8 +172,10 @@ spec:
                     type: "object"
                   type: "array"
                 integrationID:
+                  description: "Represents the identifier of an integration."
                   type: "string"
                 integrationResponseSelectionExpression:
+                  description: "The integration response selection expression for the integration. Supported\nonly for WebSocket APIs. See Integration Response Selection Expressions (https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions)."
                   type: "string"
               type: "object"
           type: "object"

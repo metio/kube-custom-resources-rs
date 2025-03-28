@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.12.1"
+    controller-gen.kubebuilder.io/version: "v0.17.0"
   name: "submariners.submariner.io"
 spec:
   group: "submariner.io"
@@ -19,10 +19,10 @@ spec:
           description: "Submariner is the Schema for the submariners API."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -103,7 +103,7 @@ spec:
                       type: "integer"
                   type: "object"
                 coreDNSCustomConfig:
-                  description: "Name of the custom CoreDNS configmap to configure forwarding to Lighthouse. It should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system."
+                  description: "Name of the custom CoreDNS configmap to configure forwarding to Lighthouse.\nIt should be in <namespace>/<name> format where <namespace> is optional and defaults to kube-system."
                   properties:
                     configMapName:
                       description: "Name of the custom CoreDNS configmap."
@@ -126,6 +126,9 @@ spec:
                   type: "string"
                 haltOnCertificateError:
                   description: "Halt on certificate error (so the pod gets restarted)."
+                  type: "boolean"
+                hostedCluster:
+                  description: "Is the cluster a hosted cluster."
                   type: "boolean"
                 imageOverrides:
                   additionalProperties:
@@ -156,23 +159,23 @@ spec:
                   type: "boolean"
                 tolerations:
                   items:
-                    description: "The pod this Toleration is attached to tolerates any taint that matches the triple <key,value,effect> using the matching operator <operator>."
+                    description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
                     properties:
                       effect:
-                        description: "Effect indicates the taint effect to match. Empty means match all taint effects. When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                        description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
                         type: "string"
                       key:
-                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys. If the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                        description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
                         type: "string"
                       operator:
-                        description: "Operator represents a key's relationship to the value. Valid operators are Exists and Equal. Defaults to Equal. Exists is equivalent to wildcard for value, so that a pod can tolerate all taints of a particular category."
+                        description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
                         type: "string"
                       tolerationSeconds:
-                        description: "TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system."
+                        description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
                         format: "int64"
                         type: "integer"
                       value:
-                        description: "Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string."
+                        description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
                         type: "string"
                     type: "object"
                   type: "array"
@@ -228,7 +231,7 @@ spec:
                       type: "boolean"
                     nonReadyContainerStates:
                       items:
-                        description: "ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting."
+                        description: "ContainerState holds a possible state of container.\nOnly one of its members may be specified.\nIf none of them is specified, the default one is ContainerStateWaiting."
                         properties:
                           running:
                             description: "Details about a running container"
@@ -285,7 +288,7 @@ spec:
                       description: "DaemonSetStatus represents the current status of a daemon set."
                       properties:
                         collisionCount:
-                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision."
+                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller\nuses this field as a collision avoidance mechanism when it needs to\ncreate the name for the newest ControllerRevision."
                           format: "int32"
                           type: "integer"
                         conditions:
@@ -314,28 +317,31 @@ spec:
                               - "type"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "type"
+                          x-kubernetes-list-type: "map"
                         currentNumberScheduled:
-                          description: "The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running at least 1\ndaemon pod and are supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         desiredNumberScheduled:
-                          description: "The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The total number of nodes that should be running the daemon\npod (including nodes correctly running the daemon pod).\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberAvailable:
-                          description: "The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have one or more of the daemon pod running and\navailable (ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         numberMisscheduled:
-                          description: "The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running the daemon pod, but are\nnot supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberReady:
-                          description: "numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition."
+                          description: "numberReady is the number of nodes that should be running the daemon pod and have one\nor more of the daemon pod running with a Ready Condition."
                           format: "int32"
                           type: "integer"
                         numberUnavailable:
-                          description: "The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have none of the daemon pod running and available\n(ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         observedGeneration:
@@ -377,14 +383,32 @@ spec:
                                   minLength: 1
                                   type: "string"
                                 healthCheckIP:
+                                  description: "Deprecated: Get/SetHealthCheckIP() or, if necessary, HealthCheckIPs"
                                   type: "string"
+                                healthCheckIPs:
+                                  items:
+                                    type: "string"
+                                  maxItems: 2
+                                  type: "array"
                                 hostname:
                                   type: "string"
                                 nat_enabled:
                                   type: "boolean"
+                                privateIPs:
+                                  items:
+                                    type: "string"
+                                  maxItems: 2
+                                  type: "array"
                                 private_ip:
+                                  description: "Deprecated: Use Get/SetPrivateIP() or, if necessary, PrivateIPs"
                                   type: "string"
+                                publicIPs:
+                                  items:
+                                    type: "string"
+                                  maxItems: 2
+                                  type: "array"
                                 public_ip:
+                                  description: "Deprecated: Set/SetPublicIP() or, if necessary, PublicIPs"
                                   type: "string"
                                 subnets:
                                   items:
@@ -396,12 +420,10 @@ spec:
                                 - "cluster_id"
                                 - "hostname"
                                 - "nat_enabled"
-                                - "private_ip"
-                                - "public_ip"
                                 - "subnets"
                               type: "object"
                             latencyRTT:
-                              description: "LatencySpec describes the round trip time information for a packet between the gateway pods of two clusters."
+                              description: "LatencySpec describes the round trip time information for a packet\nbetween the gateway pods of two clusters."
                               properties:
                                 average:
                                   type: "string"
@@ -445,14 +467,32 @@ spec:
                             minLength: 1
                             type: "string"
                           healthCheckIP:
+                            description: "Deprecated: Get/SetHealthCheckIP() or, if necessary, HealthCheckIPs"
                             type: "string"
+                          healthCheckIPs:
+                            items:
+                              type: "string"
+                            maxItems: 2
+                            type: "array"
                           hostname:
                             type: "string"
                           nat_enabled:
                             type: "boolean"
+                          privateIPs:
+                            items:
+                              type: "string"
+                            maxItems: 2
+                            type: "array"
                           private_ip:
+                            description: "Deprecated: Use Get/SetPrivateIP() or, if necessary, PrivateIPs"
                             type: "string"
+                          publicIPs:
+                            items:
+                              type: "string"
+                            maxItems: 2
+                            type: "array"
                           public_ip:
+                            description: "Deprecated: Set/SetPublicIP() or, if necessary, PublicIPs"
                             type: "string"
                           subnets:
                             items:
@@ -464,8 +504,6 @@ spec:
                           - "cluster_id"
                           - "hostname"
                           - "nat_enabled"
-                          - "private_ip"
-                          - "public_ip"
                           - "subnets"
                         type: "object"
                       statusFailure:
@@ -492,7 +530,7 @@ spec:
                       type: "boolean"
                     nonReadyContainerStates:
                       items:
-                        description: "ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting."
+                        description: "ContainerState holds a possible state of container.\nOnly one of its members may be specified.\nIf none of them is specified, the default one is ContainerStateWaiting."
                         properties:
                           running:
                             description: "Details about a running container"
@@ -549,7 +587,7 @@ spec:
                       description: "DaemonSetStatus represents the current status of a daemon set."
                       properties:
                         collisionCount:
-                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision."
+                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller\nuses this field as a collision avoidance mechanism when it needs to\ncreate the name for the newest ControllerRevision."
                           format: "int32"
                           type: "integer"
                         conditions:
@@ -578,28 +616,31 @@ spec:
                               - "type"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "type"
+                          x-kubernetes-list-type: "map"
                         currentNumberScheduled:
-                          description: "The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running at least 1\ndaemon pod and are supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         desiredNumberScheduled:
-                          description: "The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The total number of nodes that should be running the daemon\npod (including nodes correctly running the daemon pod).\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberAvailable:
-                          description: "The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have one or more of the daemon pod running and\navailable (ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         numberMisscheduled:
-                          description: "The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running the daemon pod, but are\nnot supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberReady:
-                          description: "numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition."
+                          description: "numberReady is the number of nodes that should be running the daemon pod and have one\nor more of the daemon pod running with a Ready Condition."
                           format: "int32"
                           type: "integer"
                         numberUnavailable:
-                          description: "The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have none of the daemon pod running and available\n(ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         observedGeneration:
@@ -619,6 +660,9 @@ spec:
                   required:
                     - "mismatchedContainerImages"
                   type: "object"
+                hostedCluster:
+                  description: "Is the cluster a hosted cluster."
+                  type: "boolean"
                 loadBalancerStatus:
                   description: "The status of the load balancer DaemonSet."
                   properties:
@@ -626,22 +670,26 @@ spec:
                       description: "LoadBalancerStatus represents the status of a load-balancer."
                       properties:
                         ingress:
-                          description: "Ingress is a list containing ingress points for the load-balancer. Traffic intended for the service should be sent to these ingress points."
+                          description: "Ingress is a list containing ingress points for the load-balancer.\nTraffic intended for the service should be sent to these ingress points."
                           items:
-                            description: "LoadBalancerIngress represents the status of a load-balancer ingress point: traffic intended for the service should be sent to an ingress point."
+                            description: "LoadBalancerIngress represents the status of a load-balancer ingress point:\ntraffic intended for the service should be sent to an ingress point."
                             properties:
                               hostname:
-                                description: "Hostname is set for load-balancer ingress points that are DNS based (typically AWS load-balancers)"
+                                description: "Hostname is set for load-balancer ingress points that are DNS based\n(typically AWS load-balancers)"
                                 type: "string"
                               ip:
-                                description: "IP is set for load-balancer ingress points that are IP based (typically GCE or OpenStack load-balancers)"
+                                description: "IP is set for load-balancer ingress points that are IP based\n(typically GCE or OpenStack load-balancers)"
+                                type: "string"
+                              ipMode:
+                                description: "IPMode specifies how the load-balancer IP behaves, and may only be specified when the ip field is specified.\nSetting this to \"VIP\" indicates that traffic is delivered to the node with\nthe destination set to the load-balancer's IP and port.\nSetting this to \"Proxy\" indicates that traffic is delivered to the node or pod with\nthe destination set to the node's IP and node port or the pod's IP and port.\nService implementations may use this information to adjust traffic routing."
                                 type: "string"
                               ports:
-                                description: "Ports is a list of records of service ports If used, every port defined in the service should have an entry in it"
+                                description: "Ports is a list of records of service ports\nIf used, every port defined in the service should have an entry in it"
                                 items:
+                                  description: "PortStatus represents the error condition of a service port"
                                   properties:
                                     error:
-                                      description: "Error is to record the problem with the service port The format of the error shall comply with the following rules: - built-in error values shall be specified in this file and those shall use CamelCase names - cloud provider specific error values must have names that comply with the format foo.example.com/CamelCase. --- The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                                      description: "Error is to record the problem with the service port\nThe format of the error shall comply with the following rules:\n- built-in error values shall be specified in this file and those shall use\n  CamelCase names\n- cloud provider specific error values must have names that comply with the\n  format foo.example.com/CamelCase."
                                       maxLength: 316
                                       pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                                       type: "string"
@@ -650,10 +698,10 @@ spec:
                                       format: "int32"
                                       type: "integer"
                                     protocol:
-                                      default: "TCP"
-                                      description: "Protocol is the protocol of the service port of which status is recorded here The supported values are: \"TCP\", \"UDP\", \"SCTP\""
+                                      description: "Protocol is the protocol of the service port of which status is recorded here\nThe supported values are: \"TCP\", \"UDP\", \"SCTP\""
                                       type: "string"
                                   required:
+                                    - "error"
                                     - "port"
                                     - "protocol"
                                   type: "object"
@@ -661,6 +709,7 @@ spec:
                                 x-kubernetes-list-type: "atomic"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-type: "atomic"
                       type: "object"
                   type: "object"
                 natEnabled:
@@ -678,7 +727,7 @@ spec:
                       type: "boolean"
                     nonReadyContainerStates:
                       items:
-                        description: "ContainerState holds a possible state of container. Only one of its members may be specified. If none of them is specified, the default one is ContainerStateWaiting."
+                        description: "ContainerState holds a possible state of container.\nOnly one of its members may be specified.\nIf none of them is specified, the default one is ContainerStateWaiting."
                         properties:
                           running:
                             description: "Details about a running container"
@@ -735,7 +784,7 @@ spec:
                       description: "DaemonSetStatus represents the current status of a daemon set."
                       properties:
                         collisionCount:
-                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ControllerRevision."
+                          description: "Count of hash collisions for the DaemonSet. The DaemonSet controller\nuses this field as a collision avoidance mechanism when it needs to\ncreate the name for the newest ControllerRevision."
                           format: "int32"
                           type: "integer"
                         conditions:
@@ -764,28 +813,31 @@ spec:
                               - "type"
                             type: "object"
                           type: "array"
+                          x-kubernetes-list-map-keys:
+                            - "type"
+                          x-kubernetes-list-type: "map"
                         currentNumberScheduled:
-                          description: "The number of nodes that are running at least 1 daemon pod and are supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running at least 1\ndaemon pod and are supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         desiredNumberScheduled:
-                          description: "The total number of nodes that should be running the daemon pod (including nodes correctly running the daemon pod). More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The total number of nodes that should be running the daemon\npod (including nodes correctly running the daemon pod).\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberAvailable:
-                          description: "The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have one or more of the daemon pod running and\navailable (ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         numberMisscheduled:
-                          description: "The number of nodes that are running the daemon pod, but are not supposed to run the daemon pod. More info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
+                          description: "The number of nodes that are running the daemon pod, but are\nnot supposed to run the daemon pod.\nMore info: https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/"
                           format: "int32"
                           type: "integer"
                         numberReady:
-                          description: "numberReady is the number of nodes that should be running the daemon pod and have one or more of the daemon pod running with a Ready Condition."
+                          description: "numberReady is the number of nodes that should be running the daemon pod and have one\nor more of the daemon pod running with a Ready Condition."
                           format: "int32"
                           type: "integer"
                         numberUnavailable:
-                          description: "The number of nodes that should be running the daemon pod and have none of the daemon pod running and available (ready for at least spec.minReadySeconds)"
+                          description: "The number of nodes that should be running the\ndaemon pod and have none of the daemon pod running and available\n(ready for at least spec.minReadySeconds)"
                           format: "int32"
                           type: "integer"
                         observedGeneration:

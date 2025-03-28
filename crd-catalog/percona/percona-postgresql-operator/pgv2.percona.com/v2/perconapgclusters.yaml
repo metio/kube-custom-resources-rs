@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "perconapgclusters.pgv2.percona.com"
 spec:
   group: "pgv2.percona.com"
@@ -46,6 +46,9 @@ spec:
               type: "object"
             spec:
               properties:
+                autoCreateUserSchema:
+                  description: "Whether or not the cluster has schemas automatically created for the user\ndefined in `spec.users` for all of the databases listed for that user."
+                  type: "boolean"
                 backups:
                   description: "PostgreSQL backup configuration"
                   properties:
@@ -903,6 +906,9 @@ spec:
                                       x-kubernetes-list-type: "atomic"
                                   type: "object"
                               type: "object"
+                            backoffLimit:
+                              format: "int32"
+                              type: "integer"
                             priorityClassName:
                               description: "Priority class name for the pgBackRest backup Job pods.\nMore info: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/"
                               type: "string"
@@ -946,6 +952,9 @@ spec:
                                   description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   type: "object"
                               type: "object"
+                            restartPolicy:
+                              description: "RestartPolicy describes how the container should be restarted.\nOnly one of the following restart policies may be specified.\nIf none of the following policies is specified, the default one\nis RestartPolicyAlways."
+                              type: "string"
                             securityContext:
                               description: "SecurityContext defines the security settings for PGBackRest pod."
                               properties:
@@ -979,6 +988,9 @@ spec:
                                   description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                                   format: "int64"
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
+                                  type: "string"
                                 seLinuxOptions:
                                   description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                                   properties:
@@ -1740,6 +1752,9 @@ spec:
                                   description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                                   format: "int64"
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
+                                  type: "string"
                                 seLinuxOptions:
                                   description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                                   properties:
@@ -3897,8 +3912,7 @@ spec:
                               type: "object"
                           type: "object"
                         stanza:
-                          default: "db"
-                          description: "The name of an existing pgBackRest stanza to use as the data source for the new PostgresCluster.\nDefaults to `db` if not provided."
+                          description: "The name of an existing pgBackRest stanza to use as the data source for the new PostgresCluster."
                           type: "string"
                         tolerations:
                           description: "Tolerations of the pgBackRest restore Job.\nMore info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration"
@@ -4788,6 +4802,8 @@ spec:
                           type: "boolean"
                         pg_stat_monitor:
                           type: "boolean"
+                        pgvector:
+                          type: "boolean"
                       type: "object"
                     custom:
                       items:
@@ -4853,8 +4869,6 @@ spec:
                             - "azure"
                           type: "string"
                       type: "object"
-                  required:
-                    - "image"
                   type: "object"
                 image:
                   description: "The image name to use for PostgreSQL containers."
@@ -5751,7 +5765,7 @@ spec:
                                   description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                   properties:
                                     exec:
-                                      description: "Exec specifies the action to take."
+                                      description: "Exec specifies a command to execute in the container."
                                       properties:
                                         command:
                                           description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -5761,7 +5775,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     httpGet:
-                                      description: "HTTPGet specifies the http request to perform."
+                                      description: "HTTPGet specifies an HTTP GET request to perform."
                                       properties:
                                         host:
                                           description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -5799,7 +5813,7 @@ spec:
                                         - "port"
                                       type: "object"
                                     sleep:
-                                      description: "Sleep represents the duration that the container should sleep before being terminated."
+                                      description: "Sleep represents a duration that the container should sleep."
                                       properties:
                                         seconds:
                                           description: "Seconds is the number of seconds to sleep."
@@ -5809,7 +5823,7 @@ spec:
                                         - "seconds"
                                       type: "object"
                                     tcpSocket:
-                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                       properties:
                                         host:
                                           description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -5828,7 +5842,7 @@ spec:
                                   description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                   properties:
                                     exec:
-                                      description: "Exec specifies the action to take."
+                                      description: "Exec specifies a command to execute in the container."
                                       properties:
                                         command:
                                           description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -5838,7 +5852,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     httpGet:
-                                      description: "HTTPGet specifies the http request to perform."
+                                      description: "HTTPGet specifies an HTTP GET request to perform."
                                       properties:
                                         host:
                                           description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -5876,7 +5890,7 @@ spec:
                                         - "port"
                                       type: "object"
                                     sleep:
-                                      description: "Sleep represents the duration that the container should sleep before being terminated."
+                                      description: "Sleep represents a duration that the container should sleep."
                                       properties:
                                         seconds:
                                           description: "Seconds is the number of seconds to sleep."
@@ -5886,7 +5900,7 @@ spec:
                                         - "seconds"
                                       type: "object"
                                     tcpSocket:
-                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                       properties:
                                         host:
                                           description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -5906,7 +5920,7 @@ spec:
                               description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -5920,7 +5934,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -5934,7 +5948,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -5984,7 +5998,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -6045,7 +6059,7 @@ spec:
                               description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -6059,7 +6073,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -6073,7 +6087,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -6123,7 +6137,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -6311,7 +6325,7 @@ spec:
                               description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -6325,7 +6339,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -6339,7 +6353,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -6389,7 +6403,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -6592,6 +6606,9 @@ spec:
                             description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                             format: "int64"
                             type: "integer"
+                          seLinuxChangePolicy:
+                            description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
+                            type: "string"
                           seLinuxOptions:
                             description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                             properties:
@@ -6818,7 +6835,7 @@ spec:
                                   description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                   properties:
                                     exec:
-                                      description: "Exec specifies the action to take."
+                                      description: "Exec specifies a command to execute in the container."
                                       properties:
                                         command:
                                           description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -6828,7 +6845,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     httpGet:
-                                      description: "HTTPGet specifies the http request to perform."
+                                      description: "HTTPGet specifies an HTTP GET request to perform."
                                       properties:
                                         host:
                                           description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -6866,7 +6883,7 @@ spec:
                                         - "port"
                                       type: "object"
                                     sleep:
-                                      description: "Sleep represents the duration that the container should sleep before being terminated."
+                                      description: "Sleep represents a duration that the container should sleep."
                                       properties:
                                         seconds:
                                           description: "Seconds is the number of seconds to sleep."
@@ -6876,7 +6893,7 @@ spec:
                                         - "seconds"
                                       type: "object"
                                     tcpSocket:
-                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                       properties:
                                         host:
                                           description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -6895,7 +6912,7 @@ spec:
                                   description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                   properties:
                                     exec:
-                                      description: "Exec specifies the action to take."
+                                      description: "Exec specifies a command to execute in the container."
                                       properties:
                                         command:
                                           description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -6905,7 +6922,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     httpGet:
-                                      description: "HTTPGet specifies the http request to perform."
+                                      description: "HTTPGet specifies an HTTP GET request to perform."
                                       properties:
                                         host:
                                           description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -6943,7 +6960,7 @@ spec:
                                         - "port"
                                       type: "object"
                                     sleep:
-                                      description: "Sleep represents the duration that the container should sleep before being terminated."
+                                      description: "Sleep represents a duration that the container should sleep."
                                       properties:
                                         seconds:
                                           description: "Seconds is the number of seconds to sleep."
@@ -6953,7 +6970,7 @@ spec:
                                         - "seconds"
                                       type: "object"
                                     tcpSocket:
-                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                      description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                       properties:
                                         host:
                                           description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -6973,7 +6990,7 @@ spec:
                               description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -6987,7 +7004,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -7001,7 +7018,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -7051,7 +7068,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -7112,7 +7129,7 @@ spec:
                               description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -7126,7 +7143,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -7140,7 +7157,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -7190,7 +7207,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -7378,7 +7395,7 @@ spec:
                               description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                               properties:
                                 exec:
-                                  description: "Exec specifies the action to take."
+                                  description: "Exec specifies a command to execute in the container."
                                   properties:
                                     command:
                                       description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -7392,7 +7409,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 grpc:
-                                  description: "GRPC specifies an action involving a GRPC port."
+                                  description: "GRPC specifies a GRPC HealthCheckRequest."
                                   properties:
                                     port:
                                       description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -7406,7 +7423,7 @@ spec:
                                     - "port"
                                   type: "object"
                                 httpGet:
-                                  description: "HTTPGet specifies the http request to perform."
+                                  description: "HTTPGet specifies an HTTP GET request to perform."
                                   properties:
                                     host:
                                       description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -7456,7 +7473,7 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 tcpSocket:
-                                  description: "TCPSocket specifies an action involving a TCP port."
+                                  description: "TCPSocket specifies a connection to a TCP port."
                                   properties:
                                     host:
                                       description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -7966,6 +7983,7 @@ spec:
                       description: "Switchover gives options to perform ad hoc switchovers in a PostgresCluster."
                       properties:
                         enabled:
+                          default: false
                           description: "Whether or not the operator should allow switchovers in a PostgresCluster"
                           type: "boolean"
                         targetInstance:
@@ -8095,6 +8113,8 @@ spec:
                               type: "string"
                           type: "object"
                       type: "object"
+                    customClusterName:
+                      type: "string"
                     enabled:
                       type: "boolean"
                     image:
@@ -8173,7 +8193,7 @@ spec:
                   type: "integer"
                 postgresVersion:
                   description: "The major version of PostgreSQL installed in the PostgreSQL image"
-                  maximum: 16.0
+                  maximum: 17.0
                   minimum: 12.0
                   type: "integer"
                 proxy:
@@ -9171,6 +9191,9 @@ spec:
                               description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                               format: "int64"
                               type: "integer"
+                            seLinuxChangePolicy:
+                              description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
+                              type: "string"
                             seLinuxOptions:
                               description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                               properties:
@@ -9397,7 +9420,7 @@ spec:
                                     description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                     properties:
                                       exec:
-                                        description: "Exec specifies the action to take."
+                                        description: "Exec specifies a command to execute in the container."
                                         properties:
                                           command:
                                             description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -9407,7 +9430,7 @@ spec:
                                             x-kubernetes-list-type: "atomic"
                                         type: "object"
                                       httpGet:
-                                        description: "HTTPGet specifies the http request to perform."
+                                        description: "HTTPGet specifies an HTTP GET request to perform."
                                         properties:
                                           host:
                                             description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -9445,7 +9468,7 @@ spec:
                                           - "port"
                                         type: "object"
                                       sleep:
-                                        description: "Sleep represents the duration that the container should sleep before being terminated."
+                                        description: "Sleep represents a duration that the container should sleep."
                                         properties:
                                           seconds:
                                             description: "Seconds is the number of seconds to sleep."
@@ -9455,7 +9478,7 @@ spec:
                                           - "seconds"
                                         type: "object"
                                       tcpSocket:
-                                        description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                        description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                         properties:
                                           host:
                                             description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -9474,7 +9497,7 @@ spec:
                                     description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                     properties:
                                       exec:
-                                        description: "Exec specifies the action to take."
+                                        description: "Exec specifies a command to execute in the container."
                                         properties:
                                           command:
                                             description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -9484,7 +9507,7 @@ spec:
                                             x-kubernetes-list-type: "atomic"
                                         type: "object"
                                       httpGet:
-                                        description: "HTTPGet specifies the http request to perform."
+                                        description: "HTTPGet specifies an HTTP GET request to perform."
                                         properties:
                                           host:
                                             description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -9522,7 +9545,7 @@ spec:
                                           - "port"
                                         type: "object"
                                       sleep:
-                                        description: "Sleep represents the duration that the container should sleep before being terminated."
+                                        description: "Sleep represents a duration that the container should sleep."
                                         properties:
                                           seconds:
                                             description: "Seconds is the number of seconds to sleep."
@@ -9532,7 +9555,7 @@ spec:
                                           - "seconds"
                                         type: "object"
                                       tcpSocket:
-                                        description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                        description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                         properties:
                                           host:
                                             description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -9552,7 +9575,7 @@ spec:
                                 description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -9566,7 +9589,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   grpc:
-                                    description: "GRPC specifies an action involving a GRPC port."
+                                    description: "GRPC specifies a GRPC HealthCheckRequest."
                                     properties:
                                       port:
                                         description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -9580,7 +9603,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -9630,7 +9653,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   tcpSocket:
-                                    description: "TCPSocket specifies an action involving a TCP port."
+                                    description: "TCPSocket specifies a connection to a TCP port."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -9691,7 +9714,7 @@ spec:
                                 description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -9705,7 +9728,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   grpc:
-                                    description: "GRPC specifies an action involving a GRPC port."
+                                    description: "GRPC specifies a GRPC HealthCheckRequest."
                                     properties:
                                       port:
                                         description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -9719,7 +9742,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -9769,7 +9792,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   tcpSocket:
-                                    description: "TCPSocket specifies an action involving a TCP port."
+                                    description: "TCPSocket specifies a connection to a TCP port."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -9957,7 +9980,7 @@ spec:
                                 description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
@@ -9971,7 +9994,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   grpc:
-                                    description: "GRPC specifies an action involving a GRPC port."
+                                    description: "GRPC specifies a GRPC HealthCheckRequest."
                                     properties:
                                       port:
                                         description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
@@ -9985,7 +10008,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -10035,7 +10058,7 @@ spec:
                                     format: "int32"
                                     type: "integer"
                                   tcpSocket:
-                                    description: "TCPSocket specifies an action involving a TCP port."
+                                    description: "TCPSocket specifies a connection to a TCP port."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -10336,7 +10359,7 @@ spec:
                   description: "Run this cluster as a read-only copy of an existing cluster or archive."
                   properties:
                     enabled:
-                      default: true
+                      default: false
                       description: "Whether or not the PostgreSQL cluster should be read-only. When this is\ntrue, WAL files are applied from a pgBackRest repository or another\nPostgreSQL server."
                       type: "boolean"
                     host:
@@ -10352,6 +10375,8 @@ spec:
                       pattern: "^repo[1-4]"
                       type: "string"
                   type: "object"
+                tlsOnly:
+                  type: "boolean"
                 unmanaged:
                   description: "Suspends the rollout and reconciliation of changes made to the\nPostgresCluster spec."
                   type: "boolean"
@@ -10413,6 +10438,12 @@ spec:
               properties:
                 host:
                   type: "string"
+                installedCustomExtensions:
+                  items:
+                    type: "string"
+                  type: "array"
+                patroniVersion:
+                  type: "string"
                 pgbouncer:
                   properties:
                     ready:
@@ -10427,6 +10458,8 @@ spec:
                   type: "object"
                 postgres:
                   properties:
+                    imageID:
+                      type: "string"
                     instances:
                       items:
                         properties:
@@ -10450,17 +10483,11 @@ spec:
                     size:
                       format: "int32"
                       type: "integer"
-                  required:
-                    - "instances"
-                    - "ready"
-                    - "size"
+                    version:
+                      type: "integer"
                   type: "object"
                 state:
                   type: "string"
-              required:
-                - "pgbouncer"
-                - "postgres"
-                - "state"
               type: "object"
           required:
             - "metadata"

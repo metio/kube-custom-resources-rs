@@ -2,11 +2,11 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.1"
   labels:
     app.kubernetes.io/instance: "longhorn"
     app.kubernetes.io/name: "longhorn"
-    app.kubernetes.io/version: "v1.8.0-dev"
+    app.kubernetes.io/version: "v1.9.0-dev"
     longhorn-manager: ""
   name: "recurringjobs.longhorn.io"
 spec:
@@ -25,7 +25,7 @@ spec:
           jsonPath: ".spec.groups"
           name: "Groups"
           type: "string"
-        - description: "Should be one of \"snapshot\", \"snapshot-force-create\", \"snapshot-cleanup\", \"snapshot-delete\", \"backup\", \"backup-force-create\" or \"filesystem-trim\""
+        - description: "Should be one of \"snapshot\", \"snapshot-force-create\", \"snapshot-cleanup\", \"snapshot-delete\", \"backup\", \"backup-force-create\", \"filesystem-trim\" or \"system-backup\""
           jsonPath: ".spec.task"
           name: "Task"
           type: "string"
@@ -86,13 +86,13 @@ spec:
                 parameters:
                   additionalProperties:
                     type: "string"
-                  description: "The parameters of the snapshot/backup.\nSupport parameters: \"full-backup-interval\"."
+                  description: "The parameters of the snapshot/backup.\nSupport parameters: \"full-backup-interval\", \"volume-backup-policy\"."
                   type: "object"
                 retain:
                   description: "The retain count of the snapshot/backup."
                   type: "integer"
                 task:
-                  description: "The recurring job task.\nCan be \"snapshot\", \"snapshot-force-create\", \"snapshot-cleanup\", \"snapshot-delete\", \"backup\", \"backup-force-create\" or \"filesystem-trim\""
+                  description: "The recurring job task.\nCan be \"snapshot\", \"snapshot-force-create\", \"snapshot-cleanup\", \"snapshot-delete\", \"backup\", \"backup-force-create\", \"filesystem-trim\" or \"system-backup\"."
                   enum:
                     - "snapshot"
                     - "snapshot-force-create"
@@ -101,6 +101,7 @@ spec:
                     - "backup"
                     - "backup-force-create"
                     - "filesystem-trim"
+                    - "system-backup"
                   type: "string"
               type: "object"
             status:

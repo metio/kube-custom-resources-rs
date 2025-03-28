@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    config.couchbase.com/version: "2.7.0"
+    config.couchbase.com/version: "2.8.0"
     controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "couchbasebuckets.couchbase.com"
 spec:
@@ -50,6 +50,62 @@ spec:
               default: {}
               description: "CouchbaseBucketSpec is the specification for a Couchbase bucket resource, and\nallows the bucket to be customized."
               properties:
+                autoCompaction:
+                  description: "AutoCompaction allows the configuration of auto-compaction settings, including on what\nconditions disk space is reclaimed and when it is allowed to run, on a per-bucket basis.\nIf any of these fields are configured, those that are not configured here will take the value set at the cluster level.\nExcluding this field (which is the default), will set the autoCompactionSettings to false and the bucket will use cluster defaults."
+                  properties:
+                    databaseFragmentationThreshold:
+                      description: "DatabaseFragmentationThreshold defines triggers for when database compaction should start."
+                      properties:
+                        percent:
+                          description: "Percent specifies the level of view fragmentation that must be reached for View compaction to be automatically triggered.\nThis field must be in the range 0-100, defaulting to the cluster level value."
+                          maximum: 100.0
+                          minimum: 0.0
+                          type: "integer"
+                        size:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Size the level of database fragmentation that must be reached for data compaction to be automatically triggered on the bucket.\nMore info:\nhttps://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          type: "string"
+                          x-kubernetes-int-or-string: true
+                      type: "object"
+                    timeWindow:
+                      description: "TimeWindow allows restriction of when compaction can occur."
+                      properties:
+                        abortCompactionOutsideWindow:
+                          description: "AbortCompactionOutsideWindow stops compaction processes when the\nprocess moves outside the window, defaulting to false."
+                          type: "boolean"
+                        end:
+                          description: "End is a wallclock time, in the form HH:MM, when a compaction should stop."
+                          pattern: "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"
+                          type: "string"
+                        start:
+                          description: "Start is a wallclock time, in the form HH:MM, when a compaction is permitted to start."
+                          pattern: "^(2[0-3]|[01]?[0-9]):([0-5]?[0-9])$"
+                          type: "string"
+                      type: "object"
+                    tombstonePurgeInterval:
+                      description: "TombstonePurgeInterval controls how long to wait before purging tombstones.\nThis field must be in the range 1h-1440h, defaulting to the cluster level value.\nMore info:  https://golang.org/pkg/time/#ParseDuration"
+                      type: "string"
+                    viewFragmentationThreshold:
+                      description: "ViewFragmentationThreshold defines triggers for when view compaction should start."
+                      properties:
+                        percent:
+                          description: "Percent specifies the percentage level of View fragmentation that must be reached for View compaction to be automatically triggered on the bucket\nThis field must be in the range 0-100, defaulting to the cluster level value."
+                          maximum: 100.0
+                          minimum: 0.0
+                          type: "integer"
+                        size:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "Size is the level of View fragmentation that must be reached for view compaction to be automatically triggered on the bucket.\nMore info:\nhttps://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          type: "string"
+                          x-kubernetes-int-or-string: true
+                      type: "object"
+                  type: "object"
                 compressionMode:
                   default: "passive"
                   description: "CompressionMode defines how Couchbase server handles document compression.  When\noff, documents are stored in memory, and transferred to the client uncompressed.\nWhen passive, documents are stored compressed in memory, and transferred to the\nclient compressed when requested.  When active, documents are stored compresses\nin memory and when transferred to the client.  This field must be \"off\", \"passive\"\nor \"active\", defaulting to \"passive\".  Be aware \"off\" in YAML 1.2 is a boolean, so\nmust be quoted as a string in configuration files."
@@ -78,6 +134,22 @@ spec:
                     - "valueOnly"
                     - "fullEviction"
                   type: "string"
+                historyRetention:
+                  description: "HistoryRetention configures settings for bucket history retention and default values for associated collections."
+                  properties:
+                    bytes:
+                      description: "Bytes defines how much history an individual vbucket should aim to retain on disk in bytes. This field defaults to 0 and has a minimum working value of 2147483648.\nThis is only supported on buckets with storageBackend=magma."
+                      format: "int64"
+                      type: "integer"
+                    collectionHistoryDefault:
+                      default: true
+                      description: "CollectionHistoryDefault determines whether history retention is enabled for newly created collections by default. This field defaults to true.\nThis is only supported on buckets with storageBackend=magma."
+                      type: "boolean"
+                    seconds:
+                      description: "Seconds defines how many seconds of history an individual vbucket should aim to retain on disk. This field defaults to 0.\nThis is only supported on buckets with storageBackend=magma."
+                      format: "int64"
+                      type: "integer"
+                  type: "object"
                 ioPriority:
                   default: "low"
                   description: "IOPriority controls how many threads a bucket has, per pod, to process reads and writes.\nThis field must be \"low\" or \"high\", defaulting to \"low\".  Modification of this field will\ncause a temporary service disruption as threads are restarted."

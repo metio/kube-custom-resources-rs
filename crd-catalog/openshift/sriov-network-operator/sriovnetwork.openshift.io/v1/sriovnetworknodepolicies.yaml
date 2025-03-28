@@ -63,6 +63,9 @@ spec:
                                     type: "string"
                                   description: "external_ids field in the Interface table in OVSDB"
                                   type: "object"
+                                mtuRequest:
+                                  description: "mtu_request field in the Interface table in OVSDB"
+                                  type: "integer"
                                 options:
                                   additionalProperties:
                                     type: "string"

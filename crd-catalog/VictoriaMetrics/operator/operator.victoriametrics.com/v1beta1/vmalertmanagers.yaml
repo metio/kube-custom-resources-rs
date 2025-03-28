@@ -2,19 +2,9 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmalertmanagers.operator.victoriametrics.com"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "webhook-service"
-          namespace: "vm"
-          path: "/convert"
-      conversionReviewVersions:
-        - "v1"
   group: "operator.victoriametrics.com"
   names:
     kind: "VMAlertmanager"
@@ -26,10 +16,6 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
-        - description: "The version of VMAlertmanager"
-          jsonPath: ".spec.image.tag"
-          name: "Version"
-          type: "string"
         - description: "The desired replicas number of Alertmanagers"
           jsonPath: ".spec.replicaCount"
           name: "ReplicaCount"
@@ -185,7 +171,7 @@ spec:
                             description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                             type: "string"
                           volumeAttributesClassName:
-                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                            description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
                             type: "string"
                           volumeMode:
                             description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -248,9 +234,10 @@ spec:
                                   description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                   type: "string"
                                 status:
+                                  description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                   type: "string"
                                 type:
-                                  description: "PersistentVolumeClaimConditionType is a valid value of PersistentVolumeClaimCondition.Type"
+                                  description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                   type: "string"
                               required:
                                 - "status"
@@ -261,10 +248,10 @@ spec:
                               - "type"
                             x-kubernetes-list-type: "map"
                           currentVolumeAttributesClassName:
-                            description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                            description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is a beta field and requires enabling VolumeAttributesClass feature (off by default)."
                             type: "string"
                           modifyVolumeStatus:
-                            description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                            description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is a beta field and requires enabling VolumeAttributesClass feature (off by default)."
                             properties:
                               status:
                                 description: "status is the status of the ControllerModifyVolume operation. It can be in any of following states:\n - Pending\n   Pending indicates that the PersistentVolumeClaim cannot be modified due to unmet requirements, such as\n   the specified VolumeAttributesClass not existing.\n - InProgress\n   InProgress indicates that the volume is being modified.\n - Infeasible\n  Infeasible indicates that the request has been rejected as invalid by the CSI driver. To\n\t  resolve the error, a valid VolumeAttributesClass needs to be specified.\nNote: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately."
@@ -347,6 +334,9 @@ spec:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                             type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                            type: "string"
                         required:
                           - "name"
                         type: "object"
@@ -418,6 +408,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                disableAutomountServiceAccountToken:
+                  description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
+                  type: "boolean"
                 disableNamespaceMatcher:
                   description: "DisableNamespaceMatcher disables top route namespace label matcher for VMAlertmanagerConfig\nIt may be useful if alert doesn't have namespace label for some reason"
                   type: "boolean"
@@ -444,9 +437,10 @@ spec:
                         description: "PodDNSConfigOption defines DNS resolver options of a pod."
                         properties:
                           name:
-                            description: "Required."
+                            description: "Name is this DNS resolver option's name.\nRequired."
                             type: "string"
                           value:
+                            description: "Value is this DNS resolver option's value."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -489,6 +483,40 @@ spec:
                       - "name"
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
+                  type: "array"
+                extraEnvsFrom:
+                  description: "ExtraEnvsFrom defines source of env variables for the application container\ncould either be secret or configmap"
+                  items:
+                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    properties:
+                      configMapRef:
+                        description: "The ConfigMap to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the ConfigMap must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      prefix:
+                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        type: "string"
+                      secretRef:
+                        description: "The Secret to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                    type: "object"
                   type: "array"
                 gossipConfig:
                   description: "GossipConfig defines gossip TLS configuration for Alertmanager cluster"
@@ -761,8 +789,22 @@ spec:
                     - "WARN"
                     - "ERROR"
                   type: "string"
+                managedMetadata:
+                  description: "ManagedMetadata defines metadata that will be added to the all objects\ncreated by operator for the given CustomResource"
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
+                      description: "Labels Map of string keys and values that can be used to organize and categorize\n(scope and select) objects.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels"
+                      type: "object"
+                  type: "object"
                 minReadySeconds:
-                  description: "MinReadySeconds defines a minim number os seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
+                  description: "MinReadySeconds defines a minimum number of seconds to wait before starting update next pod\nif previous in healthy state\nHas no effect for VLogs and VMSingle"
                   format: "int32"
                   type: "integer"
                 nodeSelector:
@@ -850,6 +892,9 @@ spec:
                         properties:
                           name:
                             description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                            type: "string"
+                          request:
+                            description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                             type: "string"
                         required:
                           - "name"
@@ -1102,7 +1147,7 @@ spec:
                               description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                               type: "string"
                             volumeAttributesClassName:
-                              description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                              description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
                               type: "string"
                             volumeMode:
                               description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -1165,9 +1210,10 @@ spec:
                                     description: "reason is a unique, this should be a short, machine understandable string that gives the reason\nfor condition's last transition. If it reports \"Resizing\" that means the underlying\npersistent volume is being resized."
                                     type: "string"
                                   status:
+                                    description: "Status is the status of the condition.\nCan be True, False, Unknown.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=state%20of%20pvc-,conditions.status,-(string)%2C%20required"
                                     type: "string"
                                   type:
-                                    description: "PersistentVolumeClaimConditionType is a valid value of PersistentVolumeClaimCondition.Type"
+                                    description: "Type is the type of the condition.\nMore info: https://kubernetes.io/docs/reference/kubernetes-api/config-and-storage-resources/persistent-volume-claim-v1/#:~:text=set%20to%20%27ResizeStarted%27.-,PersistentVolumeClaimCondition,-contains%20details%20about"
                                     type: "string"
                                 required:
                                   - "status"
@@ -1178,10 +1224,10 @@ spec:
                                 - "type"
                               x-kubernetes-list-type: "map"
                             currentVolumeAttributesClassName:
-                              description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                              description: "currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.\nWhen unset, there is no VolumeAttributeClass applied to this PersistentVolumeClaim\nThis is a beta field and requires enabling VolumeAttributesClass feature (off by default)."
                               type: "string"
                             modifyVolumeStatus:
-                              description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is an alpha field and requires enabling VolumeAttributesClass feature."
+                              description: "ModifyVolumeStatus represents the status object of ControllerModifyVolume operation.\nWhen this is unset, there is no ModifyVolume operation being attempted.\nThis is a beta field and requires enabling VolumeAttributesClass feature (off by default)."
                               properties:
                                 status:
                                   description: "status is the status of the ControllerModifyVolume operation. It can be in any of following states:\n - Pending\n   Pending indicates that the PersistentVolumeClaim cannot be modified due to unmet requirements, such as\n   the specified VolumeAttributesClass not existing.\n - InProgress\n   InProgress indicates that the volume is being modified.\n - Infeasible\n  Infeasible indicates that the request has been rejected as invalid by the CSI driver. To\n\t  resolve the error, a valid VolumeAttributesClass needs to be specified.\nNote: New statuses can be added in the future. Consumers should check for unknown statuses and fail appropriately."
@@ -1426,11 +1472,64 @@ spec:
             status:
               description: "Most recent observed status of the VMAlertmanager cluster.\nOperator API itself. More info:\nhttps://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
               properties:
+                conditions:
+                  description: "Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\""
+                  items:
+                    description: "Condition defines status condition of the resource"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another."
+                        format: "date-time"
+                        type: "string"
+                      lastUpdateTime:
+                        description: "LastUpdateTime is the last time of given type update.\nThis value is used for status TTL update and removal"
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "Type of condition in CamelCase or in name.namespace.resource.victoriametrics.com/CamelCase."
+                        maxLength: 316
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "lastUpdateTime"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason has non empty reason for update failure"
+                  description: "Reason defines human readable error reason"
                   type: "string"
                 updateStatus:
-                  description: "Status defines a status of object update"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
               type: "object"
           required:
