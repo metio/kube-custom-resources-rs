@@ -2221,6 +2221,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "kubernetes-sigs/container-object-storage-interface",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/kubernetes-sigs/container-object-storage-interface/blob/main/client/config/crd/objectstorage.k8s.io_bucketaccessclasses.yaml",
+            "https://github.com/kubernetes-sigs/container-object-storage-interface/blob/main/client/config/crd/objectstorage.k8s.io_bucketaccesses.yaml",
+            "https://github.com/kubernetes-sigs/container-object-storage-interface/blob/main/client/config/crd/objectstorage.k8s.io_bucketclaims.yaml",
+            "https://github.com/kubernetes-sigs/container-object-storage-interface/blob/main/client/config/crd/objectstorage.k8s.io_bucketclasses.yaml",
+            "https://github.com/kubernetes-sigs/container-object-storage-interface/blob/main/client/config/crd/objectstorage.k8s.io_buckets.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "kubernetes-sigs/external-dns",
         license: APACHE_V2,
         urls: &[

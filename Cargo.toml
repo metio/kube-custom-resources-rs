@@ -265,6 +265,7 @@ members = [
     "custom-resources/notebook_kubedl_io",
     "custom-resources/notification_toolkit_fluxcd_io",
     "custom-resources/objectbucket_io",
+    "custom-resources/objectstorage_k8s_io",
     "custom-resources/ocmagent_managed_openshift_io",
     "custom-resources/onepassword_com",
     "custom-resources/opensearch_opster_io",
