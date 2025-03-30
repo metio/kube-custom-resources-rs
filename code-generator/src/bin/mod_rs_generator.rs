@@ -51,6 +51,7 @@ fn main() -> Result<()> {
                 }
             } else {
                 let mut data = Map::new();
+                versioned_resources.sort();
                 data.insert("resources".to_string(), to_json(versioned_resources));
 
                 let file = OpenOptions::new()
