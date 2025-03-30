@@ -803,6 +803,10 @@ Files: crd-catalog/kubernetes-sigs/cluster-api-provider-vsphere/*
 Copyright: The kubernetes-sigs/cluster-api-provider-vsphere Authors
 License: Apache-2.0
 
+Files: crd-catalog/kubernetes-sigs/container-object-storage-interface/*
+Copyright: The kubernetes-sigs/container-object-storage-interface Authors
+License: Apache-2.0
+
 Files: crd-catalog/kubernetes-sigs/external-dns/*
 Copyright: The kubernetes-sigs/external-dns Authors
 License: Apache-2.0

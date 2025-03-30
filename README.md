@@ -305,6 +305,7 @@ The following groups are available:
 - [notebook.kubedl.io](https://crates.io/crates/kcr_notebook_kubedl_io)
 - [notification.toolkit.fluxcd.io](https://crates.io/crates/kcr_notification_toolkit_fluxcd_io)
 - [objectbucket.io](https://crates.io/crates/kcr_objectbucket_io)
+- [objectstorage.k8s.io](https://crates.io/crates/kcr_objectstorage_k8s_io)
 - [ocmagent.managed.openshift.io](https://crates.io/crates/kcr_ocmagent_managed_openshift_io)
 - [onepassword.com](https://crates.io/crates/kcr_onepassword_com)
 - [opensearch.opster.io](https://crates.io/crates/kcr_opensearch_opster_io)
