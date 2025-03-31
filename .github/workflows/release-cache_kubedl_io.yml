@@ -4,7 +4,7 @@
 name: Release cache_kubedl_io
 on:
   schedule:
-    - cron: 15 15 * * SUN
+    - cron: 15 7 * * SAT
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/cache_kubedl_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/cache_kubedl_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

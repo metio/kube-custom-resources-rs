@@ -4,7 +4,7 @@
 name: Release trident_netapp_io
 on:
   schedule:
-    - cron: 40 4 * * SUN
+    - cron: 40 17 * * SUN
   workflow_dispatch:
 jobs:
   release:

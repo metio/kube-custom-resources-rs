@@ -4,7 +4,7 @@
 name: Release mirrors_kts_studio
 on:
   schedule:
-    - cron: 58 22 * * SUN
+    - cron: 58 20 * * THU
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/mirrors_kts_studio)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Thursday' -- custom-resources/mirrors_kts_studio)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

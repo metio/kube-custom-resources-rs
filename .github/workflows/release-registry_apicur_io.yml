@@ -4,7 +4,7 @@
 name: Release registry_apicur_io
 on:
   schedule:
-    - cron: 44 8 * * SUN
+    - cron: 44 2 * * FRI
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/registry_apicur_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Friday' -- custom-resources/registry_apicur_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

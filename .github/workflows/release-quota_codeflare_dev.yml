@@ -4,7 +4,7 @@
 name: Release quota_codeflare_dev
 on:
   schedule:
-    - cron: 37 1 * * SUN
+    - cron: 37 10 * * SUN
   workflow_dispatch:
 jobs:
   release:

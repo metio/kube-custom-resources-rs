@@ -4,7 +4,7 @@
 name: Release flink_apache_org
 on:
   schedule:
-    - cron: 3 15 * * SUN
+    - cron: 3 17 * * WED
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/flink_apache_org)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Wednesday' -- custom-resources/flink_apache_org)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

@@ -4,7 +4,7 @@
 name: Release config_grafana_com
 on:
   schedule:
-    - cron: 23 23 * * SUN
+    - cron: 23 18 * * SUN
   workflow_dispatch:
 jobs:
   release:

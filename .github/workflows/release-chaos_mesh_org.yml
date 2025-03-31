@@ -4,7 +4,7 @@
 name: Release chaos_mesh_org
 on:
   schedule:
-    - cron: 48 0 * * SUN
+    - cron: 48 19 * * THU
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/chaos_mesh_org)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Thursday' -- custom-resources/chaos_mesh_org)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

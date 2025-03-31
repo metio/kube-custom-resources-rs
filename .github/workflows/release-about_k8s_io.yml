@@ -4,7 +4,7 @@
 name: Release about_k8s_io
 on:
   schedule:
-    - cron: 14 14 * * SUN
+    - cron: 14 17 * * THU
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/about_k8s_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Thursday' -- custom-resources/about_k8s_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

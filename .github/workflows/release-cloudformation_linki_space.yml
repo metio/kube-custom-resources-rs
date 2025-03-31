@@ -4,7 +4,7 @@
 name: Release cloudformation_linki_space
 on:
   schedule:
-    - cron: 58 10 * * SUN
+    - cron: 58 18 * * TUE
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/cloudformation_linki_space)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Tuesday' -- custom-resources/cloudformation_linki_space)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

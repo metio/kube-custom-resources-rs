@@ -4,7 +4,7 @@
 name: Release authentication_stackable_tech
 on:
   schedule:
-    - cron: 34 22 * * SUN
+    - cron: 34 19 * * WED
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/authentication_stackable_tech)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Wednesday' -- custom-resources/authentication_stackable_tech)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

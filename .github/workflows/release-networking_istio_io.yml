@@ -4,7 +4,7 @@
 name: Release networking_istio_io
 on:
   schedule:
-    - cron: 46 10 * * SUN
+    - cron: 46 23 * * SUN
   workflow_dispatch:
 jobs:
   release:

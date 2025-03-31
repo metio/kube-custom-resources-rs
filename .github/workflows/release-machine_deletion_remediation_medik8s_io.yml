@@ -4,7 +4,7 @@
 name: Release machine_deletion_remediation_medik8s_io
 on:
   schedule:
-    - cron: 28 16 * * SUN
+    - cron: 28 1 * * SUN
   workflow_dispatch:
 jobs:
   release:

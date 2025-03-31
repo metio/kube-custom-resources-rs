@@ -4,7 +4,7 @@
 name: Release eks_services_k8s_aws
 on:
   schedule:
-    - cron: 11 11 * * SUN
+    - cron: 11 18 * * SAT
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/eks_services_k8s_aws)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/eks_services_k8s_aws)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

@@ -4,7 +4,7 @@
 name: Release kyverno_io
 on:
   schedule:
-    - cron: 23 11 * * SUN
+    - cron: 23 10 * * SAT
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/kyverno_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/kyverno_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

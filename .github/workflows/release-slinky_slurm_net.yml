@@ -4,7 +4,7 @@
 name: Release slinky_slurm_net
 on:
   schedule:
-    - cron: 41 17 * * SUN
+    - cron: 41 14 * * TUE
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/slinky_slurm_net)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Tuesday' -- custom-resources/slinky_slurm_net)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

@@ -4,7 +4,7 @@
 name: Release opentelemetry_io
 on:
   schedule:
-    - cron: 8 20 * * SUN
+    - cron: 8 13 * * THU
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/opentelemetry_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Thursday' -- custom-resources/opentelemetry_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

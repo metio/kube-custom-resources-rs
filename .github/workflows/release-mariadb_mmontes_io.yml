@@ -4,7 +4,7 @@
 name: Release mariadb_mmontes_io
 on:
   schedule:
-    - cron: 22 10 * * SUN
+    - cron: 22 14 * * THU
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/mariadb_mmontes_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Thursday' -- custom-resources/mariadb_mmontes_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

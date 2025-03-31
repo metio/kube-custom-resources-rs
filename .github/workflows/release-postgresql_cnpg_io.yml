@@ -4,7 +4,7 @@
 name: Release postgresql_cnpg_io
 on:
   schedule:
-    - cron: 15 15 * * SUN
+    - cron: 15 3 * * SUN
   workflow_dispatch:
 jobs:
   release:

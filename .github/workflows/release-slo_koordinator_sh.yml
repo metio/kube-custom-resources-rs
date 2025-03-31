@@ -4,7 +4,7 @@
 name: Release slo_koordinator_sh
 on:
   schedule:
-    - cron: 51 15 * * SUN
+    - cron: 51 17 * * MON
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/slo_koordinator_sh)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Monday' -- custom-resources/slo_koordinator_sh)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

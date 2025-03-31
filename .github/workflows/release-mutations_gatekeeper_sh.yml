@@ -4,7 +4,7 @@
 name: Release mutations_gatekeeper_sh
 on:
   schedule:
-    - cron: 56 8 * * SUN
+    - cron: 56 9 * * SUN
   workflow_dispatch:
 jobs:
   release:

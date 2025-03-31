@@ -4,7 +4,7 @@
 name: Release ibmcloud_ibm_com
 on:
   schedule:
-    - cron: 17 5 * * SUN
+    - cron: 17 11 * * SUN
   workflow_dispatch:
 jobs:
   release:

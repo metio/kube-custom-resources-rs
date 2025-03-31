@@ -4,7 +4,7 @@
 name: Release reliablesyncs_kubeedge_io
 on:
   schedule:
-    - cron: 9 9 * * SUN
+    - cron: 9 4 * * SUN
   workflow_dispatch:
 jobs:
   release:
