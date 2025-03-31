@@ -11,7 +11,7 @@ publish = false
 [dependencies]
 glob = { version = "0.3.2" }
 handlebars = { version = "6.3.0" }
-itertools = { version = "0.13.0" }
+itertools = { version = "0.14.0" }
 k8s-openapi = { version = "~0", features = ["latest"] }
 reqwest = { version = "0.12.12", default-features = false, features = ["blocking", "rustls-tls"] }
 serde = { version = "1.0.217", features = ["derive"] }
