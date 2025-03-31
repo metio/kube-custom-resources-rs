@@ -4,7 +4,7 @@
 name: Release flows_netobserv_io
 on:
   schedule:
-    - cron: 27 3 * * SUN
+    - cron: 27 1 * * TUE
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/flows_netobserv_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Tuesday' -- custom-resources/flows_netobserv_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

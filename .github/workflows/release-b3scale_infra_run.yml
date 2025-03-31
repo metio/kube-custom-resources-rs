@@ -4,7 +4,7 @@
 name: Release b3scale_infra_run
 on:
   schedule:
-    - cron: 50 14 * * SUN
+    - cron: 50 3 * * FRI
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/b3scale_infra_run)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Friday' -- custom-resources/b3scale_infra_run)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

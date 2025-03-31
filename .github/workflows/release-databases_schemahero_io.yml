@@ -4,7 +4,7 @@
 name: Release databases_schemahero_io
 on:
   schedule:
-    - cron: 52 4 * * SUN
+    - cron: 52 1 * * SUN
   workflow_dispatch:
 jobs:
   release:

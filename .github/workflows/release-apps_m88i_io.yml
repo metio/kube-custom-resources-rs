@@ -4,7 +4,7 @@
 name: Release apps_m88i_io
 on:
   schedule:
-    - cron: 55 19 * * SUN
+    - cron: 55 3 * * SAT
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/apps_m88i_io)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/apps_m88i_io)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

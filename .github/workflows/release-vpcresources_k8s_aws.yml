@@ -4,7 +4,7 @@
 name: Release vpcresources_k8s_aws
 on:
   schedule:
-    - cron: 7 19 * * SUN
+    - cron: 7 12 * * SUN
   workflow_dispatch:
 jobs:
   release:

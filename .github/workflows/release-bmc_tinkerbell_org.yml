@@ -4,7 +4,7 @@
 name: Release bmc_tinkerbell_org
 on:
   schedule:
-    - cron: 46 22 * * SUN
+    - cron: 46 1 * * SUN
   workflow_dispatch:
 jobs:
   release:

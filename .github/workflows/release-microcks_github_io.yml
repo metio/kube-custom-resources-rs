@@ -4,7 +4,7 @@
 name: Release microcks_github_io
 on:
   schedule:
-    - cron: 25 1 * * SUN
+    - cron: 25 18 * * SUN
   workflow_dispatch:
 jobs:
   release:

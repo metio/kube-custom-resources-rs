@@ -4,7 +4,7 @@
 name: Release akri_sh
 on:
   schedule:
-    - cron: 14 14 * * SUN
+    - cron: 14 23 * * TUE
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/akri_sh)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Tuesday' -- custom-resources/akri_sh)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

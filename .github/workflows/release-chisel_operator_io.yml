@@ -4,7 +4,7 @@
 name: Release chisel_operator_io
 on:
   schedule:
-    - cron: 5 17 * * SUN
+    - cron: 5 20 * * SUN
   workflow_dispatch:
 jobs:
   release:

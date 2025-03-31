@@ -4,7 +4,7 @@
 name: Release externaldns_nginx_org
 on:
   schedule:
-    - cron: 36 12 * * SUN
+    - cron: 36 19 * * SUN
   workflow_dispatch:
 jobs:
   release:

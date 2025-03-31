@@ -4,7 +4,7 @@
 name: Release emrcontainers_services_k8s_aws
 on:
   schedule:
-    - cron: 50 14 * * SUN
+    - cron: 50 13 * * SUN
   workflow_dispatch:
 jobs:
   release:

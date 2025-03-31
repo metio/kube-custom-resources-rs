@@ -4,7 +4,7 @@
 name: Release flux_framework_org
 on:
   schedule:
-    - cron: 41 17 * * SUN
+    - cron: 41 6 * * WED
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/flux_framework_org)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Wednesday' -- custom-resources/flux_framework_org)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

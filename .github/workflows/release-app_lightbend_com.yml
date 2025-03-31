@@ -4,7 +4,7 @@
 name: Release app_lightbend_com
 on:
   schedule:
-    - cron: 56 8 * * SUN
+    - cron: 56 20 * * SUN
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release ceph_rook_io
 on:
   schedule:
-    - cron: 4 4 * * SUN
+    - cron: 4 20 * * SUN
   workflow_dispatch:
 jobs:
   release:

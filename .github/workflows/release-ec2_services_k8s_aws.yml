@@ -4,7 +4,7 @@
 name: Release ec2_services_k8s_aws
 on:
   schedule:
-    - cron: 41 17 * * SUN
+    - cron: 41 18 * * SUN
   workflow_dispatch:
 jobs:
   release:

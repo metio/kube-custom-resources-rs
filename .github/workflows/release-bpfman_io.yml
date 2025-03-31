@@ -4,7 +4,7 @@
 name: Release bpfman_io
 on:
   schedule:
-    - cron: 31 19 * * SUN
+    - cron: 31 22 * * SUN
   workflow_dispatch:
 jobs:
   release:

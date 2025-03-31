@@ -4,7 +4,7 @@
 name: Release actions_summerwind_dev
 on:
   schedule:
-    - cron: 4 4 * * SUN
+    - cron: 4 13 * * FRI
   workflow_dispatch:
 jobs:
   release:
@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
       - id: commits
         name: Count Commits
-        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/actions_summerwind_dev)" >> $GITHUB_OUTPUT
+        run: echo "count=$(git rev-list --count HEAD --since='last Friday' -- custom-resources/actions_summerwind_dev)" >> $GITHUB_OUTPUT
       - id: release
         name: Create Release Version
         if: steps.commits.outputs.count > 0

@@ -4,7 +4,7 @@
 name: Release config_storageos_com
 on:
   schedule:
-    - cron: 16 16 * * SUN
+    - cron: 16 9 * * SUN
   workflow_dispatch:
 jobs:
   release:

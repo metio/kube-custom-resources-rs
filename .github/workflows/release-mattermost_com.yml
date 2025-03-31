@@ -4,7 +4,7 @@
 name: Release mattermost_com
 on:
   schedule:
-    - cron: 8 20 * * SUN
+    - cron: 8 6 * * SUN
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release notebook_kubedl_io
 on:
   schedule:
-    - cron: 44 8 * * SUN
+    - cron: 44 18 * * SUN
   workflow_dispatch:
 jobs:
   release:

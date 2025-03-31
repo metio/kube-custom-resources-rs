@@ -23,6 +23,8 @@ fn main() -> Result<()> {
         .register_template_file("release-crd", &release_template)
         .expect("register template failed");
 
+    let release_days = vec![("SUN", "Sunday"), ("MON", "Monday"), ("TUE", "Tuesday"), ("WED", "Wednesday"), ("THU", "Thursday"), ("FRI", "Friday"), ("SAT", "Saturday")];
+
     for group in fs::read_dir(custom_resources_root)? {
         let group_path = group?.path();
         let group_name = group_path.file_name().unwrap().to_str().unwrap();
@@ -50,7 +52,10 @@ fn main() -> Result<()> {
                 to_json("1.31"),
             );
             data.insert("cron_minute".to_string(), to_json(hash.rem_euclid(60)));
-            data.insert("cron_hour".to_string(), to_json(hash.rem_euclid(24)));
+            data.insert("cron_hour".to_string(), to_json(hash.rem_euclid(23) + 1));
+            let day_of_week: usize = hash.rem_euclid(release_days.len() as u64) as usize;
+            data.insert("cron_day".to_string(), to_json(release_days[day_of_week].0));
+            data.insert("git_day".to_string(), to_json(release_days[day_of_week].1));
 
             let file = OpenOptions::new()
                 .create(true)
