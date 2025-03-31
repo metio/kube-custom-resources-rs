@@ -35,7 +35,7 @@ jobs:
       - name: Check changed CRDs
         run: |
           all_good=yes
-          for group in $(git diff --name-only origin/main -- ./custom-resources | grep lib.rs | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {} | sort --unique); do
+          for group in $(git diff --name-only origin/main -- ./custom-resources | grep --fixed-strings '.rs' | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {} | sort --unique); do
             echo "trying to test ${group}"
             if [ -f "./custom-resources/${group}/src/lib.rs" ]; then
               if ! ./code-generator/test-custom-resources.sh "${group}"; then
