@@ -4,7 +4,7 @@
 name: Release secscan_quay_redhat_com
 on:
   schedule:
-    - cron: 6 11 * * TUE
+    - cron: 6 1 * * TUE
   workflow_dispatch:
 jobs:
   release:

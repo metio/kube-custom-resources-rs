@@ -4,7 +4,7 @@
 name: Release pgv2_percona_com
 on:
   schedule:
-    - cron: 3 19 * * TUE
+    - cron: 3 8 * * TUE
   workflow_dispatch:
 jobs:
   release:

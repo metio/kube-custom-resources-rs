@@ -4,7 +4,7 @@
 name: Release s3_snappcloud_io
 on:
   schedule:
-    - cron: 51 17 * * TUE
+    - cron: 51 12 * * TUE
   workflow_dispatch:
 jobs:
   release:

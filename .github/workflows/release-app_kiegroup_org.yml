@@ -4,7 +4,7 @@
 name: Release app_kiegroup_org
 on:
   schedule:
-    - cron: 2 3 * * SAT
+    - cron: 2 5 * * SAT
   workflow_dispatch:
 jobs:
   release:

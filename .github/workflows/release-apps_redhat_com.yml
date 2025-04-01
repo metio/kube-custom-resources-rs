@@ -4,7 +4,7 @@
 name: Release apps_redhat_com
 on:
   schedule:
-    - cron: 30 14 * * MON
+    - cron: 30 9 * * MON
   workflow_dispatch:
 jobs:
   release:

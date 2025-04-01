@@ -4,7 +4,7 @@
 name: Release ipam_cluster_x_k8s_io
 on:
   schedule:
-    - cron: 44 23 * * SAT
+    - cron: 44 19 * * SAT
   workflow_dispatch:
 jobs:
   release:

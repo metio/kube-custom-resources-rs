@@ -4,7 +4,7 @@
 name: Release sts_min_io
 on:
   schedule:
-    - cron: 6 14 * * TUE
+    - cron: 6 21 * * TUE
   workflow_dispatch:
 jobs:
   release:

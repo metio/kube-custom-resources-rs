@@ -4,7 +4,7 @@
 name: Release charts_opdev_io
 on:
   schedule:
-    - cron: 45 8 * * THU
+    - cron: 45 12 * * THU
   workflow_dispatch:
 jobs:
   release:

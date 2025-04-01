@@ -4,7 +4,7 @@
 name: Release clusters_clusternet_io
 on:
   schedule:
-    - cron: 44 14 * * SAT
+    - cron: 44 15 * * SAT
   workflow_dispatch:
 jobs:
   release:

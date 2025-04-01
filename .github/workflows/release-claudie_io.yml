@@ -4,7 +4,7 @@
 name: Release claudie_io
 on:
   schedule:
-    - cron: 23 17 * * THU
+    - cron: 23 22 * * THU
   workflow_dispatch:
 jobs:
   release:

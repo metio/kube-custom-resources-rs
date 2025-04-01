@@ -4,7 +4,7 @@
 name: Release objectbucket_io
 on:
   schedule:
-    - cron: 58 10 * * SAT
+    - cron: 58 1 * * SAT
   workflow_dispatch:
 jobs:
   release:

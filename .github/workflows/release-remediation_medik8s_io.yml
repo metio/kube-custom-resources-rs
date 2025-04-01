@@ -4,7 +4,7 @@
 name: Release remediation_medik8s_io
 on:
   schedule:
-    - cron: 8 8 * * WED
+    - cron: 8 5 * * WED
   workflow_dispatch:
 jobs:
   release:

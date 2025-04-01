@@ -4,7 +4,7 @@
 name: Release rbacmanager_reactiveops_io
 on:
   schedule:
-    - cron: 24 15 * * WED
+    - cron: 24 3 * * WED
   workflow_dispatch:
 jobs:
   release:

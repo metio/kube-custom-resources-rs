@@ -4,7 +4,7 @@
 name: Release cluster_ipfs_io
 on:
   schedule:
-    - cron: 21 21 * * SAT
+    - cron: 21 22 * * SAT
   workflow_dispatch:
 jobs:
   release:

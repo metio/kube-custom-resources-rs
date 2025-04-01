@@ -4,7 +4,7 @@
 name: Release pipes_services_k8s_aws
 on:
   schedule:
-    - cron: 16 9 * * THU
+    - cron: 16 5 * * THU
   workflow_dispatch:
 jobs:
   release:

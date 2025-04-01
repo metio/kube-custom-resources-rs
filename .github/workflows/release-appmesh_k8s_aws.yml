@@ -4,7 +4,7 @@
 name: Release appmesh_k8s_aws
 on:
   schedule:
-    - cron: 19 19 * * MON
+    - cron: 19 4 * * MON
   workflow_dispatch:
 jobs:
   release:

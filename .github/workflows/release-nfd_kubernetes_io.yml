@@ -4,7 +4,7 @@
 name: Release nfd_kubernetes_io
 on:
   schedule:
-    - cron: 39 13 * * WED
+    - cron: 39 16 * * WED
   workflow_dispatch:
 jobs:
   release:

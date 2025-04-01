@@ -4,7 +4,7 @@
 name: Release grafana_integreatly_org
 on:
   schedule:
-    - cron: 30 6 * * WED
+    - cron: 30 7 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release route53resolver_services_k8s_aws
 on:
   schedule:
-    - cron: 53 20 * * THU
+    - cron: 53 6 * * THU
   workflow_dispatch:
 jobs:
   release:

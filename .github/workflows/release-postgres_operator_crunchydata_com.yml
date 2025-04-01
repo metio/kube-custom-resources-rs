@@ -4,7 +4,7 @@
 name: Release postgres_operator_crunchydata_com
 on:
   schedule:
-    - cron: 4 11 * * TUE
+    - cron: 4 9 * * TUE
   workflow_dispatch:
 jobs:
   release:

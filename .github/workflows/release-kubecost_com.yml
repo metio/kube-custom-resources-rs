@@ -4,7 +4,7 @@
 name: Release kubecost_com
 on:
   schedule:
-    - cron: 9 17 * * MON
+    - cron: 9 2 * * MON
   workflow_dispatch:
 jobs:
   release:

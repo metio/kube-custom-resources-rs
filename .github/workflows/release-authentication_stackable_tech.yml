@@ -4,7 +4,7 @@
 name: Release authentication_stackable_tech
 on:
   schedule:
-    - cron: 34 19 * * WED
+    - cron: 34 15 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release flows_netobserv_io
 on:
   schedule:
-    - cron: 27 1 * * TUE
+    - cron: 27 6 * * TUE
   workflow_dispatch:
 jobs:
   release:

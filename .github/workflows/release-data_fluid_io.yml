@@ -4,7 +4,7 @@
 name: Release data_fluid_io
 on:
   schedule:
-    - cron: 31 15 * * SUN
+    - cron: 31 6 * * SUN
   workflow_dispatch:
 jobs:
   release:

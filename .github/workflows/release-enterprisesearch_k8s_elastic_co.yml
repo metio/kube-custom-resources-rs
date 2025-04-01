@@ -4,7 +4,7 @@
 name: Release enterprisesearch_k8s_elastic_co
 on:
   schedule:
-    - cron: 56 2 * * FRI
+    - cron: 56 3 * * FRI
   workflow_dispatch:
 jobs:
   release:

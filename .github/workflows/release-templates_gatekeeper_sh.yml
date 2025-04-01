@@ -4,7 +4,7 @@
 name: Release templates_gatekeeper_sh
 on:
   schedule:
-    - cron: 52 16 * * FRI
+    - cron: 52 3 * * FRI
   workflow_dispatch:
 jobs:
   release:

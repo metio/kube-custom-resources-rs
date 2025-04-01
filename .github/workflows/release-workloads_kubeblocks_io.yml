@@ -4,7 +4,7 @@
 name: Release workloads_kubeblocks_io
 on:
   schedule:
-    - cron: 42 9 * * TUE
+    - cron: 42 19 * * TUE
   workflow_dispatch:
 jobs:
   release:

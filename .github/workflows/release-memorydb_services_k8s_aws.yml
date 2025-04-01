@@ -4,7 +4,7 @@
 name: Release memorydb_services_k8s_aws
 on:
   schedule:
-    - cron: 57 22 * * MON
+    - cron: 57 8 * * MON
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release confidentialcontainers_org
 on:
   schedule:
-    - cron: 50 2 * * TUE
+    - cron: 50 1 * * TUE
   workflow_dispatch:
 jobs:
   release:

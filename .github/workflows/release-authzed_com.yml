@@ -4,7 +4,7 @@
 name: Release authzed_com
 on:
   schedule:
-    - cron: 33 18 * * SAT
+    - cron: 33 8 * * SAT
   workflow_dispatch:
 jobs:
   release:

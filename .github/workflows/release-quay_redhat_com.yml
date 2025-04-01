@@ -4,7 +4,7 @@
 name: Release quay_redhat_com
 on:
   schedule:
-    - cron: 20 14 * * FRI
+    - cron: 20 5 * * FRI
   workflow_dispatch:
 jobs:
   release:

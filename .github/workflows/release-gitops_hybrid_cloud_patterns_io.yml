@@ -4,7 +4,7 @@
 name: Release gitops_hybrid_cloud_patterns_io
 on:
   schedule:
-    - cron: 47 8 * * FRI
+    - cron: 47 10 * * FRI
   workflow_dispatch:
 jobs:
   release:

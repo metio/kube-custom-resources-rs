@@ -4,7 +4,7 @@
 name: Release gateway_nginx_org
 on:
   schedule:
-    - cron: 16 23 * * MON
+    - cron: 16 11 * * MON
   workflow_dispatch:
 jobs:
   release:

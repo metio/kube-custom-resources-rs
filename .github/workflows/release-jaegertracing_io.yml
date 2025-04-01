@@ -4,7 +4,7 @@
 name: Release jaegertracing_io
 on:
   schedule:
-    - cron: 40 5 * * TUE
+    - cron: 40 1 * * TUE
   workflow_dispatch:
 jobs:
   release:

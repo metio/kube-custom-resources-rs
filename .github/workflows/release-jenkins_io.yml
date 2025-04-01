@@ -4,7 +4,7 @@
 name: Release jenkins_io
 on:
   schedule:
-    - cron: 47 15 * * THU
+    - cron: 47 8 * * THU
   workflow_dispatch:
 jobs:
   release:

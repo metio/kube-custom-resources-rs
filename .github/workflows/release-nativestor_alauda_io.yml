@@ -4,7 +4,7 @@
 name: Release nativestor_alauda_io
 on:
   schedule:
-    - cron: 38 11 * * SUN
+    - cron: 38 13 * * SUN
   workflow_dispatch:
 jobs:
   release:

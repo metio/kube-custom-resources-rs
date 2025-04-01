@@ -4,7 +4,7 @@
 name: Release servicemesh_cisco_com
 on:
   schedule:
-    - cron: 15 21 * * FRI
+    - cron: 15 22 * * FRI
   workflow_dispatch:
 jobs:
   release:

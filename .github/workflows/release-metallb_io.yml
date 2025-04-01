@@ -4,7 +4,7 @@
 name: Release metallb_io
 on:
   schedule:
-    - cron: 17 16 * * WED
+    - cron: 17 20 * * WED
   workflow_dispatch:
 jobs:
   release:

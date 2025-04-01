@@ -4,7 +4,7 @@
 name: Release sonataflow_org
 on:
   schedule:
-    - cron: 10 3 * * THU
+    - cron: 10 15 * * THU
   workflow_dispatch:
 jobs:
   release:

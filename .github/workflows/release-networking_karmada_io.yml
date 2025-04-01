@@ -4,7 +4,7 @@
 name: Release networking_karmada_io
 on:
   schedule:
-    - cron: 45 20 * * MON
+    - cron: 45 8 * * MON
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release acid_zalan_do
 on:
   schedule:
-    - cron: 36 11 * * TUE
+    - cron: 36 5 * * TUE
   workflow_dispatch:
 jobs:
   release:

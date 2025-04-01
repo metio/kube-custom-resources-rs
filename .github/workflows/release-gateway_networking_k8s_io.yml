@@ -4,7 +4,7 @@
 name: Release gateway_networking_k8s_io
 on:
   schedule:
-    - cron: 8 9 * * WED
+    - cron: 8 21 * * WED
   workflow_dispatch:
 jobs:
   release:

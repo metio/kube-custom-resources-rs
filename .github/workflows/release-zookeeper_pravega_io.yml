@@ -4,7 +4,7 @@
 name: Release zookeeper_pravega_io
 on:
   schedule:
-    - cron: 49 7 * * MON
+    - cron: 49 18 * * MON
   workflow_dispatch:
 jobs:
   release:

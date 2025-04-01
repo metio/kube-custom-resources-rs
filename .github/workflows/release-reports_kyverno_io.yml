@@ -4,7 +4,7 @@
 name: Release reports_kyverno_io
 on:
   schedule:
-    - cron: 44 23 * * TUE
+    - cron: 44 9 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release extensions_istio_io
 on:
   schedule:
-    - cron: 27 14 * * TUE
+    - cron: 27 22 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release operations_kubeedge_io
 on:
   schedule:
-    - cron: 32 22 * * MON
+    - cron: 32 15 * * MON
   workflow_dispatch:
 jobs:
   release:

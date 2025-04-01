@@ -4,7 +4,7 @@
 name: Release trino_stackable_tech
 on:
   schedule:
-    - cron: 33 14 * * MON
+    - cron: 33 6 * * MON
   workflow_dispatch:
 jobs:
   release:

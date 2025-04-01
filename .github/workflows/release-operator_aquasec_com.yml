@@ -4,7 +4,7 @@
 name: Release operator_aquasec_com
 on:
   schedule:
-    - cron: 59 2 * * SUN
+    - cron: 59 20 * * SUN
   workflow_dispatch:
 jobs:
   release:

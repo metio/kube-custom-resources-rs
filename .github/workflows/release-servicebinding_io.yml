@@ -4,7 +4,7 @@
 name: Release servicebinding_io
 on:
   schedule:
-    - cron: 33 11 * * WED
+    - cron: 33 22 * * WED
   workflow_dispatch:
 jobs:
   release:

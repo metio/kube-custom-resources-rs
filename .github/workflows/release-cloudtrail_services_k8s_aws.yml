@@ -4,7 +4,7 @@
 name: Release cloudtrail_services_k8s_aws
 on:
   schedule:
-    - cron: 38 4 * * MON
+    - cron: 38 11 * * MON
   workflow_dispatch:
 jobs:
   release:

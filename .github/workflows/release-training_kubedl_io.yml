@@ -4,7 +4,7 @@
 name: Release training_kubedl_io
 on:
   schedule:
-    - cron: 33 21 * * WED
+    - cron: 33 12 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release config_karmada_io
 on:
   schedule:
-    - cron: 59 15 * * MON
+    - cron: 59 6 * * MON
   workflow_dispatch:
 jobs:
   release:

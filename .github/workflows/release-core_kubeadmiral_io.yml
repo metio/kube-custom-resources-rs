@@ -4,7 +4,7 @@
 name: Release core_kubeadmiral_io
 on:
   schedule:
-    - cron: 51 10 * * WED
+    - cron: 51 2 * * WED
   workflow_dispatch:
 jobs:
   release:

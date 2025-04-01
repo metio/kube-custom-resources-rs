@@ -4,7 +4,7 @@
 name: Release networking_k8s_aws
 on:
   schedule:
-    - cron: 16 7 * * MON
+    - cron: 16 13 * * MON
   workflow_dispatch:
 jobs:
   release:

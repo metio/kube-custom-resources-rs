@@ -4,7 +4,7 @@
 name: Release camel_apache_org
 on:
   schedule:
-    - cron: 13 15 * * TUE
+    - cron: 13 16 * * TUE
   workflow_dispatch:
 jobs:
   release:

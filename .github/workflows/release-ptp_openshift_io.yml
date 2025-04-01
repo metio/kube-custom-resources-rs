@@ -4,7 +4,7 @@
 name: Release ptp_openshift_io
 on:
   schedule:
-    - cron: 31 22 * * SUN
+    - cron: 31 14 * * SUN
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release installation_mattermost_com
 on:
   schedule:
-    - cron: 8 8 * * SAT
+    - cron: 8 17 * * SAT
   workflow_dispatch:
 jobs:
   release:

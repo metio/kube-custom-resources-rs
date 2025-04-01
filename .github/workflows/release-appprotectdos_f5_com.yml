@@ -4,7 +4,7 @@
 name: Release appprotectdos_f5_com
 on:
   schedule:
-    - cron: 22 17 * * THU
+    - cron: 22 15 * * THU
   workflow_dispatch:
 jobs:
   release:

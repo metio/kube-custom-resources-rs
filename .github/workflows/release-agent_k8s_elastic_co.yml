@@ -4,7 +4,7 @@
 name: Release agent_k8s_elastic_co
 on:
   schedule:
-    - cron: 56 22 * * WED
+    - cron: 56 19 * * WED
   workflow_dispatch:
 jobs:
   release:

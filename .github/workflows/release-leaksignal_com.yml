@@ -4,7 +4,7 @@
 name: Release leaksignal_com
 on:
   schedule:
-    - cron: 58 17 * * THU
+    - cron: 58 11 * * THU
   workflow_dispatch:
 jobs:
   release:

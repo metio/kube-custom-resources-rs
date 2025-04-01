@@ -4,7 +4,7 @@
 name: Release apigatewayv2_services_k8s_aws
 on:
   schedule:
-    - cron: 54 13 * * TUE
+    - cron: 54 21 * * TUE
   workflow_dispatch:
 jobs:
   release:

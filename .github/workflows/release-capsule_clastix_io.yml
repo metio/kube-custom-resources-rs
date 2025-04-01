@@ -4,7 +4,7 @@
 name: Release capsule_clastix_io
 on:
   schedule:
-    - cron: 43 14 * * THU
+    - cron: 43 2 * * THU
   workflow_dispatch:
 jobs:
   release:

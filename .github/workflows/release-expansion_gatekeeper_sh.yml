@@ -4,7 +4,7 @@
 name: Release expansion_gatekeeper_sh
 on:
   schedule:
-    - cron: 31 13 * * TUE
+    - cron: 31 6 * * TUE
   workflow_dispatch:
 jobs:
   release:

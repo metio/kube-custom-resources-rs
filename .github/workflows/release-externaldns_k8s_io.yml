@@ -4,7 +4,7 @@
 name: Release externaldns_k8s_io
 on:
   schedule:
-    - cron: 40 19 * * THU
+    - cron: 40 13 * * THU
   workflow_dispatch:
 jobs:
   release:

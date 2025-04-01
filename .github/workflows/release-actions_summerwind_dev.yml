@@ -4,7 +4,7 @@
 name: Release actions_summerwind_dev
 on:
   schedule:
-    - cron: 4 13 * * FRI
+    - cron: 4 21 * * FRI
   workflow_dispatch:
 jobs:
   release:

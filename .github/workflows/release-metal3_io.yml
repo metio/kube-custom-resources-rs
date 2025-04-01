@@ -4,7 +4,7 @@
 name: Release metal3_io
 on:
   schedule:
-    - cron: 4 8 * * WED
+    - cron: 4 9 * * WED
   workflow_dispatch:
 jobs:
   release:

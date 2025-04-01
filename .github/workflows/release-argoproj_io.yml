@@ -4,7 +4,7 @@
 name: Release argoproj_io
 on:
   schedule:
-    - cron: 40 15 * * THU
+    - cron: 40 19 * * THU
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release model_kubedl_io
 on:
   schedule:
-    - cron: 7 23 * * FRI
+    - cron: 7 4 * * FRI
   workflow_dispatch:
 jobs:
   release:

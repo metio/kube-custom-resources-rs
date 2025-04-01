@@ -4,7 +4,7 @@
 name: Release k8s_nginx_org
 on:
   schedule:
-    - cron: 39 21 * * FRI
+    - cron: 39 8 * * FRI
   workflow_dispatch:
 jobs:
   release:

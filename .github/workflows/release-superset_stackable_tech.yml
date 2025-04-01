@@ -4,7 +4,7 @@
 name: Release superset_stackable_tech
 on:
   schedule:
-    - cron: 4 10 * * MON
+    - cron: 4 5 * * MON
   workflow_dispatch:
 jobs:
   release:

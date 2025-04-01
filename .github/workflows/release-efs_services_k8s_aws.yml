@@ -4,7 +4,7 @@
 name: Release efs_services_k8s_aws
 on:
   schedule:
-    - cron: 0 6 * * THU
+    - cron: 0 15 * * THU
   workflow_dispatch:
 jobs:
   release:

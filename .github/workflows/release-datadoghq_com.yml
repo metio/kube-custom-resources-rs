@@ -4,7 +4,7 @@
 name: Release datadoghq_com
 on:
   schedule:
-    - cron: 50 6 * * FRI
+    - cron: 50 17 * * FRI
   workflow_dispatch:
 jobs:
   release:

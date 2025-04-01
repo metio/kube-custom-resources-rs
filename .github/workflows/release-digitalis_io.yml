@@ -4,7 +4,7 @@
 name: Release digitalis_io
 on:
   schedule:
-    - cron: 45 2 * * THU
+    - cron: 45 8 * * THU
   workflow_dispatch:
 jobs:
   release:

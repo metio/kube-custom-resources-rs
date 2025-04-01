@@ -4,7 +4,7 @@
 name: Release chaos_mesh_org
 on:
   schedule:
-    - cron: 48 19 * * THU
+    - cron: 48 21 * * THU
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release netchecks_io
 on:
   schedule:
-    - cron: 13 13 * * THU
+    - cron: 13 14 * * THU
   workflow_dispatch:
 jobs:
   release:

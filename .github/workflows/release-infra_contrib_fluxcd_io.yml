@@ -4,7 +4,7 @@
 name: Release infra_contrib_fluxcd_io
 on:
   schedule:
-    - cron: 24 14 * * TUE
+    - cron: 24 11 * * TUE
   workflow_dispatch:
 jobs:
   release:

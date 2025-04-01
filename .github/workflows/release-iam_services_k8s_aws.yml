@@ -4,7 +4,7 @@
 name: Release iam_services_k8s_aws
 on:
   schedule:
-    - cron: 41 10 * * THU
+    - cron: 41 20 * * THU
   workflow_dispatch:
 jobs:
   release:

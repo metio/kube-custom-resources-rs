@@ -4,7 +4,7 @@
 name: Release api_kubemod_io
 on:
   schedule:
-    - cron: 39 15 * * SAT
+    - cron: 39 2 * * SAT
   workflow_dispatch:
 jobs:
   release:

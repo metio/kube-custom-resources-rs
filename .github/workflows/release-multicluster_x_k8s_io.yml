@@ -4,7 +4,7 @@
 name: Release multicluster_x_k8s_io
 on:
   schedule:
-    - cron: 40 21 * * WED
+    - cron: 40 9 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release druid_apache_org
 on:
   schedule:
-    - cron: 43 12 * * SAT
+    - cron: 43 2 * * SAT
   workflow_dispatch:
 jobs:
   release:

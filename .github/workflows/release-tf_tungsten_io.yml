@@ -4,7 +4,7 @@
 name: Release tf_tungsten_io
 on:
   schedule:
-    - cron: 29 21 * * WED
+    - cron: 29 14 * * WED
   workflow_dispatch:
 jobs:
   release:

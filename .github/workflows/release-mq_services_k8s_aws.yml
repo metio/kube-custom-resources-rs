@@ -4,7 +4,7 @@
 name: Release mq_services_k8s_aws
 on:
   schedule:
-    - cron: 6 3 * * THU
+    - cron: 6 5 * * THU
   workflow_dispatch:
 jobs:
   release:

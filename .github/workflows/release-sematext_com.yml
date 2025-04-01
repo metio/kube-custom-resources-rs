@@ -4,7 +4,7 @@
 name: Release sematext_com
 on:
   schedule:
-    - cron: 32 2 * * SUN
+    - cron: 32 19 * * SUN
   workflow_dispatch:
 jobs:
   release:

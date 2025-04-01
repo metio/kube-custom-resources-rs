@@ -4,7 +4,7 @@
 name: Release crane_konveyor_io
 on:
   schedule:
-    - cron: 42 2 * * THU
+    - cron: 42 3 * * THU
   workflow_dispatch:
 jobs:
   release:

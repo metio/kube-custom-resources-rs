@@ -4,7 +4,7 @@
 name: Release kuadrant_io
 on:
   schedule:
-    - cron: 32 1 * * SAT
+    - cron: 32 17 * * SAT
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release instana_io
 on:
   schedule:
-    - cron: 13 3 * * THU
+    - cron: 13 8 * * THU
   workflow_dispatch:
 jobs:
   release:

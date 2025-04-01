@@ -4,7 +4,7 @@
 name: Release actions_github_com
 on:
   schedule:
-    - cron: 0 7 * * THU
+    - cron: 0 17 * * THU
   workflow_dispatch:
 jobs:
   release:

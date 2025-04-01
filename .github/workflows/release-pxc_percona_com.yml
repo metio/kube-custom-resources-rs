@@ -4,7 +4,7 @@
 name: Release pxc_percona_com
 on:
   schedule:
-    - cron: 21 5 * * SAT
+    - cron: 21 4 * * SAT
   workflow_dispatch:
 jobs:
   release:

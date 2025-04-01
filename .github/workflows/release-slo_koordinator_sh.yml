@@ -4,7 +4,7 @@
 name: Release slo_koordinator_sh
 on:
   schedule:
-    - cron: 51 17 * * MON
+    - cron: 51 12 * * MON
   workflow_dispatch:
 jobs:
   release:

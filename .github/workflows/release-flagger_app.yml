@@ -4,7 +4,7 @@
 name: Release flagger_app
 on:
   schedule:
-    - cron: 15 2 * * SAT
+    - cron: 15 22 * * SAT
   workflow_dispatch:
 jobs:
   release:

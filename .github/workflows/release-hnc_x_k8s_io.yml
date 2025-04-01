@@ -4,7 +4,7 @@
 name: Release hnc_x_k8s_io
 on:
   schedule:
-    - cron: 17 2 * * WED
+    - cron: 17 22 * * WED
   workflow_dispatch:
 jobs:
   release:

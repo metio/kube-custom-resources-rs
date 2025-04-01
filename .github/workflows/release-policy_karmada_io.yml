@@ -4,7 +4,7 @@
 name: Release policy_karmada_io
 on:
   schedule:
-    - cron: 34 5 * * THU
+    - cron: 34 15 * * THU
   workflow_dispatch:
 jobs:
   release:

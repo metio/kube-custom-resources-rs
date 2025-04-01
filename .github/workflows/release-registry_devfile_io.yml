@@ -4,7 +4,7 @@
 name: Release registry_devfile_io
 on:
   schedule:
-    - cron: 43 15 * * MON
+    - cron: 43 4 * * MON
   workflow_dispatch:
 jobs:
   release:

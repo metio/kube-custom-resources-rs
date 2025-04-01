@@ -4,7 +4,7 @@
 name: Release application_networking_k8s_aws
 on:
   schedule:
-    - cron: 16 20 * * WED
+    - cron: 16 15 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release workload_codeflare_dev
 on:
   schedule:
-    - cron: 24 22 * * FRI
+    - cron: 24 9 * * FRI
   workflow_dispatch:
 jobs:
   release:

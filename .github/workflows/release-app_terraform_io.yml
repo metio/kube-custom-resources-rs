@@ -4,7 +4,7 @@
 name: Release app_terraform_io
 on:
   schedule:
-    - cron: 31 4 * * THU
+    - cron: 31 20 * * THU
   workflow_dispatch:
 jobs:
   release:

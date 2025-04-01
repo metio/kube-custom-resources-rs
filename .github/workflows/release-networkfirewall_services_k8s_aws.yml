@@ -4,7 +4,7 @@
 name: Release networkfirewall_services_k8s_aws
 on:
   schedule:
-    - cron: 21 13 * * WED
+    - cron: 21 12 * * WED
   workflow_dispatch:
 jobs:
   release:

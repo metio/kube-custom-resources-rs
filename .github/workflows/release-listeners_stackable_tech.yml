@@ -4,7 +4,7 @@
 name: Release listeners_stackable_tech
 on:
   schedule:
-    - cron: 7 15 * * TUE
+    - cron: 7 10 * * TUE
   workflow_dispatch:
 jobs:
   release:

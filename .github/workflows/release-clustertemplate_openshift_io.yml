@@ -4,7 +4,7 @@
 name: Release clustertemplate_openshift_io
 on:
   schedule:
-    - cron: 56 5 * * MON
+    - cron: 56 15 * * MON
   workflow_dispatch:
 jobs:
   release:

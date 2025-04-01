@@ -4,7 +4,7 @@
 name: Release imaging_ingestion_alvearie_org
 on:
   schedule:
-    - cron: 31 20 * * MON
+    - cron: 31 12 * * MON
   workflow_dispatch:
 jobs:
   release:

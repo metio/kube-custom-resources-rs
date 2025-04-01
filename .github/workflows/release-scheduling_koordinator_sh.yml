@@ -4,7 +4,7 @@
 name: Release scheduling_koordinator_sh
 on:
   schedule:
-    - cron: 24 10 * * WED
+    - cron: 24 15 * * WED
   workflow_dispatch:
 jobs:
   release:

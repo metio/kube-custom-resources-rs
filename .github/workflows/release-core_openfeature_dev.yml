@@ -4,7 +4,7 @@
 name: Release core_openfeature_dev
 on:
   schedule:
-    - cron: 20 3 * * THU
+    - cron: 20 9 * * THU
   workflow_dispatch:
 jobs:
   release:

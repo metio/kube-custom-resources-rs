@@ -4,7 +4,7 @@
 name: Release prometheusservice_services_k8s_aws
 on:
   schedule:
-    - cron: 7 5 * * FRI
+    - cron: 7 6 * * FRI
   workflow_dispatch:
 jobs:
   release:

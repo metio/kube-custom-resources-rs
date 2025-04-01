@@ -4,7 +4,7 @@
 name: Release caching_ibm_com
 on:
   schedule:
-    - cron: 9 10 * * TUE
+    - cron: 9 18 * * TUE
   workflow_dispatch:
 jobs:
   release:

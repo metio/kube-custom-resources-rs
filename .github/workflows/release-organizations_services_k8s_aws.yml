@@ -4,7 +4,7 @@
 name: Release organizations_services_k8s_aws
 on:
   schedule:
-    - cron: 44 21 * * FRI
+    - cron: 44 5 * * FRI
   workflow_dispatch:
 jobs:
   release:

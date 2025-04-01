@@ -4,7 +4,7 @@
 name: Release flink_apache_org
 on:
   schedule:
-    - cron: 3 17 * * WED
+    - cron: 3 6 * * WED
   workflow_dispatch:
 jobs:
   release:

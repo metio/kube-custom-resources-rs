@@ -4,7 +4,7 @@
 name: Release about_k8s_io
 on:
   schedule:
-    - cron: 14 17 * * THU
+    - cron: 14 11 * * THU
   workflow_dispatch:
 jobs:
   release:

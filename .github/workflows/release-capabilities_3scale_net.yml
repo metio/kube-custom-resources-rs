@@ -4,7 +4,7 @@
 name: Release capabilities_3scale_net
 on:
   schedule:
-    - cron: 27 1 * * TUE
+    - cron: 27 22 * * TUE
   workflow_dispatch:
 jobs:
   release:

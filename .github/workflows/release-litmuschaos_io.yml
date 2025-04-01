@@ -4,7 +4,7 @@
 name: Release litmuschaos_io
 on:
   schedule:
-    - cron: 9 14 * * MON
+    - cron: 9 22 * * MON
   workflow_dispatch:
 jobs:
   release:

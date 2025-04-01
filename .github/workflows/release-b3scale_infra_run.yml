@@ -4,7 +4,7 @@
 name: Release b3scale_infra_run
 on:
   schedule:
-    - cron: 50 3 * * FRI
+    - cron: 50 7 * * FRI
   workflow_dispatch:
 jobs:
   release:

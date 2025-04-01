@@ -4,7 +4,7 @@
 name: Release k8s_otterize_com
 on:
   schedule:
-    - cron: 18 9 * * SAT
+    - cron: 18 5 * * SAT
   workflow_dispatch:
 jobs:
   release:

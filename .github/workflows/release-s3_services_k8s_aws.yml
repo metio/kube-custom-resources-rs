@@ -4,7 +4,7 @@
 name: Release s3_services_k8s_aws
 on:
   schedule:
-    - cron: 49 19 * * TUE
+    - cron: 49 14 * * TUE
   workflow_dispatch:
 jobs:
   release:

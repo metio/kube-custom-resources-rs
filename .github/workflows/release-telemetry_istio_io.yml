@@ -4,7 +4,7 @@
 name: Release telemetry_istio_io
 on:
   schedule:
-    - cron: 39 14 * * TUE
+    - cron: 39 6 * * TUE
   workflow_dispatch:
 jobs:
   release:

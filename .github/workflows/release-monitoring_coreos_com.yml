@@ -4,7 +4,7 @@
 name: Release monitoring_coreos_com
 on:
   schedule:
-    - cron: 45 19 * * SAT
+    - cron: 45 14 * * SAT
   workflow_dispatch:
 jobs:
   release:

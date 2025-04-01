@@ -4,7 +4,7 @@
 name: Release apps_clusternet_io
 on:
   schedule:
-    - cron: 45 16 * * SUN
+    - cron: 45 8 * * SUN
   workflow_dispatch:
 jobs:
   release:

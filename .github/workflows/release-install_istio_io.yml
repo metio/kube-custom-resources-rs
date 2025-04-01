@@ -4,7 +4,7 @@
 name: Release install_istio_io
 on:
   schedule:
-    - cron: 32 16 * * SAT
+    - cron: 32 5 * * SAT
   workflow_dispatch:
 jobs:
   release:

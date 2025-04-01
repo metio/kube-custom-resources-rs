@@ -4,7 +4,7 @@
 name: Release inference_kubedl_io
 on:
   schedule:
-    - cron: 54 2 * * WED
+    - cron: 54 11 * * WED
   workflow_dispatch:
 jobs:
   release:

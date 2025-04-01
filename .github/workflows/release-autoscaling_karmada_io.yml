@@ -4,7 +4,7 @@
 name: Release autoscaling_karmada_io
 on:
   schedule:
-    - cron: 58 2 * * SUN
+    - cron: 58 9 * * SUN
   workflow_dispatch:
 jobs:
   release:

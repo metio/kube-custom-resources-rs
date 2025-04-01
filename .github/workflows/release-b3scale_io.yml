@@ -4,7 +4,7 @@
 name: Release b3scale_io
 on:
   schedule:
-    - cron: 22 5 * * FRI
+    - cron: 22 7 * * FRI
   workflow_dispatch:
 jobs:
   release:

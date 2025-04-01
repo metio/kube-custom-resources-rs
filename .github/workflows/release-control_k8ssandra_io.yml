@@ -4,7 +4,7 @@
 name: Release control_k8ssandra_io
 on:
   schedule:
-    - cron: 23 19 * * THU
+    - cron: 23 14 * * THU
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release upgrade_cattle_io
 on:
   schedule:
-    - cron: 18 8 * * SAT
+    - cron: 18 13 * * SAT
   workflow_dispatch:
 jobs:
   release:

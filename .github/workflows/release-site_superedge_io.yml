@@ -4,7 +4,7 @@
 name: Release site_superedge_io
 on:
   schedule:
-    - cron: 31 3 * * THU
+    - cron: 31 10 * * THU
   workflow_dispatch:
 jobs:
   release:

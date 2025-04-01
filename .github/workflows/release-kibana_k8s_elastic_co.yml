@@ -4,7 +4,7 @@
 name: Release kibana_k8s_elastic_co
 on:
   schedule:
-    - cron: 46 22 * * THU
+    - cron: 46 21 * * THU
   workflow_dispatch:
 jobs:
   release:

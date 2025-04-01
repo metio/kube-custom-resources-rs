@@ -4,7 +4,7 @@
 name: Release hiveinternal_openshift_io
 on:
   schedule:
-    - cron: 2 15 * * FRI
+    - cron: 2 1 * * FRI
   workflow_dispatch:
 jobs:
   release:

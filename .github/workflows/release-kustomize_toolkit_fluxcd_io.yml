@@ -4,7 +4,7 @@
 name: Release kustomize_toolkit_fluxcd_io
 on:
   schedule:
-    - cron: 49 1 * * MON
+    - cron: 49 4 * * MON
   workflow_dispatch:
 jobs:
   release:

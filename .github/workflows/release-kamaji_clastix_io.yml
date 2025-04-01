@@ -4,7 +4,7 @@
 name: Release kamaji_clastix_io
 on:
   schedule:
-    - cron: 30 3 * * SAT
+    - cron: 30 15 * * SAT
   workflow_dispatch:
 jobs:
   release:

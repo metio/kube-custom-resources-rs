@@ -4,7 +4,7 @@
 name: Release storage_kubeblocks_io
 on:
   schedule:
-    - cron: 46 16 * * MON
+    - cron: 46 1 * * MON
   workflow_dispatch:
 jobs:
   release:
