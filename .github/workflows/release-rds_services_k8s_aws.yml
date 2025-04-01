@@ -4,7 +4,7 @@
 name: Release rds_services_k8s_aws
 on:
   schedule:
-    - cron: 59 7 * * THU
+    - cron: 59 8 * * THU
   workflow_dispatch:
 jobs:
   release:

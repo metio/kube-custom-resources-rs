@@ -52,7 +52,7 @@ fn main() -> Result<()> {
                 to_json("1.31"),
             );
             data.insert("cron_minute".to_string(), to_json(hash.rem_euclid(60)));
-            data.insert("cron_hour".to_string(), to_json(hash.rem_euclid(23) + 1));
+            data.insert("cron_hour".to_string(), to_json(hash.rem_euclid(22) + 1));
             let day_of_week: usize = hash.rem_euclid(release_days.len() as u64) as usize;
             data.insert("cron_day".to_string(), to_json(release_days[day_of_week].0));
             data.insert("git_day".to_string(), to_json(release_days[day_of_week].1));

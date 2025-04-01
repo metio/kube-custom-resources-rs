@@ -4,7 +4,7 @@
 name: Release app_k8s_io
 on:
   schedule:
-    - cron: 29 21 * * FRI
+    - cron: 29 10 * * FRI
   workflow_dispatch:
 jobs:
   release:

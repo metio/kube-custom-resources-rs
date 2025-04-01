@@ -4,7 +4,7 @@
 name: Release fossul_io
 on:
   schedule:
-    - cron: 26 3 * * FRI
+    - cron: 26 13 * * FRI
   workflow_dispatch:
 jobs:
   release:

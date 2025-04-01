@@ -4,7 +4,7 @@
 name: Release api_clever_cloud_com
 on:
   schedule:
-    - cron: 38 11 * * MON
+    - cron: 38 7 * * MON
   workflow_dispatch:
 jobs:
   release:

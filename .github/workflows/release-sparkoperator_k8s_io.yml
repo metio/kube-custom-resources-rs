@@ -4,7 +4,7 @@
 name: Release sparkoperator_k8s_io
 on:
   schedule:
-    - cron: 18 20 * * SAT
+    - cron: 18 15 * * SAT
   workflow_dispatch:
 jobs:
   release:

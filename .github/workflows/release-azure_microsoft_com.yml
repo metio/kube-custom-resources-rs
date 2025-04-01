@@ -4,7 +4,7 @@
 name: Release azure_microsoft_com
 on:
   schedule:
-    - cron: 38 19 * * WED
+    - cron: 38 9 * * WED
   workflow_dispatch:
 jobs:
   release:

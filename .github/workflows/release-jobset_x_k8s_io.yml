@@ -4,7 +4,7 @@
 name: Release jobset_x_k8s_io
 on:
   schedule:
-    - cron: 44 23 * * WED
+    - cron: 44 5 * * WED
   workflow_dispatch:
 jobs:
   release:

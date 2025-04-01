@@ -4,7 +4,7 @@
 name: Release sriovnetwork_openshift_io
 on:
   schedule:
-    - cron: 12 14 * * FRI
+    - cron: 12 13 * * FRI
   workflow_dispatch:
 jobs:
   release:

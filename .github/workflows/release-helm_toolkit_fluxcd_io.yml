@@ -4,7 +4,7 @@
 name: Release helm_toolkit_fluxcd_io
 on:
   schedule:
-    - cron: 53 4 * * WED
+    - cron: 53 8 * * WED
   workflow_dispatch:
 jobs:
   release:

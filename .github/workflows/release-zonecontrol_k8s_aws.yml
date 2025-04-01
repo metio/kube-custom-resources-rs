@@ -4,7 +4,7 @@
 name: Release zonecontrol_k8s_aws
 on:
   schedule:
-    - cron: 32 11 * * SAT
+    - cron: 32 3 * * SAT
   workflow_dispatch:
 jobs:
   release:

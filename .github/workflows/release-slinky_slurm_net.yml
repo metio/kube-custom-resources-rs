@@ -4,7 +4,7 @@
 name: Release slinky_slurm_net
 on:
   schedule:
-    - cron: 41 14 * * TUE
+    - cron: 41 2 * * TUE
   workflow_dispatch:
 jobs:
   release:

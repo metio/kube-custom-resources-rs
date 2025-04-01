@@ -4,7 +4,7 @@
 name: Release mariadb_persistentsys
 on:
   schedule:
-    - cron: 6 23 * * TUE
+    - cron: 6 3 * * TUE
   workflow_dispatch:
 jobs:
   release:

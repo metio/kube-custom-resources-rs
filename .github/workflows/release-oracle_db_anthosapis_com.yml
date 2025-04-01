@@ -4,7 +4,7 @@
 name: Release oracle_db_anthosapis_com
 on:
   schedule:
-    - cron: 38 18 * * SUN
+    - cron: 38 9 * * SUN
   workflow_dispatch:
 jobs:
   release:

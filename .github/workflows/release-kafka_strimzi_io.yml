@@ -4,7 +4,7 @@
 name: Release kafka_strimzi_io
 on:
   schedule:
-    - cron: 54 21 * * THU
+    - cron: 54 3 * * THU
   workflow_dispatch:
 jobs:
   release:

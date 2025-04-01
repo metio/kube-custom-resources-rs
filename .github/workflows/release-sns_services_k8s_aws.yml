@@ -4,7 +4,7 @@
 name: Release sns_services_k8s_aws
 on:
   schedule:
-    - cron: 0 17 * * FRI
+    - cron: 0 3 * * FRI
   workflow_dispatch:
 jobs:
   release:

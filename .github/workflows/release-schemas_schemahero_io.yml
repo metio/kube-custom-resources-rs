@@ -4,7 +4,7 @@
 name: Release schemas_schemahero_io
 on:
   schedule:
-    - cron: 25 22 * * THU
+    - cron: 25 4 * * THU
   workflow_dispatch:
 jobs:
   release:

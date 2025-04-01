@@ -4,7 +4,7 @@
 name: Release kafka_banzaicloud_io
 on:
   schedule:
-    - cron: 23 2 * * WED
+    - cron: 23 22 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release resources_teleport_dev
 on:
   schedule:
-    - cron: 21 2 * * TUE
+    - cron: 21 14 * * TUE
   workflow_dispatch:
 jobs:
   release:

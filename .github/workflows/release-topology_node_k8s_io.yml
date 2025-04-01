@@ -4,7 +4,7 @@
 name: Release topology_node_k8s_io
 on:
   schedule:
-    - cron: 17 19 * * FRI
+    - cron: 17 2 * * FRI
   workflow_dispatch:
 jobs:
   release:

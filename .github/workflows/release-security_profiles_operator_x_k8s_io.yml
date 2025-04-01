@@ -4,7 +4,7 @@
 name: Release security_profiles_operator_x_k8s_io
 on:
   schedule:
-    - cron: 21 15 * * FRI
+    - cron: 21 14 * * FRI
   workflow_dispatch:
 jobs:
   release:

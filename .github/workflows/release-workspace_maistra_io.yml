@@ -4,7 +4,7 @@
 name: Release workspace_maistra_io
 on:
   schedule:
-    - cron: 49 11 * * FRI
+    - cron: 49 16 * * FRI
   workflow_dispatch:
 jobs:
   release:

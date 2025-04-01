@@ -4,7 +4,7 @@
 name: Release core_linuxsuren_github_com
 on:
   schedule:
-    - cron: 6 22 * * THU
+    - cron: 6 19 * * THU
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release opensearchservice_services_k8s_aws
 on:
   schedule:
-    - cron: 41 3 * * FRI
+    - cron: 41 12 * * FRI
   workflow_dispatch:
 jobs:
   release:

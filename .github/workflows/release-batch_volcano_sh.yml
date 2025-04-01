@@ -4,7 +4,7 @@
 name: Release batch_volcano_sh
 on:
   schedule:
-    - cron: 58 18 * * WED
+    - cron: 58 17 * * WED
   workflow_dispatch:
 jobs:
   release:

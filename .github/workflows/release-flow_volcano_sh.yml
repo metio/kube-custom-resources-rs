@@ -4,7 +4,7 @@
 name: Release flow_volcano_sh
 on:
   schedule:
-    - cron: 3 20 * * SUN
+    - cron: 3 22 * * SUN
   workflow_dispatch:
 jobs:
   release:

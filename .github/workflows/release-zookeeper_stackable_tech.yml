@@ -4,7 +4,7 @@
 name: Release zookeeper_stackable_tech
 on:
   schedule:
-    - cron: 13 18 * * WED
+    - cron: 13 2 * * WED
   workflow_dispatch:
 jobs:
   release:

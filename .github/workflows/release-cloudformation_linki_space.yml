@@ -4,7 +4,7 @@
 name: Release cloudformation_linki_space
 on:
   schedule:
-    - cron: 58 18 * * TUE
+    - cron: 58 3 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release apacheweb_arsenal_dev
 on:
   schedule:
-    - cron: 16 2 * * THU
+    - cron: 16 7 * * THU
   workflow_dispatch:
 jobs:
   release:

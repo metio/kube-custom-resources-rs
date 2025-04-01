@@ -4,7 +4,7 @@
 name: Release route53_services_k8s_aws
 on:
   schedule:
-    - cron: 29 9 * * MON
+    - cron: 29 12 * * MON
   workflow_dispatch:
 jobs:
   release:

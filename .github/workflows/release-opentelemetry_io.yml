@@ -4,7 +4,7 @@
 name: Release opentelemetry_io
 on:
   schedule:
-    - cron: 8 13 * * THU
+    - cron: 8 15 * * THU
   workflow_dispatch:
 jobs:
   release:

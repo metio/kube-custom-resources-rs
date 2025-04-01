@@ -4,7 +4,7 @@
 name: Release boskos_k8s_io
 on:
   schedule:
-    - cron: 12 19 * * SAT
+    - cron: 12 13 * * SAT
   workflow_dispatch:
 jobs:
   release:

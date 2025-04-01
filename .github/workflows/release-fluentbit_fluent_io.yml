@@ -4,7 +4,7 @@
 name: Release fluentbit_fluent_io
 on:
   schedule:
-    - cron: 34 21 * * FRI
+    - cron: 34 11 * * FRI
   workflow_dispatch:
 jobs:
   release:

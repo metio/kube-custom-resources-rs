@@ -4,7 +4,7 @@
 name: Release k8s_keycloak_org
 on:
   schedule:
-    - cron: 40 10 * * THU
+    - cron: 40 17 * * THU
   workflow_dispatch:
 jobs:
   release:

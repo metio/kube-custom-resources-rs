@@ -4,7 +4,7 @@
 name: Release cloudwatch_services_k8s_aws
 on:
   schedule:
-    - cron: 7 19 * * WED
+    - cron: 7 18 * * WED
   workflow_dispatch:
 jobs:
   release:

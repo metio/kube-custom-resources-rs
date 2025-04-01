@@ -4,7 +4,7 @@
 name: Release groupsnapshot_storage_k8s_io
 on:
   schedule:
-    - cron: 33 22 * * WED
+    - cron: 33 4 * * WED
   workflow_dispatch:
 jobs:
   release:

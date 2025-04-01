@@ -4,7 +4,7 @@
 name: Release charts_flagsmith_com
 on:
   schedule:
-    - cron: 16 22 * * THU
+    - cron: 16 1 * * THU
   workflow_dispatch:
 jobs:
   release:

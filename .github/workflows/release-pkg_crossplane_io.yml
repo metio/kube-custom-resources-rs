@@ -4,7 +4,7 @@
 name: Release pkg_crossplane_io
 on:
   schedule:
-    - cron: 10 10 * * TUE
+    - cron: 10 9 * * TUE
   workflow_dispatch:
 jobs:
   release:

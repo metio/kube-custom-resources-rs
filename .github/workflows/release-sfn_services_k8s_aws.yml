@@ -4,7 +4,7 @@
 name: Release sfn_services_k8s_aws
 on:
   schedule:
-    - cron: 14 13 * * TUE
+    - cron: 14 17 * * TUE
   workflow_dispatch:
 jobs:
   release:

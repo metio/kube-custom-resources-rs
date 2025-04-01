@@ -4,7 +4,7 @@
 name: Release dataprotection_kubeblocks_io
 on:
   schedule:
-    - cron: 37 2 * * WED
+    - cron: 37 10 * * WED
   workflow_dispatch:
 jobs:
   release:

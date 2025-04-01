@@ -4,7 +4,7 @@
 name: Release devices_kubeedge_io
 on:
   schedule:
-    - cron: 7 22 * * THU
+    - cron: 7 14 * * THU
   workflow_dispatch:
 jobs:
   release:

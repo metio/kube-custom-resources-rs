@@ -4,7 +4,7 @@
 name: Release tinkerbell_org
 on:
   schedule:
-    - cron: 28 22 * * WED
+    - cron: 28 17 * * WED
   workflow_dispatch:
 jobs:
   release:

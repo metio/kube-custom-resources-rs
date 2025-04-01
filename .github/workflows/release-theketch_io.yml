@@ -4,7 +4,7 @@
 name: Release theketch_io
 on:
   schedule:
-    - cron: 44 12 * * TUE
+    - cron: 44 7 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release scheduling_volcano_sh
 on:
   schedule:
-    - cron: 54 23 * * SAT
+    - cron: 54 9 * * SAT
   workflow_dispatch:
 jobs:
   release:

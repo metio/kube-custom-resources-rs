@@ -4,7 +4,7 @@
 name: Release snapscheduler_backube
 on:
   schedule:
-    - cron: 25 7 * * SAT
+    - cron: 25 22 * * SAT
   workflow_dispatch:
 jobs:
   release:

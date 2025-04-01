@@ -4,7 +4,7 @@
 name: Release monitoring_giantswarm_io
 on:
   schedule:
-    - cron: 9 3 * * SAT
+    - cron: 9 22 * * SAT
   workflow_dispatch:
 jobs:
   release:

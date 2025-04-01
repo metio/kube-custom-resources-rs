@@ -4,7 +4,7 @@
 name: Release auth_ops42_org
 on:
   schedule:
-    - cron: 29 12 * * SUN
+    - cron: 29 22 * * SUN
   workflow_dispatch:
 jobs:
   release:

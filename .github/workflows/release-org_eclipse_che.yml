@@ -4,7 +4,7 @@
 name: Release org_eclipse_che
 on:
   schedule:
-    - cron: 47 17 * * MON
+    - cron: 47 10 * * MON
   workflow_dispatch:
 jobs:
   release:

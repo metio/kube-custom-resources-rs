@@ -4,7 +4,7 @@
 name: Release opensearch_opster_io
 on:
   schedule:
-    - cron: 36 20 * * THU
+    - cron: 36 15 * * THU
   workflow_dispatch:
 jobs:
   release:

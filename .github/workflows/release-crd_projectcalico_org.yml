@@ -4,7 +4,7 @@
 name: Release crd_projectcalico_org
 on:
   schedule:
-    - cron: 42 16 * * WED
+    - cron: 42 11 * * WED
   workflow_dispatch:
 jobs:
   release:

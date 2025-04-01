@@ -4,7 +4,7 @@
 name: Release apps_kubedl_io
 on:
   schedule:
-    - cron: 28 11 * * TUE
+    - cron: 28 7 * * TUE
   workflow_dispatch:
 jobs:
   release:

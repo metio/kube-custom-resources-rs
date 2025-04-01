@@ -4,7 +4,7 @@
 name: Release charts_helm_k8s_io
 on:
   schedule:
-    - cron: 37 4 * * SUN
+    - cron: 37 20 * * SUN
   workflow_dispatch:
 jobs:
   release:

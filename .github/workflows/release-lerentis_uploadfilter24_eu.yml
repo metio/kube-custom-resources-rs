@@ -4,7 +4,7 @@
 name: Release lerentis_uploadfilter24_eu
 on:
   schedule:
-    - cron: 25 2 * * SAT
+    - cron: 25 8 * * SAT
   workflow_dispatch:
 jobs:
   release:

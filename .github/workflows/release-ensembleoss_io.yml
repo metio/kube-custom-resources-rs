@@ -4,7 +4,7 @@
 name: Release ensembleoss_io
 on:
   schedule:
-    - cron: 1 22 * * SAT
+    - cron: 1 6 * * SAT
   workflow_dispatch:
 jobs:
   release:

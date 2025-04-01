@@ -4,7 +4,7 @@
 name: Release beat_k8s_elastic_co
 on:
   schedule:
-    - cron: 49 5 * * THU
+    - cron: 49 16 * * THU
   workflow_dispatch:
 jobs:
   release:

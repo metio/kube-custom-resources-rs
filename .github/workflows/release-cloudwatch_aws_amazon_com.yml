@@ -4,7 +4,7 @@
 name: Release cloudwatch_aws_amazon_com
 on:
   schedule:
-    - cron: 6 5 * * WED
+    - cron: 6 15 * * WED
   workflow_dispatch:
 jobs:
   release:

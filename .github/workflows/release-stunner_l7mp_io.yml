@@ -4,7 +4,7 @@
 name: Release stunner_l7mp_io
 on:
   schedule:
-    - cron: 43 23 * * MON
+    - cron: 43 16 * * MON
   workflow_dispatch:
 jobs:
   release:

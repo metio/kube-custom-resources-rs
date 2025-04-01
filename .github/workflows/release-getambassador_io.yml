@@ -4,7 +4,7 @@
 name: Release getambassador_io
 on:
   schedule:
-    - cron: 15 22 * * WED
+    - cron: 15 16 * * WED
   workflow_dispatch:
 jobs:
   release:

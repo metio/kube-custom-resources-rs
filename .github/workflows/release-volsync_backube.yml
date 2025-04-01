@@ -4,7 +4,7 @@
 name: Release volsync_backube
 on:
   schedule:
-    - cron: 32 19 * * SAT
+    - cron: 32 17 * * SAT
   workflow_dispatch:
 jobs:
   release:

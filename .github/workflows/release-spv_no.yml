@@ -4,7 +4,7 @@
 name: Release spv_no
 on:
   schedule:
-    - cron: 14 22 * * MON
+    - cron: 14 1 * * MON
   workflow_dispatch:
 jobs:
   release:

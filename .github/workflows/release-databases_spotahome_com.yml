@@ -4,7 +4,7 @@
 name: Release databases_spotahome_com
 on:
   schedule:
-    - cron: 12 2 * * FRI
+    - cron: 12 5 * * FRI
   workflow_dispatch:
 jobs:
   release:

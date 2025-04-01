@@ -4,7 +4,7 @@
 name: Release ocmagent_managed_openshift_io
 on:
   schedule:
-    - cron: 11 17 * * TUE
+    - cron: 11 10 * * TUE
   workflow_dispatch:
 jobs:
   release:

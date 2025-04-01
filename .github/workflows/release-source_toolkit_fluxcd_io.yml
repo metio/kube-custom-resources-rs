@@ -4,7 +4,7 @@
 name: Release source_toolkit_fluxcd_io
 on:
   schedule:
-    - cron: 57 23 * * MON
+    - cron: 57 14 * * MON
   workflow_dispatch:
 jobs:
   release:

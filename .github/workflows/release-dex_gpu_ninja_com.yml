@@ -4,7 +4,7 @@
 name: Release dex_gpu_ninja_com
 on:
   schedule:
-    - cron: 23 4 * * WED
+    - cron: 23 2 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release isindir_github_com
 on:
   schedule:
-    - cron: 45 22 * * SUN
+    - cron: 45 18 * * SUN
   workflow_dispatch:
 jobs:
   release:

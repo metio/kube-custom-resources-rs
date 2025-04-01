@@ -4,7 +4,7 @@
 name: Release beegfs_csi_netapp_com
 on:
   schedule:
-    - cron: 57 14 * * THU
+    - cron: 57 6 * * THU
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release execution_furiko_io
 on:
   schedule:
-    - cron: 32 7 * * FRI
+    - cron: 32 1 * * FRI
   workflow_dispatch:
 jobs:
   release:

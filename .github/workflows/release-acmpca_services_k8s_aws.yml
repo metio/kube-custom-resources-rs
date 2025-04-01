@@ -4,7 +4,7 @@
 name: Release acmpca_services_k8s_aws
 on:
   schedule:
-    - cron: 58 22 * * SAT
+    - cron: 58 3 * * SAT
   workflow_dispatch:
 jobs:
   release:

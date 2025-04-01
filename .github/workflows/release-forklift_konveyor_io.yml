@@ -4,7 +4,7 @@
 name: Release forklift_konveyor_io
 on:
   schedule:
-    - cron: 36 14 * * WED
+    - cron: 36 1 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release awx_ansible_com
 on:
   schedule:
-    - cron: 36 22 * * FRI
+    - cron: 36 17 * * FRI
   workflow_dispatch:
 jobs:
   release:

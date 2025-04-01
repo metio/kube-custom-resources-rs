@@ -4,7 +4,7 @@
 name: Release chaosblade_io
 on:
   schedule:
-    - cron: 10 5 * * SUN
+    - cron: 10 15 * * SUN
   workflow_dispatch:
 jobs:
   release:

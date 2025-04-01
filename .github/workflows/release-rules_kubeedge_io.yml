@@ -4,7 +4,7 @@
 name: Release rules_kubeedge_io
 on:
   schedule:
-    - cron: 17 1 * * THU
+    - cron: 17 4 * * THU
   workflow_dispatch:
 jobs:
   release:

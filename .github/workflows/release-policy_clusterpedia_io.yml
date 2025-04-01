@@ -4,7 +4,7 @@
 name: Release policy_clusterpedia_io
 on:
   schedule:
-    - cron: 31 20 * * SAT
+    - cron: 31 14 * * SAT
   workflow_dispatch:
 jobs:
   release:

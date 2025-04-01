@@ -4,7 +4,7 @@
 name: Release ecr_services_k8s_aws
 on:
   schedule:
-    - cron: 37 19 * * MON
+    - cron: 37 2 * * MON
   workflow_dispatch:
 jobs:
   release:

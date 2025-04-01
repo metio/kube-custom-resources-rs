@@ -4,7 +4,7 @@
 name: Release everest_percona_com
 on:
   schedule:
-    - cron: 13 19 * * SUN
+    - cron: 13 4 * * SUN
   workflow_dispatch:
 jobs:
   release:

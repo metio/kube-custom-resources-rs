@@ -4,7 +4,7 @@
 name: Release kinesis_services_k8s_aws
 on:
   schedule:
-    - cron: 48 9 * * SUN
+    - cron: 48 11 * * SUN
   workflow_dispatch:
 jobs:
   release:

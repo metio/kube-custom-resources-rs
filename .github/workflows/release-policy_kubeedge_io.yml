@@ -4,7 +4,7 @@
 name: Release policy_kubeedge_io
 on:
   schedule:
-    - cron: 11 22 * * TUE
+    - cron: 11 4 * * TUE
   workflow_dispatch:
 jobs:
   release:

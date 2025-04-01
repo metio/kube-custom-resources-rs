@@ -4,7 +4,7 @@
 name: Release scheduling_sigs_k8s_io
 on:
   schedule:
-    - cron: 38 8 * * TUE
+    - cron: 38 3 * * TUE
   workflow_dispatch:
 jobs:
   release:

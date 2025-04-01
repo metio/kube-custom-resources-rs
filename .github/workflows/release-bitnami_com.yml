@@ -4,7 +4,7 @@
 name: Release bitnami_com
 on:
   schedule:
-    - cron: 29 21 * * MON
+    - cron: 29 14 * * MON
   workflow_dispatch:
 jobs:
   release:

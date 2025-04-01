@@ -4,7 +4,7 @@
 name: Release elasticache_services_k8s_aws
 on:
   schedule:
-    - cron: 26 9 * * WED
+    - cron: 26 15 * * WED
   workflow_dispatch:
 jobs:
   release:

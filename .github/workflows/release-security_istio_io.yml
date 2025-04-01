@@ -4,7 +4,7 @@
 name: Release security_istio_io
 on:
   schedule:
-    - cron: 21 18 * * FRI
+    - cron: 21 10 * * FRI
   workflow_dispatch:
 jobs:
   release:

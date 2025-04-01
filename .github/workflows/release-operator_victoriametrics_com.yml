@@ -4,7 +4,7 @@
 name: Release operator_victoriametrics_com
 on:
   schedule:
-    - cron: 32 19 * * THU
+    - cron: 32 9 * * THU
   workflow_dispatch:
 jobs:
   release:

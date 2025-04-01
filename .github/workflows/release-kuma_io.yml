@@ -4,7 +4,7 @@
 name: Release kuma_io
 on:
   schedule:
-    - cron: 31 19 * * SAT
+    - cron: 31 16 * * SAT
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release keycloak_org
 on:
   schedule:
-    - cron: 14 14 * * MON
+    - cron: 14 15 * * MON
   workflow_dispatch:
 jobs:
   release:

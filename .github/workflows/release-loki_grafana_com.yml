@@ -4,7 +4,7 @@
 name: Release loki_grafana_com
 on:
   schedule:
-    - cron: 50 11 * * WED
+    - cron: 50 19 * * WED
   workflow_dispatch:
 jobs:
   release:

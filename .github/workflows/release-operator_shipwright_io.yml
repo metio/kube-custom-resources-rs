@@ -4,7 +4,7 @@
 name: Release operator_shipwright_io
 on:
   schedule:
-    - cron: 21 19 * * TUE
+    - cron: 21 16 * * TUE
   workflow_dispatch:
 jobs:
   release:

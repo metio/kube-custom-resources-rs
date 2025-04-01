@@ -4,7 +4,7 @@
 name: Release ray_io
 on:
   schedule:
-    - cron: 5 8 * * TUE
+    - cron: 5 22 * * TUE
   workflow_dispatch:
 jobs:
   release:

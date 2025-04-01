@@ -4,7 +4,7 @@
 name: Release redhatcop_redhat_io
 on:
   schedule:
-    - cron: 1 2 * * TUE
+    - cron: 1 4 * * TUE
   workflow_dispatch:
 jobs:
   release:

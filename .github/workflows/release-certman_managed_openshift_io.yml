@@ -4,7 +4,7 @@
 name: Release certman_managed_openshift_io
 on:
   schedule:
-    - cron: 16 7 * * WED
+    - cron: 16 1 * * WED
   workflow_dispatch:
 jobs:
   release:

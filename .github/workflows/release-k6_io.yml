@@ -4,7 +4,7 @@
 name: Release k6_io
 on:
   schedule:
-    - cron: 32 4 * * SAT
+    - cron: 32 11 * * SAT
   workflow_dispatch:
 jobs:
   release:

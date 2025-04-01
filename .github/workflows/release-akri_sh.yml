@@ -4,7 +4,7 @@
 name: Release akri_sh
 on:
   schedule:
-    - cron: 14 23 * * TUE
+    - cron: 14 9 * * TUE
   workflow_dispatch:
 jobs:
   release:

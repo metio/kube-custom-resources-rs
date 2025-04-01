@@ -4,7 +4,7 @@
 name: Release keyspaces_services_k8s_aws
 on:
   schedule:
-    - cron: 9 17 * * MON
+    - cron: 9 16 * * MON
   workflow_dispatch:
 jobs:
   release:

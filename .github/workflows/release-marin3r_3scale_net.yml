@@ -4,7 +4,7 @@
 name: Release marin3r_3scale_net
 on:
   schedule:
-    - cron: 25 9 * * THU
+    - cron: 25 2 * * THU
   workflow_dispatch:
 jobs:
   release:

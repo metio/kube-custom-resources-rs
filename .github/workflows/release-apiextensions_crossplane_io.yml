@@ -4,7 +4,7 @@
 name: Release apiextensions_crossplane_io
 on:
   schedule:
-    - cron: 4 1 * * SAT
+    - cron: 4 7 * * SAT
   workflow_dispatch:
 jobs:
   release:

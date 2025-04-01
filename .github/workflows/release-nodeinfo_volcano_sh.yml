@@ -4,7 +4,7 @@
 name: Release nodeinfo_volcano_sh
 on:
   schedule:
-    - cron: 20 3 * * WED
+    - cron: 20 15 * * WED
   workflow_dispatch:
 jobs:
   release:

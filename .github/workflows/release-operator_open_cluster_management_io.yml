@@ -4,7 +4,7 @@
 name: Release operator_open_cluster_management_io
 on:
   schedule:
-    - cron: 31 4 * * MON
+    - cron: 31 10 * * MON
   workflow_dispatch:
 jobs:
   release:

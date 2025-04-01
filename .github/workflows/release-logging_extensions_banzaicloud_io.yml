@@ -4,7 +4,7 @@
 name: Release logging_extensions_banzaicloud_io
 on:
   schedule:
-    - cron: 21 20 * * TUE
+    - cron: 21 14 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release extensions_kubeblocks_io
 on:
   schedule:
-    - cron: 10 15 * * FRI
+    - cron: 10 1 * * FRI
   workflow_dispatch:
 jobs:
   release:

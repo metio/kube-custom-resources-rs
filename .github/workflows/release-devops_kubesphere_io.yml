@@ -4,7 +4,7 @@
 name: Release devops_kubesphere_io
 on:
   schedule:
-    - cron: 27 15 * * TUE
+    - cron: 27 14 * * TUE
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release tests_testkube_io
 on:
   schedule:
-    - cron: 4 13 * * THU
+    - cron: 4 5 * * THU
   workflow_dispatch:
 jobs:
   release:

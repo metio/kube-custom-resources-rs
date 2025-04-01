@@ -4,7 +4,7 @@
 name: Release networking_gke_io
 on:
   schedule:
-    - cron: 56 18 * * WED
+    - cron: 56 1 * * WED
   workflow_dispatch:
 jobs:
   release:

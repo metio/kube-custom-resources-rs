@@ -4,7 +4,7 @@
 name: Release rocketmq_apache_org
 on:
   schedule:
-    - cron: 56 9 * * MON
+    - cron: 56 17 * * MON
   workflow_dispatch:
 jobs:
   release:

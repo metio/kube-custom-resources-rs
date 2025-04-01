@@ -4,7 +4,7 @@
 name: Release sagemaker_services_k8s_aws
 on:
   schedule:
-    - cron: 21 10 * * TUE
+    - cron: 21 18 * * TUE
   workflow_dispatch:
 jobs:
   release:

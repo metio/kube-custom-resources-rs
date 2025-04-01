@@ -4,7 +4,7 @@
 name: Release mariadb_mmontes_io
 on:
   schedule:
-    - cron: 22 14 * * THU
+    - cron: 22 5 * * THU
   workflow_dispatch:
 jobs:
   release:

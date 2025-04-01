@@ -4,7 +4,7 @@
 name: Release registry_apicur_io
 on:
   schedule:
-    - cron: 44 2 * * FRI
+    - cron: 44 3 * * FRI
   workflow_dispatch:
 jobs:
   release:

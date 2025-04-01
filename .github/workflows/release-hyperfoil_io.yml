@@ -4,7 +4,7 @@
 name: Release hyperfoil_io
 on:
   schedule:
-    - cron: 3 8 * * TUE
+    - cron: 3 22 * * TUE
   workflow_dispatch:
 jobs:
   release:

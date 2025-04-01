@@ -4,7 +4,7 @@
 name: Release helm_sigstore_dev
 on:
   schedule:
-    - cron: 44 18 * * FRI
+    - cron: 44 21 * * FRI
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release eks_services_k8s_aws
 on:
   schedule:
-    - cron: 11 18 * * SAT
+    - cron: 11 8 * * SAT
   workflow_dispatch:
 jobs:
   release:

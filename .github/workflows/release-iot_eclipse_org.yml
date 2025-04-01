@@ -4,7 +4,7 @@
 name: Release iot_eclipse_org
 on:
   schedule:
-    - cron: 26 19 * * MON
+    - cron: 26 13 * * MON
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release multicluster_crd_antrea_io
 on:
   schedule:
-    - cron: 48 6 * * SUN
+    - cron: 48 7 * * SUN
   workflow_dispatch:
 jobs:
   release:

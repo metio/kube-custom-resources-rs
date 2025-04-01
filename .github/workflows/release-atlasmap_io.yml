@@ -4,7 +4,7 @@
 name: Release atlasmap_io
 on:
   schedule:
-    - cron: 30 3 * * FRI
+    - cron: 30 9 * * FRI
   workflow_dispatch:
 jobs:
   release:

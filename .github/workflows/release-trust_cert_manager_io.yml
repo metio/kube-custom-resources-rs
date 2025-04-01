@@ -4,7 +4,7 @@
 name: Release trust_cert_manager_io
 on:
   schedule:
-    - cron: 50 4 * * MON
+    - cron: 50 11 * * MON
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release cassandra_datastax_com
 on:
   schedule:
-    - cron: 28 16 * * MON
+    - cron: 28 11 * * MON
   workflow_dispatch:
 jobs:
   release:

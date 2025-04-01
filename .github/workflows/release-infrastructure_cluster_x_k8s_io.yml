@@ -4,7 +4,7 @@
 name: Release infrastructure_cluster_x_k8s_io
 on:
   schedule:
-    - cron: 16 2 * * SUN
+    - cron: 16 9 * * SUN
   workflow_dispatch:
 jobs:
   release:

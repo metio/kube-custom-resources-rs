@@ -4,7 +4,7 @@
 name: Release flux_framework_org
 on:
   schedule:
-    - cron: 41 6 * * WED
+    - cron: 41 20 * * WED
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release keycloak_k8s_reddec_net
 on:
   schedule:
-    - cron: 9 6 * * TUE
+    - cron: 9 16 * * TUE
   workflow_dispatch:
 jobs:
   release:

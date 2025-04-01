@@ -4,7 +4,7 @@
 name: Release kms_services_k8s_aws
 on:
   schedule:
-    - cron: 9 20 * * SUN
+    - cron: 9 14 * * SUN
   workflow_dispatch:
 jobs:
   release:

@@ -4,7 +4,7 @@
 name: Release wgpolicyk8s_io
 on:
   schedule:
-    - cron: 13 8 * * TUE
+    - cron: 13 18 * * TUE
   workflow_dispatch:
 jobs:
   release:

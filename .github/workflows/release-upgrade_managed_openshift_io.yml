@@ -4,7 +4,7 @@
 name: Release upgrade_managed_openshift_io
 on:
   schedule:
-    - cron: 12 20 * * MON
+    - cron: 12 11 * * MON
   workflow_dispatch:
 jobs:
   release:

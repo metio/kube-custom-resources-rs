@@ -4,7 +4,7 @@
 name: Release apps_m88i_io
 on:
   schedule:
-    - cron: 55 3 * * SAT
+    - cron: 55 2 * * SAT
   workflow_dispatch:
 jobs:
   release:

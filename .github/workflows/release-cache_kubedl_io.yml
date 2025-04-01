@@ -4,7 +4,7 @@
 name: Release cache_kubedl_io
 on:
   schedule:
-    - cron: 15 7 * * SAT
+    - cron: 15 22 * * SAT
   workflow_dispatch:
 jobs:
   release:

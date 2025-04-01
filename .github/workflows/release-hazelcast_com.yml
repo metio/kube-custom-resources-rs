@@ -4,7 +4,7 @@
 name: Release hazelcast_com
 on:
   schedule:
-    - cron: 16 14 * * WED
+    - cron: 16 17 * * WED
   workflow_dispatch:
 jobs:
   release:

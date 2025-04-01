@@ -4,7 +4,7 @@
 name: Release limitador_kuadrant_io
 on:
   schedule:
-    - cron: 39 2 * * TUE
+    - cron: 39 4 * * TUE
   workflow_dispatch:
 jobs:
   release:

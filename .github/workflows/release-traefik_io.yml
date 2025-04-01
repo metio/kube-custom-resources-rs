@@ -4,7 +4,7 @@
 name: Release traefik_io
 on:
   schedule:
-    - cron: 35 2 * * WED
+    - cron: 35 4 * * WED
   workflow_dispatch:
 jobs:
   release:

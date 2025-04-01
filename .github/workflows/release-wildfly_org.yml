@@ -4,7 +4,7 @@
 name: Release wildfly_org
 on:
   schedule:
-    - cron: 43 3 * * THU
+    - cron: 43 22 * * THU
   workflow_dispatch:
 jobs:
   release:

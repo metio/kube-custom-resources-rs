@@ -4,7 +4,7 @@
 name: Release status_gatekeeper_sh
 on:
   schedule:
-    - cron: 37 22 * * SAT
+    - cron: 37 20 * * SAT
   workflow_dispatch:
 jobs:
   release:
