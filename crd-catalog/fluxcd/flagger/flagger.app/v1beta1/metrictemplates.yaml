@@ -41,6 +41,13 @@ spec:
                     address:
                       description: "API address of this provider"
                       type: "string"
+                    headers:
+                      additionalProperties:
+                        items:
+                          type: "string"
+                        type: "array"
+                      description: "Headers to add to HTTP(S) requests"
+                      type: "object"
                     insecureSkipVerify:
                       description: "Disable SSL certificate validation for the provider address"
                       type: "boolean"

@@ -20,3 +20,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### addons.cluster.x-k8s.io/v1beta1
 - `ClusterResourceSetBinding`
 - `ClusterResourceSet`
+### addons.cluster.x-k8s.io/v1beta2
+- `ClusterResourceSetBinding`
+- `ClusterResourceSet`

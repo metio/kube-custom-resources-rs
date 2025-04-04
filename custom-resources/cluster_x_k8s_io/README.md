@@ -34,3 +34,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `MachinePool`
 - `Machine`
 - `MachineSet`
+### cluster.x-k8s.io/v1beta2
+- `ClusterClass`
+- `Cluster`
+- `MachineDeployment`
+- `MachineHealthCheck`
+- `MachinePool`
+- `Machine`
+- `MachineSet`

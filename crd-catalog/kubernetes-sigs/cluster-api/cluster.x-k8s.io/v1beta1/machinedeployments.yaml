@@ -55,6 +55,7 @@ spec:
           jsonPath: ".spec.template.spec.version"
           name: "Version"
           type: "string"
+      deprecated: true
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -475,7 +476,7 @@ spec:
               type: "object"
           type: "object"
       served: true
-      storage: true
+      storage: false
       subresources:
         scale:
           labelSelectorPath: ".status.selector"
