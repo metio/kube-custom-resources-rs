@@ -3775,6 +3775,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -3783,6 +3784,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -3791,6 +3793,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -3799,6 +3802,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -3820,6 +3824,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -3828,6 +3833,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -3836,6 +3842,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -3844,6 +3851,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -3892,6 +3900,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     effectiveWipeMethod:
@@ -3900,6 +3909,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     initContainers:
@@ -3939,6 +3949,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     name:
@@ -4143,6 +4154,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                   required:
@@ -4769,6 +4781,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -4777,6 +4790,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -4785,6 +4799,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -4793,6 +4808,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -4814,6 +4830,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -4822,6 +4839,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -4830,6 +4848,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -4838,6 +4857,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -4886,6 +4906,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     effectiveWipeMethod:
@@ -4894,6 +4915,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     initContainers:
@@ -4933,6 +4955,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     name:
@@ -5137,6 +5160,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                   required:
@@ -5232,6 +5256,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         effectiveWipeMethod:
@@ -5240,6 +5265,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         initMethod:
@@ -5248,6 +5274,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         wipeMethod:
@@ -5256,6 +5283,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                       type: "object"
@@ -5277,6 +5305,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         effectiveWipeMethod:
@@ -5285,6 +5314,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         initMethod:
@@ -5293,6 +5323,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         wipeMethod:
@@ -5301,6 +5332,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                       type: "object"
@@ -5349,6 +5381,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           effectiveWipeMethod:
@@ -5357,6 +5390,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           initContainers:
@@ -5396,6 +5430,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           name:
@@ -5600,6 +5635,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                         required:
@@ -9469,6 +9505,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -9477,6 +9514,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -9485,6 +9523,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -9493,6 +9532,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -9514,6 +9554,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -9522,6 +9563,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -9530,6 +9572,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -9538,6 +9581,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -9586,6 +9630,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     effectiveWipeMethod:
@@ -9594,6 +9639,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     initContainers:
@@ -9633,6 +9679,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     name:
@@ -9837,6 +9884,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                   required:
@@ -10463,6 +10511,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -10471,6 +10520,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -10479,6 +10529,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -10487,6 +10538,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -10508,6 +10560,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   effectiveWipeMethod:
@@ -10516,6 +10569,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   initMethod:
@@ -10524,6 +10578,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                   wipeMethod:
@@ -10532,6 +10587,7 @@ spec:
                                       - "none"
                                       - "dd"
                                       - "blkdiscard"
+                                      - "blkdiscardWithHeaderCleanup"
                                       - "deleteFiles"
                                     type: "string"
                                 type: "object"
@@ -10580,6 +10636,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     effectiveWipeMethod:
@@ -10588,6 +10645,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     initContainers:
@@ -10627,6 +10685,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                     name:
@@ -10831,6 +10890,7 @@ spec:
                                         - "none"
                                         - "dd"
                                         - "blkdiscard"
+                                        - "blkdiscardWithHeaderCleanup"
                                         - "deleteFiles"
                                       type: "string"
                                   required:
@@ -10969,6 +11029,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         effectiveWipeMethod:
@@ -10977,6 +11038,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         initMethod:
@@ -10985,6 +11047,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         wipeMethod:
@@ -10993,6 +11056,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                       type: "object"
@@ -11014,6 +11078,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         effectiveWipeMethod:
@@ -11022,6 +11087,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         initMethod:
@@ -11030,6 +11096,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                         wipeMethod:
@@ -11038,6 +11105,7 @@ spec:
                             - "none"
                             - "dd"
                             - "blkdiscard"
+                            - "blkdiscardWithHeaderCleanup"
                             - "deleteFiles"
                           type: "string"
                       type: "object"
@@ -11086,6 +11154,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           effectiveWipeMethod:
@@ -11094,6 +11163,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           initContainers:
@@ -11133,6 +11203,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                           name:
@@ -11337,6 +11408,7 @@ spec:
                               - "none"
                               - "dd"
                               - "blkdiscard"
+                              - "blkdiscardWithHeaderCleanup"
                               - "deleteFiles"
                             type: "string"
                         required:

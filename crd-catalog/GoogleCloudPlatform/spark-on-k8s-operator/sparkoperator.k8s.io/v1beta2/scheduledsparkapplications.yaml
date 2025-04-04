@@ -20,6 +20,9 @@ spec:
         - jsonPath: ".spec.schedule"
           name: "Schedule"
           type: "string"
+        - jsonPath: ".spec.timeZone"
+          name: "TimeZone"
+          type: "string"
         - jsonPath: ".spec.suspend"
           name: "Suspend"
           type: "string"
@@ -7634,6 +7637,9 @@ spec:
                     - "sparkVersion"
                     - "type"
                   type: "object"
+                timeZone:
+                  description: "TimeZone is the time zone in which the cron schedule will be interpreted in.\nThis value is passed to time.LoadLocation, so it must be either \"Local\", \"UTC\",\nor a valid IANA location name e.g. \"America/New_York\".\nDefaults to \"Local\"."
+                  type: "string"
               required:
                 - "schedule"
                 - "template"

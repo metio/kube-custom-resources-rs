@@ -196,6 +196,40 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                extraEnvsFrom:
+                  description: "ExtraEnvsFrom defines source of env variables for the application container\ncould either be secret or configmap"
+                  items:
+                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    properties:
+                      configMapRef:
+                        description: "The ConfigMap to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the ConfigMap must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      prefix:
+                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        type: "string"
+                      secretRef:
+                        description: "The Secret to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                    type: "object"
+                  type: "array"
                 hostAliases:
                   description: "HostAliases provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork."
                   items:
@@ -738,7 +772,7 @@ spec:
                       description: "TLSConfig defines tls configuration for the backend connection"
                       properties:
                         ca:
-                          description: "Stuct containing the CA cert to use for the targets."
+                          description: "Struct containing the CA cert to use for the targets."
                           properties:
                             configMap:
                               description: "ConfigMap containing data to use for the targets."

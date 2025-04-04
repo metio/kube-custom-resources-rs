@@ -1710,7 +1710,7 @@ spec:
                                                         description: "InterfaceSRIOV connects to a given network by passing-through an SR-IOV PCI device via vfio."
                                                         type: "object"
                                                       state:
-                                                        description: "State represents the requested operational state of the interface.\nThe (only) value supported is `absent`, expressing a request to remove the interface."
+                                                        description: "State represents the requested operational state of the interface.\nThe supported values are:\n`absent`, expressing a request to remove the interface.\n`down`, expressing a request to set the link down.\n`up`, expressing a request to set the link up.\nEmpty value functions as `up`."
                                                         type: "string"
                                                       tag:
                                                         description: "If specified, the virtual network interface address and its tag will be provided to the guest via config drive"
@@ -1996,6 +1996,14 @@ spec:
                                                 uuid:
                                                   description: "UUID reported by the vmi bios.\nDefaults to a random generated uid."
                                                   type: "string"
+                                              type: "object"
+                                            ioThreads:
+                                              description: "IOThreads specifies the IOThreads options."
+                                              properties:
+                                                supplementalPoolThreadCount:
+                                                  description: "SupplementalPoolThreadCount specifies how many iothreads are allocated for the supplementalPool policy."
+                                                  format: "int32"
+                                                  type: "integer"
                                               type: "object"
                                             ioThreadsPolicy:
                                               description: "Controls whether or not disks will share IOThreads.\nOmitting IOThreadsPolicy disables use of IOThreads.\nOne of: shared, auto"
@@ -2536,7 +2544,7 @@ spec:
                                                     description: "Hotpluggable indicates whether the volume can be hotplugged and hotunplugged."
                                                     type: "boolean"
                                                   name:
-                                                    description: "Name of both the DataVolume and the PVC in the same namespace.\nAfter PVC population the DataVolume is garbage collected by default."
+                                                    description: "Name of both the DataVolume and the PVC in the same namespace."
                                                     type: "string"
                                                 required:
                                                   - "name"

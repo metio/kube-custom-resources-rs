@@ -168,6 +168,8 @@ spec:
                   description: "Modules contain observations about each Module's node state status"
                   items:
                     properties:
+                      bootId:
+                        type: "string"
                       config:
                         properties:
                           containerImage:
@@ -257,9 +259,6 @@ spec:
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
-                      lastTransitionTime:
-                        format: "date-time"
-                        type: "string"
                       name:
                         type: "string"
                       namespace:

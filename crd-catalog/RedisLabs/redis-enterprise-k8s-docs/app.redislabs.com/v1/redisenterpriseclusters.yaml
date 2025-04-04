@@ -20,6 +20,9 @@ spec:
         - jsonPath: ".spec.nodes"
           name: "Nodes"
           type: "string"
+        - jsonPath: ".status.licenseStatus.shardsUsage"
+          name: "Shards"
+          type: "string"
         - jsonPath: ".spec.redisEnterpriseImageSpec.versionTag"
           name: "Version"
           type: "string"
@@ -31,9 +34,6 @@ spec:
           type: "string"
         - jsonPath: ".status.licenseStatus.licenseState"
           name: "License State"
-          type: "string"
-        - jsonPath: ".status.licenseStatus.shardsLimit"
-          name: "Shards Limit"
           type: "string"
         - jsonPath: ".status.licenseStatus.expirationDate"
           name: "License Expiration Date"
@@ -610,9 +610,6 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
-                podSecurityPolicyName:
-                  description: "DEPRECATED PodSecurityPolicy support is removed in Kubernetes v1.25 and the use of this field is invalid for use when running on Kubernetes v1.25+. Future versions of the RedisEnterpriseCluster API will remove support for this field altogether. For migration instructions, see https://kubernetes.io/docs/tasks/configure-pod-container/migrate-from-psp/ \n Name of pod security policy to use on pods"
-                  type: "string"
                 podStartingPolicy:
                   description: "Mitigation setting for STS pods stuck in \"ContainerCreating\""
                   properties:
@@ -3473,6 +3470,12 @@ spec:
                 servicesRiggerSpec:
                   description: "Specification for service rigger"
                   properties:
+                    databaseServicePortPolicy:
+                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
+                      enum:
+                        - "DatabasePortForward"
+                        - "RedisDefaultPort"
+                      type: "string"
                     databaseServiceType:
                       description: "Service types for access to databases. should be a comma separated list. The possible values are cluster_ip, headless and load_balancer."
                       type: "string"
@@ -7360,10 +7363,32 @@ spec:
                       type: "string"
                     expirationDate:
                       type: "string"
+                    features:
+                      items:
+                        type: "string"
+                      type: "array"
+                    flashShards:
+                      format: "int32"
+                      type: "integer"
+                    flashShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     licenseState:
                       type: "string"
+                    owner:
+                      type: "string"
+                    ramShards:
+                      format: "int32"
+                      type: "integer"
+                    ramShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     shardsLimit:
                       type: "integer"
+                    shardsUsage:
+                      type: "string"
                   type: "object"
                 managedAPIs:
                   description: "Indicates cluster APIs that are being managed by the operator. This only applies to cluster APIs which are optionally-managed by the operator, such as cluster LDAP configuration. Most other APIs are automatically managed by the operator, and are not listed here."

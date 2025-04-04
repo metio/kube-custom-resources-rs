@@ -714,10 +714,10 @@ spec:
                                 type: "string"
                               type: "array"
                             compression:
-                              description: "Compress a backup file (a tar file per tablespace) while streaming it\nto the object store. Available options are empty string (no\ncompression, default), `gzip`, `bzip2` or `snappy`."
+                              description: "Compress a backup file (a tar file per tablespace) while streaming it\nto the object store. Available options are empty string (no\ncompression, default), `gzip`, `bzip2`, and `snappy`."
                               enum:
-                                - "gzip"
                                 - "bzip2"
+                                - "gzip"
                                 - "snappy"
                               type: "string"
                             encryption:
@@ -856,11 +856,14 @@ spec:
                                 type: "string"
                               type: "array"
                             compression:
-                              description: "Compress a WAL file before sending it to the object store. Available\noptions are empty string (no compression, default), `gzip`, `bzip2` or `snappy`."
+                              description: "Compress a WAL file before sending it to the object store. Available\noptions are empty string (no compression, default), `gzip`, `bzip2`,\n`lz4`, `snappy`, `xz`, and `zstd`."
                               enum:
-                                - "gzip"
                                 - "bzip2"
+                                - "gzip"
+                                - "lz4"
                                 - "snappy"
+                                - "xz"
+                                - "zstd"
                               type: "string"
                             encryption:
                               description: "Whenever to force the encryption of files (if the bucket is\nnot already configured for that).\nAllowed options are empty string (use the bucket policy, default),\n`AES256` and `aws:kms`"
@@ -1714,10 +1717,10 @@ spec:
                                   type: "string"
                                 type: "array"
                               compression:
-                                description: "Compress a backup file (a tar file per tablespace) while streaming it\nto the object store. Available options are empty string (no\ncompression, default), `gzip`, `bzip2` or `snappy`."
+                                description: "Compress a backup file (a tar file per tablespace) while streaming it\nto the object store. Available options are empty string (no\ncompression, default), `gzip`, `bzip2`, and `snappy`."
                                 enum:
-                                  - "gzip"
                                   - "bzip2"
+                                  - "gzip"
                                   - "snappy"
                                 type: "string"
                               encryption:
@@ -1856,11 +1859,14 @@ spec:
                                   type: "string"
                                 type: "array"
                               compression:
-                                description: "Compress a WAL file before sending it to the object store. Available\noptions are empty string (no compression, default), `gzip`, `bzip2` or `snappy`."
+                                description: "Compress a WAL file before sending it to the object store. Available\noptions are empty string (no compression, default), `gzip`, `bzip2`,\n`lz4`, `snappy`, `xz`, and `zstd`."
                                 enum:
-                                  - "gzip"
                                   - "bzip2"
+                                  - "gzip"
+                                  - "lz4"
                                   - "snappy"
+                                  - "xz"
+                                  - "zstd"
                                 type: "string"
                               encryption:
                                 description: "Whenever to force the encryption of files (if the bucket is\nnot already configured for that).\nAllowed options are empty string (use the bucket policy, default),\n`AES256` and `aws:kms`"
@@ -2000,9 +2006,6 @@ spec:
                     major:
                       description: "The major version of PostgreSQL we want to use from the ImageCatalog"
                       type: "integer"
-                      x-kubernetes-validations:
-                        - message: "Major is immutable"
-                          rule: "self == oldSelf"
                     name:
                       description: "Name is the name of resource being referenced"
                       type: "string"
@@ -3883,6 +3886,9 @@ spec:
                 latestGeneratedNode:
                   description: "ID of the latest generated node (used to avoid node name clashing)"
                   type: "integer"
+                majorVersionUpgradeFromImage:
+                  description: "MajorVersionUpgradeFromImage contains the image that was\nrunning before the major version upgrade started."
+                  type: "string"
                 managedRolesStatus:
                   description: "ManagedRolesStatus reports the state of the managed roles in the cluster"
                   properties:

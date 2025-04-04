@@ -1966,42 +1966,6 @@ spec:
                       type: "object"
                   type: "object"
                 configs:
-                  description: "Specifies the configuration file templates and volume mount parameters used by the Component.\nIt also includes descriptions of the parameters in the ConfigMaps, such as value range limitations.\n\n\nThis field specifies a list of templates that will be rendered into Component containers' configuration files.\nEach template is represented as a ConfigMap and may contain multiple configuration files,\nwith each file being a key in the ConfigMap.\n\n\nThe rendered configuration files will be mounted into the Component's containers\n according to the specified volume mount parameters.\n\n\nThis field is immutable."
-                  items:
-                    properties:
-                      defaultMode:
-                        description: "The operator attempts to set default file permissions for scripts (0555) and configurations (0444).\nHowever, certain database engines may require different file permissions.\nYou can specify the desired file permissions here.\n\n\nMust be specified as an octal value between 0000 and 0777 (inclusive),\nor as a decimal value between 0 and 511 (inclusive).\nYAML supports both octal and decimal values for file permissions.\n\n\nPlease note that this setting only affects the permissions of the files themselves.\nDirectories within the specified path are not impacted by this setting.\nIt's important to be aware that this setting might conflict with other options\nthat influence the file mode, such as fsGroup.\nIn such cases, the resulting file mode may have additional bits set.\nRefers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information."
-                        format: "int32"
-                        type: "integer"
-                      name:
-                        description: "Specifies the name of the configuration template."
-                        maxLength: 63
-                        pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                        type: "string"
-                      namespace:
-                        default: "default"
-                        description: "Specifies the namespace of the referenced configuration template ConfigMap object.\nAn empty namespace is equivalent to the \"default\" namespace."
-                        maxLength: 63
-                        pattern: "^[a-z0-9]([a-z0-9\\-]*[a-z0-9])?$"
-                        type: "string"
-                      templateRef:
-                        description: "Specifies the name of the referenced configuration template ConfigMap object."
-                        maxLength: 63
-                        pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
-                        type: "string"
-                      volumeName:
-                        description: "Refers to the volume name of PodTemplate. The configuration file produced through the configuration\ntemplate will be mounted to the corresponding volume. Must be a DNS_LABEL name.\nThe volume name must be defined in podSpec.containers[*].volumeMounts."
-                        maxLength: 63
-                        pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
-                        type: "string"
-                    required:
-                      - "name"
-                    type: "object"
-                  type: "array"
-                  x-kubernetes-list-map-keys:
-                    - "name"
-                  x-kubernetes-list-type: "map"
-                configs2:
                   description: "Specifies the config file templates and volume mount parameters used by the Component.\n\n\nThis field specifies a list of templates that will be rendered into Component containers' config files.\nEach template is represented as a ConfigMap and may contain multiple config files, with each file being a key in the ConfigMap.\n\n\nThis field is immutable."
                   items:
                     properties:
