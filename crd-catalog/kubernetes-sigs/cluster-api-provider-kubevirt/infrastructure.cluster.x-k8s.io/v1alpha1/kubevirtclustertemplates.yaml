@@ -47,7 +47,7 @@ spec:
                         labels:
                           additionalProperties:
                             type: "string"
-                          description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                          description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
                           type: "object"
                       type: "object"
                     spec:

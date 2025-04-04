@@ -26,6 +26,14 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `MachinePool`
 - `Machine`
 - `MachineSet`
+## cluster.x-k8s.io/v1beta2
+- `ClusterClass`
+- `Cluster`
+- `MachineDeployment`
+- `MachineHealthCheck`
+- `MachinePool`
+- `Machine`
+- `MachineSet`
 */
 #[cfg(feature = "v1alpha3")]
 pub mod v1alpha3;
@@ -33,3 +41,5 @@ pub mod v1alpha3;
 pub mod v1alpha4;
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;
+#[cfg(feature = "v1beta2")]
+pub mod v1beta2;

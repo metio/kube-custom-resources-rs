@@ -1712,7 +1712,7 @@ spec:
                                                 description: "InterfaceSRIOV connects to a given network by passing-through an SR-IOV PCI device via vfio."
                                                 type: "object"
                                               state:
-                                                description: "State represents the requested operational state of the interface.\nThe (only) value supported is `absent`, expressing a request to remove the interface."
+                                                description: "State represents the requested operational state of the interface.\nThe supported values are:\n`absent`, expressing a request to remove the interface.\n`down`, expressing a request to set the link down.\n`up`, expressing a request to set the link up.\nEmpty value functions as `up`."
                                                 type: "string"
                                               tag:
                                                 description: "If specified, the virtual network interface address and its tag will be provided to the guest via config drive"
@@ -1998,6 +1998,14 @@ spec:
                                         uuid:
                                           description: "UUID reported by the vmi bios.\nDefaults to a random generated uid."
                                           type: "string"
+                                      type: "object"
+                                    ioThreads:
+                                      description: "IOThreads specifies the IOThreads options."
+                                      properties:
+                                        supplementalPoolThreadCount:
+                                          description: "SupplementalPoolThreadCount specifies how many iothreads are allocated for the supplementalPool policy."
+                                          format: "int32"
+                                          type: "integer"
                                       type: "object"
                                     ioThreadsPolicy:
                                       description: "Controls whether or not disks will share IOThreads.\nOmitting IOThreadsPolicy disables use of IOThreads.\nOne of: shared, auto"
@@ -2538,7 +2546,7 @@ spec:
                                             description: "Hotpluggable indicates whether the volume can be hotplugged and hotunplugged."
                                             type: "boolean"
                                           name:
-                                            description: "Name of both the DataVolume and the PVC in the same namespace.\nAfter PVC population the DataVolume is garbage collected by default."
+                                            description: "Name of both the DataVolume and the PVC in the same namespace."
                                             type: "string"
                                         required:
                                           - "name"
@@ -2755,10 +2763,18 @@ spec:
                     description: "MachineAddress contains information for the node's address."
                     properties:
                       address:
-                        description: "The machine address."
+                        description: "address is the machine address."
+                        maxLength: 256
+                        minLength: 1
                         type: "string"
                       type:
-                        description: "Machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS."
+                        description: "type is the machine address type, one of Hostname, ExternalIP, InternalIP, ExternalDNS or InternalDNS."
+                        enum:
+                          - "Hostname"
+                          - "ExternalIP"
+                          - "InternalIP"
+                          - "ExternalDNS"
+                          - "InternalDNS"
                         type: "string"
                     required:
                       - "address"
@@ -2771,23 +2787,30 @@ spec:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
                       lastTransitionTime:
-                        description: "Last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed. If that is not known, then using the time when\nthe API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "A human readable message indicating details about the transition.\nThis field may be empty."
+                        description: "message is a human readable message indicating details about the transition.\nThis field may be empty."
+                        maxLength: 10240
+                        minLength: 1
                         type: "string"
                       reason:
-                        description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
+                        description: "reason is the reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
+                        maxLength: 256
+                        minLength: 1
                         type: "string"
                       severity:
                         description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        maxLength: 32
                         type: "string"
                       status:
                         description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
                         description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        maxLength: 256
+                        minLength: 1
                         type: "string"
                     required:
                       - "lastTransitionTime"

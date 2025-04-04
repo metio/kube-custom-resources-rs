@@ -73,7 +73,7 @@ spec:
                   description: "BPFConntrackTimers overrides the default values for the specified conntrack timer if\nset. Each value can be either a duration or `Auto` to pick the value from\na Linux conntrack timeout.\n\nConfigurable timers are: CreationGracePeriod, TCPSynSent,\nTCPEstablished, TCPFinsSeen, TCPResetSeen, UDPTimeout, GenericTimeout,\nICMPTimeout.\n\nUnset values are replaced by the default values with a warning log for\nincorrect values."
                   properties:
                     creationGracePeriod:
-                      description: " CreationGracePeriod gives a generic grace period to new connection\n before they are considered for cleanup [Default: 10s]."
+                      description: "CreationGracePeriod gives a generic grace period to new connections\nbefore they are considered for cleanup [Default: 10s]."
                       pattern: "^(([0-9]*(\\.[0-9]*)?(ms|s|h|m|us)+)+|Auto)$"
                       type: "string"
                     genericTimeout:

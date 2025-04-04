@@ -115,7 +115,7 @@ spec:
                   items:
                     description: "Amazon Elastic Graphics reached end of life on January 8, 2024.\n\nA specification for an Elastic Graphics accelerator."
                     properties:
-                      type_:
+                      type:
                         type: "string"
                     type: "object"
                   type: "array"

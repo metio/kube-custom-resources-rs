@@ -28,7 +28,8 @@ k8s-openapi = { workspace = true, features = ["v1_31"] }
 features = ["k8s-openapi/v1_31"]
 
 [features]
-default = ["v1alpha3", "v1alpha4", "v1beta1"]
+default = ["v1alpha3", "v1alpha4", "v1beta1", "v1beta2"]
 v1alpha3 = []
 v1alpha4 = []
 v1beta1 = []
+v1beta2 = []
