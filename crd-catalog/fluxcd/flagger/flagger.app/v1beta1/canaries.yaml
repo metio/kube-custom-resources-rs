@@ -264,6 +264,9 @@ spec:
                           default: 86400
                           description: "MaxAge indicates the number of seconds until the session affinity cookie will expire."
                           type: "number"
+                        primaryCookieName:
+                          description: "CookieName is the key that will be used for the session affinity cookie."
+                          type: "string"
                       required:
                         - "cookieName"
                       type: "object"
@@ -1158,7 +1161,6 @@ spec:
                   type: "object"
               required:
                 - "targetRef"
-                - "service"
                 - "analysis"
               type: "object"
             status:

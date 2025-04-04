@@ -37,6 +37,8 @@ spec:
           jsonPath: ".status.lastSyncedAt"
           name: "LastSyncedAt"
           type: "string"
+      deprecated: true
+      deprecationWarning: "longhorn.io/v1beta1 BackupVolume is deprecated; use longhorn.io/v1beta2 BackupVolume instead"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -55,7 +57,7 @@ spec:
             status:
               x-kubernetes-preserve-unknown-fields: true
           type: "object"
-      served: true
+      served: false
       storage: false
       subresources:
         status: {}

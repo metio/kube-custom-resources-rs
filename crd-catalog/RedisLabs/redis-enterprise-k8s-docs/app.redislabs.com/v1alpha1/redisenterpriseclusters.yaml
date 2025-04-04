@@ -20,6 +20,9 @@ spec:
         - jsonPath: ".spec.nodes"
           name: "Nodes"
           type: "string"
+        - jsonPath: ".status.licenseStatus.shardsUsage"
+          name: "Shards"
+          type: "string"
         - jsonPath: ".spec.redisEnterpriseImageSpec.versionTag"
           name: "Version"
           type: "string"
@@ -31,9 +34,6 @@ spec:
           type: "string"
         - jsonPath: ".status.licenseStatus.licenseState"
           name: "License State"
-          type: "string"
-        - jsonPath: ".status.licenseStatus.shardsLimit"
-          name: "Shards Limit"
           type: "string"
         - jsonPath: ".status.licenseStatus.expirationDate"
           name: "License Expiration Date"
@@ -524,8 +524,6 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
-                podSecurityPolicyName:
-                  type: "string"
                 podStartingPolicy:
                   properties:
                     enabled:
@@ -3338,6 +3336,12 @@ spec:
                   type: "object"
                 servicesRiggerSpec:
                   properties:
+                    databaseServicePortPolicy:
+                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
+                      enum:
+                        - "DatabasePortForward"
+                        - "RedisDefaultPort"
+                      type: "string"
                     databaseServiceType:
                       type: "string"
                     extraEnvVars:
@@ -7190,10 +7194,32 @@ spec:
                       type: "string"
                     expirationDate:
                       type: "string"
+                    features:
+                      items:
+                        type: "string"
+                      type: "array"
+                    flashShards:
+                      format: "int32"
+                      type: "integer"
+                    flashShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     licenseState:
                       type: "string"
+                    owner:
+                      type: "string"
+                    ramShards:
+                      format: "int32"
+                      type: "integer"
+                    ramShardsLimit:
+                      format: "int32"
+                      nullable: true
+                      type: "integer"
                     shardsLimit:
                       type: "integer"
+                    shardsUsage:
+                      type: "string"
                   type: "object"
                 managedAPIs:
                   properties:

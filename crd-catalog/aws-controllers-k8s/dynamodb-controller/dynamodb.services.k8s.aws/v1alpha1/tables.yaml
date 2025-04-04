@@ -66,6 +66,9 @@ spec:
                     pointInTimeRecoveryEnabled:
                       type: "boolean"
                   type: "object"
+                contributorInsights:
+                  description: "Represents the contributor insights action."
+                  type: "string"
                 deletionProtectionEnabled:
                   description: "Indicates whether deletion protection is to be enabled (true) or disabled\n(false) on the table."
                   type: "boolean"
@@ -200,6 +203,40 @@ spec:
                 tableName:
                   description: "The name of the table to create. You can also provide the Amazon Resource\nName (ARN) of the table in this parameter."
                   type: "string"
+                tableReplicas:
+                  items:
+                    description: "Represents a replica to be created."
+                    properties:
+                      globalSecondaryIndexes:
+                        items:
+                          description: "Represents the properties of a replica global secondary index."
+                          properties:
+                            indexName:
+                              type: "string"
+                            provisionedThroughputOverride:
+                              description: "Replica-specific provisioned throughput settings. If not specified, uses\nthe source table's provisioned throughput settings."
+                              properties:
+                                readCapacityUnits:
+                                  format: "int64"
+                                  type: "integer"
+                              type: "object"
+                          type: "object"
+                        type: "array"
+                      kmsMasterKeyID:
+                        type: "string"
+                      provisionedThroughputOverride:
+                        description: "Replica-specific provisioned throughput settings. If not specified, uses\nthe source table's provisioned throughput settings."
+                        properties:
+                          readCapacityUnits:
+                            format: "int64"
+                            type: "integer"
+                        type: "object"
+                      regionName:
+                        type: "string"
+                      tableClassOverride:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 tags:
                   description: "A list of key-value pairs to label the table. For more information, see Tagging\nfor DynamoDB (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Tagging.html)."
                   items:

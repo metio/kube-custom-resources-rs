@@ -82,6 +82,30 @@ spec:
                 name:
                   description: "The name of the alias."
                   type: "string"
+                permissions:
+                  description: "Permissions configures a set of Lambda permissions to grant to an alias."
+                  items:
+                    properties:
+                      action:
+                        type: "string"
+                      eventSourceToken:
+                        type: "string"
+                      functionURLAuthType:
+                        type: "string"
+                      principal:
+                        type: "string"
+                      principalOrgID:
+                        type: "string"
+                      revisionID:
+                        type: "string"
+                      sourceARN:
+                        type: "string"
+                      sourceAccount:
+                        type: "string"
+                      statementID:
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 provisionedConcurrencyConfig:
                   description: "Configures provisioned concurrency to a function's alias\n\n- ProvisionedConcurrentExecutions\nThe amount of provisioned concurrency to allocate for the version or alias.\nMinimum value of 1 is required"
                   properties:

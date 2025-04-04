@@ -156,7 +156,7 @@ spec:
                       description: "TLSConfig Config to use for accessing apiserver."
                       properties:
                         ca:
-                          description: "Stuct containing the CA cert to use for the targets."
+                          description: "Struct containing the CA cert to use for the targets."
                           properties:
                             configMap:
                               description: "ConfigMap containing data to use for the targets."
@@ -551,6 +551,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                daemonSetMode:
+                  description: "DaemonSetMode enables DaemonSet deployment mode instead of Deployment.\nSupports only VMPodScrape\n(available from v0.55.0).\nCannot be used with statefulMode"
+                  type: "boolean"
                 disableAutomountServiceAccountToken:
                   description: "DisableAutomountServiceAccountToken whether to disable serviceAccount auto mount by Kubernetes (available from v0.54.0).\nOperator will conditionally create volumes and volumeMounts for containers if it requires k8s API access.\nFor example, vmagent and vm-config-reloader requires k8s API access.\nOperator creates volumes with name: \"kube-api-access\", which can be used as volumeMount for extraContainers if needed.\nAnd also adds VolumeMounts at /var/run/secrets/kubernetes.io/serviceaccount."
                   type: "boolean"
@@ -592,6 +595,9 @@ spec:
                 dnsPolicy:
                   description: "DNSPolicy sets DNS policy for the pod"
                   type: "string"
+                enableKubernetesAPISelectors:
+                  description: "EnableKubernetesAPISelectors instructs vmagent to use CRD scrape objects spec.selectors for\nKubernetes API list and watch requests.\nhttps://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#list-and-watch-filtering\nIt could be useful to reduce Kubernetes API server resource usage for serving less than 100 CRD scrape objects in total."
+                  type: "boolean"
                 enforcedNamespaceLabel:
                   description: "EnforcedNamespaceLabel enforces adding a namespace label of origin for each alert\nand metric that is user created. The label value will always be the namespace of the object that is\nbeing created."
                   type: "string"
@@ -620,6 +626,40 @@ spec:
                       - "name"
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
+                  type: "array"
+                extraEnvsFrom:
+                  description: "ExtraEnvsFrom defines source of env variables for the application container\ncould either be secret or configmap"
+                  items:
+                    description: "EnvFromSource represents the source of a set of ConfigMaps"
+                    properties:
+                      configMapRef:
+                        description: "The ConfigMap to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the ConfigMap must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      prefix:
+                        description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                        type: "string"
+                      secretRef:
+                        description: "The Secret to select from"
+                        properties:
+                          name:
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            type: "string"
+                          optional:
+                            description: "Specify whether the Secret must be defined"
+                            type: "boolean"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                    type: "object"
                   type: "array"
                 hostAliases:
                   description: "HostAliases provides mapping for ip and hostname,\nthat would be propagated to pod,\ncannot be used with HostNetwork."
@@ -1403,8 +1443,8 @@ spec:
                           type: "object"
                         type: "array"
                       maxDiskUsage:
-                        description: "MaxDiskUsage defines the maximum file-based buffer size in bytes for -remoteWrite.url"
-                        type: "string"
+                        description: "MaxDiskUsage defines the maximum file-based buffer size in bytes for the given remoteWrite\nIt overrides global configuration defined at remoteWriteSettings.maxDiskUsagePerURL"
+                        x-kubernetes-preserve-unknown-fields: true
                       oauth2:
                         description: "OAuth2 defines auth configuration"
                         properties:
@@ -1471,11 +1511,17 @@ spec:
                               type: "string"
                             description: "Parameters to append to the token URL"
                             type: "object"
+                          proxy_url:
+                            description: "The proxy URL for token_url connection\n( available from v0.55.0).\nIs only supported by Scrape objects family"
+                            type: "string"
                           scopes:
                             description: "OAuth2 scopes used for the token request"
                             items:
                               type: "string"
                             type: "array"
+                          tls_config:
+                            description: "TLSConfig for token_url connection\n( available from v0.55.0).\nIs only supported by Scrape objects family"
+                            x-kubernetes-preserve-unknown-fields: true
                           token_url:
                             description: "The URL to fetch the token from"
                             minLength: 1
@@ -1695,7 +1741,7 @@ spec:
                         description: "TLSConfig describes tls configuration for remote write target"
                         properties:
                           ca:
-                            description: "Stuct containing the CA cert to use for the targets."
+                            description: "Struct containing the CA cert to use for the targets."
                             properties:
                               configMap:
                                 description: "ConfigMap containing data to use for the targets."
@@ -1845,8 +1891,7 @@ spec:
                       type: "integer"
                     maxDiskUsagePerURL:
                       description: "The maximum file-based buffer size in bytes at -remoteWrite.tmpDataPath"
-                      format: "int64"
-                      type: "integer"
+                      x-kubernetes-preserve-unknown-fields: true
                     queues:
                       description: "The number of concurrent queues"
                       format: "int32"
