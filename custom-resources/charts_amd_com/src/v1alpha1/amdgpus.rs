@@ -8,5 +8,4 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
-use self::prelude::*;
 
