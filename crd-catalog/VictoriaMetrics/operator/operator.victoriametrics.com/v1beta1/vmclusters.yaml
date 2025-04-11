@@ -119,7 +119,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 requestsLoadBalancer:
-                  description: "RequestsLoadBalancer configures load-balancing for vminsert and vmselect requests\nit helps to evenly spread load across pods\nusually it's not possible with kubernetes TCP based service"
+                  description: "RequestsLoadBalancer configures load-balancing for vminsert and vmselect requests.\nIt helps to evenly spread load across pods.\nUsually it's not possible with Kubernetes TCP-based services.\nSee more [here](https://docs.victoriametrics.com/operator/resources/vmcluster/#requests-load-balancing)"
                   properties:
                     disableInsertBalancing:
                       type: "boolean"

@@ -85,7 +85,7 @@ pub struct ACLStatus {
     /// A list of clusters associated with the ACL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<String>>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

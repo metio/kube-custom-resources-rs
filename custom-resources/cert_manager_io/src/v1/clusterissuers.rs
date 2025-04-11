@@ -2933,6 +2933,10 @@ pub struct ClusterIssuerVault {
     pub path: String,
     /// Server is the connection address for the Vault server, e.g: "https://vault.example.com:8200".
     pub server: String,
+    /// ServerName is used to verify the hostname on the returned certificates
+    /// by the Vault server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
 }
 
 /// Auth configures how cert-manager authenticates with the Vault server.

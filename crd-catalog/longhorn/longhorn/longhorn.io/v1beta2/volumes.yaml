@@ -84,9 +84,6 @@ spec:
                     - "rwo"
                     - "rwx"
                   type: "string"
-                backendStoreDriver:
-                  description: "Deprecated:Replaced by field `dataEngine`.'"
-                  type: "string"
                 backingImage:
                   type: "string"
                 backupCompressionMethod:
@@ -119,9 +116,6 @@ spec:
                   type: "array"
                 encrypted:
                   type: "boolean"
-                engineImage:
-                  description: "Deprecated: Replaced by field `image`."
-                  type: "string"
                 freezeFilesystemForSnapshot:
                   description: "Setting that freezes the filesystem on the root partition before a snapshot is created."
                   enum:
@@ -308,9 +302,6 @@ spec:
                 lastDegradedAt:
                   type: "string"
                 ownerID:
-                  type: "string"
-                pendingNodeID:
-                  description: "Deprecated."
                   type: "string"
                 remountRequestedAt:
                   type: "string"

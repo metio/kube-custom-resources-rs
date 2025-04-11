@@ -1703,7 +1703,7 @@ pub struct PrometheusAlertingAlertmanagers {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Prefix for the HTTP path alerts are pushed to.
@@ -1714,12 +1714,12 @@ pub struct PrometheusAlertingAlertmanagers {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusAlertingAlertmanagersProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -2134,12 +2134,12 @@ pub struct PrometheusAlertingAlertmanagersTlsConfig {
     pub key_secret: Option<PrometheusAlertingAlertmanagersTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusAlertingAlertmanagersTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusAlertingAlertmanagersTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -2436,12 +2436,12 @@ pub struct PrometheusApiserverConfigTlsConfig {
     pub key_secret: Option<PrometheusApiserverConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusApiserverConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusApiserverConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5518,7 +5518,7 @@ pub struct PrometheusRemoteRead {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
@@ -5531,12 +5531,12 @@ pub struct PrometheusRemoteRead {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteReadProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5673,18 +5673,18 @@ pub struct PrometheusRemoteReadOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteReadOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5801,12 +5801,12 @@ pub struct PrometheusRemoteReadOauth2TlsConfig {
     pub key_secret: Option<PrometheusRemoteReadOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteReadOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusRemoteReadOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5992,12 +5992,12 @@ pub struct PrometheusRemoteReadTlsConfig {
     pub key_secret: Option<PrometheusRemoteReadTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteReadTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusRemoteReadTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -6144,14 +6144,14 @@ pub enum PrometheusRemoteReadTlsConfigMinVersion {
 pub struct PrometheusRemoteWrite {
     /// Authorization section for the URL.
     /// 
-    /// It requires Prometheus >= v2.26.0.
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
     /// 
     /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<PrometheusRemoteWriteAuthorization>,
     /// AzureAD for the URL.
     /// 
-    /// It requires Prometheus >= v2.45.0.
+    /// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
     /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAd")]
@@ -6177,13 +6177,13 @@ pub struct PrometheusRemoteWrite {
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// 
-    /// It requires Prometheus >= v2.26.0.
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Custom HTTP headers to be sent along with each remote write request.
     /// Be aware that headers that are set by Prometheus itself can't be overwritten.
     /// 
-    /// It requires Prometheus >= v2.25.0.
+    /// It requires Prometheus >= v2.25.0 or Thanos >= v0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
     /// The Remote Write message's version to use when writing to the endpoint.
@@ -6197,7 +6197,7 @@ pub struct PrometheusRemoteWrite {
     /// Before setting this field, consult with your remote storage provider
     /// what message version it supports.
     /// 
-    /// It requires Prometheus >= v2.54.0.
+    /// It requires Prometheus >= v2.54.0 or Thanos >= v0.37.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
     pub message_version: Option<PrometheusRemoteWriteMessageVersion>,
     /// MetadataConfig configures the sending of series metadata to the remote storage.
@@ -6206,19 +6206,19 @@ pub struct PrometheusRemoteWrite {
     /// The name of the remote write queue, it must be unique if specified. The
     /// name is used in metrics and logging in order to differentiate queues.
     /// 
-    /// It requires Prometheus >= v2.15.0.
+    /// It requires Prometheus >= v2.15.0 or Thanos >= 0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// OAuth2 configuration for the URL.
     /// 
-    /// It requires Prometheus >= v2.27.0.
+    /// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
     /// 
     /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6226,12 +6226,12 @@ pub struct PrometheusRemoteWrite {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteWriteProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -6254,25 +6254,25 @@ pub struct PrometheusRemoteWrite {
     /// Note: The connection timeout applies to the entire resolution and connection process.
     ///       If disabled, the timeout is distributed across all connection attempts.
     /// 
-    /// It requires Prometheus >= v3.1.0.
+    /// It requires Prometheus >= v3.1.0 or Thanos >= v0.38.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundRobinDNS")]
     pub round_robin_dns: Option<bool>,
     /// Enables sending of exemplars over remote write. Note that
     /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
     /// option for exemplars to be scraped in the first place.
     /// 
-    /// It requires Prometheus >= v2.27.0.
+    /// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendExemplars")]
     pub send_exemplars: Option<bool>,
     /// Enables sending of native histograms, also known as sparse histograms
     /// over remote write.
     /// 
-    /// It requires Prometheus >= v2.40.0.
+    /// It requires Prometheus >= v2.40.0 or Thanos >= v0.30.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendNativeHistograms")]
     pub send_native_histograms: Option<bool>,
     /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
     /// 
-    /// It requires Prometheus >= v2.26.0.
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
     /// 
     /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6289,7 +6289,7 @@ pub struct PrometheusRemoteWrite {
 
 /// Authorization section for the URL.
 /// 
-/// It requires Prometheus >= v2.26.0.
+/// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
 /// 
 /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6328,7 +6328,7 @@ pub struct PrometheusRemoteWriteAuthorizationCredentials {
 
 /// AzureAD for the URL.
 /// 
-/// It requires Prometheus >= v2.45.0.
+/// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6343,21 +6343,21 @@ pub struct PrometheusRemoteWriteAzureAd {
     /// OAuth defines the oauth config that is being used to authenticate.
     /// Cannot be set at the same time as `managedIdentity` or `sdk`.
     /// 
-    /// It requires Prometheus >= v2.48.0.
+    /// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PrometheusRemoteWriteAzureAdOauth>,
     /// SDK defines the Azure SDK config that is being used to authenticate.
     /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
     /// Cannot be set at the same time as `oauth` or `managedIdentity`.
     /// 
-    /// It requires Prometheus >= 2.52.0.
+    /// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sdk: Option<PrometheusRemoteWriteAzureAdSdk>,
 }
 
 /// AzureAD for the URL.
 /// 
-/// It requires Prometheus >= v2.45.0.
+/// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6379,7 +6379,7 @@ pub struct PrometheusRemoteWriteAzureAdManagedIdentity {
 /// OAuth defines the oauth config that is being used to authenticate.
 /// Cannot be set at the same time as `managedIdentity` or `sdk`.
 /// 
-/// It requires Prometheus >= v2.48.0.
+/// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteAzureAdOauth {
     /// `clientID` is the clientId of the Azure Active Directory application that is being used to authenticate.
@@ -6414,7 +6414,7 @@ pub struct PrometheusRemoteWriteAzureAdOauthClientSecret {
 /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
 /// Cannot be set at the same time as `oauth` or `managedIdentity`.
 /// 
-/// It requires Prometheus >= 2.52.0.
+/// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteAzureAdSdk {
     /// `tenantId` is the tenant ID of the azure active directory application that is being used to authenticate.
@@ -6486,6 +6486,11 @@ pub enum PrometheusRemoteWriteMessageVersion {
 /// MetadataConfig configures the sending of series metadata to the remote storage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusRemoteWriteMetadataConfig {
+    /// MaxSamplesPerSend is the maximum number of metadata samples per send.
+    /// 
+    /// It requires Prometheus >= v2.29.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSamplesPerSend")]
+    pub max_samples_per_send: Option<i32>,
     /// Defines whether metric metadata is sent to the remote storage or not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send: Option<bool>,
@@ -6496,7 +6501,7 @@ pub struct PrometheusRemoteWriteMetadataConfig {
 
 /// OAuth2 configuration for the URL.
 /// 
-/// It requires Prometheus >= v2.27.0.
+/// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
 /// 
 /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6517,18 +6522,18 @@ pub struct PrometheusRemoteWriteOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PrometheusRemoteWriteOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -6645,12 +6650,12 @@ pub struct PrometheusRemoteWriteOauth2TlsConfig {
     pub key_secret: Option<PrometheusRemoteWriteOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteWriteOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusRemoteWriteOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -6845,14 +6850,14 @@ pub struct PrometheusRemoteWriteQueueConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
     pub retry_on_rate_limit: Option<bool>,
     /// SampleAgeLimit drops samples older than the limit.
-    /// It requires Prometheus >= v2.50.0.
+    /// It requires Prometheus >= v2.50.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleAgeLimit")]
     pub sample_age_limit: Option<String>,
 }
 
 /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
 /// 
-/// It requires Prometheus >= v2.26.0.
+/// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
 /// 
 /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6938,12 +6943,12 @@ pub struct PrometheusRemoteWriteTlsConfig {
     pub key_secret: Option<PrometheusRemoteWriteTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusRemoteWriteTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusRemoteWriteTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -7648,12 +7653,12 @@ pub struct PrometheusScrapeClassesTlsConfig {
     pub key_secret: Option<PrometheusScrapeClassesTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusScrapeClassesTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusScrapeClassesTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -9063,12 +9068,12 @@ pub struct PrometheusThanosGrpcServerTlsConfig {
     pub key_secret: Option<PrometheusThanosGrpcServerTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusThanosGrpcServerTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusThanosGrpcServerTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -9635,12 +9640,12 @@ pub struct PrometheusTracingConfigTlsConfig {
     pub key_secret: Option<PrometheusTracingConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PrometheusTracingConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PrometheusTracingConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.

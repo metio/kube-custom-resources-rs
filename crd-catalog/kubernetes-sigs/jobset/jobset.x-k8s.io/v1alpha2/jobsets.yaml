@@ -5285,7 +5285,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 terminalState:
-                  description: "TerminalState the state of the JobSet when it finishes execution.\nIt can be either Complete or Failed. Otherwise, it is empty by default."
+                  description: "TerminalState the state of the JobSet when it finishes execution.\nIt can be either Completed or Failed. Otherwise, it is empty by default."
                   type: "string"
               type: "object"
           type: "object"

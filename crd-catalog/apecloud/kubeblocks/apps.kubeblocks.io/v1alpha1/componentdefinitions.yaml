@@ -131,6 +131,7 @@ spec:
                             - "vscale"
                             - "hscale"
                             - "tls"
+                            - "shardingHScale"
                           type: "string"
                         type: "array"
                         x-kubernetes-list-type: "set"
@@ -7600,6 +7601,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -7679,6 +7683,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -7763,6 +7770,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -7842,6 +7852,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:
@@ -7923,6 +7936,9 @@ spec:
                                         description: "The format of the value that the operator will use to compose values from multiple components."
                                         type: "string"
                                     type: "object"
+                                  requireAllComponentObjects:
+                                    description: "RequireAllComponentObjects controls whether all component objects must exist before resolving.\nIf set to true, resolving will only proceed if all component objects are present."
+                                    type: "boolean"
                                   strategy:
                                     description: "Define the strategy for handling multiple cluster objects."
                                     enum:

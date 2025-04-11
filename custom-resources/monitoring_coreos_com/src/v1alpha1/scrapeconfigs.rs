@@ -31,6 +31,10 @@ pub struct ScrapeConfigSpec {
     /// ConsulSDConfigs defines a list of Consul service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consulSDConfigs")]
     pub consul_sd_configs: Option<Vec<ScrapeConfigConsulSdConfigs>>,
+    /// Whether to convert all scraped classic histograms into a native histogram with custom buckets.
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
+    pub convert_classic_histograms_to_nhcb: Option<bool>,
     /// DigitalOceanSDConfigs defines a list of DigitalOcean service discovery configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalOceanSDConfigs")]
     pub digital_ocean_sd_configs: Option<Vec<ScrapeConfigDigitalOceanSdConfigs>>,
@@ -142,7 +146,7 @@ pub struct ScrapeConfigSpec {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// NomadSDConfigs defines a list of Nomad service discovery configurations.
@@ -163,12 +167,12 @@ pub struct ScrapeConfigSpec {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -302,7 +306,7 @@ pub struct ScrapeConfigAzureSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration to authenticate against the target HTTP endpoint.
@@ -316,12 +320,12 @@ pub struct ScrapeConfigAzureSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigAzureSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -476,18 +480,18 @@ pub struct ScrapeConfigAzureSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigAzureSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -604,12 +608,12 @@ pub struct ScrapeConfigAzureSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigAzureSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigAzureSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigAzureSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -786,12 +790,12 @@ pub struct ScrapeConfigAzureSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigAzureSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigAzureSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigAzureSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -1023,7 +1027,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Node metadata key/value pairs to filter nodes for a given service.
@@ -1045,12 +1049,12 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -1189,18 +1193,18 @@ pub struct ScrapeConfigConsulSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -1317,12 +1321,12 @@ pub struct ScrapeConfigConsulSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -1509,12 +1513,12 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigConsulSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -1691,7 +1695,7 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -1704,12 +1708,12 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -1776,18 +1780,18 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -1904,12 +1908,12 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -2086,12 +2090,12 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -2308,7 +2312,7 @@ pub struct ScrapeConfigDockerSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -2321,12 +2325,12 @@ pub struct ScrapeConfigDockerSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -2451,18 +2455,18 @@ pub struct ScrapeConfigDockerSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -2579,12 +2583,12 @@ pub struct ScrapeConfigDockerSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -2761,12 +2765,12 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigDockerSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -2937,7 +2941,7 @@ pub struct ScrapeConfigDockerSwarmSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -2951,12 +2955,12 @@ pub struct ScrapeConfigDockerSwarmSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -3082,18 +3086,18 @@ pub struct ScrapeConfigDockerSwarmSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -3210,12 +3214,12 @@ pub struct ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -3401,12 +3405,12 @@ pub struct ScrapeConfigDockerSwarmSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -3578,7 +3582,7 @@ pub struct ScrapeConfigEc2SdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// The port to scrape metrics from. If using the public IP address, this must
@@ -3588,12 +3592,12 @@ pub struct ScrapeConfigEc2SdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEc2SdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -3695,12 +3699,12 @@ pub struct ScrapeConfigEc2SdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigEc2SdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEc2SdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEc2SdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -3864,7 +3868,7 @@ pub struct ScrapeConfigEurekaSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -3874,12 +3878,12 @@ pub struct ScrapeConfigEurekaSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -3996,18 +4000,18 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -4124,12 +4128,12 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -4306,12 +4310,12 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigEurekaSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -4539,7 +4543,7 @@ pub struct ScrapeConfigHetznerSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -4552,12 +4556,12 @@ pub struct ScrapeConfigHetznerSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -4676,18 +4680,18 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -4804,12 +4808,12 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5001,12 +5005,12 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigHetznerSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5170,7 +5174,7 @@ pub struct ScrapeConfigHttpSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration to authenticate against the target HTTP endpoint.
@@ -5180,12 +5184,12 @@ pub struct ScrapeConfigHttpSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHttpSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5306,18 +5310,18 @@ pub struct ScrapeConfigHttpSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHttpSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5434,12 +5438,12 @@ pub struct ScrapeConfigHttpSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5616,12 +5620,12 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigHttpSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -5781,7 +5785,7 @@ pub struct ScrapeConfigIonosSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Configure whether to enable OAuth2.
@@ -5793,12 +5797,12 @@ pub struct ScrapeConfigIonosSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigIonosSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5863,18 +5867,18 @@ pub struct ScrapeConfigIonosSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigIonosSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -5991,12 +5995,12 @@ pub struct ScrapeConfigIonosSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigIonosSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigIonosSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigIonosSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -6173,12 +6177,12 @@ pub struct ScrapeConfigIonosSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigIonosSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -6356,7 +6360,7 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -6366,12 +6370,12 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -6517,18 +6521,18 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -6645,12 +6649,12 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -6866,12 +6870,12 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -7038,7 +7042,7 @@ pub struct ScrapeConfigKumaSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -7048,12 +7052,12 @@ pub struct ScrapeConfigKumaSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKumaSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -7170,18 +7174,18 @@ pub struct ScrapeConfigKumaSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKumaSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -7298,12 +7302,12 @@ pub struct ScrapeConfigKumaSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -7480,12 +7484,12 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigKumaSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -7654,7 +7658,7 @@ pub struct ScrapeConfigLightSailSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth2.0 configuration.
@@ -7668,12 +7672,12 @@ pub struct ScrapeConfigLightSailSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -7816,18 +7820,18 @@ pub struct ScrapeConfigLightSailSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -7944,12 +7948,12 @@ pub struct ScrapeConfigLightSailSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -8143,12 +8147,12 @@ pub struct ScrapeConfigLightSailSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigLightSailSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -8306,7 +8310,7 @@ pub struct ScrapeConfigLinodeSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -8319,12 +8323,12 @@ pub struct ScrapeConfigLinodeSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -8396,18 +8400,18 @@ pub struct ScrapeConfigLinodeSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -8524,12 +8528,12 @@ pub struct ScrapeConfigLinodeSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -8706,12 +8710,12 @@ pub struct ScrapeConfigLinodeSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigLinodeSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -8970,7 +8974,7 @@ pub struct ScrapeConfigNomadSdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth 2.0 configuration.
@@ -8980,12 +8984,12 @@ pub struct ScrapeConfigNomadSdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -9107,18 +9111,18 @@ pub struct ScrapeConfigNomadSdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -9235,12 +9239,12 @@ pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -9417,12 +9421,12 @@ pub struct ScrapeConfigNomadSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigNomadSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -9582,18 +9586,18 @@ pub struct ScrapeConfigOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -9710,12 +9714,12 @@ pub struct ScrapeConfigOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -10010,12 +10014,12 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -10257,7 +10261,7 @@ pub struct ScrapeConfigPuppetDbsdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// Optional OAuth2.0 configuration.
@@ -10270,12 +10274,12 @@ pub struct ScrapeConfigPuppetDbsdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -10397,18 +10401,18 @@ pub struct ScrapeConfigPuppetDbsdConfigsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -10525,12 +10529,12 @@ pub struct ScrapeConfigPuppetDbsdConfigsOauth2TlsConfig {
     pub key_secret: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -10707,12 +10711,12 @@ pub struct ScrapeConfigPuppetDbsdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -10968,7 +10972,7 @@ pub struct ScrapeConfigScalewaySdConfigs {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// The port to scrape metrics from.
@@ -10980,12 +10984,12 @@ pub struct ScrapeConfigScalewaySdConfigs {
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigScalewaySdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -11069,12 +11073,12 @@ pub struct ScrapeConfigScalewaySdConfigsTlsConfig {
     pub key_secret: Option<ScrapeConfigScalewaySdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -11252,12 +11256,12 @@ pub struct ScrapeConfigTlsConfig {
     pub key_secret: Option<ScrapeConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.

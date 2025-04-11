@@ -27,7 +27,7 @@ spec:
           name: "RELEASEVERSION"
           priority: 1
           type: "string"
-        - jsonPath: ".spec.scalingConfig.desiredSize"
+        - jsonPath: ".status.desiredSize"
           name: "DESIREDSIZE"
           type: "integer"
         - jsonPath: ".spec.scalingConfig.minSize"
@@ -65,6 +65,9 @@ spec:
                 amiType:
                   description: "The AMI type for your node group. If you specify launchTemplate, and your\nlaunch template uses a custom AMI, then don't specify amiType, or the node\ngroup deployment will fail. If your launch template uses a Windows custom\nAMI, then add eks:kube-proxy-windows to your Windows nodes rolearn in the\naws-auth ConfigMap. For more information about using launch templates with\nAmazon EKS, see Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 capacityType:
                   description: "The capacity type for your node group."
                   type: "string"
@@ -74,6 +77,9 @@ spec:
                 clusterName:
                   description: "The name of your cluster."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 clusterRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
@@ -98,6 +104,9 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 labels:
                   additionalProperties:
                     type: "string"
@@ -116,6 +125,9 @@ spec:
                 name:
                   description: "The unique name to give your node group."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 nodeRole:
                   description: "The Amazon Resource Name (ARN) of the IAM role to associate with your node\ngroup. The Amazon EKS worker node kubelet daemon makes calls to Amazon Web\nServices APIs on your behalf. Nodes receive permissions for these API calls\nthrough an IAM instance profile and associated policies. Before you can launch\nnodes and register them into a cluster, you must create an IAM role for those\nnodes to use when they are launched. For more information, see Amazon EKS\nnode IAM role (https://docs.aws.amazon.com/eks/latest/userguide/create-node-role.html)\nin the Amazon EKS User Guide . If you specify launchTemplate, then don't\nspecify IamInstanceProfile (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_IamInstanceProfile.html)\nin your launch template, or the node group deployment will fail. For more\ninformation about using launch templates with Amazon EKS, see Customizing\nmanaged nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   type: "string"
@@ -283,6 +295,9 @@ spec:
                   description: "The Unix epoch timestamp at object creation."
                   format: "date-time"
                   type: "string"
+                desiredSize:
+                  format: "int64"
+                  type: "integer"
                 health:
                   description: "The health status of the node group. If there are issues with your node group's\nhealth, they are listed here."
                   properties:

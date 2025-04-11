@@ -292,6 +292,7 @@ pub struct ClusterComponentSpecs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsResources>,
     /// Specifies the scheduling policy for the Component.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterComponentSpecsSchedulingPolicy>,
     /// Specifies the name of the ServiceAccount required by the running Component.
@@ -903,7 +904,8 @@ pub struct ClusterComponentSpecsInstances {
     /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsInstancesResources>,
-    /// Specifies the scheduling policy for the Component.
+    /// Specifies the scheduling policy for the instance.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterComponentSpecsInstancesSchedulingPolicy>,
 }
@@ -1064,7 +1066,8 @@ pub struct ClusterComponentSpecsInstancesResourcesClaims {
     pub name: String,
 }
 
-/// Specifies the scheduling policy for the Component.
+/// Specifies the scheduling policy for the instance.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsInstancesSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
@@ -2113,6 +2116,7 @@ pub struct ClusterComponentSpecsResourcesClaims {
 }
 
 /// Specifies the scheduling policy for the Component.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
@@ -6415,6 +6419,7 @@ pub struct ClusterShardingsTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterShardingsTemplateResources>,
     /// Specifies the scheduling policy for the Component.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterShardingsTemplateSchedulingPolicy>,
     /// Specifies the name of the ServiceAccount required by the running Component.
@@ -7026,7 +7031,8 @@ pub struct ClusterShardingsTemplateInstances {
     /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterShardingsTemplateInstancesResources>,
-    /// Specifies the scheduling policy for the Component.
+    /// Specifies the scheduling policy for the instance.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterShardingsTemplateInstancesSchedulingPolicy>,
 }
@@ -7187,7 +7193,8 @@ pub struct ClusterShardingsTemplateInstancesResourcesClaims {
     pub name: String,
 }
 
-/// Specifies the scheduling policy for the Component.
+/// Specifies the scheduling policy for the instance.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateInstancesSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
@@ -8246,6 +8253,7 @@ pub struct ClusterShardingsTemplateResourcesClaims {
 }
 
 /// Specifies the scheduling policy for the Component.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.

@@ -157,6 +157,9 @@ spec:
                           type: "string"
                         metricType:
                           description: "MetricTargetType specifies the type of metric being targeted, and should be either\n\"Value\", \"AverageValue\", or \"Utilization\""
+                          enum:
+                            - "AverageValue"
+                            - "Value"
                           type: "string"
                         target:
                           type: "string"

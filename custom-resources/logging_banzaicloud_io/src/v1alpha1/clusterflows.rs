@@ -291,6 +291,8 @@ pub struct ClusterFlowFiltersParserParse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format_firstline: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_failure_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_name_key: Option<String>,
@@ -398,6 +400,8 @@ pub struct ClusterFlowFiltersParserParsePatterns {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_failure_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_name_key: Option<String>,
@@ -502,6 +506,8 @@ pub struct ClusterFlowFiltersParserParsers {
     pub format: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format_firstline: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_failure_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -609,6 +615,8 @@ pub struct ClusterFlowFiltersParserParsersPatterns {
     pub expression: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grok_failure_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -93,22 +93,32 @@ pub enum ClusterResourceSetStrategy {
 /// status is the observed state of ClusterResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterResourceSetStatus {
-    /// conditions defines current state of the ClusterResourceSet.
+    /// conditions represents the observations of a ClusterResourceSet's current state.
+    /// Known condition types are ResourceSetApplied, Deleting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<ClusterResourceSetStatusDeprecated>,
     /// observedGeneration reflects the generation of the most recently observed ClusterResourceSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// v1beta2 groups all the fields that will be added or modified in ClusterResourceSet's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<ClusterResourceSetStatusV1beta2>,
 }
 
-/// v1beta2 groups all the fields that will be added or modified in ClusterResourceSet's status with the V1Beta2 version.
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterResourceSetStatusV1beta2 {
-    /// conditions represents the observations of a ClusterResourceSet's current state.
-    /// Known condition types are ResourceSetApplied, Deleting.
+pub struct ClusterResourceSetStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<ClusterResourceSetStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterResourceSetStatusDeprecatedV1beta1 {
+    /// conditions defines current state of the ClusterResourceSet.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

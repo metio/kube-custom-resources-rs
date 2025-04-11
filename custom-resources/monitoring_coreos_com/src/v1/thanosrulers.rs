@@ -240,6 +240,13 @@ pub struct ThanosRulerSpec {
     /// `queryConfig` takes precedence over this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryEndpoints")]
     pub query_endpoints: Option<Vec<String>>,
+    /// Defines the list of remote write configurations.
+    /// 
+    /// When the list isn't empty, the ruler is configured with stateless mode.
+    /// 
+    /// It requires Thanos >= 0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
+    pub remote_write: Option<Vec<ThanosRulerRemoteWrite>>,
     /// Number of thanos ruler instances to deploy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -247,8 +254,12 @@ pub struct ThanosRulerSpec {
     /// If not provided, no requests/limits will be set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ThanosRulerResources>,
-    /// Time duration ThanosRuler shall retain data for. Default is '24h',
-    /// and must match the regular expression `[0-9]+(ms|s|m|h|d|w|y)` (milliseconds seconds minutes hours days weeks years).
+    /// Time duration ThanosRuler shall retain data for. Default is '24h', and
+    /// must match the regular expression `[0-9]+(ms|s|m|h|d|w|y)` (milliseconds
+    /// seconds minutes hours days weeks years).
+    /// 
+    /// The field has no effect when remote-write is configured since the Ruler
+    /// operates in stateless mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<String>,
     /// The route prefix ThanosRuler registers HTTP handlers for. This allows thanos UI to be served on a sub-path.
@@ -2412,12 +2423,12 @@ pub struct ThanosRulerGrpcServerTlsConfig {
     pub key_secret: Option<ThanosRulerGrpcServerTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ThanosRulerGrpcServerTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ThanosRulerGrpcServerTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -3934,6 +3945,1049 @@ pub struct ThanosRulerQueryConfig {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// RemoteWriteSpec defines the configuration to write samples from Prometheus
+/// to a remote endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWrite {
+    /// Authorization section for the URL.
+    /// 
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
+    /// 
+    /// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<ThanosRulerRemoteWriteAuthorization>,
+    /// AzureAD for the URL.
+    /// 
+    /// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAd")]
+    pub azure_ad: Option<ThanosRulerRemoteWriteAzureAd>,
+    /// BasicAuth configuration for the URL.
+    /// 
+    /// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
+    pub basic_auth: Option<ThanosRulerRemoteWriteBasicAuth>,
+    /// *Warning: this field shouldn't be used because the token value appears
+    /// in clear-text. Prefer using `authorization`.*
+    /// 
+    /// Deprecated: this will be removed in a future release.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerToken")]
+    pub bearer_token: Option<String>,
+    /// File from which to read bearer token for the URL.
+    /// 
+    /// Deprecated: this will be removed in a future release. Prefer using `authorization`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
+    pub bearer_token_file: Option<String>,
+    /// Whether to enable HTTP2.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
+    pub enable_http2: Option<bool>,
+    /// Configure whether HTTP requests follow HTTP 3xx redirects.
+    /// 
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
+    pub follow_redirects: Option<bool>,
+    /// Custom HTTP headers to be sent along with each remote write request.
+    /// Be aware that headers that are set by Prometheus itself can't be overwritten.
+    /// 
+    /// It requires Prometheus >= v2.25.0 or Thanos >= v0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<BTreeMap<String, String>>,
+    /// The Remote Write message's version to use when writing to the endpoint.
+    /// 
+    /// `Version1.0` corresponds to the `prometheus.WriteRequest` protobuf message introduced in Remote Write 1.0.
+    /// `Version2.0` corresponds to the `io.prometheus.write.v2.Request` protobuf message introduced in Remote Write 2.0.
+    /// 
+    /// When `Version2.0` is selected, Prometheus will automatically be
+    /// configured to append the metadata of scraped metrics to the WAL.
+    /// 
+    /// Before setting this field, consult with your remote storage provider
+    /// what message version it supports.
+    /// 
+    /// It requires Prometheus >= v2.54.0 or Thanos >= v0.37.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
+    pub message_version: Option<ThanosRulerRemoteWriteMessageVersion>,
+    /// MetadataConfig configures the sending of series metadata to the remote storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataConfig")]
+    pub metadata_config: Option<ThanosRulerRemoteWriteMetadataConfig>,
+    /// The name of the remote write queue, it must be unique if specified. The
+    /// name is used in metrics and logging in order to differentiate queues.
+    /// 
+    /// It requires Prometheus >= v2.15.0 or Thanos >= 0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// OAuth2 configuration for the URL.
+    /// 
+    /// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
+    /// 
+    /// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth2: Option<ThanosRulerRemoteWriteOauth2>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ThanosRulerRemoteWriteProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// QueueConfig allows tuning of the remote write queue parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueConfig")]
+    pub queue_config: Option<ThanosRulerRemoteWriteQueueConfig>,
+    /// Timeout for requests to the remote write endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteTimeout")]
+    pub remote_timeout: Option<String>,
+    /// When enabled:
+    ///     - The remote-write mechanism will resolve the hostname via DNS.
+    ///     - It will randomly select one of the resolved IP addresses and connect to it.
+    /// 
+    /// When disabled (default behavior):
+    ///     - The Go standard library will handle hostname resolution.
+    ///     - It will attempt connections to each resolved IP address sequentially.
+    /// 
+    /// Note: The connection timeout applies to the entire resolution and connection process.
+    ///       If disabled, the timeout is distributed across all connection attempts.
+    /// 
+    /// It requires Prometheus >= v3.1.0 or Thanos >= v0.38.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundRobinDNS")]
+    pub round_robin_dns: Option<bool>,
+    /// Enables sending of exemplars over remote write. Note that
+    /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
+    /// option for exemplars to be scraped in the first place.
+    /// 
+    /// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendExemplars")]
+    pub send_exemplars: Option<bool>,
+    /// Enables sending of native histograms, also known as sparse histograms
+    /// over remote write.
+    /// 
+    /// It requires Prometheus >= v2.40.0 or Thanos >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendNativeHistograms")]
+    pub send_native_histograms: Option<bool>,
+    /// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
+    /// 
+    /// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
+    /// 
+    /// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sigv4: Option<ThanosRulerRemoteWriteSigv4>,
+    /// TLS Config to use for the URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ThanosRulerRemoteWriteTlsConfig>,
+    /// The URL of the endpoint to send samples to.
+    pub url: String,
+    /// The list of remote write relabel configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeRelabelConfigs")]
+    pub write_relabel_configs: Option<Vec<ThanosRulerRemoteWriteWriteRelabelConfigs>>,
+}
+
+/// Authorization section for the URL.
+/// 
+/// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
+/// 
+/// Cannot be set at the same time as `sigv4`, `basicAuth`, `oauth2`, or `azureAd`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<ThanosRulerRemoteWriteAuthorizationCredentials>,
+    /// File to read a secret from, mutually exclusive with `credentials`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
+    pub credentials_file: Option<String>,
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// AzureAD for the URL.
+/// 
+/// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAd {
+    /// The Azure Cloud. Options are 'AzurePublic', 'AzureChina', or 'AzureGovernment'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cloud: Option<ThanosRulerRemoteWriteAzureAdCloud>,
+    /// ManagedIdentity defines the Azure User-assigned Managed identity.
+    /// Cannot be set at the same time as `oauth` or `sdk`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedIdentity")]
+    pub managed_identity: Option<ThanosRulerRemoteWriteAzureAdManagedIdentity>,
+    /// OAuth defines the oauth config that is being used to authenticate.
+    /// Cannot be set at the same time as `managedIdentity` or `sdk`.
+    /// 
+    /// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth: Option<ThanosRulerRemoteWriteAzureAdOauth>,
+    /// SDK defines the Azure SDK config that is being used to authenticate.
+    /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+    /// Cannot be set at the same time as `oauth` or `managedIdentity`.
+    /// 
+    /// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sdk: Option<ThanosRulerRemoteWriteAzureAdSdk>,
+}
+
+/// AzureAD for the URL.
+/// 
+/// It requires Prometheus >= v2.45.0 or Thanos >= v0.31.0.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `sigv4`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteAzureAdCloud {
+    AzureChina,
+    AzureGovernment,
+    AzurePublic,
+}
+
+/// ManagedIdentity defines the Azure User-assigned Managed identity.
+/// Cannot be set at the same time as `oauth` or `sdk`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAdManagedIdentity {
+    /// The client id
+    #[serde(rename = "clientId")]
+    pub client_id: String,
+}
+
+/// OAuth defines the oauth config that is being used to authenticate.
+/// Cannot be set at the same time as `managedIdentity` or `sdk`.
+/// 
+/// It requires Prometheus >= v2.48.0 or Thanos >= v0.31.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAdOauth {
+    /// `clientID` is the clientId of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "clientId")]
+    pub client_id: String,
+    /// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: ThanosRulerRemoteWriteAzureAdOauthClientSecret,
+    /// `tenantId` is the tenant ID of the Azure Active Directory application that is being used to authenticate.
+    #[serde(rename = "tenantId")]
+    pub tenant_id: String,
+}
+
+/// `clientSecret` specifies a key of a Secret containing the client secret of the Azure Active Directory application that is being used to authenticate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAdOauthClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SDK defines the Azure SDK config that is being used to authenticate.
+/// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
+/// Cannot be set at the same time as `oauth` or `managedIdentity`.
+/// 
+/// It requires Prometheus >= v2.52.0 or Thanos >= v0.36.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteAzureAdSdk {
+    /// `tenantId` is the tenant ID of the azure active directory application that is being used to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantId")]
+    pub tenant_id: Option<String>,
+}
+
+/// BasicAuth configuration for the URL.
+/// 
+/// Cannot be set at the same time as `sigv4`, `authorization`, `oauth2`, or `azureAd`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteBasicAuth {
+    /// `password` specifies a key of a Secret containing the password for
+    /// authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<ThanosRulerRemoteWriteBasicAuthPassword>,
+    /// `username` specifies a key of a Secret containing the username for
+    /// authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub username: Option<ThanosRulerRemoteWriteBasicAuthUsername>,
+}
+
+/// `password` specifies a key of a Secret containing the password for
+/// authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteBasicAuthPassword {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// `username` specifies a key of a Secret containing the username for
+/// authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// RemoteWriteSpec defines the configuration to write samples from Prometheus
+/// to a remote endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteMessageVersion {
+    #[serde(rename = "V1.0")]
+    V10,
+    #[serde(rename = "V2.0")]
+    V20,
+}
+
+/// MetadataConfig configures the sending of series metadata to the remote storage.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteMetadataConfig {
+    /// MaxSamplesPerSend is the maximum number of metadata samples per send.
+    /// 
+    /// It requires Prometheus >= v2.29.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSamplesPerSend")]
+    pub max_samples_per_send: Option<i32>,
+    /// Defines whether metric metadata is sent to the remote storage or not.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub send: Option<bool>,
+    /// Defines how frequently metric metadata is sent to the remote storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sendInterval")]
+    pub send_interval: Option<String>,
+}
+
+/// OAuth2 configuration for the URL.
+/// 
+/// It requires Prometheus >= v2.27.0 or Thanos >= v0.24.0.
+/// 
+/// Cannot be set at the same time as `sigv4`, `authorization`, `basicAuth`, or `azureAd`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2 {
+    /// `clientId` specifies a key of a Secret or ConfigMap containing the
+    /// OAuth2 client's ID.
+    #[serde(rename = "clientId")]
+    pub client_id: ThanosRulerRemoteWriteOauth2ClientId,
+    /// `clientSecret` specifies a key of a Secret containing the OAuth2
+    /// client's secret.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: ThanosRulerRemoteWriteOauth2ClientSecret,
+    /// `endpointParams` configures the HTTP parameters to append to the token
+    /// URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
+    pub endpoint_params: Option<BTreeMap<String, String>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ThanosRulerRemoteWriteOauth2ProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
+    /// `scopes` defines the OAuth2 scopes used for the token request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// TLS configuration to use when connecting to the OAuth2 server.
+    /// It requires Prometheus >= v2.43.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<ThanosRulerRemoteWriteOauth2TlsConfig>,
+    /// `tokenURL` configures the URL to fetch the token from.
+    #[serde(rename = "tokenUrl")]
+    pub token_url: String,
+}
+
+/// `clientId` specifies a key of a Secret or ConfigMap containing the
+/// OAuth2 client's ID.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2ClientId {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerRemoteWriteOauth2ClientIdConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerRemoteWriteOauth2ClientIdSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2ClientIdConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2ClientIdSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// `clientSecret` specifies a key of a Secret containing the OAuth2
+/// client's secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2ClientSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2ProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ThanosRulerRemoteWriteOauth2TlsConfigCa>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ThanosRulerRemoteWriteOauth2TlsConfigCert>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ThanosRulerRemoteWriteOauth2TlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ThanosRulerRemoteWriteOauth2TlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ThanosRulerRemoteWriteOauth2TlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerRemoteWriteOauth2TlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerRemoteWriteOauth2TlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerRemoteWriteOauth2TlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerRemoteWriteOauth2TlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteOauth2TlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteOauth2TlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS configuration to use when connecting to the OAuth2 server.
+/// It requires Prometheus >= v2.43.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteOauth2TlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// QueueConfig allows tuning of the remote write queue parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteQueueConfig {
+    /// BatchSendDeadline is the maximum time a sample will wait in buffer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSendDeadline")]
+    pub batch_send_deadline: Option<String>,
+    /// Capacity is the number of samples to buffer per shard before we start
+    /// dropping them.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<i64>,
+    /// MaxBackoff is the maximum retry delay.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBackoff")]
+    pub max_backoff: Option<String>,
+    /// MaxRetries is the maximum number of times to retry a batch on recoverable errors.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// MaxSamplesPerSend is the maximum number of samples per send.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSamplesPerSend")]
+    pub max_samples_per_send: Option<i64>,
+    /// MaxShards is the maximum number of shards, i.e. amount of concurrency.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxShards")]
+    pub max_shards: Option<i64>,
+    /// MinBackoff is the initial retry delay. Gets doubled for every retry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minBackoff")]
+    pub min_backoff: Option<String>,
+    /// MinShards is the minimum number of shards, i.e. amount of concurrency.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minShards")]
+    pub min_shards: Option<i64>,
+    /// Retry upon receiving a 429 status code from the remote-write storage.
+    /// 
+    /// This is an *experimental feature*, it may change in any upcoming release
+    /// in a breaking way.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryOnRateLimit")]
+    pub retry_on_rate_limit: Option<bool>,
+    /// SampleAgeLimit drops samples older than the limit.
+    /// It requires Prometheus >= v2.50.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleAgeLimit")]
+    pub sample_age_limit: Option<String>,
+}
+
+/// Sigv4 allows to configures AWS's Signature Verification 4 for the URL.
+/// 
+/// It requires Prometheus >= v2.26.0 or Thanos >= v0.24.0.
+/// 
+/// Cannot be set at the same time as `authorization`, `basicAuth`, `oauth2`, or `azureAd`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteSigv4 {
+    /// AccessKey is the AWS API key. If not specified, the environment variable
+    /// `AWS_ACCESS_KEY_ID` is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKey")]
+    pub access_key: Option<ThanosRulerRemoteWriteSigv4AccessKey>,
+    /// Profile is the named AWS profile used to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<String>,
+    /// Region is the AWS region. If blank, the region from the default credentials chain used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    /// RoleArn is the named AWS profile used to authenticate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleArn")]
+    pub role_arn: Option<String>,
+    /// SecretKey is the AWS API secret. If not specified, the environment
+    /// variable `AWS_SECRET_ACCESS_KEY` is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKey")]
+    pub secret_key: Option<ThanosRulerRemoteWriteSigv4SecretKey>,
+}
+
+/// AccessKey is the AWS API key. If not specified, the environment variable
+/// `AWS_ACCESS_KEY_ID` is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteSigv4AccessKey {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKey is the AWS API secret. If not specified, the environment
+/// variable `AWS_SECRET_ACCESS_KEY` is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteSigv4SecretKey {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS Config to use for the URL.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<ThanosRulerRemoteWriteTlsConfigCa>,
+    /// Path to the CA cert in the Prometheus container to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<ThanosRulerRemoteWriteTlsConfigCert>,
+    /// Path to the client cert file in the Prometheus container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Path to the client key file in the Prometheus container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<ThanosRulerRemoteWriteTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<ThanosRulerRemoteWriteTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<ThanosRulerRemoteWriteTlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerRemoteWriteTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerRemoteWriteTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<ThanosRulerRemoteWriteTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<ThanosRulerRemoteWriteTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS Config to use for the URL.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS Config to use for the URL.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ThanosRulerRemoteWriteWriteRelabelConfigs {
+    /// Action to perform based on the regex matching.
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<ThanosRulerRemoteWriteWriteRelabelConfigsAction>,
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ThanosRulerRemoteWriteWriteRelabelConfigsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
 /// Resources defines the resource requirements for single Pods.

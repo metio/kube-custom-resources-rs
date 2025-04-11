@@ -114,7 +114,7 @@ pub struct TraefikServiceMirroringHealthCheck {
     /// Hostname defines the value of hostname in the Host header of the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Interval defines the frequency of the health check calls.
+    /// Interval defines the frequency of the health check calls for healthy targets.
     /// Default: 30s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<IntOrString>,
@@ -142,6 +142,11 @@ pub struct TraefikServiceMirroringHealthCheck {
     /// Default: 5s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<IntOrString>,
+    /// UnhealthyInterval defines the frequency of the health check calls for unhealthy targets.
+    /// When UnhealthyInterval is not defined, it defaults to the Interval value.
+    /// Default: 30s
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInterval")]
+    pub unhealthy_interval: Option<IntOrString>,
 }
 
 /// Mirroring defines the Mirroring service configuration.
@@ -230,7 +235,7 @@ pub struct TraefikServiceMirroringMirrorsHealthCheck {
     /// Hostname defines the value of hostname in the Host header of the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Interval defines the frequency of the health check calls.
+    /// Interval defines the frequency of the health check calls for healthy targets.
     /// Default: 30s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<IntOrString>,
@@ -258,6 +263,11 @@ pub struct TraefikServiceMirroringMirrorsHealthCheck {
     /// Default: 5s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<IntOrString>,
+    /// UnhealthyInterval defines the frequency of the health check calls for unhealthy targets.
+    /// When UnhealthyInterval is not defined, it defaults to the Interval value.
+    /// Default: 30s
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInterval")]
+    pub unhealthy_interval: Option<IntOrString>,
 }
 
 /// MirrorService holds the mirror configuration.
@@ -502,7 +512,7 @@ pub struct TraefikServiceWeightedServicesHealthCheck {
     /// Hostname defines the value of hostname in the Host header of the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Interval defines the frequency of the health check calls.
+    /// Interval defines the frequency of the health check calls for healthy targets.
     /// Default: 30s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<IntOrString>,
@@ -530,6 +540,11 @@ pub struct TraefikServiceWeightedServicesHealthCheck {
     /// Default: 5s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<IntOrString>,
+    /// UnhealthyInterval defines the frequency of the health check calls for unhealthy targets.
+    /// When UnhealthyInterval is not defined, it defaults to the Interval value.
+    /// Default: 30s
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInterval")]
+    pub unhealthy_interval: Option<IntOrString>,
 }
 
 /// Service defines an upstream HTTP service to proxy traffic to.

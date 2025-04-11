@@ -13723,6 +13723,10 @@ pub struct ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectO
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromComponentVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -13830,6 +13834,10 @@ pub struct ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObject
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromCredentialVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -13946,6 +13954,10 @@ pub struct ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjec
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -14062,6 +14074,10 @@ pub struct ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObject
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromServiceRefVarRefMultipleClusterObjectOptionStrategy,
 }
@@ -14185,6 +14201,10 @@ pub struct ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOpt
     /// Valid only when the strategy is set to "combined".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
     pub combined_option: Option<ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
     /// Define the strategy for handling multiple cluster objects.
     pub strategy: ComponentDefinitionVarsValueFromServiceVarRefMultipleClusterObjectOptionStrategy,
 }

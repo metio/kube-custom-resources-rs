@@ -352,17 +352,61 @@ pub enum MachineSetTemplateSpecReadinessGatesPolarity {
 /// status is the observed state of MachineSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
+    /// availableReplicas is the number of available replicas for this MachineSet. A machine is considered available when Machine's Available condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// conditions represents the observations of a MachineSet's current state.
+    /// Known condition types are MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<MachineSetStatusDeprecated>,
+    /// observedGeneration reflects the generation of the most recently observed MachineSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
+    /// readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when Machine's Ready condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// replicas is the most recently observed number of replicas.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// selector is the same as the label selector but in the string format to avoid introspection
+    /// by clients. The string will be in the same format as the query-param syntax.
+    /// More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<String>,
+    /// upToDateReplicas is the number of up-to-date replicas for this MachineSet. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<MachineSetStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetStatusDeprecatedV1beta1 {
     /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachineSet.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// conditions defines current service state of the MachineSet.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// failureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// failureReason will be set in the event that there is a terminal problem
@@ -388,48 +432,18 @@ pub struct MachineSetStatus {
     /// can be added as events to the MachineSet object and/or logged in the
     /// controller's output.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// fullyLabeledReplicas is the number of replicas that have labels matching the labels of the machine template of the MachineSet.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullyLabeledReplicas")]
     pub fully_labeled_replicas: Option<i32>,
-    /// observedGeneration reflects the generation of the most recently observed MachineSet.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
-    pub observed_generation: Option<i64>,
     /// readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
-    /// replicas is the most recently observed number of replicas.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
-    /// selector is the same as the label selector but in the string format to avoid introspection
-    /// by clients. The string will be in the same format as the query-param syntax.
-    /// More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<String>,
-    /// v1beta2 groups all the fields that will be added or modified in MachineSet's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<MachineSetStatusV1beta2>,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in MachineSet's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineSetStatusV1beta2 {
-    /// availableReplicas is the number of available replicas for this MachineSet. A machine is considered available when Machine's Available condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
-    pub available_replicas: Option<i32>,
-    /// conditions represents the observations of a MachineSet's current state.
-    /// Known condition types are MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    /// readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
-    pub ready_replicas: Option<i32>,
-    /// upToDateReplicas is the number of up-to-date replicas for this MachineSet. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
-    pub up_to_date_replicas: Option<i32>,
 }
 

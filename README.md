@@ -394,6 +394,7 @@ The following groups are available:
 - [sns.services.k8s.aws](https://crates.io/crates/kcr_sns_services_k8s_aws)
 - [sonataflow.org](https://crates.io/crates/kcr_sonataflow_org)
 - [source.toolkit.fluxcd.io](https://crates.io/crates/kcr_source_toolkit_fluxcd_io)
+- [spark.stackable.tech](https://crates.io/crates/kcr_spark_stackable_tech)
 - [sparkoperator.k8s.io](https://crates.io/crates/kcr_sparkoperator_k8s_io)
 - [spv.no](https://crates.io/crates/kcr_spv_no)
 - [sqs.services.k8s.aws](https://crates.io/crates/kcr_sqs_services_k8s_aws)

@@ -1608,25 +1608,35 @@ pub struct ClusterClassWorkersMachinePoolsTemplateMetadata {
 /// status is the observed state of ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatus {
-    /// conditions defines current observed state of the ClusterClass.
+    /// conditions represents the observations of a ClusterClass's current state.
+    /// Known condition types are VariablesReady, RefVersionsUpToDate, Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<ClusterClassStatusDeprecated>,
     /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// v1beta2 groups all the fields that will be added or modified in ClusterClass's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<ClusterClassStatusV1beta2>,
     /// variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ClusterClassStatusVariables>>,
 }
 
-/// v1beta2 groups all the fields that will be added or modified in ClusterClass's status with the V1Beta2 version.
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassStatusV1beta2 {
-    /// conditions represents the observations of a ClusterClass's current state.
-    /// Known condition types are VariablesReady, RefVersionsUpToDate, Paused.
+pub struct ClusterClassStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<ClusterClassStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassStatusDeprecatedV1beta1 {
+    /// conditions defines current observed state of the ClusterClass.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

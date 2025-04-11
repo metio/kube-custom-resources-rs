@@ -117,6 +117,7 @@ pub struct FlowCollectorAgentEbpf {
     /// - `UDNMapping`: [Unsupported (*)]. Enable interfaces mapping to User Defined Networks (UDN). <br>
     /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
+    /// - `IPSec`, to track flows with IPsec encryption. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.

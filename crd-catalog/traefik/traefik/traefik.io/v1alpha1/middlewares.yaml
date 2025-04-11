@@ -205,7 +205,7 @@ spec:
                               anyOf:
                                 - type: "integer"
                                 - type: "string"
-                              description: "Interval defines the frequency of the health check calls.\nDefault: 30s"
+                              description: "Interval defines the frequency of the health check calls for healthy targets.\nDefault: 30s"
                               x-kubernetes-int-or-string: true
                             method:
                               description: "Method defines the healthcheck method."
@@ -230,6 +230,12 @@ spec:
                                 - type: "integer"
                                 - type: "string"
                               description: "Timeout defines the maximum duration Traefik will wait for a health check request before considering the server unhealthy.\nDefault: 5s"
+                              x-kubernetes-int-or-string: true
+                            unhealthyInterval:
+                              anyOf:
+                                - type: "integer"
+                                - type: "string"
+                              description: "UnhealthyInterval defines the frequency of the health check calls for unhealthy targets.\nWhen UnhealthyInterval is not defined, it defaults to the Interval value.\nDefault: 30s"
                               x-kubernetes-int-or-string: true
                           type: "object"
                         kind:

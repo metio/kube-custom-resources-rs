@@ -462,20 +462,23 @@ pub enum MachineDeploymentTemplateSpecReadinessGatesPolarity {
 /// status is the observed state of MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStatus {
-    /// availableReplicas is the total number of available machines (ready for at least minReadySeconds)
-    /// targeted by this deployment.
+    /// availableReplicas is the number of available replicas for this MachineDeployment. A machine is considered available when Machine's Available condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
-    /// conditions defines current service state of the MachineDeployment.
+    /// conditions represents the observations of a MachineDeployment's current state.
+    /// Known condition types are Available, MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<MachineDeploymentStatusDeprecated>,
     /// observedGeneration is the generation observed by the deployment controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<MachineDeploymentStatusPhase>,
-    /// readyReplicas is the total number of ready machines targeted by this deployment.
+    /// readyReplicas is the number of ready replicas for this MachineDeployment. A machine is considered ready when Machine's Ready condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the total number of non-terminated machines targeted by this deployment
@@ -487,22 +490,53 @@ pub struct MachineDeploymentStatus {
     /// More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
+    /// upToDateReplicas is the number of up-to-date replicas targeted by this deployment. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<MachineDeploymentStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentStatusDeprecatedV1beta1 {
+    /// availableReplicas is the total number of available machines (ready for at least minReadySeconds)
+    /// targeted by this deployment.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// conditions defines current service state of the MachineDeployment.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// readyReplicas is the total number of ready machines targeted by this deployment.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
     /// unavailableReplicas is the total number of unavailable machines targeted by this deployment.
     /// This is the total number of machines that are still required for
     /// the deployment to have 100% available capacity. They may either
     /// be machines that are running but not yet available or machines
     /// that still have not been created.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// updatedReplicas is the total number of non-terminated machines targeted by this deployment
     /// that have the desired template spec.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
-    /// v1beta2 groups all the fields that will be added or modified in MachineDeployment's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<MachineDeploymentStatusV1beta2>,
 }
 
 /// status is the observed state of MachineDeployment.
@@ -513,23 +547,5 @@ pub enum MachineDeploymentStatusPhase {
     Running,
     Failed,
     Unknown,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in MachineDeployment's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeploymentStatusV1beta2 {
-    /// availableReplicas is the number of available replicas for this MachineDeployment. A machine is considered available when Machine's Available condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
-    pub available_replicas: Option<i32>,
-    /// conditions represents the observations of a MachineDeployment's current state.
-    /// Known condition types are Available, MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    /// readyReplicas is the number of ready replicas for this MachineDeployment. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
-    pub ready_replicas: Option<i32>,
-    /// upToDateReplicas is the number of up-to-date replicas targeted by this deployment. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
-    pub up_to_date_replicas: Option<i32>,
 }
 

@@ -269,6 +269,9 @@ pub struct BuildTasksBuilder {
     /// the list of dependencies to use for this build
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<String>>,
+    /// the configuration of the project to build on Git
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub git: Option<BuildTasksBuilderGit>,
     /// the configuration required by Maven for the application build phase
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maven: Option<BuildTasksBuilderMaven>,
@@ -342,6 +345,17 @@ pub enum BuildTasksBuilderConfigurationStrategy {
     Routine,
     #[serde(rename = "pod")]
     Pod,
+}
+
+/// the configuration of the project to build on Git
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksBuilderGit {
+    /// the Kubernetes secret where token is stored
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
+    /// the URL of the project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// the configuration required by Maven for the application build phase
@@ -1095,6 +1109,9 @@ pub struct BuildTasksPackage {
     /// the list of dependencies to use for this build
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dependencies: Option<Vec<String>>,
+    /// the configuration of the project to build on Git
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub git: Option<BuildTasksPackageGit>,
     /// the configuration required by Maven for the application build phase
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maven: Option<BuildTasksPackageMaven>,
@@ -1168,6 +1185,17 @@ pub enum BuildTasksPackageConfigurationStrategy {
     Routine,
     #[serde(rename = "pod")]
     Pod,
+}
+
+/// the configuration of the project to build on Git
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildTasksPackageGit {
+    /// the Kubernetes secret where token is stored
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<String>,
+    /// the URL of the project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// the configuration required by Maven for the application build phase

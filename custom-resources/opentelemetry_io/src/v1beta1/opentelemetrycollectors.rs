@@ -2265,6 +2265,8 @@ pub struct OpenTelemetryCollectorTargetAllocator {
     pub affinity: Option<OpenTelemetryCollectorTargetAllocatorAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocationStrategy")]
     pub allocation_strategy: Option<OpenTelemetryCollectorTargetAllocatorAllocationStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectorNotReadyGracePeriod")]
+    pub collector_not_ready_grace_period: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

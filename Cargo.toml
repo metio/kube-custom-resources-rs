@@ -354,6 +354,7 @@ members = [
     "custom-resources/sns_services_k8s_aws",
     "custom-resources/sonataflow_org",
     "custom-resources/source_toolkit_fluxcd_io",
+    "custom-resources/spark_stackable_tech",
     "custom-resources/sparkoperator_k8s_io",
     "custom-resources/spv_no",
     "custom-resources/sqs_services_k8s_aws",

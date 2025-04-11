@@ -171,7 +171,7 @@ pub struct IngressRouteRoutesServicesHealthCheck {
     /// Hostname defines the value of hostname in the Host header of the health check request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    /// Interval defines the frequency of the health check calls.
+    /// Interval defines the frequency of the health check calls for healthy targets.
     /// Default: 30s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<IntOrString>,
@@ -199,6 +199,11 @@ pub struct IngressRouteRoutesServicesHealthCheck {
     /// Default: 5s
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<IntOrString>,
+    /// UnhealthyInterval defines the frequency of the health check calls for unhealthy targets.
+    /// When UnhealthyInterval is not defined, it defaults to the Interval value.
+    /// Default: 30s
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInterval")]
+    pub unhealthy_interval: Option<IntOrString>,
 }
 
 /// Service defines an upstream HTTP service to proxy traffic to.

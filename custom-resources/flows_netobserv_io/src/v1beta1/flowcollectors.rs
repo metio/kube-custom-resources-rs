@@ -112,6 +112,7 @@ pub struct FlowCollectorAgentEbpf {
     /// - `PacketTranslation`: enable enriching flows with packet's translation information. <br>
     /// - `EbpfManager`: allow using eBPF manager to manage netobserv ebpf programs. <br>
     /// - `UDNMapping`, to enable interfaces mapping to udn. <br>
+    /// - `IPSec`, to track flows with IPsec encryption. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering

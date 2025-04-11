@@ -214,53 +214,21 @@ pub struct MachineStatus {
     /// This value is only set for control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesExpiryDate")]
     pub certificates_expiry_date: Option<String>,
-    /// conditions defines current service state of the Machine.
+    /// conditions represents the observations of a Machine's current state.
+    /// Known condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,
+    /// NodeHealthy, Deleting, Paused.
+    /// If a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.
+    /// Additionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:
+    /// APIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// deletion contains information relating to removal of the Machine.
     /// Only present when the Machine has a deletionTimestamp and drain or wait for volume detach started.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<MachineStatusDeletion>,
-    /// failureMessage will be set in the event that there is a terminal problem
-    /// reconciling the Machine and will contain a more verbose string suitable
-    /// for logging and human consumption.
-    /// 
-    /// This field should not be set for transitive errors that a controller
-    /// faces that are expected to be fixed automatically over
-    /// time (like service outages), but instead indicate that something is
-    /// fundamentally wrong with the Machine's spec or the configuration of
-    /// the controller, and that manual intervention is required. Examples
-    /// of terminal errors would be invalid combinations of settings in the
-    /// spec, values that are unsupported by the controller, or the
-    /// responsible controller itself being critically misconfigured.
-    /// 
-    /// Any transient errors that occur during the reconciliation of Machines
-    /// can be added as events to the Machine object and/or logged in the
-    /// controller's output.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
-    pub failure_message: Option<String>,
-    /// failureReason will be set in the event that there is a terminal problem
-    /// reconciling the Machine and will contain a succinct value suitable
-    /// for machine interpretation.
-    /// 
-    /// This field should not be set for transitive errors that a controller
-    /// faces that are expected to be fixed automatically over
-    /// time (like service outages), but instead indicate that something is
-    /// fundamentally wrong with the Machine's spec or the configuration of
-    /// the controller, and that manual intervention is required. Examples
-    /// of terminal errors would be invalid combinations of settings in the
-    /// spec, values that are unsupported by the controller, or the
-    /// responsible controller itself being critically misconfigured.
-    /// 
-    /// Any transient errors that occur during the reconciliation of Machines
-    /// can be added as events to the Machine object and/or logged in the
-    /// controller's output.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
-    pub failure_reason: Option<String>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<MachineStatusDeprecated>,
     /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
@@ -280,9 +248,6 @@ pub struct MachineStatus {
     /// phase represents the current phase of machine actuation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<MachineStatusPhase>,
-    /// v1beta2 groups all the fields that will be added or modified in Machine's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<MachineStatusV1beta2>,
 }
 
 /// MachineAddress contains information for the node's address.
@@ -325,6 +290,68 @@ pub struct MachineStatusDeletion {
     /// Only present when the Machine has a deletionTimestamp and waiting for volume detachments had been started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForNodeVolumeDetachStartTime")]
     pub wait_for_node_volume_detach_start_time: Option<String>,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<MachineStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+/// 
+/// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusDeprecatedV1beta1 {
+    /// conditions defines current service state of the Machine.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// failureMessage will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a more verbose string suitable
+    /// for logging and human consumption.
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the Machine's spec or the configuration of
+    /// the controller, and that manual intervention is required. Examples
+    /// of terminal errors would be invalid combinations of settings in the
+    /// spec, values that are unsupported by the controller, or the
+    /// responsible controller itself being critically misconfigured.
+    /// 
+    /// Any transient errors that occur during the reconciliation of Machines
+    /// can be added as events to the Machine object and/or logged in the
+    /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
+    pub failure_message: Option<String>,
+    /// failureReason will be set in the event that there is a terminal problem
+    /// reconciling the Machine and will contain a succinct value suitable
+    /// for machine interpretation.
+    /// 
+    /// This field should not be set for transitive errors that a controller
+    /// faces that are expected to be fixed automatically over
+    /// time (like service outages), but instead indicate that something is
+    /// fundamentally wrong with the Machine's spec or the configuration of
+    /// the controller, and that manual intervention is required. Examples
+    /// of terminal errors would be invalid combinations of settings in the
+    /// spec, values that are unsupported by the controller, or the
+    /// responsible controller itself being critically misconfigured.
+    /// 
+    /// Any transient errors that occur during the reconciliation of Machines
+    /// can be added as events to the Machine object and/or logged in the
+    /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
+    pub failure_reason: Option<String>,
 }
 
 /// nodeInfo is a set of ids/uuids to uniquely identify the node.
@@ -414,18 +441,5 @@ pub enum MachineStatusPhase {
     Deleted,
     Failed,
     Unknown,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in Machine's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineStatusV1beta2 {
-    /// conditions represents the observations of a Machine's current state.
-    /// Known condition types are Available, Ready, UpToDate, BootstrapConfigReady, InfrastructureReady, NodeReady,
-    /// NodeHealthy, Deleting, Paused.
-    /// If a MachineHealthCheck is targeting this machine, also HealthCheckSucceeded, OwnerRemediated conditions are added.
-    /// Additionally control plane Machines controlled by KubeadmControlPlane will have following additional conditions:
-    /// APIServerPodHealthy, ControllerManagerPodHealthy, SchedulerPodHealthy, EtcdPodHealthy, EtcdMemberHealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
 }
 

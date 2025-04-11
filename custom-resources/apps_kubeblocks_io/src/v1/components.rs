@@ -743,7 +743,8 @@ pub struct ComponentInstances {
     /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ComponentInstancesResources>,
-    /// Specifies the scheduling policy for the Component.
+    /// Specifies the scheduling policy for the instance.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ComponentInstancesSchedulingPolicy>,
 }
@@ -904,7 +905,8 @@ pub struct ComponentInstancesResourcesClaims {
     pub name: String,
 }
 
-/// Specifies the scheduling policy for the Component.
+/// Specifies the scheduling policy for the instance.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentInstancesSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
