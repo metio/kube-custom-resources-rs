@@ -55,6 +55,9 @@ pub struct PersesSpec {
     /// service specifies the service configuration for the perses instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PersesService>,
+    /// Storage configuration used by the StatefulSet
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<PersesStorage>,
     /// tls specifies the tls configuration for the perses instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<PersesTls>,
@@ -1834,6 +1837,19 @@ pub struct PersesService {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Storage configuration used by the StatefulSet
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesStorage {
+    /// Size of the storage.
+    /// cannot be decreased.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<IntOrString>,
+    /// StorageClass to use for PVCs.
+    /// If not specified, will use the default storage class
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
+    pub storage_class: Option<String>,
 }
 
 /// tls specifies the tls configuration for the perses instance

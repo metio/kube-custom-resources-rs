@@ -22,9 +22,6 @@ use self::prelude::*;
 pub struct EngineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-    /// Deprecated:Replaced by field `dataEngine`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupVolume")]
     pub backup_volume: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
@@ -33,9 +30,6 @@ pub struct EngineSpec {
     pub desire_state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableFrontend")]
     pub disable_frontend: Option<bool>,
-    /// Deprecated: Replaced by field `image`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
-    pub engine_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub frontend: Option<EngineFrontend>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

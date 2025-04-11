@@ -123,9 +123,6 @@ spec:
                     properties:
                       spec:
                         properties:
-                          backendStoreDriver:
-                            description: "Deprecated:Replaced by field `dataEngine`."
-                            type: "string"
                           dataEngine:
                             type: "string"
                           name:
@@ -172,9 +169,6 @@ spec:
                     properties:
                       spec:
                         properties:
-                          backendStoreDriver:
-                            description: "Deprecated:Replaced by field `dataEngine`."
-                            type: "string"
                           dataEngine:
                             type: "string"
                           name:
@@ -221,9 +215,6 @@ spec:
                     properties:
                       spec:
                         properties:
-                          backendStoreDriver:
-                            description: "Deprecated:Replaced by field `dataEngine`."
-                            type: "string"
                           dataEngine:
                             type: "string"
                           name:

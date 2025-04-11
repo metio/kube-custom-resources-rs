@@ -354,6 +354,8 @@ pub struct NodegroupStatus {
     /// The Unix epoch timestamp at object creation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdAt")]
     pub created_at: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredSize")]
+    pub desired_size: Option<i64>,
     /// The health status of the node group. If there are issues with your node group's
     /// health, they are listed here.
     #[serde(default, skip_serializing_if = "Option::is_none")]

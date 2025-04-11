@@ -40,7 +40,7 @@ pub struct ClusterSpec {
     /// An optional description of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    /// The version number of the Redis engine to be used for the cluster.
+    /// The version number of the Redis OSS engine to be used for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
     /// The ID of the KMS key used to encrypt the cluster.
@@ -49,6 +49,24 @@ pub struct ClusterSpec {
     /// Specifies the weekly time range during which maintenance on the cluster is
     /// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi
     /// (24H Clock UTC). The minimum maintenance window is a 60 minute period.
+    /// 
+    /// Valid values for ddd are:
+    /// 
+    ///    * sun
+    /// 
+    ///    * mon
+    /// 
+    ///    * tue
+    /// 
+    ///    * wed
+    /// 
+    ///    * thu
+    /// 
+    ///    * fri
+    /// 
+    ///    * sat
+    /// 
+    /// Example: sun:23:00-mon:01:30
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceWindow")]
     pub maintenance_window: Option<String>,
     /// The name of the cluster. This value must be unique as it also serves as the
@@ -334,13 +352,13 @@ pub struct ClusterStatus {
     /// The cluster's configuration endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterEndpoint")]
     pub cluster_endpoint: Option<ClusterStatusClusterEndpoint>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// The Redis engine patch version used by the cluster
+    /// The Redis OSS engine patch version used by the cluster
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enginePatchVersion")]
     pub engine_patch_version: Option<String>,
     /// A list of events. Each element in the list contains detailed information

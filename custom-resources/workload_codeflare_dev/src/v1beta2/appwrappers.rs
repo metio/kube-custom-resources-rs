@@ -108,6 +108,10 @@ pub struct AppWrapperComponentsPodSetInfosTolerations {
 /// AppWrapperPodSet describes an homogeneous set of pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperComponentsPodSets {
+    /// Annotations is an unstructured key value map that may be used to store and retrieve
+    /// arbitrary metadata about the PodSet to customize its treatment by the AppWrapper controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Path is the path Component.Template to the PodTemplateSpec for this PodSet
     pub path: String,
     /// Replicas is the number of pods in this PodSet
@@ -165,6 +169,10 @@ pub struct AppWrapperStatusComponentStatus {
 /// AppWrapperPodSet describes an homogeneous set of pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperStatusComponentStatusPodSets {
+    /// Annotations is an unstructured key value map that may be used to store and retrieve
+    /// arbitrary metadata about the PodSet to customize its treatment by the AppWrapper controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Path is the path Component.Template to the PodTemplateSpec for this PodSet
     pub path: String,
     /// Replicas is the number of pods in this PodSet

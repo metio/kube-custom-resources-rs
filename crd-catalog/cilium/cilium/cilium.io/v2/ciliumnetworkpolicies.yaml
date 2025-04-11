@@ -597,8 +597,13 @@ spec:
                             serverNames:
                               description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                               items:
+                                description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                maxLength: 255
+                                pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
                                 type: "string"
+                              minItems: 1
                               type: "array"
+                              x-kubernetes-list-type: "set"
                             terminatingTLS:
                               description: "TerminatingTLS is the TLS context for the connection terminated by\nthe L7 proxy.  For egress policy this specifies the server-side TLS\nparameters to be applied on the connections originated from the local\nendpoint and terminated by the L7 proxy. For ingress policy this specifies\nthe server-side TLS parameters to be applied on the connections\noriginated from a remote source and terminated by the L7 proxy."
                               properties:
@@ -1729,8 +1734,13 @@ spec:
                             serverNames:
                               description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                               items:
+                                description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                maxLength: 255
+                                pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
                                 type: "string"
+                              minItems: 1
                               type: "array"
+                              x-kubernetes-list-type: "set"
                             terminatingTLS:
                               description: "TerminatingTLS is the TLS context for the connection terminated by\nthe L7 proxy.  For egress policy this specifies the server-side TLS\nparameters to be applied on the connections originated from the local\nendpoint and terminated by the L7 proxy. For ingress policy this specifies\nthe server-side TLS parameters to be applied on the connections\noriginated from a remote source and terminated by the L7 proxy."
                               properties:
@@ -2711,8 +2721,13 @@ spec:
                               serverNames:
                                 description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                                 items:
+                                  description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                  maxLength: 255
+                                  pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
                                   type: "string"
+                                minItems: 1
                                 type: "array"
+                                x-kubernetes-list-type: "set"
                               terminatingTLS:
                                 description: "TerminatingTLS is the TLS context for the connection terminated by\nthe L7 proxy.  For egress policy this specifies the server-side TLS\nparameters to be applied on the connections originated from the local\nendpoint and terminated by the L7 proxy. For ingress policy this specifies\nthe server-side TLS parameters to be applied on the connections\noriginated from a remote source and terminated by the L7 proxy."
                                 properties:
@@ -3843,8 +3858,13 @@ spec:
                               serverNames:
                                 description: "ServerNames is a list of allowed TLS SNI values. If not empty, then\nTLS must be present and one of the provided SNIs must be indicated in the\nTLS handshake."
                                 items:
+                                  description: "ServerName allows using prefix only wildcards to match DNS names.\n\n- \"*\" matches 0 or more DNS valid characters, and may only occur at the\nbeginning of the pattern. As a special case a \"*\" as the leftmost character,\nwithout a following \".\" matches all subdomains as well as the name to the right.\n\nExamples:\n  - `*.cilium.io` matches exactly one subdomain of cilium at that level www.cilium.io and blog.cilium.io match, cilium.io and google.com do not.\n  - `**.cilium.io` matches more than one subdomain of cilium, e.g. sub1.sub2.cilium.io and sub.cilium.io match, cilium.io do not."
+                                  maxLength: 255
+                                  pattern: "^(\\*?\\*\\.)?([-a-zA-Z0-9_]+\\.?)+$"
                                   type: "string"
+                                minItems: 1
                                 type: "array"
+                                x-kubernetes-list-type: "set"
                               terminatingTLS:
                                 description: "TerminatingTLS is the TLS context for the connection terminated by\nthe L7 proxy.  For egress policy this specifies the server-side TLS\nparameters to be applied on the connections originated from the local\nendpoint and terminated by the L7 proxy. For ingress policy this specifies\nthe server-side TLS parameters to be applied on the connections\noriginated from a remote source and terminated by the L7 proxy."
                                 properties:

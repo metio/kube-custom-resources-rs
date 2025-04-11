@@ -109,7 +109,7 @@ spec:
                   description: "The Kubernetes network configuration for the cluster."
                   properties:
                     elasticLoadBalancing:
-                      description: "Indicates the current configuration of the load balancing capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nFor more information, see EKS Auto Mode load balancing capability in the\nEKS User Guide."
+                      description: "Indicates the current configuration of the load balancing capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nFor more information, see EKS Auto Mode load balancing capability in the\nAmazon EKS User Guide."
                       properties:
                         enabled:
                           type: "boolean"
@@ -120,7 +120,7 @@ spec:
                       type: "string"
                   type: "object"
                 logging:
-                  description: "Enable or disable exporting the Kubernetes control plane logs for your cluster\nto CloudWatch Logs. By default, cluster control plane logs aren't exported\nto CloudWatch Logs. For more information, see Amazon EKS Cluster control\nplane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)\nin the Amazon EKS User Guide .\n\nCloudWatch Logs ingestion, archive storage, and data scanning rates apply\nto exported control plane logs. For more information, see CloudWatch Pricing\n(http://aws.amazon.com/cloudwatch/pricing/)."
+                  description: "Enable or disable exporting the Kubernetes control plane logs for your cluster\nto CloudWatch Logs . By default, cluster control plane logs aren't exported\nto CloudWatch Logs . For more information, see Amazon EKS Cluster control\nplane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)\nin the Amazon EKS User Guide .\n\nCloudWatch Logs ingestion, archive storage, and data scanning rates apply\nto exported control plane logs. For more information, see CloudWatch Pricing\n(http://aws.amazon.com/cloudwatch/pricing/)."
                   properties:
                     clusterLogging:
                       items:
@@ -159,7 +159,7 @@ spec:
                   properties:
                     remoteNodeNetworks:
                       items:
-                        description: "A network CIDR that can contain hybrid nodes."
+                        description: "A network CIDR that can contain hybrid nodes.\n\nThese CIDR blocks define the expected IP address range of the hybrid nodes\nthat join the cluster. These blocks are typically determined by your network\nadministrator.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range.\n\n   * Each block must have a route to the VPC that uses the VPC CIDR blocks,\n   not public IPs or Elastic IPs. There are many options including Transit\n   Gateway, Site-to-Site VPN, or Direct Connect.\n\n   * Each host must allow outbound connection to the EKS cluster control\n   plane on TCP ports 443 and 10250.\n\n   * Each host must allow inbound connection from the EKS cluster control\n   plane on TCP port 10250 for logs, exec and port-forward operations.\n\n   * Each host must allow TCP and UDP network connectivity to and from other\n   hosts that are running CoreDNS on UDP port 53 for service and pod DNS\n   names."
                         properties:
                           cidrs:
                             items:
@@ -169,7 +169,7 @@ spec:
                       type: "array"
                     remotePodNetworks:
                       items:
-                        description: "A network CIDR that can contain pods that run Kubernetes webhooks on hybrid\nnodes."
+                        description: "A network CIDR that can contain pods that run Kubernetes webhooks on hybrid\nnodes.\n\nThese CIDR blocks are determined by configuring your Container Network Interface\n(CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon\nVPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range."
                         properties:
                           cidrs:
                             items:
@@ -247,7 +247,7 @@ spec:
                   description: "Enable or disable the block storage capability of EKS Auto Mode when creating\nyour EKS Auto Mode cluster. If the block storage capability is enabled, EKS\nAuto Mode will create and delete EBS volumes in your Amazon Web Services\naccount."
                   properties:
                     blockStorage:
-                      description: "Indicates the current configuration of the block storage capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nIf the block storage capability is enabled, EKS Auto Mode will create and\ndelete EBS volumes in your Amazon Web Services account. For more information,\nsee EKS Auto Mode block storage capability in the EKS User Guide."
+                      description: "Indicates the current configuration of the block storage capability on your\nEKS Auto Mode cluster. For example, if the capability is enabled or disabled.\nIf the block storage capability is enabled, EKS Auto Mode will create and\ndelete EBS volumes in your Amazon Web Services account. For more information,\nsee EKS Auto Mode block storage capability in the Amazon EKS User Guide."
                       properties:
                         enabled:
                           type: "boolean"
@@ -268,7 +268,7 @@ spec:
                   description: "The desired Kubernetes version for your cluster. If you don't specify a value\nhere, the default version available in Amazon EKS is used.\n\nThe default version might not be the latest version available."
                   type: "string"
                 zonalShiftConfig:
-                  description: "Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,\nAmazon Web Services configures zonal autoshift for the cluster.\n\nZonal shift is a feature of Amazon Application Recovery Controller (ARC).\nARC zonal shift is designed to be a temporary measure that allows you to\nmove traffic for a resource away from an impaired AZ until the zonal shift\nexpires or you cancel it. You can extend the zonal shift if necessary.\n\nYou can start a zonal shift for an EKS cluster, or you can allow Amazon Web\nServices to do it for you by enabling zonal autoshift. This shift updates\nthe flow of east-to-west network traffic in your cluster to only consider\nnetwork endpoints for Pods running on worker nodes in healthy AZs. Additionally,\nany ALB or NLB handling ingress traffic for applications in your EKS cluster\nwill automatically route traffic to targets in the healthy AZs. For more\ninformation about zonal shift in EKS, see Learn about Amazon Application\nRecovery Controller (ARC) Zonal Shift in Amazon EKS (https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html)\nin the Amazon EKS User Guide ."
+                  description: "Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,\nAmazon Web Services configures zonal autoshift for the cluster.\n\nZonal shift is a feature of Amazon Application Recovery Controller (ARC).\nARC zonal shift is designed to be a temporary measure that allows you to\nmove traffic for a resource away from an impaired AZ until the zonal shift\nexpires or you cancel it. You can extend the zonal shift if necessary.\n\nYou can start a zonal shift for an Amazon EKS cluster, or you can allow Amazon\nWeb Services to do it for you by enabling zonal autoshift. This shift updates\nthe flow of east-to-west network traffic in your cluster to only consider\nnetwork endpoints for Pods running on worker nodes in healthy AZs. Additionally,\nany ALB or NLB handling ingress traffic for applications in your Amazon EKS\ncluster will automatically route traffic to targets in the healthy AZs. For\nmore information about zonal shift in EKS, see Learn about Amazon Application\nRecovery Controller (ARC) Zonal Shift in Amazon EKS (https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html)\nin the Amazon EKS User Guide ."
                   properties:
                     enabled:
                       type: "boolean"

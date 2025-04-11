@@ -263,27 +263,20 @@ pub enum MachinePoolTemplateSpecReadinessGatesPolarity {
 /// status is the observed state of MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolStatus {
-    /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+    /// availableReplicas is the number of available replicas for this MachinePool. A machine is considered available when Machine's Available condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// bootstrapReady is the state of the bootstrap provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapReady")]
     pub bootstrap_ready: Option<bool>,
-    /// conditions define the current service state of the MachinePool.
+    /// conditions represents the observations of a MachinePool's current state.
+    /// Known condition types are Available, BootstrapConfigReady, InfrastructureReady, MachinesReady, MachinesUpToDate,
+    /// ScalingUp, ScalingDown, Remediating, Deleting, Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// failureMessage indicates that there is a problem reconciling the state,
-    /// and will be set to a descriptive error message.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
-    pub failure_message: Option<String>,
-    /// failureReason indicates that there is a problem reconciling the state, and
-    /// will be set to a token value suitable for programmatic interpretation.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
-    pub failure_reason: Option<String>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<MachinePoolStatusDeprecated>,
     /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
@@ -296,24 +289,64 @@ pub struct MachinePoolStatus {
     /// phase represents the current phase of cluster actuation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<MachinePoolStatusPhase>,
-    /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+    /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when Machine's Ready condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the most recently observed number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// upToDateReplicas is the number of up-to-date replicas targeted by this MachinePool. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<MachinePoolStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolStatusDeprecatedV1beta1 {
+    /// availableReplicas is the number of available replicas (ready for at least minReadySeconds) for this MachinePool.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// conditions define the current service state of the MachinePool.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// failureMessage indicates that there is a problem reconciling the state,
+    /// and will be set to a descriptive error message.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
+    pub failure_message: Option<String>,
+    /// failureReason indicates that there is a problem reconciling the state, and
+    /// will be set to a token value suitable for programmatic interpretation.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
+    pub failure_reason: Option<String>,
+    /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is "Ready".
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
     /// unavailableReplicas is the total number of unavailable machine instances targeted by this machine pool.
     /// This is the total number of machine instances that are still required for
     /// the machine pool to have 100% available capacity. They may either
     /// be machine instances that are running but not yet available or machine instances
     /// that still have not been created.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
-    /// v1beta2 groups all the fields that will be added or modified in MachinePool's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<MachinePoolStatusV1beta2>,
 }
 
 /// status is the observed state of MachinePool.
@@ -329,24 +362,5 @@ pub enum MachinePoolStatusPhase {
     Deleting,
     Failed,
     Unknown,
-}
-
-/// v1beta2 groups all the fields that will be added or modified in MachinePool's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachinePoolStatusV1beta2 {
-    /// availableReplicas is the number of available replicas for this MachinePool. A machine is considered available when Machine's Available condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
-    pub available_replicas: Option<i32>,
-    /// conditions represents the observations of a MachinePool's current state.
-    /// Known condition types are Available, BootstrapConfigReady, InfrastructureReady, MachinesReady, MachinesUpToDate,
-    /// ScalingUp, ScalingDown, Remediating, Deleting, Paused.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    /// readyReplicas is the number of ready replicas for this MachinePool. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
-    pub ready_replicas: Option<i32>,
-    /// upToDateReplicas is the number of up-to-date replicas targeted by this MachinePool. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
-    pub up_to_date_replicas: Option<i32>,
 }
 

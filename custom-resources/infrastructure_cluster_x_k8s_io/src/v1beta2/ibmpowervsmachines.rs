@@ -29,10 +29,7 @@ pub struct IBMPowerVSMachineSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRef")]
     pub image_ref: Option<IBMPowerVSMachineImageRef>,
     /// memoryGiB is the size of a virtual machine's memory, in GiB.
-    /// maximum value for the MemoryGiB depends on the selected SystemType.
-    /// when SystemType is set to e880 maximum MemoryGiB value is 7463 GiB.
-    /// when SystemType is set to e980 maximum MemoryGiB value is 15307 GiB.
-    /// when SystemType is set to s922 maximum MemoryGiB value is 942 GiB.
+    /// maximum value for the MemoryGiB depends on the selected SystemType, which can be found here: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-pricing-virtual-server-on-cloud
     /// The minimum memory is 2 GiB.
     /// When omitted, this means the user has no opinion and the platform is left to choose a reasonable
     /// default, which is subject to change over time. The current default is 2.
@@ -53,10 +50,8 @@ pub struct IBMPowerVSMachineSpec {
     pub processor_type: Option<IBMPowerVSMachineProcessorType>,
     /// processors is the number of virtual processors in a virtual machine.
     /// when the processorType is selected as Dedicated the processors value cannot be fractional.
-    /// maximum value for the Processors depends on the selected SystemType.
-    /// when SystemType is set to e880 or e980 maximum Processors value is 143.
-    /// when SystemType is set to s922 maximum Processors value is 15.
-    /// minimum value for Processors depends on the selected ProcessorType.
+    /// maximum value for the Processors depends on the selected SystemType,
+    /// and minimum value for Processors depends on the selected ProcessorType, which can be found here: https://cloud.ibm.com/docs/power-iaas?topic=power-iaas-pricing-virtual-server-on-cloud.
     /// when ProcessorType is set as Shared or Capped, The minimum processors is 0.25.
     /// when ProcessorType is set as Dedicated, The minimum processors is 1.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
@@ -86,9 +81,7 @@ pub struct IBMPowerVSMachineSpec {
     pub ssh_key: Option<String>,
     /// systemType is the System type used to host the instance.
     /// systemType determines the number of cores and memory that is available.
-    /// Few of the supported SystemTypes are s922,e880,e980.
-    /// e880 systemType available only in Dallas Datacenters.
-    /// e980 systemType available in Datacenters except Dallas and Washington.
+    /// Few of the supported SystemTypes are s922,e980,s1022,e1050,e1080.
     /// When omitted, this means that the user has no opinion and the platform is left to choose a
     /// reasonable default, which is subject to change over time. The current default is s922 which is generally available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemType")]
@@ -176,12 +169,14 @@ pub struct IBMPowerVSMachineServiceInstance {
 pub enum IBMPowerVSMachineSystemType {
     #[serde(rename = "s922")]
     S922,
-    #[serde(rename = "e880")]
-    E880,
     #[serde(rename = "e980")]
     E980,
     #[serde(rename = "s1022")]
     S1022,
+    #[serde(rename = "e1050")]
+    E1050,
+    #[serde(rename = "e1080")]
+    E1080,
     #[serde(rename = "")]
     KopiumEmpty,
 }
@@ -211,6 +206,8 @@ pub struct IBMPowerVSMachineStatus {
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason will be set in the event that there is a terminal problem
@@ -229,6 +226,8 @@ pub struct IBMPowerVSMachineStatus {
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Fault will report if any fault messages for the vsi.
@@ -248,6 +247,9 @@ pub struct IBMPowerVSMachineStatus {
     /// Region specifies the Power VS Service instance region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
+    /// v1beta2 groups all the fields that will be added or modified in IBMPowerVSMachine's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<IBMPowerVSMachineStatusV1beta2>,
     /// Zone specifies the Power VS Service instance zone.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
@@ -261,5 +263,14 @@ pub struct IBMPowerVSMachineStatusAddresses {
     /// Node address type, one of Hostname, ExternalIP or InternalIP.
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in IBMPowerVSMachine's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSMachineStatusV1beta2 {
+    /// conditions represents the observations of a IBMPowerVSMachine's current state.
+    /// Known condition types are Ready, InstanceReady and Paused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

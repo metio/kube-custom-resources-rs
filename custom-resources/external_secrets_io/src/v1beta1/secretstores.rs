@@ -1610,10 +1610,16 @@ pub struct SecretStoreProviderGcpsmAuthSecretRefSecretAccessKeySecretRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderGcpsmAuthWorkloadIdentity {
-    #[serde(rename = "clusterLocation")]
-    pub cluster_location: String,
-    #[serde(rename = "clusterName")]
-    pub cluster_name: String,
+    /// ClusterLocation is the location of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLocation")]
+    pub cluster_location: Option<String>,
+    /// ClusterName is the name of the cluster
+    /// If not specified, it fetches information from the metadata server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
+    /// ClusterProjectID is the project ID of the cluster
+    /// If not specified, it fetches information from the metadata server
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterProjectID")]
     pub cluster_project_id: Option<String>,
     /// A reference to a ServiceAccount resource.

@@ -212,6 +212,28 @@ pub struct BundleTargetAdditionalFormatsPkcs12 {
     /// Password for PKCS12 trust store
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
+    /// Profile specifies the key and certificate encryption algorithms and the HMAC algorithm
+    /// used to create the PKCS12 keystore. Default value is `LegacyRC2` for backward compatibility.
+    /// 
+    /// If provided, allowed values are:
+    /// `LegacyRC2`: Deprecated. Not supported by default in OpenSSL 3 or Java 20.
+    /// `LegacyDES`: Less secure algorithm. Use this option for maximal compatibility.
+    /// `Modern2023`: Secure algorithm. Use this option in case you have to always use secure algorithms
+    /// (eg. because of company policy). Please note that the security of the algorithm is not that important
+    /// in reality, because the unencrypted certificate and private key are also stored in the Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<BundleTargetAdditionalFormatsPkcs12Profile>,
+}
+
+/// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+/// The bundle is by default created without a password.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BundleTargetAdditionalFormatsPkcs12Profile {
+    #[serde(rename = "LegacyRC2")]
+    LegacyRc2,
+    #[serde(rename = "LegacyDES")]
+    LegacyDes,
+    Modern2023,
 }
 
 /// ConfigMap is the target ConfigMap in Namespaces that all Bundle source
