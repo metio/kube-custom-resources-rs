@@ -7550,7 +7550,7 @@ pub struct JobSetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartsCountTowardsMax")]
     pub restarts_count_towards_max: Option<i32>,
     /// TerminalState the state of the JobSet when it finishes execution.
-    /// It can be either Complete or Failed. Otherwise, it is empty by default.
+    /// It can be either Completed or Failed. Otherwise, it is empty by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminalState")]
     pub terminal_state: Option<String>,
 }

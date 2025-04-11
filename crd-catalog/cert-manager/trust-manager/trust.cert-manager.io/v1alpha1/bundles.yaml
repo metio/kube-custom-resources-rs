@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.17.3"
   name: "bundles.trust.cert-manager.io"
 spec:
   group: "trust.cert-manager.io"
@@ -198,6 +198,13 @@ spec:
                               default: ""
                               description: "Password for PKCS12 trust store"
                               maxLength: 128
+                              type: "string"
+                            profile:
+                              description: "Profile specifies the key and certificate encryption algorithms and the HMAC algorithm\nused to create the PKCS12 keystore. Default value is `LegacyRC2` for backward compatibility.\n\nIf provided, allowed values are:\n`LegacyRC2`: Deprecated. Not supported by default in OpenSSL 3 or Java 20.\n`LegacyDES`: Less secure algorithm. Use this option for maximal compatibility.\n`Modern2023`: Secure algorithm. Use this option in case you have to always use secure algorithms\n(eg. because of company policy). Please note that the security of the algorithm is not that important\nin reality, because the unencrypted certificate and private key are also stored in the Secret."
+                              enum:
+                                - "LegacyRC2"
+                                - "LegacyDES"
+                                - "Modern2023"
                               type: "string"
                           required:
                             - "key"

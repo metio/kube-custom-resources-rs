@@ -425,6 +425,9 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
+                internalListenPort:
+                  description: "InternalListenPort instructs vmauth to serve internal routes at given port\navailable from v0.56.0 operator\nand v1.111.0 vmauth version\nrelated doc https://docs.victoriametrics.com/vmauth/#security"
+                  type: "string"
                 license:
                   description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:

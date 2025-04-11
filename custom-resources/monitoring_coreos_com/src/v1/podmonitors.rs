@@ -31,6 +31,10 @@ pub struct PodMonitorSpec {
     /// It requires Prometheus >= v2.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bodySizeLimit")]
     pub body_size_limit: Option<String>,
+    /// Whether to convert all scraped classic histograms into a native histogram with custom buckets.
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
+    pub convert_classic_histograms_to_nhcb: Option<bool>,
     /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
     /// 
     /// It requires Prometheus >= v3.0.0.
@@ -515,18 +519,18 @@ pub struct PodMonitorPodMetricsEndpointsOauth2 {
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, PodMonitorPodMetricsEndpointsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
     /// 
-    /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
@@ -643,12 +647,12 @@ pub struct PodMonitorPodMetricsEndpointsOauth2TlsConfig {
     pub key_secret: Option<PodMonitorPodMetricsEndpointsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PodMonitorPodMetricsEndpointsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PodMonitorPodMetricsEndpointsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
@@ -910,12 +914,12 @@ pub struct PodMonitorPodMetricsEndpointsTlsConfig {
     pub key_secret: Option<PodMonitorPodMetricsEndpointsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.41.0.
+    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<PodMonitorPodMetricsEndpointsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
     /// 
-    /// It requires Prometheus >= v2.35.0.
+    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<PodMonitorPodMetricsEndpointsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.

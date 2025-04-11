@@ -275,6 +275,16 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          git:
+                            description: "the configuration of the project to build on Git"
+                            properties:
+                              secret:
+                                description: "the Kubernetes secret where token is stored"
+                                type: "string"
+                              url:
+                                description: "the URL of the project"
+                                type: "string"
+                            type: "object"
                           maven:
                             description: "the configuration required by Maven for the application build phase"
                             properties:
@@ -1020,6 +1030,16 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                          git:
+                            description: "the configuration of the project to build on Git"
+                            properties:
+                              secret:
+                                description: "the Kubernetes secret where token is stored"
+                                type: "string"
+                              url:
+                                description: "the URL of the project"
+                                type: "string"
+                            type: "object"
                           maven:
                             description: "the configuration required by Maven for the application build phase"
                             properties:

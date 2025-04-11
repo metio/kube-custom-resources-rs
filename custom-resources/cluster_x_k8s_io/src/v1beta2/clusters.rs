@@ -961,9 +961,15 @@ pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
 /// status is the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
-    /// conditions defines current service state of the cluster.
+    /// conditions represents the observations of a Cluster's current state.
+    /// Known condition types are Available, InfrastructureReady, ControlPlaneInitialized, ControlPlaneAvailable, WorkersAvailable, MachinesReady
+    /// MachinesUpToDate, RemoteConnectionProbe, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
+    /// Additionally, a TopologyReconciled condition will be added in case the Cluster is referencing a ClusterClass / defining a managed Topology.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// controlPlane groups all the observations about Cluster's ControlPlane current state.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
+    pub control_plane: Option<ClusterStatusControlPlane>,
     /// controlPlaneReady denotes if the control plane became ready during initial provisioning
     /// to receive requests.
     /// NOTE: this field is part of the Cluster API contract and it is used to orchestrate provisioning.
@@ -971,22 +977,12 @@ pub struct ClusterStatus {
     /// to check the operational state of the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<ClusterStatusDeprecated>,
     /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
-    /// failureMessage indicates that there is a fatal problem reconciling the
-    /// state, and will be set to a descriptive error message.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
-    pub failure_message: Option<String>,
-    /// failureReason indicates that there is a fatal problem reconciling the
-    /// state, and will be set to a token value suitable for
-    /// programmatic interpretation.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
-    pub failure_reason: Option<String>,
     /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
@@ -996,9 +992,61 @@ pub struct ClusterStatus {
     /// phase represents the current phase of cluster actuation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterStatusPhase>,
-    /// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.
+    /// workers groups all the observations about Cluster's Workers current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<ClusterStatusV1beta2>,
+    pub workers: Option<ClusterStatusWorkers>,
+}
+
+/// controlPlane groups all the observations about Cluster's ControlPlane current state.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusControlPlane {
+    /// availableReplicas is the total number of available control plane machines in this cluster. A machine is considered available when Machine's Available condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
+    pub available_replicas: Option<i32>,
+    /// desiredReplicas is the total number of desired control plane machines in this cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
+    pub desired_replicas: Option<i32>,
+    /// readyReplicas is the total number of ready control plane machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
+    pub ready_replicas: Option<i32>,
+    /// replicas is the total number of control plane machines in this cluster.
+    /// NOTE: replicas also includes machines still being provisioned or being deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// upToDateReplicas is the number of up-to-date control plane machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
+    pub up_to_date_replicas: Option<i32>,
+}
+
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<ClusterStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusDeprecatedV1beta1 {
+    /// conditions defines current service state of the cluster.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// failureMessage indicates that there is a fatal problem reconciling the
+    /// state, and will be set to a descriptive error message.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
+    pub failure_message: Option<String>,
+    /// failureReason indicates that there is a fatal problem reconciling the
+    /// state, and will be set to a token value suitable for
+    /// programmatic interpretation.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
+    pub failure_reason: Option<String>,
 }
 
 /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
@@ -1023,47 +1071,9 @@ pub enum ClusterStatusPhase {
     Unknown,
 }
 
-/// v1beta2 groups all the fields that will be added or modified in Cluster's status with the V1Beta2 version.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterStatusV1beta2 {
-    /// conditions represents the observations of a Cluster's current state.
-    /// Known condition types are Available, InfrastructureReady, ControlPlaneInitialized, ControlPlaneAvailable, WorkersAvailable, MachinesReady
-    /// MachinesUpToDate, RemoteConnectionProbe, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
-    /// Additionally, a TopologyReconciled condition will be added in case the Cluster is referencing a ClusterClass / defining a managed Topology.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    /// controlPlane groups all the observations about Cluster's ControlPlane current state.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
-    pub control_plane: Option<ClusterStatusV1beta2ControlPlane>,
-    /// workers groups all the observations about Cluster's Workers current state.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub workers: Option<ClusterStatusV1beta2Workers>,
-}
-
-/// controlPlane groups all the observations about Cluster's ControlPlane current state.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterStatusV1beta2ControlPlane {
-    /// availableReplicas is the total number of available control plane machines in this cluster. A machine is considered available when Machine's Available condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
-    pub available_replicas: Option<i32>,
-    /// desiredReplicas is the total number of desired control plane machines in this cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredReplicas")]
-    pub desired_replicas: Option<i32>,
-    /// readyReplicas is the total number of ready control plane machines in this cluster. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
-    pub ready_replicas: Option<i32>,
-    /// replicas is the total number of control plane machines in this cluster.
-    /// NOTE: replicas also includes machines still being provisioned or being deleted.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
-    /// upToDateReplicas is the number of up-to-date control plane machines in this cluster. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
-    pub up_to_date_replicas: Option<i32>,
-}
-
 /// workers groups all the observations about Cluster's Workers current state.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterStatusV1beta2Workers {
+pub struct ClusterStatusWorkers {
     /// availableReplicas is the total number of available worker machines in this cluster. A machine is considered available when Machine's Available condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,

@@ -364,7 +364,7 @@ spec:
                     type: "object"
                   type: "array"
                 executor:
-                  description: "The executor role specifies the configuration that, together with the driver pod template, is used by Spark to create the executor pods. This is RoleGroup instead of plain CommonConfiguration because it needs to allows for the number of replicas. to be specified."
+                  description: "The executor role specifies the configuration that, together with the driver pod template, is used by Spark to create the executor pods. This is RoleGroup instead of plain CommonConfiguration because it needs to allow for the number of replicas. to be specified."
                   nullable: true
                   properties:
                     cliOverrides:

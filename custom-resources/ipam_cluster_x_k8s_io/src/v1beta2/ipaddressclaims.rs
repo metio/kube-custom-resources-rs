@@ -47,12 +47,12 @@ pub struct IPAddressClaimStatus {
     /// addressRef is a reference to the address that was created for this claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressRef")]
     pub address_ref: Option<IPAddressClaimStatusAddressRef>,
-    /// conditions summarises the current state of the IPAddressClaim
+    /// conditions represents the observations of a IPAddressClaim's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// v1beta2 groups all the fields that will be added or modified in IPAddressClaim's status with the V1Beta2 version.
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<IPAddressClaimStatusV1beta2>,
+    pub deprecated: Option<IPAddressClaimStatusDeprecated>,
 }
 
 /// addressRef is a reference to the address that was created for this claim.
@@ -67,10 +67,20 @@ pub struct IPAddressClaimStatusAddressRef {
     pub name: Option<String>,
 }
 
-/// v1beta2 groups all the fields that will be added or modified in IPAddressClaim's status with the V1Beta2 version.
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IPAddressClaimStatusV1beta2 {
-    /// conditions represents the observations of a IPAddressClaim's current state.
+pub struct IPAddressClaimStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<IPAddressClaimStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IPAddressClaimStatusDeprecatedV1beta1 {
+    /// conditions summarises the current state of the IPAddressClaim
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

@@ -55,7 +55,7 @@ pub struct AddonSpec {
     /// 
     /// For more information, see Attach an IAM Role to an Amazon EKS add-on using
     /// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
-    /// in the EKS User Guide.
+    /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentityAssociations")]
     pub pod_identity_associations: Option<Vec<AddonPodIdentityAssociations>>,
     /// How to resolve field value conflicts for an Amazon EKS add-on. Conflicts
@@ -142,7 +142,7 @@ pub struct AddonClusterRefFrom {
 /// 
 /// For more information, see Attach an IAM Role to an Amazon EKS add-on using
 /// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
-/// in the EKS User Guide.
+/// in the Amazon EKS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonPodIdentityAssociations {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]

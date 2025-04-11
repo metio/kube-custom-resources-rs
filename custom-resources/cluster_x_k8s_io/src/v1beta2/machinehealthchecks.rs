@@ -165,12 +165,16 @@ pub struct MachineHealthCheckUnhealthyConditions {
 /// status is the most recently observed status of MachineHealthCheck resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineHealthCheckStatus {
-    /// conditions defines current service state of the MachineHealthCheck.
+    /// conditions represents the observations of a MachineHealthCheck's current state.
+    /// Known condition types are RemediationAllowed, Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// currentHealthy is the total number of healthy machines counted by this machine health check
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentHealthy")]
     pub current_healthy: Option<i32>,
+    /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<MachineHealthCheckStatusDeprecated>,
     /// expectedMachines is the total number of machines counted by this machine health check
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedMachines")]
     pub expected_machines: Option<i32>,
@@ -184,16 +188,22 @@ pub struct MachineHealthCheckStatus {
     /// targets shows the current list of machines the machine health check is watching
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
-    /// v1beta2 groups all the fields that will be added or modified in MachineHealthCheck's status with the V1Beta2 version.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub v1beta2: Option<MachineHealthCheckStatusV1beta2>,
 }
 
-/// v1beta2 groups all the fields that will be added or modified in MachineHealthCheck's status with the V1Beta2 version.
+/// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineHealthCheckStatusV1beta2 {
-    /// conditions represents the observations of a MachineHealthCheck's current state.
-    /// Known condition types are RemediationAllowed, Paused.
+pub struct MachineHealthCheckStatusDeprecated {
+    /// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta1: Option<MachineHealthCheckStatusDeprecatedV1beta1>,
+}
+
+/// v1beta1 groups all the status fields that are deprecated and will be removed when support for v1beta1 will be dropped.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineHealthCheckStatusDeprecatedV1beta1 {
+    /// conditions defines current service state of the MachineHealthCheck.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

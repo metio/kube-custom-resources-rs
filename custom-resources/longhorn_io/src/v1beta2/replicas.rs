@@ -21,9 +21,6 @@ use self::prelude::*;
 pub struct ReplicaSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
-    /// Deprecated:Replaced by field `dataEngine`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDirectoryName")]
@@ -36,9 +33,6 @@ pub struct ReplicaSpec {
     pub disk_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskPath")]
     pub disk_path: Option<String>,
-    /// Deprecated: Replaced by field `image`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
-    pub engine_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineName")]
     pub engine_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]

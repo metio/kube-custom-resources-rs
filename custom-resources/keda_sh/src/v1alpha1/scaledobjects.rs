@@ -175,9 +175,16 @@ pub struct ScaledObjectAdvancedScalingModifiers {
     /// MetricTargetType specifies the type of metric being targeted, and should be either
     /// "Value", "AverageValue", or "Utilization"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricType")]
-    pub metric_type: Option<String>,
+    pub metric_type: Option<ScaledObjectAdvancedScalingModifiersMetricType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<String>,
+}
+
+/// ScalingModifiers describes advanced scaling logic options like formula
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScaledObjectAdvancedScalingModifiersMetricType {
+    AverageValue,
+    Value,
 }
 
 /// Fallback is the spec for fallback options

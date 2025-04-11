@@ -81,9 +81,9 @@ spec:
                   description: "The name of the add-on. The name must match one of the names returned by\nDescribeAddonVersions."
                   type: "string"
                 podIdentityAssociations:
-                  description: "An array of Pod Identity Assocations to be created. Each EKS Pod Identity\nassociation maps a Kubernetes service account to an IAM Role.\n\nFor more information, see Attach an IAM Role to an Amazon EKS add-on using\nPod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)\nin the EKS User Guide."
+                  description: "An array of Pod Identity Assocations to be created. Each EKS Pod Identity\nassociation maps a Kubernetes service account to an IAM Role.\n\nFor more information, see Attach an IAM Role to an Amazon EKS add-on using\nPod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)\nin the Amazon EKS User Guide."
                   items:
-                    description: "A type of Pod Identity Association owned by an Amazon EKS Add-on.\n\nEach EKS Pod Identity Association maps a role to a service account in a namespace\nin the cluster.\n\nFor more information, see Attach an IAM Role to an Amazon EKS add-on using\nPod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)\nin the EKS User Guide."
+                    description: "A type of Pod Identity Association owned by an Amazon EKS Add-on.\n\nEach EKS Pod Identity Association maps a role to a service account in a namespace\nin the cluster.\n\nFor more information, see Attach an IAM Role to an Amazon EKS add-on using\nPod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)\nin the Amazon EKS User Guide."
                     properties:
                       roleARN:
                         type: "string"

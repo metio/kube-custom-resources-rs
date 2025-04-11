@@ -19,8 +19,22 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KuadrantSpec {
+    /// MTLS is an optional entry which when enabled is set to true, kuadrant-operator
+    /// will add the configuration required to enable mTLS between an Istio provided
+    /// gateway and the Kuadrant components.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mtls: Option<KuadrantMtls>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<KuadrantObservability>,
+}
+
+/// MTLS is an optional entry which when enabled is set to true, kuadrant-operator
+/// will add the configuration required to enable mTLS between an Istio provided
+/// gateway and the Kuadrant components.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KuadrantMtls {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -36,6 +50,9 @@ pub struct KuadrantStatus {
     /// Known .status.conditions.type are: "Available"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// Mtls reflects the mtls feature state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mtls: Option<bool>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,

@@ -51,13 +51,13 @@ spec:
                   description: "An optional description of the cluster."
                   type: "string"
                 engineVersion:
-                  description: "The version number of the Redis engine to be used for the cluster."
+                  description: "The version number of the Redis OSS engine to be used for the cluster."
                   type: "string"
                 kmsKeyID:
                   description: "The ID of the KMS key used to encrypt the cluster."
                   type: "string"
                 maintenanceWindow:
-                  description: "Specifies the weekly time range during which maintenance on the cluster is\nperformed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi\n(24H Clock UTC). The minimum maintenance window is a 60 minute period."
+                  description: "Specifies the weekly time range during which maintenance on the cluster is\nperformed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi\n(24H Clock UTC). The minimum maintenance window is a 60 minute period.\n\nValid values for ddd are:\n\n   * sun\n\n   * mon\n\n   * tue\n\n   * wed\n\n   * thu\n\n   * fri\n\n   * sat\n\nExample: sun:23:00-mon:01:30"
                   type: "string"
                 name:
                   description: "The name of the cluster. This value must be unique as it also serves as the\ncluster identifier."
@@ -228,7 +228,7 @@ spec:
                       type: "integer"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:
@@ -254,7 +254,7 @@ spec:
                     type: "object"
                   type: "array"
                 enginePatchVersion:
-                  description: "The Redis engine patch version used by the cluster"
+                  description: "The Redis OSS engine patch version used by the cluster"
                   type: "string"
                 events:
                   description: "A list of events. Each element in the list contains detailed information\nabout one event."

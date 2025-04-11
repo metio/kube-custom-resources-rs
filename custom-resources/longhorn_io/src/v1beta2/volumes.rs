@@ -23,9 +23,6 @@ pub struct VolumeSpec {
     pub standby: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessMode")]
     pub access_mode: Option<VolumeAccessMode>,
-    /// Deprecated:Replaced by field `dataEngine`.'
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendStoreDriver")]
-    pub backend_store_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCompressionMethod")]
@@ -45,9 +42,6 @@ pub struct VolumeSpec {
     pub disk_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encrypted: Option<bool>,
-    /// Deprecated: Replaced by field `image`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineImage")]
-    pub engine_image: Option<String>,
     /// Setting that freezes the filesystem on the root partition before a snapshot is created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "freezeFilesystemForSnapshot")]
     pub freeze_filesystem_for_snapshot: Option<VolumeFreezeFilesystemForSnapshot>,
@@ -275,9 +269,6 @@ pub struct VolumeStatus {
     pub last_degraded_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
-    /// Deprecated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingNodeID")]
-    pub pending_node_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remountRequestedAt")]
     pub remount_requested_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreInitiated")]

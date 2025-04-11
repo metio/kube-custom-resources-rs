@@ -131,7 +131,7 @@ pub struct SnapshotStatus {
     /// The configuration of the cluster from which the snapshot was taken
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterConfiguration")]
     pub cluster_configuration: Option<SnapshotStatusClusterConfiguration>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource

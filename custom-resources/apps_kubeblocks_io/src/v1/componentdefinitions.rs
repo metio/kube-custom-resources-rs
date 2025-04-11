@@ -5159,11 +5159,18 @@ pub struct ComponentDefinitionConfigs {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
+    /// ExternalManaged indicates whether the configuration is managed by an external system.
+    /// When set to true, the controller will ignore the management of this configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
+    pub external_managed: Option<bool>,
     /// Specifies the name of the template.
     pub name: String,
     /// Specifies the namespace of the referenced template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Specifies whether to restart the pod when the file changes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartOnFileChange")]
+    pub restart_on_file_change: Option<bool>,
     /// Specifies the name of the referenced template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
@@ -15826,11 +15833,18 @@ pub struct ComponentDefinitionScripts {
     /// Refers to documents of k8s.ConfigMapVolumeSource.defaultMode for more information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
+    /// ExternalManaged indicates whether the configuration is managed by an external system.
+    /// When set to true, the controller will ignore the management of this configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalManaged")]
+    pub external_managed: Option<bool>,
     /// Specifies the name of the template.
     pub name: String,
     /// Specifies the namespace of the referenced template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// Specifies whether to restart the pod when the file changes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartOnFileChange")]
+    pub restart_on_file_change: Option<bool>,
     /// Specifies the name of the referenced template ConfigMap object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
@@ -16486,6 +16500,9 @@ pub struct ComponentDefinitionVarsValueFrom {
     /// Selects a defined var of host-network resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkVarRef")]
     pub host_network_var_ref: Option<ComponentDefinitionVarsValueFromHostNetworkVarRef>,
+    /// Selects a defined var of a kind of resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVarRef")]
+    pub resource_var_ref: Option<ComponentDefinitionVarsValueFromResourceVarRef>,
     /// Selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ComponentDefinitionVarsValueFromSecretKeyRef>,
@@ -16924,6 +16941,139 @@ pub enum ComponentDefinitionVarsValueFromHostNetworkVarRefMultipleClusterObjectO
     Individual,
     #[serde(rename = "combined")]
     Combined,
+}
+
+/// Selects a defined var of a kind of resource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromResourceVarRef {
+    /// Specifies the exact name, name prefix, or regular expression pattern for matching the name of the ComponentDefinition
+    /// custom resource (CR) used by the component that the referent object resident in.
+    /// 
+    /// 
+    /// If not specified, the component itself will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpu: Option<ComponentDefinitionVarsValueFromResourceVarRefCpu>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuLimit")]
+    pub cpu_limit: Option<ComponentDefinitionVarsValueFromResourceVarRefCpuLimit>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub memory: Option<ComponentDefinitionVarsValueFromResourceVarRefMemory>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<ComponentDefinitionVarsValueFromResourceVarRefMemoryLimit>,
+    /// This option defines the behavior when multiple component objects match the specified @CompDef.
+    /// If not provided, an error will be raised when handling multiple matches.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multipleClusterObjectOption")]
+    pub multiple_cluster_object_option: Option<ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOption>,
+    /// Name of the referent object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the object must be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<ComponentDefinitionVarsValueFromResourceVarRefStorage>,
+}
+
+/// Selects a defined var of a kind of resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefCpu {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a kind of resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefCpuLimit {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a kind of resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefMemory {
+    Required,
+    Optional,
+}
+
+/// Selects a defined var of a kind of resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefMemoryLimit {
+    Required,
+    Optional,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOption {
+    /// Define the options for handling combined variables.
+    /// Valid only when the strategy is set to "combined".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "combinedOption")]
+    pub combined_option: Option<ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionCombinedOption>,
+    /// RequireAllComponentObjects controls whether all component objects must exist before resolving.
+    /// If set to true, resolving will only proceed if all component objects are present.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireAllComponentObjects")]
+    pub require_all_component_objects: Option<bool>,
+    /// Define the strategy for handling multiple cluster objects.
+    pub strategy: ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionStrategy,
+}
+
+/// Define the options for handling combined variables.
+/// Valid only when the strategy is set to "combined".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionCombinedOption {
+    /// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenFormat")]
+    pub flatten_format: Option<ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat>,
+    /// If set, the existing variable will be kept, and a new variable will be defined with the specified suffix
+    /// in pattern: $(var.name)_$(suffix).
+    /// The new variable will be auto-created and placed behind the existing one.
+    /// If not set, the existing variable will be reused with the value format defined below.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newVarSuffix")]
+    pub new_var_suffix: Option<String>,
+    /// The format of the value that the operator will use to compose values from multiple components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFormat")]
+    pub value_format: Option<String>,
+}
+
+/// The flatten format, default is: $(comp-name-1):value,$(comp-name-2):value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionCombinedOptionFlattenFormat {
+    /// Pair delimiter.
+    pub delimiter: String,
+    /// Key-value delimiter.
+    #[serde(rename = "keyValueDelimiter")]
+    pub key_value_delimiter: String,
+}
+
+/// This option defines the behavior when multiple component objects match the specified @CompDef.
+/// If not provided, an error will be raised when handling multiple matches.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefMultipleClusterObjectOptionStrategy {
+    #[serde(rename = "individual")]
+    Individual,
+    #[serde(rename = "combined")]
+    Combined,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionVarsValueFromResourceVarRefStorage {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// VarOption defines whether a variable is required or optional.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub option: Option<ComponentDefinitionVarsValueFromResourceVarRefStorageOption>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionVarsValueFromResourceVarRefStorageOption {
+    Required,
+    Optional,
 }
 
 /// Selects a key of a Secret.

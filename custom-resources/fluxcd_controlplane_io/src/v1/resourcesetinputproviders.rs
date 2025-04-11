@@ -43,6 +43,9 @@ pub struct ResourceSetInputProviderSpec {
     /// that grants read-only access to the repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ResourceSetInputProviderSecretRef>,
+    /// Skip defines whether we need to skip input provider response updates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub skip: Option<ResourceSetInputProviderSkip>,
     /// Type specifies the type of the input provider.
     #[serde(rename = "type")]
     pub r#type: ResourceSetInputProviderType,
@@ -93,6 +96,15 @@ pub struct ResourceSetInputProviderFilter {
 pub struct ResourceSetInputProviderSecretRef {
     /// Name of the referent.
     pub name: String,
+}
+
+/// Skip defines whether we need to skip input provider response updates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetInputProviderSkip {
+    /// Labels specifies list of labels to skip input provider response when any of the label conditions matched.
+    /// When prefixed with !, input provider response will be skipped if it does not have this label.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<Vec<String>>,
 }
 
 /// ResourceSetInputProviderSpec defines the desired state of ResourceSetInputProvider
