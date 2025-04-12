@@ -3279,9 +3279,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "snyk/kubernetes-monitor",
         license: APACHE_V2,
-        urls: &[
-            "https://github.com/snyk/kubernetes-monitor/blob/staging/snyk-operator/deploy/olm-catalog/snyk-operator/0.0.0/snykmonitors.charts.helm.k8s.io.crd.yaml",
-        ],
+        urls: &[], // snyk-operator got removed upstream :(
         ignores: &[],
     },
     UpstreamSource {
@@ -3577,6 +3575,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_authentications.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_compliances.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_egressgateways.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_gatewayapis.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_goldmanes.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_imagesets.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_installations.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_intrusiondetections.yaml",
@@ -3586,12 +3586,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_managementclusters.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_managers.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_monitors.yaml",
-            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_packetcaptures.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_nonclusterhosts.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_packetcaptureapis.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_policyrecommendations.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tenants.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tigerastatuses.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tlspassthroughroutes.yaml",
             "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_tlsterminatedroutes.yaml",
+            "https://github.com/tigera/operator/blob/master/pkg/crds/operator/operator.tigera.io_whiskers.yaml",
         ],
         ignores: &[],
     },
