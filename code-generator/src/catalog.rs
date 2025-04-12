@@ -1705,7 +1705,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "instana/instana-agent-operator",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/instana/instana-agent-operator/blob/main/config/crd/bases/instana.io_agents.yaml",
+            "https://github.com/instana/instana-agent-operator/releases/latest/download/instana-agent-operator.yaml",
         ],
         ignores: &[],
     },
