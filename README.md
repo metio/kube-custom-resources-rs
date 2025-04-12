@@ -428,6 +428,7 @@ The following groups are available:
 - [training.kubedl.io](https://crates.io/crates/kcr_training_kubedl_io)
 - [trident.netapp.io](https://crates.io/crates/kcr_trident_netapp_io)
 - [trino.stackable.tech](https://crates.io/crates/kcr_trino_stackable_tech)
+- [troubleshoot.sh](https://crates.io/crates/kcr_troubleshoot_sh)
 - [trust.cert-manager.io](https://crates.io/crates/kcr_trust_cert_manager_io)
 - [upgrade.cattle.io](https://crates.io/crates/kcr_upgrade_cattle_io)
 - [upgrade.managed.openshift.io](https://crates.io/crates/kcr_upgrade_managed_openshift_io)

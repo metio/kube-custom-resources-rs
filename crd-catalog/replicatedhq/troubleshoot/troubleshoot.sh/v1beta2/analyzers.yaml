@@ -1,0 +1,3199 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.2"
+  name: "analyzers.troubleshoot.sh"
+spec:
+  group: "troubleshoot.sh"
+  names:
+    kind: "Analyzer"
+    listKind: "AnalyzerList"
+    plural: "analyzers"
+    singular: "analyzer"
+  scope: "Namespaced"
+  versions:
+    - name: "v1beta2"
+      schema:
+        openAPIV3Schema:
+          description: "Analyzer is the Schema for the analyzers API"
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "AnalyzerSpec defines the desired state of Analyzer"
+              properties:
+                analyzers:
+                  items:
+                    properties:
+                      cephStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "namespace"
+                          - "outcomes"
+                        type: "object"
+                      certificates:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      clusterContainerStatuses:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          restartCount:
+                            format: "int32"
+                            type: "integer"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                          - "restartCount"
+                        type: "object"
+                      clusterPodStatuses:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      clusterResource:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          clusterScoped:
+                            type: "boolean"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          expectedValue:
+                            type: "string"
+                          kind:
+                            type: "string"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          regex:
+                            type: "string"
+                          regexGroups:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                          yamlPath:
+                            type: "string"
+                        required:
+                          - "clusterScoped"
+                          - "kind"
+                          - "name"
+                          - "outcomes"
+                          - "yamlPath"
+                        type: "object"
+                      clusterVersion:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      configMap:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          configMapName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          key:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "configMapName"
+                          - "namespace"
+                          - "outcomes"
+                        type: "object"
+                      containerRuntime:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      customResourceDefinition:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          customResourceDefinitionName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "customResourceDefinitionName"
+                          - "outcomes"
+                        type: "object"
+                      deploymentStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "name"
+                          - "outcomes"
+                        type: "object"
+                      distribution:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      event:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          kind:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          reason:
+                            type: "string"
+                          regex:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                          - "reason"
+                        type: "object"
+                      goldpinger:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          filePath:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                        type: "object"
+                      http:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      imagePullSecret:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          registryName:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                          - "registryName"
+                        type: "object"
+                      ingress:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          ingressName:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "ingressName"
+                          - "namespace"
+                          - "outcomes"
+                        type: "object"
+                      jobStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "name"
+                          - "outcomes"
+                        type: "object"
+                      jsonCompare:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          jsonPath:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          path:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                          value:
+                            type: "string"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      longhorn:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "namespace"
+                          - "outcomes"
+                        type: "object"
+                      mssql:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      mysql:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      nodeMetrics:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          filters:
+                            properties:
+                              pvc:
+                                properties:
+                                  nameRegex:
+                                    type: "string"
+                                  namespace:
+                                    type: "string"
+                                type: "object"
+                            type: "object"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      nodeResources:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          filters:
+                            properties:
+                              cpuAllocatable:
+                                type: "string"
+                              cpuArchitecture:
+                                type: "string"
+                              cpuCapacity:
+                                type: "string"
+                              ephemeralStorageAllocatable:
+                                type: "string"
+                              ephemeralStorageCapacity:
+                                type: "string"
+                              memoryAllocatable:
+                                type: "string"
+                              memoryCapacity:
+                                type: "string"
+                              podAllocatable:
+                                type: "string"
+                              podCapacity:
+                                type: "string"
+                              resourceAllocatable:
+                                type: "string"
+                              resourceCapacity:
+                                type: "string"
+                              resourceName:
+                                type: "string"
+                              selector:
+                                properties:
+                                  matchExpressions:
+                                    items:
+                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      properties:
+                                        key:
+                                          description: "key is the label key that the selector applies to."
+                                          type: "string"
+                                        operator:
+                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          type: "string"
+                                        values:
+                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                  matchLabel:
+                                    additionalProperties:
+                                      type: "string"
+                                    type: "object"
+                                type: "object"
+                            type: "object"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      postgres:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      redis:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      registryImages:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "collectorName"
+                          - "outcomes"
+                        type: "object"
+                      replicasetStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          selector:
+                            items:
+                              type: "string"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "name"
+                          - "outcomes"
+                          - "selector"
+                        type: "object"
+                      secret:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          key:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          secretName:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "namespace"
+                          - "outcomes"
+                          - "secretName"
+                        type: "object"
+                      statefulsetStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          name:
+                            type: "string"
+                          namespace:
+                            type: "string"
+                          namespaces:
+                            items:
+                              type: "string"
+                            type: "array"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "name"
+                          - "outcomes"
+                        type: "object"
+                      storageClass:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          storageClassName:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      sysctl:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      textAnalyze:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          excludeFiles:
+                            items:
+                              type: "string"
+                            type: "array"
+                          fileName:
+                            type: "string"
+                          ignoreIfNoFiles:
+                            type: "boolean"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          regex:
+                            type: "string"
+                          regexGroups:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      velero:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          strict:
+                            type: "BoolString"
+                        type: "object"
+                      weaveReport:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          reportFileGlob:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "reportFileGlob"
+                        type: "object"
+                      yamlCompare:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          path:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                          value:
+                            type: "string"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+                hostAnalyzers:
+                  items:
+                    properties:
+                      blockDevices:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          includeUnmountedPartitions:
+                            type: "boolean"
+                          minimumAcceptableSize:
+                            format: "int64"
+                            type: "integer"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "includeUnmountedPartitions"
+                          - "minimumAcceptableSize"
+                          - "outcomes"
+                        type: "object"
+                      certificate:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      certificatesCollection:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      cpu:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      diskUsage:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      filesystemPerformance:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      hostOS:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      hostServices:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      http:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      httpLoadBalancer:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      ipv4Interfaces:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      jsonCompare:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          fileName:
+                            type: "string"
+                          jsonPath:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          path:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                          value:
+                            type: "string"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      kernelConfigs:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          selectedConfigs:
+                            items:
+                              type: "string"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                          - "selectedConfigs"
+                        type: "object"
+                      kernelModules:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      memory:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      networkNamespaceConnectivity:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      subnetAvailable:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      subnetContainsIP:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          cidr:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          ip:
+                            type: "string"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "cidr"
+                          - "ip"
+                          - "outcomes"
+                        type: "object"
+                      sysctl:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      systemPackages:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      tcpConnect:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      tcpLoadBalancer:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      tcpPortStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      textAnalyze:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          excludeFiles:
+                            items:
+                              type: "string"
+                            type: "array"
+                          fileName:
+                            type: "string"
+                          ignoreIfNoFiles:
+                            type: "boolean"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          regex:
+                            type: "string"
+                          regexGroups:
+                            type: "string"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      time:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                      udpPortStatus:
+                        properties:
+                          annotations:
+                            additionalProperties:
+                              type: "string"
+                            type: "object"
+                          checkName:
+                            type: "string"
+                          collectorName:
+                            type: "string"
+                          exclude:
+                            type: "BoolString"
+                          outcomes:
+                            items:
+                              properties:
+                                fail:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                pass:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                                warn:
+                                  properties:
+                                    message:
+                                      type: "string"
+                                    uri:
+                                      type: "string"
+                                    when:
+                                      type: "string"
+                                  type: "object"
+                              type: "object"
+                            type: "array"
+                          strict:
+                            type: "BoolString"
+                        required:
+                          - "outcomes"
+                        type: "object"
+                    type: "object"
+                  type: "array"
+                uri:
+                  type: "string"
+              type: "object"
+            status:
+              description: "AnalyzerStatus defines the observed state of Analyzer"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true

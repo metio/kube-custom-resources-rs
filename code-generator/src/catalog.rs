@@ -3180,6 +3180,21 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "replicatedhq/troubleshoot",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_analyzers.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_collectors.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_hostcollectors.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_hostpreflights.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_preflights.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_redactors.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_remotecollectors.yaml",
+            "https://github.com/replicatedhq/troubleshoot/blob/main/config/crds/troubleshoot.sh_supportbundles.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "ROCm/gpu-operator",
         license: APACHE_V2,
         urls: &[

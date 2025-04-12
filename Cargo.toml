@@ -388,6 +388,7 @@ members = [
     "custom-resources/training_kubedl_io",
     "custom-resources/trident_netapp_io",
     "custom-resources/trino_stackable_tech",
+    "custom-resources/troubleshoot_sh",
     "custom-resources/trust_cert_manager_io",
     "custom-resources/upgrade_cattle_io",
     "custom-resources/upgrade_managed_openshift_io",
