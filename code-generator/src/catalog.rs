@@ -3019,8 +3019,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         license: APACHE_V2,
         urls: &[
             "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-appwrapper.yml",
-            "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-quotasubtree.yml",
-            "https://github.com/project-codeflare/codeflare-operator/blob/main/config/crd/crd-schedulingspec.yml",
         ],
         ignores: &[],
     },
