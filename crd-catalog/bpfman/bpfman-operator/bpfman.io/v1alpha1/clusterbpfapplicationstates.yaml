@@ -1,0 +1,594 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "clusterbpfapplicationstates.bpfman.io"
+spec:
+  group: "bpfman.io"
+  names:
+    kind: "ClusterBpfApplicationState"
+    listKind: "ClusterBpfApplicationStateList"
+    plural: "clusterbpfapplicationstates"
+    singular: "clusterbpfapplicationstate"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: ".status.node"
+          name: "Node"
+          type: "string"
+        - jsonPath: ".status.conditions[0].reason"
+          name: "Status"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
+      schema:
+        openAPIV3Schema:
+          description: "ClusterBpfApplicationState contains the per-node state of a BpfApplication."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            status:
+              description: "ClBpfApplicationStateStatus reflects the status of the ClusterBpfApplicationState on the given node"
+              properties:
+                appLoadStatus:
+                  description: "appLoadStatus reflects the status of loading the bpf application on the\ngiven node."
+                  type: "string"
+                conditions:
+                  description: "Conditions contains the overall status of the ClusterBpfApplicationState\nobject on the given node."
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "type"
+                  x-kubernetes-list-type: "map"
+                node:
+                  description: "node is the name of the node for this BpfApplicationStateSpec."
+                  type: "string"
+                programs:
+                  description: "programs is a list of bpf programs contained in the parent application."
+                  items:
+                    description: "ClBpfApplicationProgramState defines the desired state of BpfApplication"
+                    properties:
+                      fentry:
+                        description: "fentry defines the desired state of the application's FentryPrograms."
+                        properties:
+                          function:
+                            description: "function is the name of the function to attach the Fentry program to."
+                            maxLength: 64
+                            minLength: 1
+                            pattern: "^[a-zA-Z][a-zA-Z0-9_]+."
+                            type: "string"
+                          links:
+                            items:
+                              properties:
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "linkStatus"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            maxItems: 1
+                            type: "array"
+                        required:
+                          - "function"
+                        type: "object"
+                      fexit:
+                        description: "fexit defines the desired state of the application's FexitPrograms."
+                        properties:
+                          function:
+                            description: "function is the name of the function to attach the Fexit program to."
+                            maxLength: 64
+                            minLength: 1
+                            pattern: "^[a-zA-Z][a-zA-Z0-9_]+."
+                            type: "string"
+                          links:
+                            items:
+                              properties:
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "linkStatus"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            maxItems: 1
+                            type: "array"
+                        required:
+                          - "function"
+                        type: "object"
+                      kprobe:
+                        description: "kprobe defines the desired state of the application's KprobePrograms."
+                        properties:
+                          links:
+                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                function:
+                                  description: "Function to attach the kprobe to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                offset:
+                                  description: "Offset added to the address of the function for kprobe."
+                                  format: "int64"
+                                  type: "integer"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "function"
+                                - "linkStatus"
+                                - "offset"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      kretprobe:
+                        description: "kretprobe defines the desired state of the application's KprobePrograms."
+                        properties:
+                          links:
+                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                function:
+                                  description: "Function to attach the kprobe to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "function"
+                                - "linkStatus"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      name:
+                        description: "name is the name of the function that is the entry point for the BPF\nprogram"
+                        type: "string"
+                      programId:
+                        description: "programId is the id of the program in the kernel.  Not set until the\nprogram is loaded."
+                        format: "int32"
+                        type: "integer"
+                      programLinkStatus:
+                        description: "programLinkStatus reflects whether all links requested for the program\nare in the correct state."
+                        type: "string"
+                      tc:
+                        description: "tc defines the desired state of the application's TcPrograms."
+                        properties:
+                          links:
+                            description: "links is the List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attached point required by the\nreconciler"
+                            items:
+                              properties:
+                                direction:
+                                  description: "direction specifies the direction of traffic the tc program should\nattach to for a given network device."
+                                  enum:
+                                    - "Ingress"
+                                    - "Egress"
+                                  type: "string"
+                                interfaceName:
+                                  description: "interfaceName is the Interface name to attach the tc program to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                netnsPath:
+                                  description: "Optional network namespace to attach the tc program in."
+                                  type: "string"
+                                priority:
+                                  description: "priority specifies the priority of the tc program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  format: "int32"
+                                  maximum: 1000.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                proceedOn:
+                                  description: "proceedOn allows the user to call other tc programs in chain on this exit code.\nMultiple values are supported by repeating the parameter."
+                                  items:
+                                    enum:
+                                      - "UnSpec"
+                                      - "OK"
+                                      - "ReClassify"
+                                      - "Shot"
+                                      - "Pipe"
+                                      - "Stolen"
+                                      - "Queued"
+                                      - "Repeat"
+                                      - "ReDirect"
+                                      - "Trap"
+                                      - "DispatcherReturn"
+                                    type: "string"
+                                  type: "array"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "direction"
+                                - "interfaceName"
+                                - "linkStatus"
+                                - "priority"
+                                - "proceedOn"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      tcx:
+                        description: "tcx defines the desired state of the application's TcxPrograms."
+                        properties:
+                          links:
+                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                direction:
+                                  description: "direction specifies the direction of traffic the tcx program should\nattach to for a given network device."
+                                  enum:
+                                    - "Ingress"
+                                    - "Egress"
+                                  type: "string"
+                                interfaceName:
+                                  description: "interfaceName is the Interface name to attach the tc program to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                netnsPath:
+                                  description: "netnsPath is the network namespace to attach the tcx program in."
+                                  type: "string"
+                                priority:
+                                  description: "priority specifies the priority of the tcx program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  format: "int32"
+                                  maximum: 1000.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "direction"
+                                - "interfaceName"
+                                - "linkStatus"
+                                - "priority"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      tracepoint:
+                        description: "tracepoint defines the desired state of the application's TracepointPrograms."
+                        properties:
+                          links:
+                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                name:
+                                  description: "The name of a kernel tracepoint to attach the bpf program to."
+                                  type: "string"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "linkStatus"
+                                - "name"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      type:
+                        description: "type specifies the bpf program type"
+                        enum:
+                          - "XDP"
+                          - "TC"
+                          - "TCX"
+                          - "FEntry"
+                          - "FExit"
+                          - "KProbe"
+                          - "KRetProbe"
+                          - "UProbe"
+                          - "URetProbe"
+                          - "TracePoint"
+                        type: "string"
+                      uprobe:
+                        description: "uprobe defines the desired state of the application's UprobePrograms."
+                        properties:
+                          links:
+                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                containerPid:
+                                  description: "Optional container pid to attach the uprobe program in."
+                                  format: "int32"
+                                  type: "integer"
+                                function:
+                                  description: "function to attach the uprobe to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                offset:
+                                  default: 0
+                                  description: "offset added to the address of the function for uprobe."
+                                  format: "int64"
+                                  type: "integer"
+                                pid:
+                                  description: "pid only execute uprobe for given process identification number (PID). If PID\nis not provided, uprobe executes for all PIDs."
+                                  format: "int32"
+                                  type: "integer"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                target:
+                                  description: "target is the library name or the absolute path to a binary or library."
+                                  type: "string"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "linkStatus"
+                                - "shouldAttach"
+                                - "target"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      uretprobe:
+                        description: "uretprobe defines the desired state of the application's UretprobePrograms."
+                        properties:
+                          links:
+                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                containerPid:
+                                  description: "Optional container pid to attach the uprobe program in."
+                                  format: "int32"
+                                  type: "integer"
+                                function:
+                                  description: "function to attach the uprobe to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                offset:
+                                  default: 0
+                                  description: "offset added to the address of the function for uprobe."
+                                  format: "int64"
+                                  type: "integer"
+                                pid:
+                                  description: "pid only execute uprobe for given process identification number (PID). If PID\nis not provided, uprobe executes for all PIDs."
+                                  format: "int32"
+                                  type: "integer"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                target:
+                                  description: "target is the library name or the absolute path to a binary or library."
+                                  type: "string"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "linkStatus"
+                                - "shouldAttach"
+                                - "target"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                      xdp:
+                        description: "xdp defines the desired state of the application's XdpPrograms."
+                        properties:
+                          links:
+                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            items:
+                              properties:
+                                interfaceName:
+                                  description: "interfaceName is the interface name to attach the xdp program to."
+                                  type: "string"
+                                linkId:
+                                  description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
+                                  format: "int32"
+                                  type: "integer"
+                                linkStatus:
+                                  description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
+                                  type: "string"
+                                netnsPath:
+                                  description: "netnsPath is an optional path for a network namespace to attach the xdp\nprogram in."
+                                  type: "string"
+                                priority:
+                                  description: "priority specifies the priority of the xdp program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  format: "int32"
+                                  maximum: 1000.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                proceedOn:
+                                  description: "proceedOn allows the user to call other xdp programs in chain on this exit code.\nMultiple values are supported by repeating the parameter."
+                                  items:
+                                    enum:
+                                      - "Aborted"
+                                      - "Drop"
+                                      - "Pass"
+                                      - "TX"
+                                      - "ReDirect"
+                                      - "DispatcherReturn"
+                                    type: "string"
+                                  type: "array"
+                                shouldAttach:
+                                  description: "shouldAttach reflects whether the attachment should exist."
+                                  type: "boolean"
+                                uuid:
+                                  description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
+                                  type: "string"
+                              required:
+                                - "interfaceName"
+                                - "linkStatus"
+                                - "priority"
+                                - "proceedOn"
+                                - "shouldAttach"
+                                - "uuid"
+                              type: "object"
+                            type: "array"
+                        type: "object"
+                    required:
+                      - "name"
+                      - "programLinkStatus"
+                      - "type"
+                    type: "object"
+                    x-kubernetes-validations:
+                      - message: "xdp configuration is required when type is xdp, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'XDP' ?  has(self.xdp) : !has(self.xdp)"
+                      - message: "tc configuration is required when type is tc, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'TC' ?  has(self.tc) : !has(self.tc)"
+                      - message: "tcx configuration is required when type is tcx, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'TCX' ?  has(self.tcx) : !has(self.tcx)"
+                      - message: "fentry configuration is required when type is fentry, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'FEntry' ?  has(self.fentry) : !has(self.fentry)"
+                      - message: "fexit configuration is required when type is fexit, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'FExit' ?  has(self.fexit) : !has(self.fexit)"
+                      - message: "kprobe configuration is required when type is kprobe, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'KProbe' ?  has(self.kprobe) : !has(self.kprobe)"
+                      - message: "kretprobe configuration is required when type is kretprobe, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'KRetProbe' ?  has(self.kretprobe) : !has(self.kretprobe)"
+                      - message: "uprobe configuration is required when type is uprobe, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'UProbe' ?  has(self.uprobe) : !has(self.uprobe)"
+                      - message: "uretprobe configuration is required when type is uretprobe, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'URetProbe' ?  has(self.uretprobe) : !has(self.uretprobe)"
+                      - message: "tracepoint configuration is required when type is tracepoint, and forbidden otherwise"
+                        rule: "has(self.type) && self.type == 'TracePoint' ?  has(self.tracepoint) : !has(self.tracepoint)"
+                  type: "array"
+                updateCount:
+                  description: "updateCount is the number of times the BpfApplicationState has been updated. Set to 1\nwhen the object is created, then it is incremented prior to each update.\nThis allows us to verify that the API server has the updated object prior\nto starting a new Reconcile operation."
+                  format: "int64"
+                  type: "integer"
+              required:
+                - "appLoadStatus"
+                - "node"
+                - "updateCount"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

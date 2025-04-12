@@ -1,4 +1,8 @@
+pub mod bpfapplications;
+pub mod bpfapplicationstates;
 pub mod bpfprograms;
+pub mod clusterbpfapplications;
+pub mod clusterbpfapplicationstates;
 pub mod fentryprograms;
 pub mod fexitprograms;
 pub mod kprobeprograms;

@@ -20,3 +20,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `TracepointProgram`
 - `UprobeProgram`
 - `XdpProgram`
+- `BpfApplication`
+- `BpfApplicationState`
+- `ClusterBpfApplication`
+- `ClusterBpfApplicationState`
