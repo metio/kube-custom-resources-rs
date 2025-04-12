@@ -2933,11 +2933,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "otterize/helm-charts",
         license: APACHE_V2,
-        urls: &[
-            "https://github.com/otterize/helm-charts/blob/main/intents-operator/crds/clientintents-customresourcedefinition.yaml",
-            "https://github.com/otterize/helm-charts/blob/main/intents-operator/crds/kafkaserverconfigs-customresourcedefinition.yaml",
-            "https://github.com/otterize/helm-charts/blob/main/intents-operator/crds/protectedservices-customresourcedefinition.yaml",
-        ],
+        urls: &[], // intents-operator has no CRDs anymore
         ignores: &[],
     },
     UpstreamSource {
