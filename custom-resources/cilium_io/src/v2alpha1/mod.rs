@@ -1,6 +1,12 @@
+pub mod ciliumbgpadvertisements;
+pub mod ciliumbgpclusterconfigs;
+pub mod ciliumbgpnodeconfigoverrides;
+pub mod ciliumbgpnodeconfigs;
+pub mod ciliumbgppeerconfigs;
 pub mod ciliumbgppeeringpolicies;
 pub mod ciliumcidrgroups;
 pub mod ciliumendpointslices;
+pub mod ciliumgatewayclassconfigs;
 pub mod ciliuml2announcementpolicies;
 pub mod ciliumloadbalancerippools;
 pub mod ciliumnodeconfigs;

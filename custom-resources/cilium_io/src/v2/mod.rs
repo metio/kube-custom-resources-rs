@@ -1,3 +1,8 @@
+pub mod ciliumbgpadvertisements;
+pub mod ciliumbgpclusterconfigs;
+pub mod ciliumbgpnodeconfigoverrides;
+pub mod ciliumbgpnodeconfigs;
+pub mod ciliumbgppeerconfigs;
 pub mod ciliumclusterwidenetworkpolicies;
 pub mod ciliumegressgatewaypolicies;
 pub mod ciliumendpoints;
@@ -5,4 +10,5 @@ pub mod ciliumexternalworkloads;
 pub mod ciliumidentities;
 pub mod ciliumlocalredirectpolicies;
 pub mod ciliumnetworkpolicies;
+pub mod ciliumnodeconfigs;
 pub mod ciliumnodes;
