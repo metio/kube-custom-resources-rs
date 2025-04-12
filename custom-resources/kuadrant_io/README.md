@@ -14,6 +14,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### kuadrant.io/v1
 - `RateLimitPolicy`
 ### kuadrant.io/v1alpha1
+- `DNSHealthCheckProbe`
 - `DNSRecord`
 - `ManagedZone`
 ### kuadrant.io/v1beta1

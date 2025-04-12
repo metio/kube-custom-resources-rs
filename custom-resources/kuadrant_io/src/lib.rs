@@ -6,6 +6,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## kuadrant.io/v1
 - `RateLimitPolicy`
 ## kuadrant.io/v1alpha1
+- `DNSHealthCheckProbe`
 - `DNSRecord`
 - `ManagedZone`
 ## kuadrant.io/v1beta1
