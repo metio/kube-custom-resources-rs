@@ -1171,6 +1171,10 @@ Files: crd-catalog/RedisLabs/redis-enterprise-k8s-docs/*
 Copyright: The RedisLabs/redis-enterprise-k8s-docs Authors
 License: Apache-2.0
 
+Files: crd-catalog/replicatedhq/troubleshoot/*
+Copyright: The replicatedhq/troubleshoot Authors
+License: MIT
+
 Files: crd-catalog/ROCm/gpu-operator/*
 Copyright: The ROCm/gpu-operator Authors
 License: Apache-2.0
