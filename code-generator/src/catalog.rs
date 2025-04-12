@@ -2280,8 +2280,10 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "kubernetes-sigs/node-feature-discovery-operator",
         license: APACHE_V2,
         urls: &[
+            "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/nfd.k8s-sigs.io_nodefeaturegroups.yaml",
+            "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/nfd.k8s-sigs.io_nodefeatures.yaml",
+            "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/nfd.k8s-sigs.io_v1alpha1_nodefeaturerules.yaml",
             "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/nfd.kubernetes.io_nodefeaturediscoveries.yaml",
-            "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/nfd.kubernetes.io_v1alpha1_nodefeaturerules.yaml",
             "https://github.com/kubernetes-sigs/node-feature-discovery-operator/blob/master/config/crd/bases/node.k8s.io_v1alpha1_noderesourcetopologies.yaml",
         ],
         ignores: &[],
