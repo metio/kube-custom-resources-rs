@@ -4,7 +4,6 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## k8s.keycloak.org/v2alpha1
-- `KeycloakRealmImport`
 - `Keycloak`
 */
 #[cfg(feature = "v2alpha1")]
