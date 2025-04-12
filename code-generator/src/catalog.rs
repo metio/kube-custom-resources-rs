@@ -1654,14 +1654,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "hazelcast/hazelcast-platform-operator",
         license: APACHE_V2,
-        urls: &[
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_cronhotbackups.yaml",
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_hazelcasts.yaml",
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_hotbackups.yaml",
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_managementcenters.yaml",
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_maps.yaml",
-            "https://github.com/hazelcast/hazelcast-platform-operator/blob/main/config/crd/bases/hazelcast.com_wanreplications.yaml",
-        ],
+        urls: &[],
         ignores: &[],
     },
     UpstreamSource {
