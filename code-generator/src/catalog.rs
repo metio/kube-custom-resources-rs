@@ -2535,8 +2535,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "LinuxSuRen/api-testing",
         license: MIT,
+        urls: &[], // was renamed to LinuxSuRen/atest-operator
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "LinuxSuRen/atest-operator",
+        license: MIT,
         urls: &[
-            "https://github.com/LinuxSuRen/api-testing/blob/master/operator/config/crd/bases/core.linuxsuren.github.com_atests.yaml",
+            "https://github.com/LinuxSuRen/atest-operator/blob/master/config/crd/bases/core.linuxsuren.github.com_atests.yaml",
         ],
         ignores: &[],
     },
