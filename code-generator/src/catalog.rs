@@ -2185,7 +2185,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "kubernetes-sigs/external-dns",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/kubernetes-sigs/external-dns/blob/master/docs/contributing/crd-source/crd-manifest.yaml",
+            "https://github.com/kubernetes-sigs/external-dns/blob/master/charts/external-dns/crds/dnsendpoint.yaml",
         ],
         ignores: &[],
     },
