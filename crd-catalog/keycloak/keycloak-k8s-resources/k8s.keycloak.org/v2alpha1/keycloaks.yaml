@@ -18,19 +18,7 @@ spec:
           properties:
             spec:
               properties:
-                disableDefaultIngress:
-                  description: "Disable the default ingress."
-                  type: "boolean"
-                hostname:
-                  description: "Hostname for the Keycloak server.\nThe special value `INSECURE-DISABLE` disables the hostname strict resolution."
-                  type: "string"
-                image:
-                  description: "Custom Keycloak image to be used."
-                  type: "string"
-                instances:
-                  description: "Number of Keycloak instances in HA mode. Default is 1."
-                  type: "integer"
-                serverConfiguration:
+                additionalOptions:
                   description: "Configuration of the Keycloak server.\nexpressed as a keys (reference: https://www.keycloak.org/server/all-config) and values that can be either direct values or references to secrets."
                   items:
                     properties:
@@ -49,9 +37,831 @@ spec:
                         type: "string"
                     type: "object"
                   type: "array"
-                tlsSecret:
-                  description: "A secret containing the TLS configuration for HTTPS. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets.\nThe special value `INSECURE-DISABLE` disables https."
+                bootstrapAdmin:
+                  description: "In this section you can configure Keycloak's bootstrap admin - will be used only for inital cluster creation."
+                  properties:
+                    service:
+                      description: "Configures the bootstrap admin service account"
+                      properties:
+                        secret:
+                          description: "Name of the Secret that contains the client-id and client-secret keys"
+                          type: "string"
+                      type: "object"
+                    user:
+                      description: "Configures the bootstrap admin user"
+                      properties:
+                        secret:
+                          description: "Name of the Secret that contains the username and password keys"
+                          type: "string"
+                      type: "object"
+                  type: "object"
+                cache:
+                  description: "In this section you can configure Keycloak's cache"
+                  properties:
+                    configMapFile:
+                      properties:
+                        key:
+                          type: "string"
+                        name:
+                          type: "string"
+                        optional:
+                          type: "boolean"
+                      type: "object"
+                  type: "object"
+                db:
+                  description: "In this section you can find all properties related to connect to a database."
+                  properties:
+                    database:
+                      description: "Sets the database name of the default JDBC URL of the chosen vendor. If the `url` option is set, this option is ignored."
+                      type: "string"
+                    host:
+                      description: "Sets the hostname of the default JDBC URL of the chosen vendor. If the `url` option is set, this option is ignored."
+                      type: "string"
+                    passwordSecret:
+                      description: "The reference to a secret holding the password of the database user."
+                      properties:
+                        key:
+                          type: "string"
+                        name:
+                          type: "string"
+                        optional:
+                          type: "boolean"
+                      type: "object"
+                    poolInitialSize:
+                      description: "The initial size of the connection pool."
+                      type: "integer"
+                    poolMaxSize:
+                      description: "The maximum size of the connection pool."
+                      type: "integer"
+                    poolMinSize:
+                      description: "The minimal size of the connection pool."
+                      type: "integer"
+                    port:
+                      description: "Sets the port of the default JDBC URL of the chosen vendor. If the `url` option is set, this option is ignored."
+                      type: "integer"
+                    schema:
+                      description: "The database schema to be used."
+                      type: "string"
+                    url:
+                      description: "The full database JDBC URL. If not provided, a default URL is set based on the selected database vendor. For instance, if using 'postgres', the default JDBC URL would be 'jdbc:postgresql://localhost/keycloak'. "
+                      type: "string"
+                    usernameSecret:
+                      description: "The reference to a secret holding the username of the database user."
+                      properties:
+                        key:
+                          type: "string"
+                        name:
+                          type: "string"
+                        optional:
+                          type: "boolean"
+                      type: "object"
+                    vendor:
+                      description: "The database vendor."
+                      type: "string"
+                  type: "object"
+                features:
+                  description: "In this section you can configure Keycloak features, which should be enabled/disabled."
+                  properties:
+                    disabled:
+                      description: "Disabled Keycloak features"
+                      items:
+                        type: "string"
+                      type: "array"
+                    enabled:
+                      description: "Enabled Keycloak features"
+                      items:
+                        type: "string"
+                      type: "array"
+                  type: "object"
+                hostname:
+                  description: "In this section you can configure Keycloak hostname and related properties."
+                  properties:
+                    admin:
+                      description: "The hostname for accessing the administration console. Applicable for Hostname v1 and v2."
+                      type: "string"
+                    adminUrl:
+                      description: "DEPRECATED. Sets the base URL for accessing the administration console, including scheme, host, port and path. Applicable for Hostname v1."
+                      type: "string"
+                    backchannelDynamic:
+                      description: "Enables dynamic resolving of backchannel URLs, including hostname, scheme, port and context path. Set to true if your application accesses Keycloak via a private network. Applicable for Hostname v2."
+                      type: "boolean"
+                    hostname:
+                      description: "Hostname for the Keycloak server. Applicable for Hostname v1 and v2."
+                      type: "string"
+                    strict:
+                      description: "Disables dynamically resolving the hostname from request headers. Applicable for Hostname v1 and v2."
+                      type: "boolean"
+                    strictBackchannel:
+                      description: "DEPRECATED. By default backchannel URLs are dynamically resolved from request headers to allow internal and external applications. Applicable for Hostname v1."
+                      type: "boolean"
+                  type: "object"
+                http:
+                  description: "In this section you can configure Keycloak features related to HTTP and HTTPS"
+                  properties:
+                    httpEnabled:
+                      description: "Enables the HTTP listener."
+                      type: "boolean"
+                    httpPort:
+                      description: "The used HTTP port."
+                      type: "integer"
+                    httpsPort:
+                      description: "The used HTTPS port."
+                      type: "integer"
+                    tlsSecret:
+                      description: "A secret containing the TLS configuration for HTTPS. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets."
+                      type: "string"
+                  type: "object"
+                httpManagement:
+                  description: "In this section you can configure Keycloak's management interface setting."
+                  properties:
+                    port:
+                      description: "Port of the management interface."
+                      type: "integer"
+                  type: "object"
+                image:
+                  description: "Custom Keycloak image to be used."
                   type: "string"
+                imagePullSecrets:
+                  description: "Secret(s) that might be used when pulling an image from a private container image registry or repository."
+                  items:
+                    properties:
+                      name:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+                ingress:
+                  description: "The deployment is, by default, exposed through a basic ingress.\nYou can change this behaviour by setting the enabled property to false."
+                  properties:
+                    annotations:
+                      additionalProperties:
+                        type: "string"
+                      description: "Additional annotations to be appended to the Ingress object"
+                      type: "object"
+                    className:
+                      type: "string"
+                    enabled:
+                      type: "boolean"
+                  type: "object"
+                instances:
+                  description: "Number of Keycloak instances. Default is 1."
+                  type: "integer"
+                networkPolicy:
+                  description: "Controls the ingress traffic flow into Keycloak pods."
+                  properties:
+                    enabled:
+                      default: true
+                      description: "Enables or disables the ingress traffic control."
+                      type: "boolean"
+                    http:
+                      description: "A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list."
+                      items:
+                        properties:
+                          ipBlock:
+                            properties:
+                              cidr:
+                                type: "string"
+                              except:
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          namespaceSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                          podSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                        type: "object"
+                      type: "array"
+                    https:
+                      description: "A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list."
+                      items:
+                        properties:
+                          ipBlock:
+                            properties:
+                              cidr:
+                                type: "string"
+                              except:
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          namespaceSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                          podSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                        type: "object"
+                      type: "array"
+                    management:
+                      description: "A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list."
+                      items:
+                        properties:
+                          ipBlock:
+                            properties:
+                              cidr:
+                                type: "string"
+                              except:
+                                items:
+                                  type: "string"
+                                type: "array"
+                            type: "object"
+                          namespaceSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                          podSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                        type: "object"
+                      type: "array"
+                  type: "object"
+                proxy:
+                  description: "In this section you can configure Keycloak's reverse proxy setting"
+                  properties:
+                    headers:
+                      description: "The proxy headers that should be accepted by the server. Misconfiguration might leave the server exposed to security vulnerabilities."
+                      type: "string"
+                  type: "object"
+                resources:
+                  description: "Compute Resources required by Keycloak container"
+                  properties:
+                    claims:
+                      items:
+                        properties:
+                          name:
+                            type: "string"
+                          request:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    limits:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        x-kubernetes-int-or-string: true
+                      type: "object"
+                    requests:
+                      additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        x-kubernetes-int-or-string: true
+                      type: "object"
+                  type: "object"
+                scheduling:
+                  description: "In this section you can configure Keycloak's scheduling"
+                  properties:
+                    affinity:
+                      properties:
+                        nodeAffinity:
+                          properties:
+                            preferredDuringSchedulingIgnoredDuringExecution:
+                              items:
+                                properties:
+                                  preference:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchFields:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                    type: "object"
+                                  weight:
+                                    type: "integer"
+                                type: "object"
+                              type: "array"
+                            requiredDuringSchedulingIgnoredDuringExecution:
+                              properties:
+                                nodeSelectorTerms:
+                                  items:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchFields:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                    type: "object"
+                                  type: "array"
+                              type: "object"
+                          type: "object"
+                        podAffinity:
+                          properties:
+                            preferredDuringSchedulingIgnoredDuringExecution:
+                              items:
+                                properties:
+                                  podAffinityTerm:
+                                    properties:
+                                      labelSelector:
+                                        properties:
+                                          matchExpressions:
+                                            items:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                operator:
+                                                  type: "string"
+                                                values:
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            type: "object"
+                                        type: "object"
+                                      matchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      mismatchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      namespaceSelector:
+                                        properties:
+                                          matchExpressions:
+                                            items:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                operator:
+                                                  type: "string"
+                                                values:
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            type: "object"
+                                        type: "object"
+                                      namespaces:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      topologyKey:
+                                        type: "string"
+                                    type: "object"
+                                  weight:
+                                    type: "integer"
+                                type: "object"
+                              type: "array"
+                            requiredDuringSchedulingIgnoredDuringExecution:
+                              items:
+                                properties:
+                                  labelSelector:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchLabels:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  matchLabelKeys:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  mismatchLabelKeys:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  namespaceSelector:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchLabels:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  namespaces:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  topologyKey:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                        podAntiAffinity:
+                          properties:
+                            preferredDuringSchedulingIgnoredDuringExecution:
+                              items:
+                                properties:
+                                  podAffinityTerm:
+                                    properties:
+                                      labelSelector:
+                                        properties:
+                                          matchExpressions:
+                                            items:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                operator:
+                                                  type: "string"
+                                                values:
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            type: "object"
+                                        type: "object"
+                                      matchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      mismatchLabelKeys:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      namespaceSelector:
+                                        properties:
+                                          matchExpressions:
+                                            items:
+                                              properties:
+                                                key:
+                                                  type: "string"
+                                                operator:
+                                                  type: "string"
+                                                values:
+                                                  items:
+                                                    type: "string"
+                                                  type: "array"
+                                              type: "object"
+                                            type: "array"
+                                          matchLabels:
+                                            additionalProperties:
+                                              type: "string"
+                                            type: "object"
+                                        type: "object"
+                                      namespaces:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      topologyKey:
+                                        type: "string"
+                                    type: "object"
+                                  weight:
+                                    type: "integer"
+                                type: "object"
+                              type: "array"
+                            requiredDuringSchedulingIgnoredDuringExecution:
+                              items:
+                                properties:
+                                  labelSelector:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchLabels:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  matchLabelKeys:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  mismatchLabelKeys:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  namespaceSelector:
+                                    properties:
+                                      matchExpressions:
+                                        items:
+                                          properties:
+                                            key:
+                                              type: "string"
+                                            operator:
+                                              type: "string"
+                                            values:
+                                              items:
+                                                type: "string"
+                                              type: "array"
+                                          type: "object"
+                                        type: "array"
+                                      matchLabels:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  namespaces:
+                                    items:
+                                      type: "string"
+                                    type: "array"
+                                  topologyKey:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                          type: "object"
+                      type: "object"
+                    priorityClassName:
+                      type: "string"
+                    tolerations:
+                      items:
+                        properties:
+                          effect:
+                            type: "string"
+                          key:
+                            type: "string"
+                          operator:
+                            type: "string"
+                          tolerationSeconds:
+                            type: "integer"
+                          value:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    topologySpreadConstraints:
+                      items:
+                        properties:
+                          labelSelector:
+                            properties:
+                              matchExpressions:
+                                items:
+                                  properties:
+                                    key:
+                                      type: "string"
+                                    operator:
+                                      type: "string"
+                                    values:
+                                      items:
+                                        type: "string"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
+                              matchLabels:
+                                additionalProperties:
+                                  type: "string"
+                                type: "object"
+                            type: "object"
+                          matchLabelKeys:
+                            items:
+                              type: "string"
+                            type: "array"
+                          maxSkew:
+                            type: "integer"
+                          minDomains:
+                            type: "integer"
+                          nodeAffinityPolicy:
+                            type: "string"
+                          nodeTaintsPolicy:
+                            type: "string"
+                          topologyKey:
+                            type: "string"
+                          whenUnsatisfiable:
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                  type: "object"
+                startOptimized:
+                  description: "Set to force the behavior of the --optimized flag for the start command. If left unspecified the operator will assume custom images have already been augmented."
+                  type: "boolean"
+                tracing:
+                  description: "In this section you can configure OpenTelemetry Tracing for Keycloak."
+                  properties:
+                    compression:
+                      description: "OpenTelemetry compression method used to compress payloads. If unset, compression is disabled. Possible values are: gzip, none."
+                      type: "string"
+                    enabled:
+                      description: "Enables the OpenTelemetry tracing."
+                      type: "boolean"
+                    endpoint:
+                      description: "OpenTelemetry endpoint to connect to."
+                      type: "string"
+                    protocol:
+                      description: "OpenTelemetry protocol used for the telemetry data (default 'grpc'). For more information, check the Tracing guide."
+                      type: "string"
+                    resourceAttributes:
+                      additionalProperties:
+                        type: "string"
+                      description: "OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer."
+                      type: "object"
+                    samplerRatio:
+                      description: "OpenTelemetry sampler ratio. Probability that a span will be sampled. Expected double value in interval [0,1]."
+                      type: "number"
+                    samplerType:
+                      description: "OpenTelemetry sampler to use for tracing (default 'traceidratio'). For more information, check the Tracing guide."
+                      type: "string"
+                    serviceName:
+                      description: "OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map."
+                      type: "string"
+                  type: "object"
+                transaction:
+                  description: "In this section you can find all properties related to the settings of transaction behavior."
+                  properties:
+                    xaEnabled:
+                      description: "Determine whether Keycloak should use a non-XA datasource in case the database does not support XA transactions."
+                      type: "boolean"
+                  type: "object"
+                truststores:
+                  additionalProperties:
+                    properties:
+                      name:
+                        description: "Not used. To be removed in later versions."
+                        type: "string"
+                      secret:
+                        properties:
+                          name:
+                            type: "string"
+                          optional:
+                            type: "boolean"
+                        required:
+                          - "name"
+                        type: "object"
+                    required:
+                      - "secret"
+                    type: "object"
+                  description: "In this section you can configure Keycloak truststores."
+                  type: "object"
                 unsupported:
                   description: "In this section you can configure podTemplate advanced features, not production-ready, and not supported settings.\nUse at your own risk and open an issue with your use-case if you don't find an alternative way."
                   properties:
@@ -64,8 +874,6 @@ spec:
                               additionalProperties:
                                 type: "string"
                               type: "object"
-                            clusterName:
-                              type: "string"
                             creationTimestamp:
                               type: "string"
                             deletionGracePeriodSeconds:
@@ -237,6 +1045,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -291,6 +1107,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -347,6 +1171,14 @@ spec:
                                                       type: "string"
                                                     type: "object"
                                                 type: "object"
+                                              matchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
+                                              mismatchLabelKeys:
+                                                items:
+                                                  type: "string"
+                                                type: "array"
                                               namespaceSelector:
                                                 properties:
                                                   matchExpressions:
@@ -401,6 +1233,14 @@ spec:
                                                   type: "string"
                                                 type: "object"
                                             type: "object"
+                                          matchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
+                                          mismatchLabelKeys:
+                                            items:
+                                              type: "string"
+                                            type: "array"
                                           namespaceSelector:
                                             properties:
                                               matchExpressions:
@@ -552,6 +1392,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -594,6 +1439,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -748,8 +1598,26 @@ spec:
                                       timeoutSeconds:
                                         type: "integer"
                                     type: "object"
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: "string"
+                                        restartPolicy:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
                                   resources:
                                     properties:
+                                      claims:
+                                        items:
+                                          properties:
+                                            name:
+                                              type: "string"
+                                            request:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
                                       limits:
                                         additionalProperties:
                                           anyOf:
@@ -765,10 +1633,19 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
                                         type: "boolean"
+                                      appArmorProfile:
+                                        properties:
+                                          localhostProfile:
+                                            type: "string"
+                                          type:
+                                            type: "string"
+                                        type: "object"
                                       capabilities:
                                         properties:
                                           add:
@@ -914,6 +1791,8 @@ spec:
                                           type: "string"
                                         readOnly:
                                           type: "boolean"
+                                        recursiveReadOnly:
+                                          type: "string"
                                         subPath:
                                           type: "string"
                                         subPathExpr:
@@ -1067,6 +1946,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -1109,6 +1993,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -1263,8 +2152,26 @@ spec:
                                       timeoutSeconds:
                                         type: "integer"
                                     type: "object"
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: "string"
+                                        restartPolicy:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
                                   resources:
                                     properties:
+                                      claims:
+                                        items:
+                                          properties:
+                                            name:
+                                              type: "string"
+                                            request:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
                                       limits:
                                         additionalProperties:
                                           anyOf:
@@ -1280,10 +2187,19 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
                                         type: "boolean"
+                                      appArmorProfile:
+                                        properties:
+                                          localhostProfile:
+                                            type: "string"
+                                          type:
+                                            type: "string"
+                                        type: "object"
                                       capabilities:
                                         properties:
                                           add:
@@ -1431,6 +2347,8 @@ spec:
                                           type: "string"
                                         readOnly:
                                           type: "boolean"
+                                        recursiveReadOnly:
+                                          type: "string"
                                         subPath:
                                           type: "string"
                                         subPathExpr:
@@ -1457,6 +2375,8 @@ spec:
                             hostNetwork:
                               type: "boolean"
                             hostPID:
+                              type: "boolean"
+                            hostUsers:
                               type: "boolean"
                             hostname:
                               type: "string"
@@ -1586,6 +2506,11 @@ spec:
                                               scheme:
                                                 type: "string"
                                             type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
+                                            type: "object"
                                           tcpSocket:
                                             properties:
                                               host:
@@ -1628,6 +2553,11 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                               scheme:
                                                 type: "string"
+                                            type: "object"
+                                          sleep:
+                                            properties:
+                                              seconds:
+                                                type: "integer"
                                             type: "object"
                                           tcpSocket:
                                             properties:
@@ -1782,8 +2712,26 @@ spec:
                                       timeoutSeconds:
                                         type: "integer"
                                     type: "object"
+                                  resizePolicy:
+                                    items:
+                                      properties:
+                                        resourceName:
+                                          type: "string"
+                                        restartPolicy:
+                                          type: "string"
+                                      type: "object"
+                                    type: "array"
                                   resources:
                                     properties:
+                                      claims:
+                                        items:
+                                          properties:
+                                            name:
+                                              type: "string"
+                                            request:
+                                              type: "string"
+                                          type: "object"
+                                        type: "array"
                                       limits:
                                         additionalProperties:
                                           anyOf:
@@ -1799,10 +2747,19 @@ spec:
                                           x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  restartPolicy:
+                                    type: "string"
                                   securityContext:
                                     properties:
                                       allowPrivilegeEscalation:
                                         type: "boolean"
+                                      appArmorProfile:
+                                        properties:
+                                          localhostProfile:
+                                            type: "string"
+                                          type:
+                                            type: "string"
+                                        type: "object"
                                       capabilities:
                                         properties:
                                           add:
@@ -1948,6 +2905,8 @@ spec:
                                           type: "string"
                                         readOnly:
                                           type: "boolean"
+                                        recursiveReadOnly:
+                                          type: "string"
                                         subPath:
                                           type: "string"
                                         subPathExpr:
@@ -1989,14 +2948,65 @@ spec:
                                     type: "string"
                                 type: "object"
                               type: "array"
+                            resourceClaims:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  resourceClaimName:
+                                    type: "string"
+                                  resourceClaimTemplateName:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            resources:
+                              properties:
+                                claims:
+                                  items:
+                                    properties:
+                                      name:
+                                        type: "string"
+                                      request:
+                                        type: "string"
+                                    type: "object"
+                                  type: "array"
+                                limits:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                                requests:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                              type: "object"
                             restartPolicy:
                               type: "string"
                             runtimeClassName:
                               type: "string"
                             schedulerName:
                               type: "string"
+                            schedulingGates:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
                             securityContext:
                               properties:
+                                appArmorProfile:
+                                  properties:
+                                    localhostProfile:
+                                      type: "string"
+                                    type:
+                                      type: "string"
+                                  type: "object"
                                 fsGroup:
                                   type: "integer"
                                 fsGroupChangePolicy:
@@ -2007,6 +3017,8 @@ spec:
                                   type: "boolean"
                                 runAsUser:
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  type: "string"
                                 seLinuxOptions:
                                   properties:
                                     level:
@@ -2029,6 +3041,8 @@ spec:
                                   items:
                                     type: "integer"
                                   type: "array"
+                                supplementalGroupsPolicy:
+                                  type: "string"
                                 sysctls:
                                   items:
                                     properties:
@@ -2100,8 +3114,18 @@ spec:
                                           type: "string"
                                         type: "object"
                                     type: "object"
+                                  matchLabelKeys:
+                                    items:
+                                      type: "string"
+                                    type: "array"
                                   maxSkew:
                                     type: "integer"
+                                  minDomains:
+                                    type: "integer"
+                                  nodeAffinityPolicy:
+                                    type: "string"
+                                  nodeTaintsPolicy:
+                                    type: "string"
                                   topologyKey:
                                     type: "string"
                                   whenUnsatisfiable:
@@ -2271,8 +3295,6 @@ spec:
                                                 additionalProperties:
                                                   type: "string"
                                                 type: "object"
-                                              clusterName:
-                                                type: "string"
                                               creationTimestamp:
                                                 type: "string"
                                               deletionGracePeriodSeconds:
@@ -2361,6 +3383,8 @@ spec:
                                                     type: "string"
                                                   name:
                                                     type: "string"
+                                                  namespace:
+                                                    type: "string"
                                                 type: "object"
                                               resources:
                                                 properties:
@@ -2400,6 +3424,8 @@ spec:
                                                     type: "object"
                                                 type: "object"
                                               storageClassName:
+                                                type: "string"
+                                              volumeAttributesClassName:
                                                 type: "string"
                                               volumeMode:
                                                 type: "string"
@@ -2486,6 +3512,13 @@ spec:
                                       type:
                                         type: "string"
                                     type: "object"
+                                  image:
+                                    properties:
+                                      pullPolicy:
+                                        type: "string"
+                                      reference:
+                                        type: "string"
+                                    type: "object"
                                   iscsi:
                                     properties:
                                       chapAuthDiscovery:
@@ -2557,6 +3590,37 @@ spec:
                                       sources:
                                         items:
                                           properties:
+                                            clusterTrustBundle:
+                                              properties:
+                                                labelSelector:
+                                                  properties:
+                                                    matchExpressions:
+                                                      items:
+                                                        properties:
+                                                          key:
+                                                            type: "string"
+                                                          operator:
+                                                            type: "string"
+                                                          values:
+                                                            items:
+                                                              type: "string"
+                                                            type: "array"
+                                                        type: "object"
+                                                      type: "array"
+                                                    matchLabels:
+                                                      additionalProperties:
+                                                        type: "string"
+                                                      type: "object"
+                                                  type: "object"
+                                                name:
+                                                  type: "string"
+                                                optional:
+                                                  type: "boolean"
+                                                path:
+                                                  type: "string"
+                                                signerName:
+                                                  type: "string"
+                                              type: "object"
                                             configMap:
                                               properties:
                                                 items:
@@ -2753,26 +3817,55 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
-              required:
-                - "hostname"
-                - "tlsSecret"
+                update:
+                  description: "Configuration related to Keycloak deployment updates."
+                  properties:
+                    revision:
+                      description: "When use the Explicit strategy, the revision signals if a rolling update can be used or not."
+                      type: "string"
+                    strategy:
+                      default: "RecreateOnImageChange"
+                      description: "Sets the update strategy to use."
+                      enum:
+                        - "Auto"
+                        - "Explicit"
+                        - "RecreateOnImageChange"
+                      type: "string"
+                  type: "object"
+                  x-kubernetes-validations:
+                    - message: "The 'revision' field is required when 'Explicit' strategy is used"
+                      rule: "self.strategy != 'Explicit' || has(self.revision)"
               type: "object"
             status:
               properties:
                 conditions:
                   items:
                     properties:
+                      lastTransitionTime:
+                        type: "string"
                       message:
                         type: "string"
+                      observedGeneration:
+                        type: "integer"
                       status:
-                        type: "boolean"
+                        type: "string"
                       type:
                         type: "string"
                     type: "object"
                   type: "array"
+                instances:
+                  type: "integer"
+                observedGeneration:
+                  type: "integer"
+                selector:
+                  type: "string"
               type: "object"
           type: "object"
       served: true
       storage: true
       subresources:
+        scale:
+          labelSelectorPath: ".status.selector"
+          specReplicasPath: ".spec.instances"
+          statusReplicasPath: ".status.instances"
         status: {}
