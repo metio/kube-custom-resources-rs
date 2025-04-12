@@ -116,9 +116,6 @@ spec:
                                   idleTimeout:
                                     description: "The idle timeout for TCP connections."
                                     type: "string"
-                                    x-kubernetes-validations:
-                                      - message: "must be a valid duration greater than 1ms"
-                                        rule: "duration(self) >= duration('1ms')"
                                   maxConnectionDuration:
                                     description: "The maximum duration of a connection."
                                     type: "string"
@@ -263,7 +260,7 @@ spec:
                                       type: "object"
                                     type: "array"
                                   enabled:
-                                    description: "enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety."
+                                    description: "Enable locality load balancing."
                                     nullable: true
                                     type: "boolean"
                                   failover:
@@ -294,8 +291,31 @@ spec:
                                   - "ROUND_ROBIN"
                                   - "LEAST_REQUEST"
                                 type: "string"
+                              warmup:
+                                description: "Represents the warmup configuration of Service."
+                                properties:
+                                  aggression:
+                                    description: "This parameter controls the speed of traffic increase over the warmup duration."
+                                    format: "double"
+                                    minimum: 1.0
+                                    nullable: true
+                                    type: "number"
+                                  duration:
+                                    type: "string"
+                                    x-kubernetes-validations:
+                                      - message: "must be a valid duration greater than 1ms"
+                                        rule: "duration(self) >= duration('1ms')"
+                                  minimumPercent:
+                                    format: "double"
+                                    maximum: 100.0
+                                    minimum: 0.0
+                                    nullable: true
+                                    type: "number"
+                                required:
+                                  - "duration"
+                                type: "object"
                               warmupDurationSecs:
-                                description: "Represents the warmup duration of Service."
+                                description: "Deprecated: use `warmup` instead."
                                 type: "string"
                                 x-kubernetes-validations:
                                   - message: "must be a valid duration greater than 1ms"
@@ -341,7 +361,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               minHealthPercent:
-                                description: "Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode."
+                                description: "Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode."
                                 format: "int32"
                                 type: "integer"
                               splitExternalLocalOriginErrors:
@@ -406,9 +426,6 @@ spec:
                                         idleTimeout:
                                           description: "The idle timeout for TCP connections."
                                           type: "string"
-                                          x-kubernetes-validations:
-                                            - message: "must be a valid duration greater than 1ms"
-                                              rule: "duration(self) >= duration('1ms')"
                                         maxConnectionDuration:
                                           description: "The maximum duration of a connection."
                                           type: "string"
@@ -553,7 +570,7 @@ spec:
                                             type: "object"
                                           type: "array"
                                         enabled:
-                                          description: "enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety."
+                                          description: "Enable locality load balancing."
                                           nullable: true
                                           type: "boolean"
                                         failover:
@@ -584,8 +601,31 @@ spec:
                                         - "ROUND_ROBIN"
                                         - "LEAST_REQUEST"
                                       type: "string"
+                                    warmup:
+                                      description: "Represents the warmup configuration of Service."
+                                      properties:
+                                        aggression:
+                                          description: "This parameter controls the speed of traffic increase over the warmup duration."
+                                          format: "double"
+                                          minimum: 1.0
+                                          nullable: true
+                                          type: "number"
+                                        duration:
+                                          type: "string"
+                                          x-kubernetes-validations:
+                                            - message: "must be a valid duration greater than 1ms"
+                                              rule: "duration(self) >= duration('1ms')"
+                                        minimumPercent:
+                                          format: "double"
+                                          maximum: 100.0
+                                          minimum: 0.0
+                                          nullable: true
+                                          type: "number"
+                                      required:
+                                        - "duration"
+                                      type: "object"
                                     warmupDurationSecs:
-                                      description: "Represents the warmup duration of Service."
+                                      description: "Deprecated: use `warmup` instead."
                                       type: "string"
                                       x-kubernetes-validations:
                                         - message: "must be a valid duration greater than 1ms"
@@ -631,7 +671,7 @@ spec:
                                       format: "int32"
                                       type: "integer"
                                     minHealthPercent:
-                                      description: "Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode."
+                                      description: "Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode."
                                       format: "int32"
                                       type: "integer"
                                     splitExternalLocalOriginErrors:
@@ -817,9 +857,6 @@ spec:
                             idleTimeout:
                               description: "The idle timeout for TCP connections."
                               type: "string"
-                              x-kubernetes-validations:
-                                - message: "must be a valid duration greater than 1ms"
-                                  rule: "duration(self) >= duration('1ms')"
                             maxConnectionDuration:
                               description: "The maximum duration of a connection."
                               type: "string"
@@ -964,7 +1001,7 @@ spec:
                                 type: "object"
                               type: "array"
                             enabled:
-                              description: "enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety."
+                              description: "Enable locality load balancing."
                               nullable: true
                               type: "boolean"
                             failover:
@@ -995,8 +1032,31 @@ spec:
                             - "ROUND_ROBIN"
                             - "LEAST_REQUEST"
                           type: "string"
+                        warmup:
+                          description: "Represents the warmup configuration of Service."
+                          properties:
+                            aggression:
+                              description: "This parameter controls the speed of traffic increase over the warmup duration."
+                              format: "double"
+                              minimum: 1.0
+                              nullable: true
+                              type: "number"
+                            duration:
+                              type: "string"
+                              x-kubernetes-validations:
+                                - message: "must be a valid duration greater than 1ms"
+                                  rule: "duration(self) >= duration('1ms')"
+                            minimumPercent:
+                              format: "double"
+                              maximum: 100.0
+                              minimum: 0.0
+                              nullable: true
+                              type: "number"
+                          required:
+                            - "duration"
+                          type: "object"
                         warmupDurationSecs:
-                          description: "Represents the warmup duration of Service."
+                          description: "Deprecated: use `warmup` instead."
                           type: "string"
                           x-kubernetes-validations:
                             - message: "must be a valid duration greater than 1ms"
@@ -1042,7 +1102,7 @@ spec:
                           format: "int32"
                           type: "integer"
                         minHealthPercent:
-                          description: "Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode."
+                          description: "Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode."
                           format: "int32"
                           type: "integer"
                         splitExternalLocalOriginErrors:
@@ -1107,9 +1167,6 @@ spec:
                                   idleTimeout:
                                     description: "The idle timeout for TCP connections."
                                     type: "string"
-                                    x-kubernetes-validations:
-                                      - message: "must be a valid duration greater than 1ms"
-                                        rule: "duration(self) >= duration('1ms')"
                                   maxConnectionDuration:
                                     description: "The maximum duration of a connection."
                                     type: "string"
@@ -1254,7 +1311,7 @@ spec:
                                       type: "object"
                                     type: "array"
                                   enabled:
-                                    description: "enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety."
+                                    description: "Enable locality load balancing."
                                     nullable: true
                                     type: "boolean"
                                   failover:
@@ -1285,8 +1342,31 @@ spec:
                                   - "ROUND_ROBIN"
                                   - "LEAST_REQUEST"
                                 type: "string"
+                              warmup:
+                                description: "Represents the warmup configuration of Service."
+                                properties:
+                                  aggression:
+                                    description: "This parameter controls the speed of traffic increase over the warmup duration."
+                                    format: "double"
+                                    minimum: 1.0
+                                    nullable: true
+                                    type: "number"
+                                  duration:
+                                    type: "string"
+                                    x-kubernetes-validations:
+                                      - message: "must be a valid duration greater than 1ms"
+                                        rule: "duration(self) >= duration('1ms')"
+                                  minimumPercent:
+                                    format: "double"
+                                    maximum: 100.0
+                                    minimum: 0.0
+                                    nullable: true
+                                    type: "number"
+                                required:
+                                  - "duration"
+                                type: "object"
                               warmupDurationSecs:
-                                description: "Represents the warmup duration of Service."
+                                description: "Deprecated: use `warmup` instead."
                                 type: "string"
                                 x-kubernetes-validations:
                                   - message: "must be a valid duration greater than 1ms"
@@ -1332,7 +1412,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               minHealthPercent:
-                                description: "Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode."
+                                description: "Outlier detection will be enabled as long as the associated load balancing pool has at least `minHealthPercent` hosts in healthy mode."
                                 format: "int32"
                                 type: "integer"
                               splitExternalLocalOriginErrors:
@@ -1466,13 +1546,13 @@ spec:
                         type: "string"
                         x-kubernetes-validations:
                           - message: "wildcard not allowed in label value match"
-                            rule: "!self.contains('*')"
+                            rule: "!self.contains(\"*\")"
                       description: "One or more labels that indicate a specific set of pods/VMs on which a policy should be applied."
                       maxProperties: 4096
                       type: "object"
                       x-kubernetes-validations:
                         - message: "wildcard not allowed in label key match"
-                          rule: "self.all(key, !key.contains('*'))"
+                          rule: "self.all(key, !key.contains(\"*\"))"
                         - message: "key must not be empty"
                           rule: "self.all(key, key.size() != 0)"
                   type: "object"
@@ -1496,6 +1576,12 @@ spec:
                       message:
                         description: "Human-readable message indicating details about last transition."
                         type: "string"
+                      observedGeneration:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
+                        description: "Resource Generation to which the Condition refers."
+                        x-kubernetes-int-or-string: true
                       reason:
                         description: "Unique, one-word, CamelCase reason for the condition's last transition."
                         type: "string"
@@ -1511,7 +1597,6 @@ spec:
                   anyOf:
                     - type: "integer"
                     - type: "string"
-                  description: "Resource Generation to which the Reconciled Condition refers."
                   x-kubernetes-int-or-string: true
                 validationMessages:
                   description: "Includes any errors or warnings detected by Istio's analyzers."
