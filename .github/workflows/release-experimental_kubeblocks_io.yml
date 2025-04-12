@@ -1,0 +1,65 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+name: Release experimental_kubeblocks_io
+on:
+  schedule:
+    - cron: 2 21 * * SAT
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v4
+      - id: commits
+        name: Count Commits
+        run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/experimental_kubeblocks_io)" >> $GITHUB_OUTPUT
+      - id: release
+        name: Create Release Version
+        if: steps.commits.outputs.count > 0
+        run: echo "version=1.$(date --utc +'%Y%m%d').$(date --utc +'%-H%M%S')" >> $GITHUB_OUTPUT
+      - name: Set up Rust
+        if: steps.commits.outputs.count > 0
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-workspaces
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-edit
+      - name: Cargo Version
+        if: steps.commits.outputs.count > 0
+        run: cargo set-version --package kcr_experimental_kubeblocks_io ${{ steps.release.outputs.version }}
+      - name: Publish to crates.io
+        if: steps.commits.outputs.count > 0
+        run: >
+          cargo publish
+          --allow-dirty
+          --token ${{ secrets.CRATES_IO_TOKEN }}
+          --package kcr_experimental_kubeblocks_io
+          --jobs 1
+          --no-verify
+        env:
+          RUSTFLAGS: "-A warnings"
+      - id: mail
+        name: Send Mail
+        if: steps.commits.outputs.count > 0
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: ${{ github.event.repository.name }}/experimental_kubeblocks_io version ${{ steps.release.outputs.version }} published
+          body: See ${{ steps.create_release.outputs.url }} for details.
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          from: ${{ secrets.MAIL_SENDER }}
+      - id: matrix
+        name: Send Matrix Message
+        if: steps.commits.outputs.count > 0
+        uses: s3krit/matrix-message-action@v0.0.3
+        with:
+          room_id: ${{ secrets.MATRIX_ROOM_ID }}
+          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+          message: ${{ github.event.repository.name }}/experimental_kubeblocks_io version [${{ steps.release.outputs.version }}](${{ steps.create_release.outputs.url }}) published
+          server: ${{ secrets.MATRIX_SERVER }}

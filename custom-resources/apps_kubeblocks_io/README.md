@@ -18,6 +18,8 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `Component`
 - `ComponentVersion`
 - `ServiceDescriptor`
+- `ShardingDefinition`
+- `SidecarDefinition`
 ### apps.kubeblocks.io/v1alpha1
 - `BackupPolicyTemplate`
 - `ClusterDefinition`

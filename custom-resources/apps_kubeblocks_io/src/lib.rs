@@ -10,6 +10,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Component`
 - `ComponentVersion`
 - `ServiceDescriptor`
+- `ShardingDefinition`
+- `SidecarDefinition`
 ## apps.kubeblocks.io/v1alpha1
 - `BackupPolicyTemplate`
 - `ClusterDefinition`

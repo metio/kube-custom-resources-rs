@@ -14,7 +14,9 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### dataprotection.kubeblocks.io/v1alpha1
 - `ActionSet`
 - `BackupPolicy`
+- `BackupPolicyTemplate`
 - `BackupRepo`
 - `Backup`
 - `BackupSchedule`
 - `Restore`
+- `StorageProvider`
