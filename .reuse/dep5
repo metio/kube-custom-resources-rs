@@ -1107,6 +1107,10 @@ Files: crd-catalog/projectcalico/calico/*
 Copyright: The projectcalico/calico Authors
 License: Apache-2.0
 
+Files: crd-catalog/projectcapsule/capsule/*
+Copyright: The projectcapsule/capsule Authors
+License: Apache-2.0
+
 Files: crd-catalog/projectcontour/contour/*
 Copyright: The projectcontour/contour Authors
 License: Apache-2.0

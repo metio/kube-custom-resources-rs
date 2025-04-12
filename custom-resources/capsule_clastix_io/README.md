@@ -16,6 +16,9 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `Tenant`
 ### capsule.clastix.io/v1beta1
 - `Tenant`
+- `Tenant`
 ### capsule.clastix.io/v1beta2
+- `CapsuleConfiguration`
+- `Tenant`
 - `CapsuleConfiguration`
 - `Tenant`
