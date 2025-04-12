@@ -103,7 +103,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalclusterclients.yaml",
             "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalclusters.yaml",
             "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalnamespaces.yaml",
-            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalworkerprocesses.yaml",
+            "https://github.com/alexandrevilain/temporal-operator/blob/main/config/crd/bases/temporal.io_temporalschedules.yaml"
         ],
         ignores: &[],
     },
