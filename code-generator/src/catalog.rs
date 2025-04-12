@@ -806,6 +806,12 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "Azure/azure-service-operator",
+        license: APACHE_V2,
+        urls: &[], // TODO: re-enable once we can work with the new distribution mechanism
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "b3scale/b3scale-operator",
         license: APACHE_V2,
         urls: &[
@@ -878,15 +884,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "bpfman/bpfman",
         license: APACHE_V2,
+        urls: &[], // was renamed to bpfman/bpfman-operator
+        ignores: &[],
+    },
+    UpstreamSource {
+        project_name: "bpfman/bpfman-operator",
+        license: APACHE_V2,
         urls: &[
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_bpfprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_fentryprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_fexitprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_kprobeprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_tcprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_tracepointprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_uprobeprograms.yaml",
-            "https://github.com/bpfman/bpfman/blob/main/bpfman-operator/config/crd/bases/bpfman.io_xdpprograms.yaml",
+            "https://github.com/bpfman/bpfman-operator/blob/main/config/crd/bases/bpfman.io_bpfapplications.yaml",
+            "https://github.com/bpfman/bpfman-operator/blob/main/config/crd/bases/bpfman.io_bpfapplicationstates.yaml",
+            "https://github.com/bpfman/bpfman-operator/blob/main/config/crd/bases/bpfman.io_clusterbpfapplications.yaml",
+            "https://github.com/bpfman/bpfman-operator/blob/main/config/crd/bases/bpfman.io_clusterbpfapplicationstates.yaml",
         ],
         ignores: &[],
     },

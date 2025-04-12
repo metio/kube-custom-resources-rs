@@ -323,6 +323,10 @@ Files: crd-catalog/bpfman/bpfman/*
 Copyright: The bpfman/bpfman Authors
 License: Apache-2.0
 
+Files: crd-catalog/bpfman/bpfman-operator/*
+Copyright: The bpfman/bpfman-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/carlosedp/lbconfig-operator/*
 Copyright: The carlosedp/lbconfig-operator Authors
 License: MIT
