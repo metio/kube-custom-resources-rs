@@ -197,6 +197,7 @@ The following groups are available:
 - [fossul.io](https://crates.io/crates/kcr_fossul_io)
 - [frrk8s.metallb.io](https://crates.io/crates/kcr_frrk8s_metallb_io)
 - [gateway.networking.k8s.io](https://crates.io/crates/kcr_gateway_networking_k8s_io)
+- [gateway.networking.x-k8s.io](https://crates.io/crates/kcr_gateway_networking_x_k8s_io)
 - [gateway.nginx.org](https://crates.io/crates/kcr_gateway_nginx_org)
 - [getambassador.io](https://crates.io/crates/kcr_getambassador_io)
 - [gitops.hybrid-cloud-patterns.io](https://crates.io/crates/kcr_gitops_hybrid_cloud_patterns_io)
