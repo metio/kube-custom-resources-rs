@@ -294,6 +294,7 @@ members = [
     "custom-resources/pgv2_percona_com",
     "custom-resources/pipes_services_k8s_aws",
     "custom-resources/pkg_crossplane_io",
+    "custom-resources/policies_kyverno_io",
     "custom-resources/policy_clusterpedia_io",
     "custom-resources/policy_karmada_io",
     "custom-resources/policy_kubeedge_io",

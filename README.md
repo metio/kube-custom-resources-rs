@@ -334,6 +334,7 @@ The following groups are available:
 - [pgv2.percona.com](https://crates.io/crates/kcr_pgv2_percona_com)
 - [pipes.services.k8s.aws](https://crates.io/crates/kcr_pipes_services_k8s_aws)
 - [pkg.crossplane.io](https://crates.io/crates/kcr_pkg_crossplane_io)
+- [policies.kyverno.io](https://crates.io/crates/kcr_policies_kyverno_io)
 - [policy.clusterpedia.io](https://crates.io/crates/kcr_policy_clusterpedia_io)
 - [policy.karmada.io](https://crates.io/crates/kcr_policy_karmada_io)
 - [policy.kubeedge.io](https://crates.io/crates/kcr_policy_kubeedge_io)

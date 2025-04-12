@@ -2477,7 +2477,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "kyverno/kyverno",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_celpolicyexceptions.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_cleanuppolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clustercleanuppolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_clusterpolicies.yaml",
@@ -2485,7 +2484,9 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_policies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_policyexceptions.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_updaterequests.yaml",
-            "https://github.com/kyverno/kyverno/blob/main/config/crds/kyverno/kyverno.io_validatingpolicies.yaml",
+            "https://github.com/kyverno/kyverno/blob/main/config/crds/policies.kyverno.io/policies.kyverno.io_imagevalidatingpolicies.yaml",
+            "https://github.com/kyverno/kyverno/blob/main/config/crds/policies.kyverno.io/policies.kyverno.io_policyexceptions.yaml",
+            "https://github.com/kyverno/kyverno/blob/main/config/crds/policies.kyverno.io/policies.kyverno.io_validatingpolicies.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/reports/reports.kyverno.io_clusterephemeralreports.yaml",
             "https://github.com/kyverno/kyverno/blob/main/config/crds/reports/reports.kyverno.io_ephemeralreports.yaml",
         ],
@@ -2502,10 +2503,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "leaksignal/leaksignal-operator",
         license: APACHE_V2,
-        urls: &[
-            "https://github.com/leaksignal/leaksignal-operator/blob/master/crds/leaksignal-cluster-crd.yaml",
-            "https://github.com/leaksignal/leaksignal-operator/blob/master/crds/leaksignal-crd.yaml",
-        ],
+        urls: &[], // leaksignal-operator was removed upstream :(
         ignores: &[],
     },
     UpstreamSource {
