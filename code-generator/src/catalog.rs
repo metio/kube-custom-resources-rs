@@ -2193,7 +2193,6 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "kubernetes-sigs/gateway-api",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_backendlbpolicies.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_backendtlspolicies.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_gatewayclasses.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_gateways.yaml",
@@ -2203,6 +2202,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_tcproutes.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml",
+            "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.x-k8s.io_xbackendtrafficpolicies.yaml",
+            "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/experimental/gateway.networking.x-k8s.io_xlistenersets.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/standard/gateway.networking.k8s.io_gateways.yaml",
             "https://github.com/kubernetes-sigs/gateway-api/blob/main/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml",

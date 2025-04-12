@@ -157,6 +157,7 @@ members = [
     "custom-resources/fossul_io",
     "custom-resources/frrk8s_metallb_io",
     "custom-resources/gateway_networking_k8s_io",
+    "custom-resources/gateway_networking_x_k8s_io",
     "custom-resources/gateway_nginx_org",
     "custom-resources/getambassador_io",
     "custom-resources/gitops_hybrid_cloud_patterns_io",
