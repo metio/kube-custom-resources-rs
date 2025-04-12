@@ -6,10 +6,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## dataprotection.kubeblocks.io/v1alpha1
 - `ActionSet`
 - `BackupPolicy`
+- `BackupPolicyTemplate`
 - `BackupRepo`
 - `Backup`
 - `BackupSchedule`
 - `Restore`
+- `StorageProvider`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
