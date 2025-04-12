@@ -59,10 +59,12 @@ pub fn read_all_existing_custom_resources(
                     .join(version)
                     .join(format!("{}.rs", kind_name(plural)));
 
+                let group_map = entries
+                    .entry(group.to_string())
+                    .or_insert_with(HashMap::new);
+
                 if custom_resource_file.exists() {
-                    entries
-                        .entry(group.to_string())
-                        .or_insert_with(HashMap::new)
+                    group_map
                         .entry(version.to_string())
                         .or_insert_with(Vec::new)
                         .push(kind.clone());
