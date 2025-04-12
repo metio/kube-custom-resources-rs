@@ -269,6 +269,7 @@ The following groups are available:
 - [litmuschaos.io](https://crates.io/crates/kcr_litmuschaos_io)
 - [logging-extensions.banzaicloud.io](https://crates.io/crates/kcr_logging_extensions_banzaicloud_io)
 - [logging.banzaicloud.io](https://crates.io/crates/kcr_logging_banzaicloud_io)
+- [logstash.k8s.elastic.co](https://crates.io/crates/kcr_logstash_k8s_elastic_co)
 - [loki.grafana.com](https://crates.io/crates/kcr_loki_grafana_com)
 - [longhorn.io](https://crates.io/crates/kcr_longhorn_io)
 - [m4e.krestomat.io](https://crates.io/crates/kcr_m4e_krestomat_io)

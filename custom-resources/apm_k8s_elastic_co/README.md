@@ -13,5 +13,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### apm.k8s.elastic.co/v1
 - `ApmServer`
+### apm.k8s.elastic.co/v1alpha1
+- `ApmServer`
 ### apm.k8s.elastic.co/v1beta1
 - `ApmServer`

@@ -229,6 +229,7 @@ members = [
     "custom-resources/litmuschaos_io",
     "custom-resources/logging_banzaicloud_io",
     "custom-resources/logging_extensions_banzaicloud_io",
+    "custom-resources/logstash_k8s_elastic_co",
     "custom-resources/loki_grafana_com",
     "custom-resources/longhorn_io",
     "custom-resources/m4e_krestomat_io",

@@ -5,10 +5,14 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 ## elasticsearch.k8s.elastic.co/v1
 - `Elasticsearch`
+## elasticsearch.k8s.elastic.co/v1alpha1
+- `Elasticsearch`
 ## elasticsearch.k8s.elastic.co/v1beta1
 - `Elasticsearch`
 */
 #[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
+pub mod v1alpha1;
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;

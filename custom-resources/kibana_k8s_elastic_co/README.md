@@ -13,5 +13,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### kibana.k8s.elastic.co/v1
 - `Kibana`
+### kibana.k8s.elastic.co/v1alpha1
+- `Kibana`
 ### kibana.k8s.elastic.co/v1beta1
 - `Kibana`
