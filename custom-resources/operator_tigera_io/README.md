@@ -18,6 +18,8 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `Authentication`
 - `Compliance`
 - `EgressGateway`
+- `GatewayAPI`
+- `Goldmane`
 - `ImageSet`
 - `Installation`
 - `IntrusionDetection`
@@ -27,11 +29,14 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `ManagementCluster`
 - `Manager`
 - `Monitor`
+- `NonClusterHost`
+- `PacketCaptureAPI`
 - `PacketCapture`
 - `PolicyRecommendation`
 - `Tenant`
 - `TigeraStatus`
 - `TLSPassThroughRoute`
 - `TLSTerminatedRoute`
+- `Whisker`
 ### operator.tigera.io/v1beta1
 - `AmazonCloudIntegration`

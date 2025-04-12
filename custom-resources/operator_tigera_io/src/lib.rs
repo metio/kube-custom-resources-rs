@@ -10,6 +10,8 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Authentication`
 - `Compliance`
 - `EgressGateway`
+- `GatewayAPI`
+- `Goldmane`
 - `ImageSet`
 - `Installation`
 - `IntrusionDetection`
@@ -19,12 +21,15 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ManagementCluster`
 - `Manager`
 - `Monitor`
+- `NonClusterHost`
+- `PacketCaptureAPI`
 - `PacketCapture`
 - `PolicyRecommendation`
 - `Tenant`
 - `TigeraStatus`
 - `TLSPassThroughRoute`
 - `TLSTerminatedRoute`
+- `Whisker`
 ## operator.tigera.io/v1beta1
 - `AmazonCloudIntegration`
 */
