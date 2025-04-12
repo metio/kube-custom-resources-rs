@@ -359,6 +359,7 @@ The following groups are available:
 - [remediation.medik8s.io](https://crates.io/crates/kcr_remediation_medik8s_io)
 - [repo-manager.pulpproject.org](https://crates.io/crates/kcr_repo_manager_pulpproject_org)
 - [reports.kyverno.io](https://crates.io/crates/kcr_reports_kyverno_io)
+- [reports.x-k8s.io](https://crates.io/crates/kcr_reports_x_k8s_io)
 - [resources.teleport.dev](https://crates.io/crates/kcr_resources_teleport_dev)
 - [rocketmq.apache.org](https://crates.io/crates/kcr_rocketmq_apache_org)
 - [route53.services.k8s.aws](https://crates.io/crates/kcr_route53_services_k8s_aws)

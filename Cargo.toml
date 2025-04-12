@@ -319,6 +319,7 @@ members = [
     "custom-resources/remediation_medik8s_io",
     "custom-resources/repo_manager_pulpproject_org",
     "custom-resources/reports_kyverno_io",
+    "custom-resources/reports_x_k8s_io",
     "custom-resources/resources_teleport_dev",
     "custom-resources/rocketmq_apache_org",
     "custom-resources/route53_services_k8s_aws",
