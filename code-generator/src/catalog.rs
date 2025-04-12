@@ -1730,8 +1730,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "istio/istio",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/istio/istio/blob/master/manifests/charts/base/crds/crd-all.gen.yaml",
-            "https://github.com/istio/istio/blob/master/manifests/charts/istio-operator/crds/crd-operator.yaml",
+            "https://github.com/istio/istio/blob/master/manifests/charts/base/files/crd-all.gen.yaml",
         ],
         ignores: &[],
     },
@@ -1835,8 +1834,8 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "keycloak/keycloak-k8s-resources",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/keycloak/keycloak-k8s-resources/blob/main/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml",
-            "https://github.com/keycloak/keycloak-k8s-resources/blob/main/kubernetes/keycloaks.k8s.keycloak.org-v1.yml",
+            "https://github.com/keycloak/keycloak-k8s-resources/blob/nightly/kubernetes/keycloakrealmimports.k8s.keycloak.org-v1.yml",
+            "https://github.com/keycloak/keycloak-k8s-resources/blob/nightly/kubernetes/keycloaks.k8s.keycloak.org-v1.yml",
         ],
         ignores: &[],
     },
