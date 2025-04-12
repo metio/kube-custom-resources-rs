@@ -923,6 +923,10 @@ Files: crd-catalog/LinuxSuRen/api-testing/*
 Copyright: The LinuxSuRen/api-testing Authors
 License: MIT
 
+Files: crd-catalog/LinuxSuRen/atest-operator/*
+Copyright: The LinuxSuRen/atest-operator Authors
+License: MIT
+
 Files: crd-catalog/litmuschaos/chaos-operator/*
 Copyright: The litmuschaos/chaos-operator Authors
 License: Apache-2.0
