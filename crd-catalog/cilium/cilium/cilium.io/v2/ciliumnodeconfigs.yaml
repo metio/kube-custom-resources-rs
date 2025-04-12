@@ -15,9 +15,7 @@ spec:
     singular: "ciliumnodeconfig"
   scope: "Namespaced"
   versions:
-    - deprecated: true
-      deprecationWarning: "cilium.io/v2alpha1 CiliumNodeConfig will be deprecated in cilium v1.16; use cilium.io/v2 CiliumNodeConfig"
-      name: "v2alpha1"
+    - name: "v2"
       schema:
         openAPIV3Schema:
           description: "CiliumNodeConfig is a list of configuration key-value pairs. It is applied to\nnodes indicated by a label selector.\n\nIf multiple overrides apply to the same node, they will be ordered by name\nwith later Overrides overwriting any conflicting keys."
@@ -79,4 +77,4 @@ spec:
             - "spec"
           type: "object"
       served: true
-      storage: false
+      storage: true

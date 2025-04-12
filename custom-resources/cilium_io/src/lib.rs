@@ -4,6 +4,11 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 # Available Custom Resources
 
 ## cilium.io/v2
+- `CiliumBGPAdvertisement`
+- `CiliumBGPClusterConfig`
+- `CiliumBGPNodeConfigOverride`
+- `CiliumBGPNodeConfig`
+- `CiliumBGPPeerConfig`
 - `CiliumClusterwideNetworkPolicy`
 - `CiliumEgressGatewayPolicy`
 - `CiliumEndpoint`
@@ -11,11 +16,18 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `CiliumIdentity`
 - `CiliumLocalRedirectPolicy`
 - `CiliumNetworkPolicy`
+- `CiliumNodeConfig`
 - `CiliumNode`
 ## cilium.io/v2alpha1
+- `CiliumBGPAdvertisement`
+- `CiliumBGPClusterConfig`
+- `CiliumBGPNodeConfigOverride`
+- `CiliumBGPNodeConfig`
+- `CiliumBGPPeerConfig`
 - `CiliumBGPPeeringPolicy`
 - `CiliumCIDRGroup`
 - `CiliumEndpointSlice`
+- `CiliumGatewayClassConfig`
 - `CiliumL2AnnouncementPolicy`
 - `CiliumLoadBalancerIPPool`
 - `CiliumNodeConfig`
