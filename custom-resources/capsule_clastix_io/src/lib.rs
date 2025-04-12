@@ -8,7 +8,10 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Tenant`
 ## capsule.clastix.io/v1beta1
 - `Tenant`
+- `Tenant`
 ## capsule.clastix.io/v1beta2
+- `CapsuleConfiguration`
+- `Tenant`
 - `CapsuleConfiguration`
 - `Tenant`
 */

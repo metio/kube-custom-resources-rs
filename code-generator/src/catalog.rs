@@ -1013,10 +1013,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "clastix/capsule",
         license: APACHE_V2,
-        urls: &[
-            "https://github.com/clastix/capsule/blob/master/config/crd/bases/capsule.clastix.io_capsuleconfigurations.yaml",
-            "https://github.com/clastix/capsule/blob/master/config/crd/bases/capsule.clastix.io_tenants.yaml",
-        ],
+        urls: &[], // renamed to projectcapsule/capsule
         ignores: &[],
     },
     UpstreamSource {
@@ -3047,11 +3044,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/projectcalico/calico/blob/master/manifests/crds.yaml",
         ],
         ignores: &[
-            &IgnoreCRD { // they include an CRD from kubernetes-sigs/network-policy-api
+            &IgnoreCRD { // they include a CRD from kubernetes-sigs/network-policy-api
                 group: "policy.networking.k8s.io",
                 version: "v1alpha1",
             },
         ],
+    },
+    UpstreamSource {
+        project_name: "projectcapsule/capsule",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/projectcapsule/capsule/blob/main/charts/capsule/crds/capsule.clastix.io_capsuleconfigurations.yaml",
+            "https://github.com/projectcapsule/capsule/blob/main/charts/capsule/crds/capsule.clastix.io_globaltenantresources.yaml",
+            "https://github.com/projectcapsule/capsule/blob/main/charts/capsule/crds/capsule.clastix.io_tenantresources.yaml",
+            "https://github.com/projectcapsule/capsule/blob/main/charts/capsule/crds/capsule.clastix.io_tenants.yaml",
+        ],
+        ignores: &[],
     },
     UpstreamSource {
         project_name: "projectcontour/contour",
