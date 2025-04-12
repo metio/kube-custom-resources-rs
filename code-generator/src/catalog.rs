@@ -1322,7 +1322,9 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "flanksource/canary-checker",
         license: APACHE_V2,
         urls: &[
-            "https://github.com/flanksource/canary-checker/blob/master/config/deploy/crd.yaml",
+            "https://github.com/flanksource/canary-checker/blob/master/config/deploy/Canary.yml",
+            "https://github.com/flanksource/canary-checker/blob/master/config/deploy/Component.yml",
+            "https://github.com/flanksource/canary-checker/blob/master/config/deploy/Topology.yml",
         ],
         ignores: &[],
     },

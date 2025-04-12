@@ -309,6 +309,8 @@ spec:
                               type: "object"
                             headline:
                               type: "boolean"
+                            hidden:
+                              type: "boolean"
                             icon:
                               type: "string"
                             label:
@@ -686,6 +688,8 @@ spec:
                             type: "string"
                         type: "object"
                       headline:
+                        type: "boolean"
+                      hidden:
                         type: "boolean"
                       icon:
                         type: "string"
