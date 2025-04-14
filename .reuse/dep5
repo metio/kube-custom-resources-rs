@@ -1167,6 +1167,10 @@ Files: crd-catalog/redhat-cop/patch-operator/*
 Copyright: The redhat-cop/patch-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/redhat-cop/vault-config-operator/*
+Copyright: The redhat-cop/vault-config-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/redhat-developer/service-binding-operator/*
 Copyright: The redhat-developer/service-binding-operator Authors
 License: Apache-2.0
