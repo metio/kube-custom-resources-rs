@@ -10,10 +10,8 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
     let root_folder = fs::canonicalize(root).expect("canonicalize failed");
-    let crd_catalog =
-        fs::canonicalize(format!("{}/crd-catalog", root)).expect("canonicalize failed");
-    let custom_resources_root =
-        fs::canonicalize(format!("{}/custom-resources", root)).expect("canonicalize failed");
+    let crd_catalog = root_folder.join("crd-catalog");
+    let custom_resources_root = root_folder.join("custom-resources");
 
     let mut number_of_matched_crds: i64 = 0;
 
@@ -50,9 +48,10 @@ fn main() {
                         let absolute_yaml_path = path.to_string_lossy();
                         let relative_yaml_path = absolute_yaml_path
                             .chars()
-                            .skip(root_folder.to_string_lossy().len() + 1)
+                            .skip(&root_folder.to_string_lossy().len() + 1)
                             .collect::<String>();
                         let child = Command::new("kopium")
+                            .current_dir(&root_folder)
                             .args(&[
                                 "--docs",
                                 "--derive=Default",
