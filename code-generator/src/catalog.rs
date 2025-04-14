@@ -2736,6 +2736,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "nats-io/nack",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/nats-io/nack/blob/main/deploy/crds.yml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "NetApp/trident",
         license: APACHE_V2,
         urls: &[
