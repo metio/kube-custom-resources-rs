@@ -6,9 +6,9 @@ members = [
 {{#each groups as |group| }}
     "custom-resources/{{group}}",
 {{/each}}
-    "code-generator"
 ]
 resolver = "2"
+exclude = ["code-generator"]
 
 [workspace.package]
 edition = "2021"

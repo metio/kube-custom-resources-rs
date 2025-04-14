@@ -406,9 +406,9 @@ members = [
     "custom-resources/zonecontrol_k8s_aws",
     "custom-resources/zookeeper_pravega_io",
     "custom-resources/zookeeper_stackable_tech",
-    "code-generator"
 ]
 resolver = "2"
+exclude = ["code-generator"]
 
 [workspace.package]
 edition = "2021"
