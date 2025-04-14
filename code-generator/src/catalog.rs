@@ -1199,6 +1199,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         project_name: "datainfrahq/druid-operator",
         license: APACHE_V2,
         urls: &[
+            "https://github.com/datainfrahq/druid-operator/blob/master/config/crd/bases/druid.apache.org_druidingestions.yaml",
             "https://github.com/datainfrahq/druid-operator/blob/master/config/crd/bases/druid.apache.org_druids.yaml",
         ],
         ignores: &[],
