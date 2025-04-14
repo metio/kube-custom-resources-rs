@@ -108,6 +108,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "Altinity/clickhouse-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/Altinity/clickhouse-operator/blob/master/deploy/operator/parts/crd.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "Alvearie/imaging-ingestion",
         license: APACHE_V2,
         urls: &[
