@@ -190,6 +190,7 @@ members = [
     "custom-resources/isindir_github_com",
     "custom-resources/jaegertracing_io",
     "custom-resources/jenkins_io",
+    "custom-resources/jetstream_nats_io",
     "custom-resources/jobset_x_k8s_io",
     "custom-resources/jobsmanager_raczylo_com",
     "custom-resources/k6_io",

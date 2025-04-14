@@ -1,0 +1,134 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "consumers.jetstream.nats.io"
+spec:
+  group: "jetstream.nats.io"
+  names:
+    kind: "Consumer"
+    plural: "consumers"
+    singular: "consumer"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "The current state of the consumer."
+          jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
+          name: "State"
+          type: "string"
+        - description: "The name of the Jetstream Stream."
+          jsonPath: ".spec.streamName"
+          name: "Stream"
+          type: "string"
+        - description: "The name of the Jetstream Consumer."
+          jsonPath: ".spec.durableName"
+          name: "Consumer"
+          type: "string"
+        - description: "The ack policy."
+          jsonPath: ".spec.ackPolicy"
+          name: "Ack Policy"
+          type: "string"
+      name: "v1beta1"
+      schema:
+        openAPIV3Schema:
+          properties:
+            spec:
+              properties:
+                ackPolicy:
+                  default: "none"
+                  description: "How messages should be acknowledged."
+                  enum:
+                    - "none"
+                    - "all"
+                    - "explicit"
+                  type: "string"
+                ackWait:
+                  default: "1ns"
+                  description: "How long to allow messages to remain un-acknowledged before attempting redelivery."
+                  type: "string"
+                deliverGroup:
+                  description: "The name of a queue group."
+                  type: "string"
+                deliverPolicy:
+                  default: "all"
+                  enum:
+                    - "all"
+                    - "last"
+                    - "new"
+                    - "byStartSequence"
+                    - "byStartTime"
+                  type: "string"
+                deliverSubject:
+                  description: "The subject to deliver observed messages, when not set, a pull-based Consumer is created."
+                  type: "string"
+                description:
+                  description: "The description of the consumer."
+                  type: "string"
+                durableName:
+                  description: "The name of the Consumer."
+                  minLength: 1
+                  pattern: "^[^.*>]+$"
+                  type: "string"
+                filterSubject:
+                  description: "Select only a specific incoming subjects, supports wildcards."
+                  type: "string"
+                flowControl:
+                  default: false
+                  description: "Enables flow control."
+                  type: "boolean"
+                heartbeatInterval:
+                  description: "The interval used to deliver idle heartbeats for push-based consumers, in Go's time.Duration format."
+                  type: "string"
+                maxAckPending:
+                  description: "Maximum pending Acks before consumers are paused."
+                  type: "integer"
+                maxDeliver:
+                  minimum: -1.0
+                  type: "integer"
+                optStartSeq:
+                  minimum: 0.0
+                  type: "integer"
+                optStartTime:
+                  description: "Time format must be RFC3339."
+                  type: "string"
+                rateLimitBps:
+                  description: "Rate at which messages will be delivered to clients, expressed in bit per second."
+                  type: "integer"
+                replayPolicy:
+                  default: "instant"
+                  description: "How messages are sent."
+                  enum:
+                    - "instant"
+                    - "original"
+                  type: "string"
+                sampleFreq:
+                  description: "What percentage of acknowledgements should be samples for observability."
+                  type: "string"
+                streamName:
+                  description: "The name of the Stream to create the Consumer in."
+                  type: "string"
+              type: "object"
+            status:
+              properties:
+                conditions:
+                  items:
+                    properties:
+                      lastTransitionTime:
+                        type: "string"
+                      message:
+                        type: "string"
+                      reason:
+                        type: "string"
+                      status:
+                        type: "string"
+                      type:
+                        type: "string"
+                    type: "object"
+                  type: "array"
+                observedGeneration:
+                  type: "integer"
+              type: "object"
+          type: "object"
+      served: false
+      storage: false
+      subresources:
+        status: {}

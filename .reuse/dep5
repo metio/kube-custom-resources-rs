@@ -1003,6 +1003,10 @@ Files: crd-catalog/mittwald/kubernetes-secret-generator/*
 Copyright: The mittwald/kubernetes-secret-generator Authors
 License: Apache-2.0
 
+Files: crd-catalog/nats-io/nack/*
+Copyright: The nats-io/nack Authors
+License: Apache-2.0
+
 Files: crd-catalog/NetApp/trident/*
 Copyright: The NetApp/trident Authors
 License: Apache-2.0
@@ -1173,7 +1177,7 @@ License: Apache-2.0
 
 Files: crd-catalog/replicatedhq/troubleshoot/*
 Copyright: The replicatedhq/troubleshoot Authors
-License: MIT
+License: Apache-2.0
 
 Files: crd-catalog/ROCm/gpu-operator/*
 Copyright: The ROCm/gpu-operator Authors
