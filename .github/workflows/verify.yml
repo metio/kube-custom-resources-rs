@@ -21,7 +21,7 @@ jobs:
       - name: Cache Dependencies
         uses: Swatinem/rust-cache@v2
       - name: Check Code Generator
-        run: cargo check --package code-generator
+        run: cd code-generator && cargo check
       - name: Try-run Cargo Version Update
         run: sed -i -e '0,/edition/s/^version = .*/version = "1.2.3"/' custom-resources/about_k8s_io/Cargo.toml
       - name: Print modified Cargo.toml
