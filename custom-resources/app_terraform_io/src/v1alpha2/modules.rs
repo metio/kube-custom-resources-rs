@@ -18,7 +18,17 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ModuleSpec {
-    /// Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.
+    /// Deletion Policy defines the strategies for resource deletion in the Kubernetes operator.
+    /// It controls how the operator should handle the deletion of resources when triggered by
+    /// a user action or system event.
+    /// 
+    /// There is one possible value:
+    /// - `retain`: When the custom resource is deleted, the associated module is retained. `destroyOnDeletion` must be set to false.
+    /// - `destroy`: Executes a destroy operation. Removes all resources and the module.
+    /// Default: `retain`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
+    pub deletion_policy: Option<ModuleDeletionPolicy>,
+    /// DEPRECATED: Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.
     /// Default: `false`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyOnDeletion")]
     pub destroy_on_deletion: Option<bool>,
@@ -46,6 +56,15 @@ pub struct ModuleSpec {
     pub variables: Option<Vec<ModuleVariables>>,
     /// Workspace to execute the module.
     pub workspace: ModuleWorkspace,
+}
+
+/// ModuleSpec defines the desired state of Module.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ModuleDeletionPolicy {
+    #[serde(rename = "retain")]
+    Retain,
+    #[serde(rename = "destroy")]
+    Destroy,
 }
 
 /// Module source and version to execute.

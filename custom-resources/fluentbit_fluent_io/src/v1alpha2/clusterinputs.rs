@@ -674,6 +674,9 @@ pub struct ClusterInputTail {
     /// Specify the database file to keep track of monitored files and offsets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub db: Option<String>,
+    /// Specify that the database will be accessed only by Fluent Bit.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbLocking")]
+    pub db_locking: Option<bool>,
     /// Set a default synchronization (I/O) method. Values: Extra, Full, Normal, Off.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbSync")]
     pub db_sync: Option<ClusterInputTailDbSync>,

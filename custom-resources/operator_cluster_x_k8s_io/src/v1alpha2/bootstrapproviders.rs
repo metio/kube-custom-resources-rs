@@ -1021,6 +1021,10 @@ pub struct BootstrapProviderAdditionalDeploymentsDeploymentTolerations {
 /// Manager defines the properties that can be enabled on the controller manager for the additional provider deployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BootstrapProviderAdditionalDeploymentsManager {
+    /// AdditionalArgs is a map of additional options that will be passed
+    /// in as container args to the provider's controller manager.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalArgs")]
+    pub additional_args: Option<BTreeMap<String, String>>,
     /// CacheNamespace if specified restricts the manager's cache to watch objects in
     /// the desired namespace Defaults to all namespaces
     /// 
@@ -2224,6 +2228,10 @@ pub struct BootstrapProviderFetchConfigSelectorMatchExpressions {
 /// Manager defines the properties that can be enabled on the controller manager for the provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BootstrapProviderManager {
+    /// AdditionalArgs is a map of additional options that will be passed
+    /// in as container args to the provider's controller manager.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalArgs")]
+    pub additional_args: Option<BTreeMap<String, String>>,
     /// CacheNamespace if specified restricts the manager's cache to watch objects in
     /// the desired namespace Defaults to all namespaces
     /// 

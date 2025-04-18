@@ -799,6 +799,9 @@ pub struct PersesClientTlsCaCert {
     /// Name of certificate k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
@@ -827,6 +830,9 @@ pub struct PersesClientTlsUserCert {
     /// Name of certificate k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
@@ -1877,6 +1883,9 @@ pub struct PersesTlsCaCert {
     /// Name of certificate k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
@@ -1905,6 +1914,9 @@ pub struct PersesTlsUserCert {
     /// Name of certificate k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,

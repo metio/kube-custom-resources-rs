@@ -52,6 +52,8 @@ spec:
                       url:
                         description: "URL is the url of apiserver endpoint of the managed cluster."
                         type: "string"
+                    required:
+                      - "url"
                     type: "object"
                   type: "array"
                 hubApiServerHostAlias:
@@ -116,7 +118,7 @@ spec:
                   description: "RegistrationConfiguration contains the configuration of registration"
                   properties:
                     bootstrapKubeConfigs:
-                      description: "BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.\n\n\nWhen the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR\nis set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as \"failed\".\n\n\nA failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.\nBut if the user updates the content of a failed bootstrapkubeconfig, the \"failed\" mark will be cleared."
+                      description: "BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.\n\nWhen the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR\nis set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as \"failed\".\n\nA failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.\nBut if the user updates the content of a failed bootstrapkubeconfig, the \"failed\" mark will be cleared."
                       properties:
                         localSecretsConfig:
                           description: "LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs.\nThe secrets must be in the same namespace where the agent controller runs."
@@ -134,8 +136,12 @@ spec:
                                   name:
                                     description: "Name is the name of the secret."
                                     type: "string"
+                                required:
+                                  - "name"
                                 type: "object"
                               type: "array"
+                          required:
+                            - "kubeConfigSecrets"
                           type: "object"
                         type:
                           default: "None"
@@ -144,6 +150,8 @@ spec:
                             - "None"
                             - "LocalSecrets"
                           type: "string"
+                      required:
+                        - "type"
                       type: "object"
                     clientCertExpirationSeconds:
                       description: "clientCertExpirationSeconds represents the seconds of a client certificate to expire. If it is not set or 0, the default\nduration seconds will be set by the hub cluster. If the value is larger than the max signing duration seconds set on\nthe hub cluster, the max signing duration seconds will be set."
@@ -205,7 +213,12 @@ spec:
                               minLength: 1
                               pattern: "^arn:aws:eks:([a-zA-Z0-9-]+):(\\d{12}):cluster/([a-zA-Z0-9-]+)$"
                               type: "string"
+                          required:
+                            - "hubClusterArn"
+                            - "managedClusterArn"
                           type: "object"
+                      required:
+                        - "authType"
                       type: "object"
                   type: "object"
                 registrationImagePullSpec:
@@ -218,12 +231,15 @@ spec:
                       description: "ResourceRequirements defines resource requests and limits when Type is ResourceQosClassResourceRequirement"
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -305,7 +321,7 @@ spec:
                 conditions:
                   description: "Conditions contain the different condition statuses for this Klusterlet.\nValid condition types are:\nApplied: Components have been applied in the managed cluster.\nAvailable: Components in the managed cluster are available and ready to serve.\nProgressing: Components in the managed cluster are in a transitioning state.\nDegraded: Components in the managed cluster do not match the desired configuration and only provide\ndegraded service."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -334,7 +350,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
@@ -370,6 +386,12 @@ spec:
                       version:
                         description: "version is the version of the resource that you're tracking"
                         type: "string"
+                    required:
+                      - "group"
+                      - "lastGeneration"
+                      - "name"
+                      - "resource"
+                      - "version"
                     type: "object"
                   type: "array"
                 observedGeneration:
@@ -396,6 +418,11 @@ spec:
                       version:
                         description: "version is the version of the thing you're tracking"
                         type: "string"
+                    required:
+                      - "group"
+                      - "name"
+                      - "resource"
+                      - "version"
                     type: "object"
                   type: "array"
               type: "object"

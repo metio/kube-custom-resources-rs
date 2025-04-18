@@ -115,6 +115,7 @@ pub struct RedisEnterpriseClusterSpec {
     pub redis_upgrade_policy: Option<RedisEnterpriseClusterRedisUpgradePolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
     pub resp3_default: Option<bool>,
+    /// The security configuration that will be applied to RS pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RedisEnterpriseClusterSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
@@ -133,6 +134,8 @@ pub struct RedisEnterpriseClusterSpec {
     pub ui_service_type: Option<RedisEnterpriseClusterUiServiceType>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSpec")]
     pub upgrade_spec: Option<RedisEnterpriseClusterUpgradeSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMeter")]
+    pub usage_meter: Option<RedisEnterpriseClusterUsageMeter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultCASecret")]
@@ -3051,15 +3054,30 @@ pub enum RedisEnterpriseClusterRedisUpgradePolicy {
     Latest,
 }
 
+/// The security configuration that will be applied to RS pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContext {
+    /// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
     pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
+    /// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
+    pub resource_limits: Option<RedisEnterpriseClusterSecurityContextResourceLimits>,
 }
 
+/// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
+    /// Whether to enable read-only root filesystem for the Redis Enterprise software containers. Default is false.
     pub enabled: bool,
+}
+
+/// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContextResourceLimits {
+    /// Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAutoAdjustment")]
+    pub allow_auto_adjustment: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5981,6 +5999,49 @@ pub enum RedisEnterpriseClusterUiServiceType {
 pub struct RedisEnterpriseClusterUpgradeSpec {
     #[serde(rename = "autoUpgradeRedisEnterprise")]
     pub auto_upgrade_redis_enterprise: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeter {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "callHomeClient")]
+    pub call_home_client: Option<RedisEnterpriseClusterUsageMeterCallHomeClient>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClient {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSpec")]
+    pub image_spec: Option<RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<RedisEnterpriseClusterUsageMeterCallHomeClientResources>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digestHash")]
+    pub digest_hash: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionTag")]
+    pub version_tag: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims {
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

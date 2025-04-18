@@ -3,6 +3,8 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: "v0.16.5"
+  labels:
+    app.terraform.io/crd-schema-version: "v25.4.0"
   name: "workspaces.app.terraform.io"
 spec:
   group: "app.terraform.io"
@@ -52,6 +54,11 @@ spec:
                 applyMethod:
                   default: "manual"
                   description: "Define either change will be applied automatically(auto) or require an operator to confirm(manual).\nMust be one of the following values: `auto`, `manual`.\nDefault: `manual`.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply-and-manual-apply"
+                  pattern: "^(auto|manual)$"
+                  type: "string"
+                applyRunTrigger:
+                  default: "manual"
+                  description: "Specifies the type of apply, whether manual or auto\nMust be of value `auto` or `manual`\nDefault: `manual`\nMore information:\n- https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply"
                   pattern: "^(auto|manual)$"
                   type: "string"
                 deletionPolicy:
@@ -485,7 +492,7 @@ spec:
                       description: "The repository branch that Run will execute from. This defaults to the repository's default branch (e.g. main)."
                       minLength: 1
                       type: "string"
-                    fileTriggersEnabled:
+                    enableFileTriggers:
                       default: false
                       description: "File triggers allow you to queue runs in HCP Terraform when files in your VCS repository change.\nDefault: `false`.\nMore informarion:\n - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering"
                       type: "boolean"

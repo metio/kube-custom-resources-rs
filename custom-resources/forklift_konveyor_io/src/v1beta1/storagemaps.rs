@@ -31,6 +31,9 @@ pub struct StorageMapSpec {
 pub struct StorageMapMap {
     /// Destination storage.
     pub destination: StorageMapMapDestination,
+    /// Offload Plugin
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offloadPlugin")]
+    pub offload_plugin: Option<StorageMapMapOffloadPlugin>,
     /// Source storage.
     pub source: StorageMapMapSource,
 }
@@ -62,6 +65,38 @@ pub enum StorageMapMapDestinationAccessMode {
 pub enum StorageMapMapDestinationVolumeMode {
     Filesystem,
     Block,
+}
+
+/// Offload Plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct StorageMapMapOffloadPlugin {
+    /// VSphereXcopyPluginConfig works with the Vsphere Xcopy Volume Populator
+    /// to offload the copy to Vsphere and the storage array.
+    #[serde(rename = "vsphereXcopyConfig")]
+    pub vsphere_xcopy_config: StorageMapMapOffloadPluginVsphereXcopyConfig,
+}
+
+/// VSphereXcopyPluginConfig works with the Vsphere Xcopy Volume Populator
+/// to offload the copy to Vsphere and the storage array.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct StorageMapMapOffloadPluginVsphereXcopyConfig {
+    /// SecretRef is the name of the secret with the storage credentials for the plugin.
+    /// The secret should reside in the same namespace where the source provider is.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: String,
+    /// StorageVendorProduct the string identifier of the storage vendor product
+    #[serde(rename = "storageVendorProduct")]
+    pub storage_vendor_product: StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct,
+}
+
+/// VSphereXcopyPluginConfig works with the Vsphere Xcopy Volume Populator
+/// to offload the copy to Vsphere and the storage array.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
+    #[serde(rename = "vantara")]
+    Vantara,
+    #[serde(rename = "ontap")]
+    Ontap,
 }
 
 /// Source storage.

@@ -24,7 +24,6 @@ use self::prelude::*;
 pub struct ClusterClassSpec {
     /// availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.
     /// 
-    /// NOTE: this field is considered only for computing v1beta2 conditions.
     /// NOTE: If a Cluster is using this ClusterClass, and this Cluster defines a custom list of availabilityGates,
     /// such list overrides availabilityGates defined in this field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]

@@ -2012,6 +2012,9 @@ pub struct MaxScaleStatus {
     /// Monitor is the state of the monitor in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitor: Option<MaxScaleStatusMonitor>,
+    /// MonitorSpec is a hashed version of spec.monitor to be able to track changes during reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitorSpec")]
+    pub monitor_spec: Option<String>,
     /// PrimaryServer is the primary server in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryServer")]
     pub primary_server: Option<String>,
@@ -2021,9 +2024,15 @@ pub struct MaxScaleStatus {
     /// Servers is the state of the servers in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<MaxScaleStatusServers>>,
+    /// ServersSpec is a hashed version of spec.servers to be able to track changes during reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serversSpec")]
+    pub servers_spec: Option<String>,
     /// Services is the state of the services in the MaxScale API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MaxScaleStatusServices>>,
+    /// ServicesSpec is a hashed version of spec.services to be able to track changes during reconciliation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesSpec")]
+    pub services_spec: Option<String>,
     /// TLS aggregates the status of the certificates used by the MaxScale instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<MaxScaleStatusTls>,

@@ -3,6 +3,8 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: "v0.16.5"
+  labels:
+    app.terraform.io/crd-schema-version: "v25.4.0"
   name: "modules.app.terraform.io"
 spec:
   group: "app.terraform.io"
@@ -36,9 +38,16 @@ spec:
             spec:
               description: "ModuleSpec defines the desired state of Module."
               properties:
+                deletionPolicy:
+                  default: "retain"
+                  description: "Deletion Policy defines the strategies for resource deletion in the Kubernetes operator.\nIt controls how the operator should handle the deletion of resources when triggered by\na user action or system event.\n\nThere is one possible value:\n- `retain`: When the custom resource is deleted, the associated module is retained. `destroyOnDeletion` must be set to false.\n- `destroy`: Executes a destroy operation. Removes all resources and the module.\nDefault: `retain`."
+                  enum:
+                    - "retain"
+                    - "destroy"
+                  type: "string"
                 destroyOnDeletion:
                   default: false
-                  description: "Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.\nDefault: `false`."
+                  description: "DEPRECATED: Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.\nDefault: `false`."
                   type: "boolean"
                 module:
                   description: "Module source and version to execute."

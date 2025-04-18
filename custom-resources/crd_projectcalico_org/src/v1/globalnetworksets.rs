@@ -9,14 +9,12 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// GlobalNetworkSetSpec contains the specification for a NetworkSet resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "crd.projectcalico.org", version = "v1", kind = "GlobalNetworkSet", plural = "globalnetworksets")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GlobalNetworkSetSpec {
-    /// The list of IP networks that belong to this set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nets: Option<Vec<String>>,
 }

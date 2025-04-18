@@ -80,6 +80,8 @@ pub enum EngineFrontend {
     Iscsi,
     #[serde(rename = "nvmf")]
     Nvmf,
+    #[serde(rename = "ublk")]
+    Ublk,
     #[serde(rename = "")]
     KopiumEmpty,
 }
@@ -148,6 +150,8 @@ pub struct EngineStatus {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageIP")]
     pub storage_ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
+    pub ublk_id: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmapMarkSnapChainRemovedEnabled")]
     pub unmap_mark_snap_chain_removed_enabled: Option<bool>,
 }

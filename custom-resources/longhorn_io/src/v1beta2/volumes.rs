@@ -152,6 +152,8 @@ pub enum VolumeFrontend {
     Iscsi,
     #[serde(rename = "nvmf")]
     Nvmf,
+    #[serde(rename = "ublk")]
+    Ublk,
     #[serde(rename = "")]
     KopiumEmpty,
 }

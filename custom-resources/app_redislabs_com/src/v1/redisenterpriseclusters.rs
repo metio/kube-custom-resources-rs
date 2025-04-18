@@ -158,7 +158,7 @@ pub struct RedisEnterpriseClusterSpec {
     /// Whether databases will turn on RESP3 compatibility upon database upgrade. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resp3Default")]
     pub resp3_default: Option<bool>,
-    /// the security configuration that will be applied to RS pods.
+    /// The security configuration that will be applied to RS pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<RedisEnterpriseClusterSecurityContext>,
     /// Name of the service account to use
@@ -184,6 +184,9 @@ pub struct RedisEnterpriseClusterSpec {
     /// Specification for upgrades of Redis Enterprise
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeSpec")]
     pub upgrade_spec: Option<RedisEnterpriseClusterUpgradeSpec>,
+    /// The configuration of the usage meter.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usageMeter")]
+    pub usage_meter: Option<RedisEnterpriseClusterUsageMeter>,
     /// Username for the admin user of Redis Enterprise
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
@@ -3088,7 +3091,7 @@ pub enum RedisEnterpriseClusterRedisEnterpriseServicesConfigurationMdnsServerOpe
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct RedisEnterpriseClusterRedisEnterpriseServicesConfigurationPdnsServer {
-    /// Whether to enable/disable the pdns server
+    /// Deprecated: The PDNS Server is now disabled by the operator. This field will be ignored.
     #[serde(rename = "operatingMode")]
     pub operating_mode: RedisEnterpriseClusterRedisEnterpriseServicesConfigurationPdnsServerOperatingMode,
 }
@@ -3220,19 +3223,30 @@ pub enum RedisEnterpriseClusterRedisUpgradePolicy {
     Latest,
 }
 
-/// the security configuration that will be applied to RS pods.
+/// The security configuration that will be applied to RS pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContext {
-    /// Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly.
+    /// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystemPolicy")]
     pub read_only_root_filesystem_policy: Option<RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy>,
+    /// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
+    pub resource_limits: Option<RedisEnterpriseClusterSecurityContextResourceLimits>,
 }
 
-/// Whether RS containers has a read-only root filesystem and what is the policy. some mandatory paths are still writable so RS can work properly.
+/// Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterSecurityContextReadOnlyRootFilesystemPolicy {
-    /// Whether RS containers has a read-only root filesystem. Default is false.
+    /// Whether to enable read-only root filesystem for the Redis Enterprise software containers. Default is false.
     pub enabled: bool,
+}
+
+/// Settings pertaining to resource limits management by the Redis Enterprise Node container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterSecurityContextResourceLimits {
+    /// Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowAutoAdjustment")]
+    pub allow_auto_adjustment: Option<bool>,
 }
 
 /// Customization options for operator-managed service resources created for Redis Enterprise clusters and databases
@@ -6194,6 +6208,66 @@ pub struct RedisEnterpriseClusterUpgradeSpec {
     /// Whether to upgrade Redis Enterprise automatically when operator is upgraded
     #[serde(rename = "autoUpgradeRedisEnterprise")]
     pub auto_upgrade_redis_enterprise: bool,
+}
+
+/// The configuration of the usage meter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeter {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "callHomeClient")]
+    pub call_home_client: Option<RedisEnterpriseClusterUsageMeterCallHomeClient>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClient {
+    /// Whether to disable the call home client. Enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    /// Image specification
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSpec")]
+    pub image_spec: Option<RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec>,
+    /// Compute resource requirements for Call Home Client pod
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<RedisEnterpriseClusterUsageMeterCallHomeClientResources>,
+}
+
+/// Image specification
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec {
+    /// The digest hash of the container image to pull. When specified, the container image is pulled according to the digest hash instead of the image tag. The versionTag field must also be specified with the image tag matching this digest hash. Note: This field is only supported for OLM deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digestHash")]
+    pub digest_hash: Option<String>,
+    /// The image pull policy to be applied to the container image. One of Always, Never, IfNotPresent.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
+    /// The repository (name) of the container image to be deployed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository: Option<String>,
+    /// The tag of the container image to be deployed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versionTag")]
+    pub version_tag: Option<String>,
+}
+
+/// Compute resource requirements for Call Home Client pod
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RedisEnterpriseClusterUsageMeterCallHomeClientResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes

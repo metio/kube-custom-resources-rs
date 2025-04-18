@@ -100,8 +100,7 @@ pub struct KlusterletExternalServerUrLs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
     /// URL is the url of apiserver endpoint of the managed cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub url: Option<String>,
+    pub url: String,
 }
 
 /// HubApiServerHostAlias contains the host alias for hub api server.
@@ -162,10 +161,8 @@ pub struct KlusterletNodePlacementTolerations {
 pub struct KlusterletRegistrationConfiguration {
     /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
     /// 
-    /// 
     /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
     /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
-    /// 
     /// 
     /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
     /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
@@ -204,14 +201,12 @@ pub struct KlusterletRegistrationConfiguration {
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
 /// 
-/// 
 /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
 /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
 /// 
-/// 
 /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
 /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigs {
     /// LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs.
     /// The secrets must be in the same namespace where the agent controller runs.
@@ -219,8 +214,8 @@ pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigs {
     pub local_secrets_config: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfig>,
     /// Type specifies the type of priority bootstrap kubeconfigs.
     /// By default, it is set to None, representing no priority bootstrap kubeconfigs are set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<KlusterletRegistrationConfigurationBootstrapKubeConfigsType>,
+    #[serde(rename = "type")]
+    pub r#type: KlusterletRegistrationConfigurationBootstrapKubeConfigsType,
 }
 
 /// LocalSecretsConfig include a list of secrets that contains the kubeconfigs for ordered bootstrap kubeconifigs.
@@ -233,23 +228,20 @@ pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsCo
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubConnectionTimeoutSeconds")]
     pub hub_connection_timeout_seconds: Option<i32>,
     /// KubeConfigSecrets is a list of secret names. The secrets are in the same namespace where the agent controller runs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeConfigSecrets")]
-    pub kube_config_secrets: Option<Vec<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets>>,
+    #[serde(rename = "kubeConfigSecrets")]
+    pub kube_config_secrets: Vec<KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsConfigKubeConfigSecrets {
     /// Name is the name of the secret.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
 }
 
 /// BootstrapKubeConfigs defines the ordered list of bootstrap kubeconfigs. The order decides which bootstrap kubeconfig to use first when rebootstrap.
 /// 
-/// 
 /// When the agent loses the connection to the current hub over HubConnectionTimeoutSeconds, or the managedcluster CR
 /// is set `hubAcceptsClient=false` on the hub, the controller marks the related bootstrap kubeconfig as "failed".
-/// 
 /// 
 /// A failed bootstrapkubeconfig won't be used for the duration specified by SkipFailedBootstrapKubeConfigSeconds.
 /// But if the user updates the content of a failed bootstrapkubeconfig, the "failed" mark will be cleared.
@@ -277,11 +269,11 @@ pub enum KlusterletRegistrationConfigurationFeatureGatesMode {
 }
 
 /// This provides driver details required to register with hub
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KlusterletRegistrationConfigurationRegistrationDriver {
     /// Type of the authentication used by managedcluster to register as well as pull work from hub. Possible values are csr and awsirsa.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
-    pub auth_type: Option<KlusterletRegistrationConfigurationRegistrationDriverAuthType>,
+    #[serde(rename = "authType")]
+    pub auth_type: KlusterletRegistrationConfigurationRegistrationDriverAuthType,
     /// Contain the details required for registering with hub cluster (ie: an EKS cluster) using AWS IAM roles for service account.
     /// This is required only when the authType is awsirsa.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsIrsa")]
@@ -303,13 +295,13 @@ pub enum KlusterletRegistrationConfigurationRegistrationDriverAuthType {
 pub struct KlusterletRegistrationConfigurationRegistrationDriverAwsIrsa {
     /// The arn of the hub cluster (ie: an EKS cluster). This will be required to pass information to hub, which hub will use to create IAM identities for this klusterlet.
     /// Example - arn:eks:us-west-2:12345678910:cluster/hub-cluster1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubClusterArn")]
-    pub hub_cluster_arn: Option<String>,
+    #[serde(rename = "hubClusterArn")]
+    pub hub_cluster_arn: String,
     /// The arn of the managed cluster (ie: an EKS cluster). This will be required to generate the md5hash which will be used as a suffix to create IAM role on hub
     /// as well as used by kluslerlet-agent, to assume role suffixed with the md5hash, on startup.
     /// Example - arn:eks:us-west-2:12345678910:cluster/managed-cluster1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedClusterArn")]
-    pub managed_cluster_arn: Option<String>,
+    #[serde(rename = "managedClusterArn")]
+    pub managed_cluster_arn: String,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by klusterlet.
@@ -329,10 +321,8 @@ pub struct KlusterletResourceRequirementResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -356,6 +346,11 @@ pub struct KlusterletResourceRequirementResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by klusterlet.
@@ -439,42 +434,34 @@ pub struct KlusterletStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletStatusGenerations {
     /// group is the group of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
+    pub group: String,
     /// lastGeneration is the last generation of the resource that controller applies
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastGeneration")]
-    pub last_generation: Option<i64>,
+    #[serde(rename = "lastGeneration")]
+    pub last_generation: i64,
     /// name is the name of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is where the resource that you're tracking is
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// resource is the resource type of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub resource: String,
     /// version is the version of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
+    pub version: String,
 }
 
 /// RelatedResourceMeta represents the resource that is managed by an operator
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KlusterletStatusRelatedResources {
     /// group is the group of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
+    pub group: String,
     /// name is the name of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is where the thing you're tracking is
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// resource is the resource type of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub resource: String,
     /// version is the version of the thing you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
+    pub version: String,
 }
 

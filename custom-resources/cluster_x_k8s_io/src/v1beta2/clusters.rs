@@ -26,8 +26,6 @@ pub struct ClusterSpec {
     /// 
     /// If this field is not defined and the Cluster implements a managed topology, availabilityGates
     /// from the corresponding ClusterClass will be used, if any.
-    /// 
-    /// NOTE: this field is considered only for computing v1beta2 conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityGates")]
     pub availability_gates: Option<Vec<ClusterAvailabilityGates>>,
     /// clusterNetwork represents the cluster network configuration.
@@ -970,22 +968,16 @@ pub struct ClusterStatus {
     /// controlPlane groups all the observations about Cluster's ControlPlane current state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterStatusControlPlane>,
-    /// controlPlaneReady denotes if the control plane became ready during initial provisioning
-    /// to receive requests.
-    /// NOTE: this field is part of the Cluster API contract and it is used to orchestrate provisioning.
-    /// The value of this field is never updated after provisioning is completed. Please use conditions
-    /// to check the operational state of the control plane.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
-    pub control_plane_ready: Option<bool>,
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<ClusterStatusDeprecated>,
     /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
-    /// infrastructureReady is the state of the infrastructure provider.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
-    pub infrastructure_ready: Option<bool>,
+    /// initialization provides observations of the Cluster initialization process.
+    /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub initialization: Option<ClusterStatusInitialization>,
     /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
@@ -1058,6 +1050,25 @@ pub struct ClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+}
+
+/// initialization provides observations of the Cluster initialization process.
+/// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusInitialization {
+    /// controlPlaneInitialized denotes when the control plane is functional enough to accept requests.
+    /// This information is usually used as a signal for starting all the provisioning operations that depends on
+    /// a functional API server, but do not require a full HA control plane to exists, like e.g. join worker Machines,
+    /// install core addons like CNI, CPI, CSI etc.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after initialization is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneInitialized")]
+    pub control_plane_initialized: Option<bool>,
+    /// infrastructureProvisioned is true when the infrastructure provider reports that Cluster's infrastructure is fully provisioned.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureProvisioned")]
+    pub infrastructure_provisioned: Option<bool>,
 }
 
 /// status is the observed state of Cluster.

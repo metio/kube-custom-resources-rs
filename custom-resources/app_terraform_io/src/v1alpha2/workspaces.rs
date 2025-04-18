@@ -36,6 +36,13 @@ pub struct WorkspaceSpec {
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply-and-manual-apply
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyMethod")]
     pub apply_method: Option<String>,
+    /// Specifies the type of apply, whether manual or auto
+    /// Must be of value `auto` or `manual`
+    /// Default: `manual`
+    /// More information:
+    /// - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyRunTrigger")]
+    pub apply_run_trigger: Option<String>,
     /// The Deletion Policy specifies the behavior of the custom resource and its associated workspace when the custom resource is deleted.
     /// - `retain`: When you delete the custom resource, the operator does not delete the workspace.
     /// - `soft`: Attempts to delete the associated workspace only if it does not contain any managed resources.
@@ -601,8 +608,8 @@ pub struct WorkspaceVersionControl {
     /// Default: `false`.
     /// More informarion:
     ///  - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings/vcs#automatic-run-triggering
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileTriggersEnabled")]
-    pub file_triggers_enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFileTriggers")]
+    pub enable_file_triggers: Option<bool>,
     /// The VCS Connection (OAuth Connection + Token) to use.
     /// Must match pattern: `^ot-[a-zA-Z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oAuthTokenID")]

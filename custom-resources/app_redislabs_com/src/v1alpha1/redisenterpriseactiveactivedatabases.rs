@@ -512,6 +512,9 @@ pub struct RedisEnterpriseActiveActiveDatabaseParticipatingClusters {
     pub external_replication_port: Option<i64>,
     /// The name of the remote cluster CR to link.
     pub name: String,
+    /// Namespace in which the REAADB object will be deployed to within the corresponding participating cluster. The user must ensure that the Redis Enterprise operator is configured to watch this namespace in the corresponding cluster, and the required RBAC configuration is properly set up. See https://redis.io/docs/latest/operate/kubernetes/re-clusters/multi-namespace/ for more information how to set up multiple namespaces. If no namespace is specified, then the REAADB is deployed to the REC's namespace in the corresponding cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Connection to Redis Enterprise Cluster

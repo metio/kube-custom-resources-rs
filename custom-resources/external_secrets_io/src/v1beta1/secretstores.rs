@@ -1518,11 +1518,7 @@ pub struct SecretStoreProviderFake {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderFakeData {
     pub key: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    /// Deprecated: ValueMap is deprecated and is intended to be removed in the future, use the `value` field instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueMap")]
-    pub value_map: Option<BTreeMap<String, String>>,
+    pub value: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

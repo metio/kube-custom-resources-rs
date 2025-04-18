@@ -17,6 +17,8 @@ spec:
     kind: "Issuer"
     listKind: "IssuerList"
     plural: "issuers"
+    shortNames:
+      - "iss"
     singular: "issuer"
   scope: "Namespaced"
   versions:

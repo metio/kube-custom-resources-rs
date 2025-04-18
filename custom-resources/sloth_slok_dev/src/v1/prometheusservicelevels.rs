@@ -25,9 +25,44 @@ pub struct PrometheusServiceLevelSpec {
     pub labels: Option<BTreeMap<String, String>>,
     /// Service is the application of the SLOs.
     pub service: String,
+    /// SLOPlugins will be added to the SLO generation plugin chain of all SLOs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sloPlugins")]
+    pub slo_plugins: Option<PrometheusServiceLevelSloPlugins>,
     /// SLOs are the SLOs of the service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub slos: Option<Vec<PrometheusServiceLevelSlos>>,
+}
+
+/// SLOPlugins will be added to the SLO generation plugin chain of all SLOs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusServiceLevelSloPlugins {
+    /// chain ths the list of plugin chain to add to the SLO generation.
+    pub chain: Vec<PrometheusServiceLevelSloPluginsChain>,
+    /// OverridePrevious will override the previous SLO plugins declared.
+    /// Depending on where is this SLO plugins block declared will override:
+    /// - If declared at SLO group level: Overrides the default plugins.
+    /// - If declared at SLO level: Overrides the default + SLO group plugins.
+    /// The declaration order is default plugins -> SLO Group plugins -> SLO plugins.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overridePrevious")]
+    pub override_previous: Option<bool>,
+}
+
+/// SLOPlugin is a plugin that will be used on the chain of plugins for the SLO generation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusServiceLevelSloPluginsChain {
+    /// Config is the configuration used on the plugin instance creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// ID is the ID of the plugin to load .
+    pub id: String,
+    /// Priority is the priority of the plugin in the chain. The lower the number
+    /// the higher the priority. The first plugin will be the one with the lowest
+    /// priority.
+    /// The default plugins loaded by Sloth use `0` priority. If you want to
+    /// execute plugins before the default ones, you can use negative priority.
+    /// It is recommended to use round gaps of numbers like 10, 100, 1000, -200, -1000...
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// SLO is the configuration/declaration of the service level objective of
@@ -49,6 +84,10 @@ pub struct PrometheusServiceLevelSlos {
     pub name: String,
     /// Objective is target of the SLO the percentage (0, 100] (e.g 99.9).
     pub objective: f64,
+    /// Plugins will be added along the group SLO plugins declared in the spec root level
+    /// and Sloth default plugins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plugins: Option<PrometheusServiceLevelSlosPlugins>,
     /// SLI is the indicator (service level indicator) for this specific SLO.
     pub sli: PrometheusServiceLevelSlosSli,
 }
@@ -105,6 +144,39 @@ pub struct PrometheusServiceLevelSlosAlertingTicketAlert {
     /// useful to route the Page alert to specific Slack channel.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Plugins will be added along the group SLO plugins declared in the spec root level
+/// and Sloth default plugins.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusServiceLevelSlosPlugins {
+    /// chain ths the list of plugin chain to add to the SLO generation.
+    pub chain: Vec<PrometheusServiceLevelSlosPluginsChain>,
+    /// OverridePrevious will override the previous SLO plugins declared.
+    /// Depending on where is this SLO plugins block declared will override:
+    /// - If declared at SLO group level: Overrides the default plugins.
+    /// - If declared at SLO level: Overrides the default + SLO group plugins.
+    /// The declaration order is default plugins -> SLO Group plugins -> SLO plugins.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overridePrevious")]
+    pub override_previous: Option<bool>,
+}
+
+/// SLOPlugin is a plugin that will be used on the chain of plugins for the SLO generation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusServiceLevelSlosPluginsChain {
+    /// Config is the configuration used on the plugin instance creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// ID is the ID of the plugin to load .
+    pub id: String,
+    /// Priority is the priority of the plugin in the chain. The lower the number
+    /// the higher the priority. The first plugin will be the one with the lowest
+    /// priority.
+    /// The default plugins loaded by Sloth use `0` priority. If you want to
+    /// execute plugins before the default ones, you can use negative priority.
+    /// It is recommended to use round gaps of numbers like 10, 100, 1000, -200, -1000...
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<i64>,
 }
 
 /// SLI is the indicator (service level indicator) for this specific SLO.

@@ -70,6 +70,13 @@ pub struct ClusterExternalSecretExternalSecretSpec {
     /// May be set to zero to fetch and create it once. Defaults to 1h.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
+    /// RefreshPolicy determines how the ExternalSecret should be refreshed:
+    /// - CreatedOnce: Creates the Secret only if it does not exist and does not update it thereafter
+    /// - Periodic: Synchronizes the Secret from the external source at regular intervals specified by refreshInterval.
+    ///   No periodic updates occur if refreshInterval is 0.
+    /// - OnChange: Only synchronizes the Secret when the ExternalSecret's metadata or specification changes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshPolicy")]
+    pub refresh_policy: Option<ClusterExternalSecretExternalSecretSpecRefreshPolicy>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretStoreRef")]
     pub secret_store_ref: Option<ClusterExternalSecretExternalSecretSpecSecretStoreRef>,
@@ -443,6 +450,14 @@ pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefStoreRefKind {
     ClusterSecretStore,
 }
 
+/// The spec for the ExternalSecrets to be created
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterExternalSecretExternalSecretSpecRefreshPolicy {
+    CreatedOnce,
+    Periodic,
+    OnChange,
+}
+
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecSecretStoreRef {
@@ -529,8 +544,6 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplate {
 /// Template defines a blueprint for the created Secret resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateEngineVersion {
-    #[serde(rename = "v1")]
-    V1,
     #[serde(rename = "v2")]
     V2,
 }

@@ -16,6 +16,8 @@ spec:
     kind: "ClusterIssuer"
     listKind: "ClusterIssuerList"
     plural: "clusterissuers"
+    shortNames:
+      - "ciss"
     singular: "clusterissuer"
   scope: "Cluster"
   versions:

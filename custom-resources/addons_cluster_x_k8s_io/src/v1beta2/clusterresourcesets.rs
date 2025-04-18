@@ -94,7 +94,7 @@ pub enum ClusterResourceSetStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterResourceSetStatus {
     /// conditions represents the observations of a ClusterResourceSet's current state.
-    /// Known condition types are ResourceSetApplied, Deleting.
+    /// Known condition types are ResourcesApplied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.

@@ -3307,13 +3307,23 @@ spec:
                 resp3Default:
                   type: "boolean"
                 securityContext:
+                  description: "The security configuration that will be applied to RS pods."
                   properties:
                     readOnlyRootFilesystemPolicy:
+                      description: "Policy controlling whether to enable read-only root filesystem for the Redis Enterprise software containers. Note that certain filesystem paths remain writable through mounted volumes to ensure proper functionality."
                       properties:
                         enabled:
+                          description: "Whether to enable read-only root filesystem for the Redis Enterprise software containers. Default is false."
                           type: "boolean"
                       required:
                         - "enabled"
+                      type: "object"
+                    resourceLimits:
+                      description: "Settings pertaining to resource limits management by the Redis Enterprise Node container."
+                      properties:
+                        allowAutoAdjustment:
+                          description: "Allow Redis Enterprise to adjust resource limits, like max open file descriptors, of its data plane processes. When this option is enabled, the SYS_RESOURCE capability is added to the Redis Enterprise pods, and their allowPrivilegeEscalation field is set. Turned off by default."
+                          type: "boolean"
                       type: "object"
                   type: "object"
                 serviceAccountName:
@@ -6563,6 +6573,56 @@ spec:
                       type: "boolean"
                   required:
                     - "autoUpgradeRedisEnterprise"
+                  type: "object"
+                usageMeter:
+                  properties:
+                    callHomeClient:
+                      properties:
+                        disabled:
+                          type: "boolean"
+                        imageSpec:
+                          properties:
+                            digestHash:
+                              type: "string"
+                            imagePullPolicy:
+                              type: "string"
+                            repository:
+                              type: "string"
+                            versionTag:
+                              type: "string"
+                          type: "object"
+                        resources:
+                          properties:
+                            claims:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                required:
+                                  - "name"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-map-keys:
+                                - "name"
+                              x-kubernetes-list-type: "map"
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              type: "object"
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                x-kubernetes-int-or-string: true
+                              type: "object"
+                          type: "object"
+                      type: "object"
                   type: "object"
                 username:
                   type: "string"

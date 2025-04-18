@@ -138,6 +138,9 @@ pub struct EC2NodeClassAmiSelectorTerms {
     /// You can specify a combination of AWS account IDs, "self", "amazon", and "aws-marketplace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
+    /// SSMParameter is the name (or ARN) of the SSM parameter containing the Image ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ssmParameter")]
+    pub ssm_parameter: Option<String>,
     /// Tags is a map of key/value tags used to select amis.
     /// Specifying '*' for a value selects all values for a given tag key.
     #[serde(default, skip_serializing_if = "Option::is_none")]

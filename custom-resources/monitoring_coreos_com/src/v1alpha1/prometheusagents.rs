@@ -676,6 +676,13 @@ pub struct PrometheusAgentSpec {
     /// If you want to enforce a maximum limit for all scrape objects, refer to enforcedTargetLimit.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
+    /// Optional duration in seconds the pod needs to terminate gracefully.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down) which may lead to data corruption.
+    /// 
+    /// Defaults to 600 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
     /// Defines the Pods' tolerations if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PrometheusAgentTolerations>>,

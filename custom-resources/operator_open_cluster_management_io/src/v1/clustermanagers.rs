@@ -228,14 +228,14 @@ pub enum ClusterManagerRegistrationConfigurationFeatureGatesMode {
     Disable,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDrivers {
     /// Type of the authentication used by hub to initialize the Hub cluster. Possible values are csr and awsirsa.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authType")]
-    pub auth_type: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAuthType>,
-    /// AwsIrsa represents the configuration for awsisra driver.
+    #[serde(rename = "authType")]
+    pub auth_type: ClusterManagerRegistrationConfigurationRegistrationDriversAuthType,
+    /// AwsIrsa represents the configuration for awsirsa driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub awsisra: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAwsisra>,
+    pub awsirsa: Option<ClusterManagerRegistrationConfigurationRegistrationDriversAwsirsa>,
     /// CSR represents the configuration for csr driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csr: Option<ClusterManagerRegistrationConfigurationRegistrationDriversCsr>,
@@ -249,9 +249,9 @@ pub enum ClusterManagerRegistrationConfigurationRegistrationDriversAuthType {
     Awsirsa,
 }
 
-/// AwsIrsa represents the configuration for awsisra driver.
+/// AwsIrsa represents the configuration for awsirsa driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterManagerRegistrationConfigurationRegistrationDriversAwsisra {
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversAwsirsa {
     /// AutoApprovedIdentities represent a list of approved arn patterns
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
     pub auto_approved_identities: Option<Vec<String>>,
@@ -290,10 +290,8 @@ pub struct ClusterManagerResourceRequirementResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -317,6 +315,11 @@ pub struct ClusterManagerResourceRequirementResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.
@@ -347,7 +350,6 @@ pub struct ClusterManagerWorkConfiguration {
     /// in the namespace where the cluster manager is running, adhering to the following structure:
     /// config.yaml: |
     ///   <driver-config-in-yaml>
-    /// 
     /// 
     /// For detailed driver configuration, please refer to the sdk-go documentation: https://github.com/open-cluster-management-io/sdk-go/blob/main/pkg/cloudevents/README.md#supported-protocols-and-drivers
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDriver")]
@@ -410,42 +412,34 @@ pub struct ClusterManagerStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerStatusGenerations {
     /// group is the group of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
+    pub group: String,
     /// lastGeneration is the last generation of the resource that controller applies
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastGeneration")]
-    pub last_generation: Option<i64>,
+    #[serde(rename = "lastGeneration")]
+    pub last_generation: i64,
     /// name is the name of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is where the resource that you're tracking is
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// resource is the resource type of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub resource: String,
     /// version is the version of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
+    pub version: String,
 }
 
 /// RelatedResourceMeta represents the resource that is managed by an operator
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerStatusRelatedResources {
     /// group is the group of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub group: Option<String>,
+    pub group: String,
     /// name is the name of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// namespace is where the thing you're tracking is
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// resource is the resource type of the resource that you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub resource: String,
     /// version is the version of the thing you're tracking
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub version: Option<String>,
+    pub version: String,
 }
 
