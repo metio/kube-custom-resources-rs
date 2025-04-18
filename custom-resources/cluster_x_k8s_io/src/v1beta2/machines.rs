@@ -207,9 +207,6 @@ pub struct MachineStatus {
     /// This field is copied from the infrastructure provider reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<MachineStatusAddresses>>,
-    /// bootstrapReady is the state of the bootstrap provider.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapReady")]
-    pub bootstrap_ready: Option<bool>,
     /// certificatesExpiryDate is the expiry date of the machine certificates.
     /// This value is only set for control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesExpiryDate")]
@@ -229,9 +226,10 @@ pub struct MachineStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<MachineStatusDeprecated>,
-    /// infrastructureReady is the state of the infrastructure provider.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
-    pub infrastructure_ready: Option<bool>,
+    /// initialization provides observations of the Machine initialization process.
+    /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub initialization: Option<MachineStatusInitialization>,
     /// lastUpdated identifies when the phase of the Machine last transitioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
@@ -352,6 +350,22 @@ pub struct MachineStatusDeprecatedV1beta1 {
     /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
+}
+
+/// initialization provides observations of the Machine initialization process.
+/// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Machine provisioning.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusInitialization {
+    /// bootstrapDataSecretCreated is true when the bootstrap provider reports that the Machine's boostrap secret is created.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapDataSecretCreated")]
+    pub bootstrap_data_secret_created: Option<bool>,
+    /// infrastructureProvisioned is true when the infrastructure provider reports that Machine's infrastructure is fully provisioned.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureProvisioned")]
+    pub infrastructure_provisioned: Option<bool>,
 }
 
 /// nodeInfo is a set of ids/uuids to uniquely identify the node.

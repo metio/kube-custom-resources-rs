@@ -181,8 +181,8 @@ spec:
                               - "csr"
                               - "awsirsa"
                             type: "string"
-                          awsisra:
-                            description: "AwsIrsa represents the configuration for awsisra driver."
+                          awsirsa:
+                            description: "AwsIrsa represents the configuration for awsirsa driver."
                             properties:
                               autoApprovedIdentities:
                                 description: "AutoApprovedIdentities represent a list of approved arn patterns"
@@ -208,6 +208,8 @@ spec:
                                   type: "string"
                                 type: "array"
                             type: "object"
+                        required:
+                          - "authType"
                         type: "object"
                       type: "array"
                       x-kubernetes-list-map-keys:
@@ -225,12 +227,15 @@ spec:
                       description: "ResourceRequirements defines resource requests and limits when Type is ResourceQosClassResourceRequirement"
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -291,7 +296,7 @@ spec:
                       type: "array"
                     workDriver:
                       default: "kube"
-                      description: "WorkDriver represents the type of work driver. Possible values are \"kube\", \"mqtt\", or \"grpc\".\nIf not provided, the default value is \"kube\".\nIf set to non-\"kube\" drivers, the klusterlet need to use the same driver.\nand the driver configuration must be provided in a secret named \"work-driver-config\"\nin the namespace where the cluster manager is running, adhering to the following structure:\nconfig.yaml: |\n  <driver-config-in-yaml>\n\n\nFor detailed driver configuration, please refer to the sdk-go documentation: https://github.com/open-cluster-management-io/sdk-go/blob/main/pkg/cloudevents/README.md#supported-protocols-and-drivers"
+                      description: "WorkDriver represents the type of work driver. Possible values are \"kube\", \"mqtt\", or \"grpc\".\nIf not provided, the default value is \"kube\".\nIf set to non-\"kube\" drivers, the klusterlet need to use the same driver.\nand the driver configuration must be provided in a secret named \"work-driver-config\"\nin the namespace where the cluster manager is running, adhering to the following structure:\nconfig.yaml: |\n  <driver-config-in-yaml>\n\nFor detailed driver configuration, please refer to the sdk-go documentation: https://github.com/open-cluster-management-io/sdk-go/blob/main/pkg/cloudevents/README.md#supported-protocols-and-drivers"
                       enum:
                         - "kube"
                         - "mqtt"
@@ -309,7 +314,7 @@ spec:
                 conditions:
                   description: "Conditions contain the different condition statuses for this ClusterManager.\nValid condition types are:\nApplied: Components in hub are applied.\nAvailable: Components in hub are available and ready to serve.\nProgressing: Components in hub are in a transitioning state.\nDegraded: Components in hub do not match the desired configuration and only provide\ndegraded service."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -338,7 +343,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
@@ -374,6 +379,12 @@ spec:
                       version:
                         description: "version is the version of the resource that you're tracking"
                         type: "string"
+                    required:
+                      - "group"
+                      - "lastGeneration"
+                      - "name"
+                      - "resource"
+                      - "version"
                     type: "object"
                   type: "array"
                 observedGeneration:
@@ -400,6 +411,11 @@ spec:
                       version:
                         description: "version is the version of the thing you're tracking"
                         type: "string"
+                    required:
+                      - "group"
+                      - "name"
+                      - "resource"
+                      - "version"
                     type: "object"
                   type: "array"
               type: "object"

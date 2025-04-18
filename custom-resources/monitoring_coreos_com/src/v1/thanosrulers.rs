@@ -292,6 +292,13 @@ pub struct ThanosRulerSpec {
     /// Storage spec to specify how storage shall be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ThanosRulerStorage>,
+    /// Optional duration in seconds the pod needs to terminate gracefully.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down) which may lead to data corruption.
+    /// 
+    /// Defaults to 120 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ThanosRulerTolerations>>,

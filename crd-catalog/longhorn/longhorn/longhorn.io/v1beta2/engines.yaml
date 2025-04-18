@@ -79,6 +79,7 @@ spec:
                     - "blockdev"
                     - "iscsi"
                     - "nvmf"
+                    - "ublk"
                     - ""
                   type: "string"
                 image:
@@ -314,6 +315,9 @@ spec:
                   type: "boolean"
                 storageIP:
                   type: "string"
+                ublkID:
+                  format: "int32"
+                  type: "integer"
                 unmapMarkSnapChainRemovedEnabled:
                   type: "boolean"
               type: "object"

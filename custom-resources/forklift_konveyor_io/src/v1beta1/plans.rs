@@ -24,6 +24,12 @@ pub struct PlanSpec {
     /// Whether this plan should be archived.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub archived: Option<bool>,
+    /// DeleteGuestConversionPod determines if the guest conversion pod should be deleted after successful migration.
+    /// Note:
+    ///   - If this option is enabled and migration succeeds then the pod will get deleted. However the VM could still not boot and the virt-v2v logs, with additional information, will be deleted alongside guest conversion pod.
+    ///   - If migration fails the conversion pod will remain present even if this option is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteGuestConversionPod")]
+    pub delete_guest_conversion_pod: Option<bool>,
     /// Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,

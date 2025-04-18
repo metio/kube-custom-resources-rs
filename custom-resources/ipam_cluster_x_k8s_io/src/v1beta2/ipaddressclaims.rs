@@ -48,6 +48,7 @@ pub struct IPAddressClaimStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressRef")]
     pub address_ref: Option<IPAddressClaimStatusAddressRef>,
     /// conditions represents the observations of a IPAddressClaim's current state.
+    /// Known condition types are Ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.

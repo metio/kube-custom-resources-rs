@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -19,8 +20,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PerconaPGClusterSpec {
-    /// Whether or not the cluster has schemas automatically created for the user
-    /// defined in `spec.users` for all of the databases listed for that user.
+    /// Indicates whether schemas are automatically created for the user
+    /// specified in `spec.users` across all databases associated with that user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoCreateUserSchema")]
     pub auto_create_user_schema: Option<bool>,
     /// PostgreSQL backup configuration
@@ -115,8 +116,11 @@ pub struct PerconaPGClusterSpec {
 /// PostgreSQL backup configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterBackups {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// pgBackRest archive configuration
-    pub pgbackrest: PerconaPGClusterBackupsPgbackrest,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pgbackrest: Option<PerconaPGClusterBackupsPgbackrest>,
     /// Enable tracking latest restorable time
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackLatestRestorableTime")]
     pub track_latest_restorable_time: Option<bool>,
@@ -1815,6 +1819,11 @@ pub struct PerconaPGClusterBackupsPgbackrestJobsTolerations {
 /// Defines details for manual pgBackRest backup Jobs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterBackupsPgbackrestManual {
+    /// InitialDelaySeconds defines the number of seconds to wait before starting the backup.
+    /// After the backup pod is scheduled, its entrypoint will wait for this number of seconds
+    /// before initiating the backup process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i64>,
     /// Command line options to include when running the pgBackRest backup command.
     /// https://pgbackrest.org/command.html#command-backup
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15114,6 +15123,9 @@ pub struct PerconaPGClusterUsers {
     /// the "postgres" user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub databases: Option<Vec<String>>,
+    /// Grant the user access to the public schema in each database listed under `databases`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantPublicSchemaAccess")]
+    pub grant_public_schema_access: Option<bool>,
     /// The name of this PostgreSQL user. The value may contain only lowercase
     /// letters, numbers, and hyphen so that it fits into Kubernetes metadata.
     pub name: String,
@@ -15151,6 +15163,8 @@ pub enum PerconaPGClusterUsersPasswordType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaPGClusterStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installedCustomExtensions")]

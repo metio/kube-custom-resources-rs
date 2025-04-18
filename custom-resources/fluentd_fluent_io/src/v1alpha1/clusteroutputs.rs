@@ -1722,6 +1722,9 @@ pub struct ClusterOutputOutputsHttp {
     /// Auth section for this plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<ClusterOutputOutputsHttpAuth>,
+    /// Compress enables the given compression method for HTTP requests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<ClusterOutputOutputsHttpCompress>,
     /// ContentType defines Content-Type for HTTP request. out_http automatically set Content-Type for built-in formatters when this parameter is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
@@ -1863,6 +1866,15 @@ pub struct ClusterOutputOutputsHttpAuthUsernameValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// out_http plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOutputOutputsHttpCompress {
+    #[serde(rename = "text")]
+    Text,
+    #[serde(rename = "gzip")]
+    Gzip,
 }
 
 /// out_http plugin

@@ -266,9 +266,6 @@ pub struct MachinePoolStatus {
     /// availableReplicas is the number of available replicas for this MachinePool. A machine is considered available when Machine's Available condition is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
-    /// bootstrapReady is the state of the bootstrap provider.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapReady")]
-    pub bootstrap_ready: Option<bool>,
     /// conditions represents the observations of a MachinePool's current state.
     /// Known condition types are Available, BootstrapConfigReady, InfrastructureReady, MachinesReady, MachinesUpToDate,
     /// ScalingUp, ScalingDown, Remediating, Deleting, Paused.
@@ -277,9 +274,10 @@ pub struct MachinePoolStatus {
     /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deprecated: Option<MachinePoolStatusDeprecated>,
-    /// infrastructureReady is the state of the infrastructure provider.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
-    pub infrastructure_ready: Option<bool>,
+    /// initialization provides observations of the MachinePool initialization process.
+    /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial MachinePool provisioning.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub initialization: Option<MachinePoolStatusInitialization>,
     /// nodeRefs will point to the corresponding Nodes if it they exist.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeRefs")]
     pub node_refs: Option<Vec<ObjectReference>>,
@@ -347,6 +345,22 @@ pub struct MachinePoolStatusDeprecatedV1beta1 {
     /// Deprecated: This field is deprecated and is going to be removed when support for v1beta1 will be dropped. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
+}
+
+/// initialization provides observations of the MachinePool initialization process.
+/// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial MachinePool provisioning.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolStatusInitialization {
+    /// bootstrapDataSecretCreated is true when the bootstrap provider reports that the MachinePool's boostrap secret is created.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapDataSecretCreated")]
+    pub bootstrap_data_secret_created: Option<bool>,
+    /// infrastructureProvisioned is true when the infrastructure provider reports that MachinePool's infrastructure is fully provisioned.
+    /// NOTE: this field is part of the Cluster API contract, and it is used to orchestrate provisioning.
+    /// The value of this field is never updated after provisioning is completed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureProvisioned")]
+    pub infrastructure_provisioned: Option<bool>,
 }
 
 /// status is the observed state of MachinePool.

@@ -47,11 +47,13 @@ spec:
             spec:
               properties:
                 autoCreateUserSchema:
-                  description: "Whether or not the cluster has schemas automatically created for the user\ndefined in `spec.users` for all of the databases listed for that user."
+                  description: "Indicates whether schemas are automatically created for the user\nspecified in `spec.users` across all databases associated with that user."
                   type: "boolean"
                 backups:
                   description: "PostgreSQL backup configuration"
                   properties:
+                    enabled:
+                      type: "boolean"
                     pgbackrest:
                       description: "pgBackRest archive configuration"
                       properties:
@@ -1241,6 +1243,10 @@ spec:
                         manual:
                           description: "Defines details for manual pgBackRest backup Jobs"
                           properties:
+                            initialDelaySeconds:
+                              description: "InitialDelaySeconds defines the number of seconds to wait before starting the backup.\nAfter the backup pod is scheduled, its entrypoint will wait for this number of seconds\nbefore initiating the backup process."
+                              format: "int64"
+                              type: "integer"
                             options:
                               description: "Command line options to include when running the pgBackRest backup command.\nhttps://pgbackrest.org/command.html#command-backup"
                               items:
@@ -3064,8 +3070,6 @@ spec:
                     trackLatestRestorableTime:
                       description: "Enable tracking latest restorable time"
                       type: "boolean"
-                  required:
-                    - "pgbackrest"
                   type: "object"
                 crVersion:
                   description: "Version of the operator. Update this to new version after operator\nupgrade to apply changes to Kubernetes objects. Default is the latest\nversion."
@@ -10846,6 +10850,9 @@ spec:
                           type: "string"
                         type: "array"
                         x-kubernetes-list-type: "set"
+                      grantPublicSchemaAccess:
+                        description: "Grant the user access to the public schema in each database listed under `databases`."
+                        type: "boolean"
                       name:
                         description: "The name of this PostgreSQL user. The value may contain only lowercase\nletters, numbers, and hyphen so that it fits into Kubernetes metadata."
                         maxLength: 63
@@ -10887,8 +10894,54 @@ spec:
                 - "instances"
                 - "postgresVersion"
               type: "object"
+              x-kubernetes-validations:
+                - message: "PostgresVersion must be >= 15 if grantPublicSchemaAccess exists and is true"
+                  rule: "!has(self.users) || self.postgresVersion >= 15 || self.users.all(u, !has(u.grantPublicSchemaAccess) || !u.grantPublicSchemaAccess)"
             status:
               properties:
+                conditions:
+                  items:
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
+                    properties:
+                      lastTransitionTime:
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        format: "date-time"
+                        type: "string"
+                      message:
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
+                        maxLength: 32768
+                        type: "string"
+                      observedGeneration:
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
+                        format: "int64"
+                        minimum: 0.0
+                        type: "integer"
+                      reason:
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
+                        maxLength: 1024
+                        minLength: 1
+                        pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
+                        type: "string"
+                      status:
+                        description: "status of the condition, one of True, False, Unknown."
+                        enum:
+                          - "True"
+                          - "False"
+                          - "Unknown"
+                        type: "string"
+                      type:
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
+                        maxLength: 316
+                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        type: "string"
+                    required:
+                      - "lastTransitionTime"
+                      - "message"
+                      - "reason"
+                      - "status"
+                      - "type"
+                    type: "object"
+                  type: "array"
                 host:
                   type: "string"
                 installedCustomExtensions:

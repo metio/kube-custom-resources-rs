@@ -225,6 +225,18 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                autogen:
+                  description: "AutogenConfiguration defines the configuration for the generation controller."
+                  properties:
+                    podControllers:
+                      description: "PodControllers specifies whether to generate a pod controllers rules."
+                      properties:
+                        controllers:
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                  type: "object"
                 credentials:
                   description: "Credentials provides credentials that will be used for authentication with registry."
                   properties:
@@ -274,6 +286,9 @@ spec:
                   type: "object"
                 failurePolicy:
                   description: "FailurePolicy defines how to handle failures for the admission policy. Failures can\noccur from CEL expression parse errors, type check errors, runtime errors and invalid\nor mis-configured policy definitions or bindings."
+                  enum:
+                    - "Ignore"
+                    - "Fail"
                   type: "string"
                 imageRules:
                   description: "ImagesRules is a list of Glob and CELExpressions to match images.\nAny image that matches one of the rules is considered for validation\nAny image that does not match a rule is skipped, even when they are passed as arguments to\nimage verification functions"
@@ -491,6 +506,10 @@ spec:
                   description: "ValidationAction specifies the action to be taken when the matched resource violates the policy.\nRequired."
                   items:
                     description: "ValidationAction specifies a policy enforcement action."
+                    enum:
+                      - "Deny"
+                      - "Audit"
+                      - "Warn"
                     type: "string"
                   type: "array"
                   x-kubernetes-list-type: "set"
@@ -748,6 +767,18 @@ spec:
                                     - "name"
                                   type: "object"
                                 type: "array"
+                              autogen:
+                                description: "AutogenConfiguration defines the configuration for the generation controller."
+                                properties:
+                                  podControllers:
+                                    description: "PodControllers specifies whether to generate a pod controllers rules."
+                                    properties:
+                                      controllers:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                    type: "object"
+                                type: "object"
                               credentials:
                                 description: "Credentials provides credentials that will be used for authentication with registry."
                                 properties:
@@ -797,6 +828,9 @@ spec:
                                 type: "object"
                               failurePolicy:
                                 description: "FailurePolicy defines how to handle failures for the admission policy. Failures can\noccur from CEL expression parse errors, type check errors, runtime errors and invalid\nor mis-configured policy definitions or bindings."
+                                enum:
+                                  - "Ignore"
+                                  - "Fail"
                                 type: "string"
                               imageRules:
                                 description: "ImagesRules is a list of Glob and CELExpressions to match images.\nAny image that matches one of the rules is considered for validation\nAny image that does not match a rule is skipped, even when they are passed as arguments to\nimage verification functions"
@@ -1014,6 +1048,10 @@ spec:
                                 description: "ValidationAction specifies the action to be taken when the matched resource violates the policy.\nRequired."
                                 items:
                                   description: "ValidationAction specifies a policy enforcement action."
+                                  enum:
+                                    - "Deny"
+                                    - "Audit"
+                                    - "Warn"
                                   type: "string"
                                 type: "array"
                                 x-kubernetes-list-type: "set"

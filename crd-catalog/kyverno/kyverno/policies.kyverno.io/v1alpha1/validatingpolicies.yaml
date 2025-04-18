@@ -99,7 +99,10 @@ spec:
                       type: "string"
                   type: "object"
                 failurePolicy:
-                  description: "failurePolicy defines how to handle failures for the admission policy. Failures can\noccur from CEL expression parse errors, type check errors, runtime errors and invalid\nor mis-configured policy definitions or bindings.\n\nA policy is invalid if spec.paramKind refers to a non-existent Kind.\nA binding is invalid if spec.paramRef.name refers to a non-existent resource.\n\nfailurePolicy does not define how validations that evaluate to false are handled.\n\nWhen failurePolicy is set to Fail, ValidatingAdmissionPolicyBinding validationActions\ndefine how failures are enforced.\n\nAllowed values are Ignore or Fail. Defaults to Fail."
+                  description: "failurePolicy defines how to handle failures for the admission policy. Failures can\noccur from CEL expression parse errors, type check errors, runtime errors and invalid\nor mis-configured policy definitions or bindings.\n\nfailurePolicy does not define how validations that evaluate to false are handled.\n\nWhen failurePolicy is set to Fail, the validationActions field define how failures are enforced.\n\nAllowed values are Ignore or Fail. Defaults to Fail."
+                  enum:
+                    - "Ignore"
+                    - "Fail"
                   type: "string"
                 matchConditions:
                   description: "MatchConditions is a list of conditions that must be met for a request to be validated.\nMatch conditions filter requests that have already been matched by the rules,\nnamespaceSelector, and objectSelector. An empty list of matchConditions matches all requests.\nThere are a maximum of 64 match conditions allowed.\n\nIf a parameter object is provided, it can be accessed via the `params` handle in the same\nmanner as validation expressions.\n\nThe exact matching logic is (in order):\n  1. If ANY matchCondition evaluates to FALSE, the policy is skipped.\n  2. If ALL matchConditions evaluate to TRUE, the policy is evaluated.\n  3. If any matchCondition evaluates to an error (but none are FALSE):\n     - If failurePolicy=Fail, reject the request\n     - If failurePolicy=Ignore, the policy is skipped"
@@ -121,7 +124,7 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
                 matchConstraints:
-                  description: "MatchConstraints specifies what resources this policy is designed to validate.\nThe AdmissionPolicy cares about a request if it matches _all_ Constraints.\nHowever, in order to prevent clusters from being put into an unstable state that cannot be recovered from via the API\nValidatingAdmissionPolicy cannot match ValidatingAdmissionPolicy and ValidatingAdmissionPolicyBinding.\nRequired."
+                  description: "MatchConstraints specifies what resources this policy is designed to validate.\nThe AdmissionPolicy cares about a request if it matches _all_ Constraints.\nRequired."
                   properties:
                     excludeResourceRules:
                       description: "ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.\nThe exclude rules take precedence over include rules (if a resource matches both, it is excluded)"
@@ -284,6 +287,10 @@ spec:
                   description: "ValidationAction specifies the action to be taken when the matched resource violates the policy.\nRequired."
                   items:
                     description: "ValidationAction specifies a policy enforcement action."
+                    enum:
+                      - "Deny"
+                      - "Audit"
+                      - "Warn"
                     type: "string"
                   type: "array"
                   x-kubernetes-list-type: "set"

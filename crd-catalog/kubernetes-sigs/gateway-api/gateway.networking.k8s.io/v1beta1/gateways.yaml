@@ -3,7 +3,7 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     api-approved.kubernetes.io: "https://github.com/kubernetes-sigs/gateway-api/pull/3328"
-    gateway.networking.k8s.io/bundle-version: "v1.3.0-rc.1"
+    gateway.networking.k8s.io/bundle-version: "v1.3.0-rc.2"
     gateway.networking.k8s.io/channel: "standard"
   name: "gateways.gateway.networking.k8s.io"
 spec:
@@ -196,7 +196,6 @@ spec:
                                   - "All"
                                   - "Selector"
                                   - "Same"
-                                  - "None"
                                 type: "string"
                               selector:
                                 description: "Selector must be specified when From is set to \"Selector\". In that case,\nonly Routes in Namespaces matching this Selector will be selected by this\nGateway. This field is ignored for other values of \"From\".\n\nSupport: Core"

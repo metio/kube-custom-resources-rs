@@ -178,6 +178,9 @@ spec:
                   type: "boolean"
                 storageIP:
                   type: "string"
+                ublkID:
+                  format: "int32"
+                  type: "integer"
               type: "object"
           type: "object"
       served: true

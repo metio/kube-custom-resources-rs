@@ -3377,7 +3377,7 @@ spec:
                             type: "boolean"
                           proxyUrl:
                             description: "`proxyURL` defines the HTTP proxy server to use."
-                            pattern: "^http(s)?://.+$"
+                            pattern: "^(http|https|socks5)://.+$"
                             type: "string"
                           scopes:
                             description: "`scopes` defines the OAuth2 scopes used for the token request."
@@ -3540,7 +3540,7 @@ spec:
                         type: "boolean"
                       proxyUrl:
                         description: "`proxyURL` defines the HTTP proxy server to use."
-                        pattern: "^http(s)?://.+$"
+                        pattern: "^(http|https|socks5)://.+$"
                         type: "string"
                       queueConfig:
                         description: "QueueConfig allows tuning of the remote write queue parameters."
@@ -4874,6 +4874,11 @@ spec:
                 targetLimit:
                   description: "TargetLimit defines a limit on the number of scraped targets that will be accepted.\nOnly valid in Prometheus versions 2.45.0 and newer.\n\nNote that the global limit only applies to scrape objects that don't specify an explicit limit value.\nIf you want to enforce a maximum limit for all scrape objects, refer to enforcedTargetLimit."
                   format: "int64"
+                  type: "integer"
+                terminationGracePeriodSeconds:
+                  description: "Optional duration in seconds the pod needs to terminate gracefully.\nValue must be non-negative integer. The value zero indicates stop immediately via\nthe kill signal (no opportunity to shut down) which may lead to data corruption.\n\nDefaults to 600 seconds."
+                  format: "int64"
+                  minimum: 0.0
                   type: "integer"
                 tolerations:
                   description: "Defines the Pods' tolerations if specified."

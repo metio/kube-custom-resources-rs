@@ -160,6 +160,9 @@ spec:
                             type: "integer"
                           type:
                             type: "string"
+                          ublkID:
+                            format: "int32"
+                            type: "integer"
                         type: "object"
                     type: "object"
                   nullable: true
@@ -206,6 +209,9 @@ spec:
                             type: "integer"
                           type:
                             type: "string"
+                          ublkID:
+                            format: "int32"
+                            type: "integer"
                         type: "object"
                     type: "object"
                   nullable: true
@@ -252,6 +258,9 @@ spec:
                             type: "integer"
                           type:
                             type: "string"
+                          ublkID:
+                            format: "int32"
+                            type: "integer"
                         type: "object"
                     type: "object"
                   description: "Deprecated: Replaced by InstanceEngines and InstanceReplicas"

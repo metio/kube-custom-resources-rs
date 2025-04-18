@@ -946,6 +946,9 @@ spec:
                 useDefaultResources:
                   description: "UseDefaultResources controls resource settings\nBy default, operator sets built-in resource requirements"
                   type: "boolean"
+                useProxyProtocol:
+                  description: "UseProxyProtocol enables proxy protocol for vmauth\nhttps://www.haproxy.org/download/2.3/doc/proxy-protocol.txt"
+                  type: "boolean"
                 useStrictSecurity:
                   description: "UseStrictSecurity enables strict security mode for component\nit restricts disk writes access\nuses non-root user out of the box\ndrops not needed security permissions"
                   type: "boolean"

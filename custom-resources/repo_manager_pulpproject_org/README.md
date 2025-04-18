@@ -11,6 +11,10 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### repo-manager.pulpproject.org/v1
+- `PulpBackup`
+- `PulpRestore`
+- `Pulp`
 ### repo-manager.pulpproject.org/v1beta2
 - `PulpBackup`
 - `PulpRestore`

@@ -900,7 +900,7 @@ spec:
                                   type: "boolean"
                                 proxyUrl:
                                   description: "`proxyURL` defines the HTTP proxy server to use."
-                                  pattern: "^http(s)?://.+$"
+                                  pattern: "^(http|https|socks5)://.+$"
                                   type: "string"
                                 scopes:
                                   description: "`scopes` defines the OAuth2 scopes used for the token request."
@@ -1063,7 +1063,7 @@ spec:
                               type: "boolean"
                             proxyUrl:
                               description: "`proxyURL` defines the HTTP proxy server to use."
-                              pattern: "^http(s)?://.+$"
+                              pattern: "^(http|https|socks5)://.+$"
                               type: "string"
                             tlsConfig:
                               description: "TLS configuration for the client."
@@ -4143,6 +4143,11 @@ spec:
                 tag:
                   description: "Tag of Alertmanager container image to be deployed. Defaults to the value of `version`.\nVersion is ignored if Tag is set.\nDeprecated: use 'image' instead. The image tag can be specified as part of the image URL."
                   type: "string"
+                terminationGracePeriodSeconds:
+                  description: "Optional duration in seconds the pod needs to terminate gracefully.\nValue must be non-negative integer. The value zero indicates stop immediately via\nthe kill signal (no opportunity to shut down) which may lead to data corruption.\n\nDefaults to 120 seconds."
+                  format: "int64"
+                  minimum: 0.0
+                  type: "integer"
                 tolerations:
                   description: "If specified, the pod's tolerations."
                   items:

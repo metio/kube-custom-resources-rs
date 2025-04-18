@@ -3112,7 +3112,7 @@ spec:
                             type: "boolean"
                           proxyUrl:
                             description: "`proxyURL` defines the HTTP proxy server to use."
-                            pattern: "^http(s)?://.+$"
+                            pattern: "^(http|https|socks5)://.+$"
                             type: "string"
                           scopes:
                             description: "`scopes` defines the OAuth2 scopes used for the token request."
@@ -3275,7 +3275,7 @@ spec:
                         type: "boolean"
                       proxyUrl:
                         description: "`proxyURL` defines the HTTP proxy server to use."
-                        pattern: "^http(s)?://.+$"
+                        pattern: "^(http|https|socks5)://.+$"
                         type: "string"
                       queueConfig:
                         description: "QueueConfig allows tuning of the remote write queue parameters."
@@ -4174,6 +4174,11 @@ spec:
                           type: "object"
                       type: "object"
                   type: "object"
+                terminationGracePeriodSeconds:
+                  description: "Optional duration in seconds the pod needs to terminate gracefully.\nValue must be non-negative integer. The value zero indicates stop immediately via\nthe kill signal (no opportunity to shut down) which may lead to data corruption.\n\nDefaults to 120 seconds."
+                  format: "int64"
+                  minimum: 0.0
+                  type: "integer"
                 tolerations:
                   description: "If specified, the pod's tolerations."
                   items:

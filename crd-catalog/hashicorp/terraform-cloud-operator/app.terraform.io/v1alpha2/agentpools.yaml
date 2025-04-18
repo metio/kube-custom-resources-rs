@@ -3,6 +3,8 @@ kind: "CustomResourceDefinition"
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: "v0.16.5"
+  labels:
+    app.terraform.io/crd-schema-version: "v25.4.0"
   name: "agentpools.app.terraform.io"
 spec:
   group: "app.terraform.io"
@@ -4834,7 +4836,7 @@ spec:
                       format: "int32"
                       type: "integer"
                     targetWorkspaces:
-                      description: "TargetWorkspaces is a list of HCP Terraform Workspaces which\nthe agent pool should scale up to meet demand. When this field\nis ommited the autoscaler will target all workspaces that are\nassociated with the AgentPool."
+                      description: "DEPRECATED: This field has been deprecated since 2.9.0 and will be removed in future versions.\nTargetWorkspaces is a list of HCP Terraform Workspaces which\nthe agent pool should scale up to meet demand. When this field\nis ommited the autoscaler will target all workspaces that are\nassociated with the AgentPool."
                       items:
                         description: "TargetWorkspace is the name or ID of the workspace you want autoscale against."
                         properties:
@@ -4855,6 +4857,13 @@ spec:
                     - "maxReplicas"
                     - "minReplicas"
                   type: "object"
+                deletionPolicy:
+                  default: "retain"
+                  description: "The Deletion Policy specifies the behavior of the custom resource and its associated agent pool when the custom resource is deleted.\n- `retain`: When you delete the custom resource, the operator will remove only the custom resource.\n  The HCP Terraform agent pool will be retained. The managed tokens will remain active on the HCP Terraform side; however, the corresponding secrets and managed agents will be removed.\n- `destroy`: The operator will attempt to remove the managed HCP Terraform agent pool.\n  On success, the managed agents and the corresponding secret with tokens will be removed along with the custom resource.\n  On failure, the managed agents will be scaled down to 0, and the managed tokens, along with the corresponding secret, will be removed. The operator will continue attempting to remove the agent pool until it succeeds.\nDefault: `retain`."
+                  enum:
+                    - "retain"
+                    - "destroy"
+                  type: "string"
                 name:
                   description: "Agent Pool name.\nMore information:\n  - https://developer.hashicorp.com/terraform/cloud-docs/agents/agent-pools"
                   minLength: 1

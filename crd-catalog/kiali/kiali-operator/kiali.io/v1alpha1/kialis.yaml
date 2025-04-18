@@ -305,6 +305,10 @@ spec:
                           description: "DNS policy. See the Kubernetes documentation for the different policies that are supported."
                           type: "string"
                       type: "object"
+                    extra_labels:
+                      description: "Extra name/value pairs to be added to the labels of all resources created by the operator.\nThese are added to the labels the operator creates by default. These will not overwrite\nlabels that the operator creates itself. For example, if you set \"app.kubernetes.io/name\"\nas an extra label, it will be silently ignored because that is one of the labels the operator\ncreates on all resources.\n"
+                      type: "object"
+                      x-kubernetes-preserve-unknown-fields: true
                     host_aliases:
                       description: "This is content for the Kubernetes 'hostAliases' setting for the Kiali server.\nThis allows you to modify the Kiali server pod '/etc/hosts' file.\nA typical way to configure this setting is,\n```\nspec:\n  deployment:\n    host_aliases:\n    - ip: 192.168.1.100\n      hostnames:\n      - \"foo.local\"\n      - \"bar.local\"\n```\nFor details on the content of this setting, see https://kubernetes.io/docs/tasks/network/customize-hosts-file-for-pods/#adding-additional-entries-with-hostaliases\n"
                       items:

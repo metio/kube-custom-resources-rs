@@ -3685,6 +3685,10 @@ spec:
                   type: "string"
                 prometheusOperator:
                   type: "boolean"
+                prometheusOperatorScrapeMetricsPaths:
+                  items:
+                    type: "string"
+                  type: "array"
                 readiness:
                   properties:
                     exec:

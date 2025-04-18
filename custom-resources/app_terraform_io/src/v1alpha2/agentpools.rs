@@ -29,6 +29,15 @@ pub struct AgentPoolSpec {
     /// Agent deployment settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscaling: Option<AgentPoolAutoscaling>,
+    /// The Deletion Policy specifies the behavior of the custom resource and its associated agent pool when the custom resource is deleted.
+    /// - `retain`: When you delete the custom resource, the operator will remove only the custom resource.
+    ///   The HCP Terraform agent pool will be retained. The managed tokens will remain active on the HCP Terraform side; however, the corresponding secrets and managed agents will be removed.
+    /// - `destroy`: The operator will attempt to remove the managed HCP Terraform agent pool.
+    ///   On success, the managed agents and the corresponding secret with tokens will be removed along with the custom resource.
+    ///   On failure, the managed agents will be scaled down to 0, and the managed tokens, along with the corresponding secret, will be removed. The operator will continue attempting to remove the agent pool until it succeeds.
+    /// Default: `retain`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
+    pub deletion_policy: Option<AgentPoolDeletionPolicy>,
     /// Agent Pool name.
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/agents/agent-pools
@@ -6952,6 +6961,7 @@ pub struct AgentPoolAutoscaling {
     /// MinReplicas is the minimum number of replicas for the Agent deployment.
     #[serde(rename = "minReplicas")]
     pub min_replicas: i32,
+    /// DEPRECATED: This field has been deprecated since 2.9.0 and will be removed in future versions.
     /// TargetWorkspaces is a list of HCP Terraform Workspaces which
     /// the agent pool should scale up to meet demand. When this field
     /// is ommited the autoscaler will target all workspaces that are
@@ -6983,6 +6993,15 @@ pub struct AgentPoolAutoscalingTargetWorkspaces {
     /// Wildcard Name to match match workspace names using `*` on name suffix, prefix, or both.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wildcardName")]
     pub wildcard_name: Option<String>,
+}
+
+/// AgentPoolSpec defines the desired state of AgentPool.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum AgentPoolDeletionPolicy {
+    #[serde(rename = "retain")]
+    Retain,
+    #[serde(rename = "destroy")]
+    Destroy,
 }
 
 /// API Token to be used for API calls.

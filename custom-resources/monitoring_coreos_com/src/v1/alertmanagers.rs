@@ -272,6 +272,13 @@ pub struct AlertmanagerSpec {
     /// Deprecated: use 'image' instead. The image tag can be specified as part of the image URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
+    /// Optional duration in seconds the pod needs to terminate gracefully.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down) which may lead to data corruption.
+    /// 
+    /// Defaults to 120 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<AlertmanagerTolerations>>,

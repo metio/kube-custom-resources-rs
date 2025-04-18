@@ -11,6 +11,11 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
+### external-secrets.io/v1
+- `ClusterExternalSecret`
+- `ClusterSecretStore`
+- `ExternalSecret`
+- `SecretStore`
 ### external-secrets.io/v1alpha1
 - `ClusterSecretStore`
 - `ExternalSecret`

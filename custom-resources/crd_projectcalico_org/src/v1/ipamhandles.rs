@@ -10,7 +10,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// IPAMHandleSpec contains the specification for an IPAMHandle resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "crd.projectcalico.org", version = "v1", kind = "IPAMHandle", plural = "ipamhandles")]
 #[kube(schema = "disabled")]

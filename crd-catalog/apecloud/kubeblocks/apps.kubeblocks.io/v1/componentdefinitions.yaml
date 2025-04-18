@@ -3937,6 +3937,7 @@ spec:
                   minimum: 0.0
                   type: "integer"
                 podManagementPolicy:
+                  default: "OrderedReady"
                   description: "InstanceSet controls the creation of pods during initial scale up, replacement of pods on nodes, and scaling down.\n\n\n- `OrderedReady`: Creates pods in increasing order (pod-0, then pod-1, etc). The controller waits until each pod\nis ready before continuing. Pods are removed in reverse order when scaling down.\n- `Parallel`: Creates pods in parallel to match the desired scale without waiting. All pods are deleted at once\nwhen scaling down."
                   type: "string"
                 policyRules:

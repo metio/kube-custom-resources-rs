@@ -78,6 +78,8 @@ pub struct TenantSpec {
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusOperator")]
     pub prometheus_operator: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusOperatorScrapeMetricsPaths")]
+    pub prometheus_operator_scrape_metrics_paths: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub readiness: Option<TenantReadiness>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestAutoCert")]

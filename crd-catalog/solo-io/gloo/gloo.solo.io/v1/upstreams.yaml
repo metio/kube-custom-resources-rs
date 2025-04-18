@@ -297,6 +297,9 @@ spec:
                                                   type: "string"
                                               type: "object"
                                           type: "object"
+                                        jsonSchema:
+                                          type: "string"
+                                          x-kubernetes-int-or-string: true
                                         location:
                                           type: "string"
                                         model:
@@ -363,6 +366,9 @@ spec:
                                   type: "string"
                               type: "object"
                           type: "object"
+                        jsonSchema:
+                          type: "string"
+                          x-kubernetes-int-or-string: true
                         location:
                           type: "string"
                         model:

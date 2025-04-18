@@ -90,6 +90,12 @@ pub struct CephBucketTopicEndpointHttp {
 /// Spec of Kafka endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBucketTopicEndpointKafka {
+    /// The kafka password to use for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "PasswordSecretRef")]
+    pub password_secret_ref: Option<CephBucketTopicEndpointKafkaPasswordSecretRef>,
+    /// The kafka user name to use for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "UserSecretRef")]
+    pub user_secret_ref: Option<CephBucketTopicEndpointKafkaUserSecretRef>,
     /// The ack level required for this topic (none/broker)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackLevel")]
     pub ack_level: Option<CephBucketTopicEndpointKafkaAckLevel>,
@@ -104,6 +110,40 @@ pub struct CephBucketTopicEndpointKafka {
     /// Indicate whether to use SSL when communicating with the broker
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSL")]
     pub use_ssl: Option<bool>,
+}
+
+/// The kafka password to use for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBucketTopicEndpointKafkaPasswordSecretRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The kafka user name to use for authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBucketTopicEndpointKafkaUserSecretRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Spec of Kafka endpoint
@@ -141,5 +181,24 @@ pub struct CephBucketTopicStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secrets: Option<Vec<CephBucketTopicStatusSecrets>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBucketTopicStatusSecrets {
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
+    pub resource_version: Option<String>,
+    /// UID is a type that holds unique ID values, including UUIDs.  Because we
+    /// don't ONLY use UUIDs, this is an alias to string.  Being a type captures
+    /// intent and helps make sure that UIDs and names do not get conflated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
 }
 

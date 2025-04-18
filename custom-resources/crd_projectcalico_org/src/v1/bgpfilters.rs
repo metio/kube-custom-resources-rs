@@ -9,28 +9,22 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// BGPFilterSpec contains the IPv4 and IPv6 filter rules of the BGP Filter.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "crd.projectcalico.org", version = "v1", kind = "BGPFilter", plural = "bgpfilters")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BGPFilterSpec {
-    /// The ordered set of IPv4 BGPFilter rules acting on exporting routes to a peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportV4")]
     pub export_v4: Option<Vec<BGPFilterExportV4>>,
-    /// The ordered set of IPv6 BGPFilter rules acting on exporting routes to a peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportV6")]
     pub export_v6: Option<Vec<BGPFilterExportV6>>,
-    /// The ordered set of IPv4 BGPFilter rules acting on importing routes from a peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "importV4")]
     pub import_v4: Option<Vec<BGPFilterImportV4>>,
-    /// The ordered set of IPv6 BGPFilter rules acting on importing routes from a peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "importV6")]
     pub import_v6: Option<Vec<BGPFilterImportV6>>,
 }
 
-/// BGPFilterRuleV4 defines a BGP filter rule consisting a single IPv4 CIDR block and a filter action for this CIDR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BGPFilterExportV4 {
     pub action: String,
@@ -54,7 +48,6 @@ pub struct BGPFilterExportV4PrefixLength {
     pub min: Option<i32>,
 }
 
-/// BGPFilterRuleV6 defines a BGP filter rule consisting a single IPv6 CIDR block and a filter action for this CIDR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BGPFilterExportV6 {
     pub action: String,
@@ -78,7 +71,6 @@ pub struct BGPFilterExportV6PrefixLength {
     pub min: Option<i32>,
 }
 
-/// BGPFilterRuleV4 defines a BGP filter rule consisting a single IPv4 CIDR block and a filter action for this CIDR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BGPFilterImportV4 {
     pub action: String,
@@ -102,7 +94,6 @@ pub struct BGPFilterImportV4PrefixLength {
     pub min: Option<i32>,
 }
 
-/// BGPFilterRuleV6 defines a BGP filter rule consisting a single IPv6 CIDR block and a filter action for this CIDR.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BGPFilterImportV6 {
     pub action: String,
