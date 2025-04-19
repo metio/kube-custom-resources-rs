@@ -12,5 +12,4 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ## Available Custom Resources
 
 ### druid.apache.org/v1alpha1
-- `DruidIngestion`
 - `Druid`
