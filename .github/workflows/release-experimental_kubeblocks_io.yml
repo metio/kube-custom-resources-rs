@@ -9,10 +9,14 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - id: commits
         name: Count Commits
         run: echo "count=$(git rev-list --count HEAD --since='last Saturday' -- custom-resources/experimental_kubeblocks_io)" >> $GITHUB_OUTPUT

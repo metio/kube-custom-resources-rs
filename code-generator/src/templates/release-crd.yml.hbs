@@ -9,10 +9,14 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - id: commits
         name: Count Commits
         run: echo "count=$(git rev-list --count HEAD --since='last {{git_day}}' -- custom-resources/{{group_name_snake_case}})" >> $GITHUB_OUTPUT
