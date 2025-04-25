@@ -41,7 +41,9 @@ pub struct QuaySecretEngineStaticRoleSpec {
     /// NamespaceType Type of account namespace to manage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceType")]
     pub namespace_type: Option<QuaySecretEngineStaticRoleNamespaceType>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/static-roles/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/static-roles/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Teams Permissions granted to the Robot Account to Repositories.
@@ -72,7 +74,9 @@ pub struct QuaySecretEngineStaticRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuaySecretEngineStaticRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -112,7 +116,9 @@ pub struct QuaySecretEngineStaticRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuaySecretEngineStaticRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

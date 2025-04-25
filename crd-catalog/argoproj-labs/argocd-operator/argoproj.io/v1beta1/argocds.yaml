@@ -146,6 +146,12 @@ spec:
                     logLevel:
                       description: "LogLevel describes the log level that should be used by the ApplicationSet controller. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
                       type: "string"
+                    logformat:
+                      description: "LogFormat refers to the log format used by the ApplicationSet component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
+                      enum:
+                        - "text"
+                        - "json"
+                      type: "string"
                     resources:
                       description: "Resources defines the Compute Resources required by the container for ApplicationSet."
                       properties:
@@ -4665,6 +4671,12 @@ spec:
                       type: "string"
                     logLevel:
                       description: "LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn."
+                      type: "string"
+                    logformat:
+                      description: "LogFormat refers to the log format used by the argocd-notifications. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json."
+                      enum:
+                        - "text"
+                        - "json"
                       type: "string"
                     replicas:
                       description: "Replicas defines the number of replicas to run for notifications-controller"

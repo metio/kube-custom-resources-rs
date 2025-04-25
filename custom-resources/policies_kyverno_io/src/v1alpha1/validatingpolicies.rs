@@ -626,7 +626,6 @@ pub struct ValidatingPolicyWebhookConfiguration {
 /// Status contains policy runtime data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ValidatingPolicyStatus {
-    /// AutogenStatus contains autogen status information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autogen: Option<ValidatingPolicyStatusAutogen>,
     /// ConditionStatus is the shared status across all policy types
@@ -637,34 +636,92 @@ pub struct ValidatingPolicyStatus {
     pub generated: Option<bool>,
 }
 
-/// AutogenStatus contains autogen status information.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ValidatingPolicyStatusAutogen {
-    /// Rules is a list of Rule instances. It contains auto generated rules added for pod controllers
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<ValidatingPolicyStatusAutogenRules>>,
+    pub configs: Option<BTreeMap<String, ValidatingPolicyStatusAutogenConfigs>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRules {
+pub struct ValidatingPolicyStatusAutogenConfigs {
+    /// ValidatingPolicySpec is the specification of the desired behavior of the ValidatingPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ValidatingPolicyStatusAutogenConfigsSpec>,
+}
+
+/// ValidatingPolicySpec is the specification of the desired behavior of the ValidatingPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpec {
+    /// auditAnnotations contains CEL expressions which are used to produce audit
+    /// annotations for the audit event of the API request.
+    /// validations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is
+    /// required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditAnnotations")]
-    pub audit_annotations: Option<Vec<ValidatingPolicyStatusAutogenRulesAuditAnnotations>>,
+    pub audit_annotations: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecAuditAnnotations>>,
+    /// AutogenConfiguration defines the configuration for the generation controller.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub autogen: Option<ValidatingPolicyStatusAutogenConfigsSpecAutogen>,
+    /// EvaluationConfiguration defines the configuration for the policy evaluation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub evaluation: Option<ValidatingPolicyStatusAutogenConfigsSpecEvaluation>,
+    /// failurePolicy defines how to handle failures for the admission policy. Failures can
+    /// occur from CEL expression parse errors, type check errors, runtime errors and invalid
+    /// or mis-configured policy definitions or bindings.
+    /// 
+    /// failurePolicy does not define how validations that evaluate to false are handled.
+    /// 
+    /// When failurePolicy is set to Fail, the validationActions field define how failures are enforced.
+    /// 
+    /// Allowed values are Ignore or Fail. Defaults to Fail.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
+    pub failure_policy: Option<ValidatingPolicyStatusAutogenConfigsSpecFailurePolicy>,
+    /// MatchConditions is a list of conditions that must be met for a request to be validated.
+    /// Match conditions filter requests that have already been matched by the rules,
+    /// namespaceSelector, and objectSelector. An empty list of matchConditions matches all requests.
+    /// There are a maximum of 64 match conditions allowed.
+    /// 
+    /// If a parameter object is provided, it can be accessed via the `params` handle in the same
+    /// manner as validation expressions.
+    /// 
+    /// The exact matching logic is (in order):
+    ///   1. If ANY matchCondition evaluates to FALSE, the policy is skipped.
+    ///   2. If ALL matchConditions evaluate to TRUE, the policy is evaluated.
+    ///   3. If any matchCondition evaluates to an error (but none are FALSE):
+    ///      - If failurePolicy=Fail, reject the request
+    ///      - If failurePolicy=Ignore, the policy is skipped
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConditions")]
-    pub match_conditions: Option<Vec<ValidatingPolicyStatusAutogenRulesMatchConditions>>,
-    /// MatchResources decides whether to run the admission control policy on an object based
-    /// on whether it meets the match criteria.
-    /// The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
+    pub match_conditions: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecMatchConditions>>,
+    /// MatchConstraints specifies what resources this policy is designed to validate.
+    /// The AdmissionPolicy cares about a request if it matches _all_ Constraints.
+    /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConstraints")]
-    pub match_constraints: Option<ValidatingPolicyStatusAutogenRulesMatchConstraints>,
+    pub match_constraints: Option<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraints>,
+    /// ValidationAction specifies the action to be taken when the matched resource violates the policy.
+    /// Required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationActions")]
+    pub validation_actions: Option<Vec<String>>,
+    /// Validations contain CEL expressions which is used to apply the validation.
+    /// Validations and AuditAnnotations may not both be empty; a minimum of one Validations or AuditAnnotations is
+    /// required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub validations: Option<Vec<ValidatingPolicyStatusAutogenRulesValidations>>,
+    pub validations: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecValidations>>,
+    /// Variables contain definitions of variables that can be used in composition of other expressions.
+    /// Each variable is defined as a named CEL expression.
+    /// The variables defined here will be available under `variables` in other expressions of the policy
+    /// except MatchConditions because MatchConditions are evaluated before the rest of the policy.
+    /// 
+    /// The expression of a variable can refer to other variables defined earlier in the list but not those after.
+    /// Thus, Variables must be sorted by the order of first appearance and acyclic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<Vec<ValidatingPolicyStatusAutogenRulesVariables>>,
+    pub variables: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecVariables>>,
+    /// WebhookConfiguration defines the configuration for the webhook.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfiguration")]
+    pub webhook_configuration: Option<ValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration>,
 }
 
 /// AuditAnnotation describes how to produce an audit annotation for an API request.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesAuditAnnotations {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecAuditAnnotations {
     /// key specifies the audit annotation key. The audit annotation keys of
     /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
     /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
@@ -700,9 +757,78 @@ pub struct ValidatingPolicyStatusAutogenRulesAuditAnnotations {
     pub value_expression: String,
 }
 
+/// AutogenConfiguration defines the configuration for the generation controller.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecAutogen {
+    /// PodControllers specifies whether to generate a pod controllers rules.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podControllers")]
+    pub pod_controllers: Option<ValidatingPolicyStatusAutogenConfigsSpecAutogenPodControllers>,
+    /// ValidatingAdmissionPolicy specifies whether to generate a Kubernetes ValidatingAdmissionPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validatingAdmissionPolicy")]
+    pub validating_admission_policy: Option<ValidatingPolicyStatusAutogenConfigsSpecAutogenValidatingAdmissionPolicy>,
+}
+
+/// PodControllers specifies whether to generate a pod controllers rules.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecAutogenPodControllers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub controllers: Option<Vec<String>>,
+}
+
+/// ValidatingAdmissionPolicy specifies whether to generate a Kubernetes ValidatingAdmissionPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecAutogenValidatingAdmissionPolicy {
+    /// Enabled specifies whether to generate a Kubernetes ValidatingAdmissionPolicy.
+    /// Optional. Defaults to "false" if not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// EvaluationConfiguration defines the configuration for the policy evaluation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecEvaluation {
+    /// Admission controls policy evaluation during admission.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub admission: Option<ValidatingPolicyStatusAutogenConfigsSpecEvaluationAdmission>,
+    /// Background  controls policy evaluation during background scan.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub background: Option<ValidatingPolicyStatusAutogenConfigsSpecEvaluationBackground>,
+    /// Mode is the mode of policy evaluation.
+    /// Allowed values are "Kubernetes" or "JSON".
+    /// Optional. Default value is "Kubernetes".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<String>,
+}
+
+/// Admission controls policy evaluation during admission.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecEvaluationAdmission {
+    /// Enabled controls if rules are applied during admission.
+    /// Optional. Default value is "true".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// Background  controls policy evaluation during background scan.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecEvaluationBackground {
+    /// Enabled controls if rules are applied to existing resources during a background scan.
+    /// Optional. Default value is "true". The value must be set to "false" if the policy rule
+    /// uses variables that are only available in the admission review request (e.g. user name).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+}
+
+/// ValidatingPolicySpec is the specification of the desired behavior of the ValidatingPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ValidatingPolicyStatusAutogenConfigsSpecFailurePolicy {
+    Ignore,
+    Fail,
+}
+
 /// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConditions {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
     /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
     /// 
@@ -729,15 +855,15 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConditions {
     pub name: String,
 }
 
-/// MatchResources decides whether to run the admission control policy on an object based
-/// on whether it meets the match criteria.
-/// The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
+/// MatchConstraints specifies what resources this policy is designed to validate.
+/// The AdmissionPolicy cares about a request if it matches _all_ Constraints.
+/// Required.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraints {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraints {
     /// ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
     /// The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeResourceRules")]
-    pub exclude_resource_rules: Option<Vec<ValidatingPolicyStatusAutogenRulesMatchConstraintsExcludeResourceRules>>,
+    pub exclude_resource_rules: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsExcludeResourceRules>>,
     /// matchPolicy defines how the "MatchResources" list is used to match incoming requests.
     /// Allowed values are "Exact" or "Equivalent".
     /// 
@@ -798,7 +924,7 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraints {
     /// 
     /// Default to the empty LabelSelector, which matches everything.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelector>,
+    pub namespace_selector: Option<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelector>,
     /// ObjectSelector decides whether to run the validation based on if the
     /// object has matching labels. objectSelector is evaluated against both
     /// the oldObject and newObject that would be sent to the cel validation, and
@@ -811,16 +937,16 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraints {
     /// users may skip the admission webhook by setting the labels.
     /// Default to the empty LabelSelector, which matches everything.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSelector")]
-    pub object_selector: Option<ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelector>,
+    pub object_selector: Option<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelector>,
     /// ResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
     /// The policy cares about an operation if it matches _any_ Rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRules")]
-    pub resource_rules: Option<Vec<ValidatingPolicyStatusAutogenRulesMatchConstraintsResourceRules>>,
+    pub resource_rules: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsResourceRules>>,
 }
 
 /// NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsExcludeResourceRules {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsExcludeResourceRules {
     /// APIGroups is the API groups the resources belong to. '*' is all groups.
     /// If '*' is present, the length of the slice must be one.
     /// Required.
@@ -913,10 +1039,10 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsExcludeResourceRule
 /// 
 /// Default to the empty LabelSelector, which matches everything.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelector {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -927,7 +1053,7 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelectorMatchExpressions {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -953,10 +1079,10 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsNamespaceSelectorMa
 /// users may skip the admission webhook by setting the labels.
 /// Default to the empty LabelSelector, which matches everything.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelector {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -967,7 +1093,7 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelectorMatchExpressions {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -983,7 +1109,7 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsObjectSelectorMatch
 
 /// NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsResourceRules {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsResourceRules {
     /// APIGroups is the API groups the resources belong to. '*' is all groups.
     /// If '*' is present, the length of the slice must be one.
     /// Required.
@@ -1034,7 +1160,7 @@ pub struct ValidatingPolicyStatusAutogenRulesMatchConstraintsResourceRules {
 
 /// Validation specifies the CEL expression which is used to apply the validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesValidations {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecValidations {
     /// Expression represents the expression which will be evaluated by CEL.
     /// ref: https://github.com/google/cel-spec
     /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
@@ -1110,7 +1236,7 @@ pub struct ValidatingPolicyStatusAutogenRulesValidations {
 
 /// Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ValidatingPolicyStatusAutogenRulesVariables {
+pub struct ValidatingPolicyStatusAutogenConfigsSpecVariables {
     /// Expression is the expression that will be evaluated as the value of the variable.
     /// The CEL expression has access to the same identifiers as the CEL expressions in Validation.
     pub expression: String,
@@ -1118,6 +1244,16 @@ pub struct ValidatingPolicyStatusAutogenRulesVariables {
     /// The variable can be accessed in other expressions through `variables`
     /// For example, if name is "foo", the variable will be available as `variables.foo`
     pub name: String,
+}
+
+/// WebhookConfiguration defines the configuration for the webhook.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration {
+    /// TimeoutSeconds specifies the maximum time in seconds allowed to apply this policy.
+    /// After the configured time expires, the admission request may fail, or may simply ignore the policy results,
+    /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
 }
 
 /// ConditionStatus is the shared status across all policy types

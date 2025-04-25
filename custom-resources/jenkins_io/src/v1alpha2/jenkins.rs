@@ -266,6 +266,9 @@ pub struct JenkinsMaster {
     /// fsGroup: 1000
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<JenkinsMasterSecurityContext>,
+    /// Allow to skip installation of both BasePlugins and Plugins. Requires using a custom image which includes the BasePlugins. Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipPlugins")]
+    pub skip_plugins: Option<bool>,
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.

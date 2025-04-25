@@ -23,10 +23,13 @@ pub struct VaultSecretSpec {
     /// TemplatizedK8sSecret is the formatted K8s Secret created by templating from the Vault KV secrets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<VaultSecretOutput>,
-    /// RefreshPeriod if specified, the operator will refresh the secret with the given frequency. This takes precedence over any vault secret lease duration and can be used to force a refresh.
+    /// RefreshPeriod if specified, the operator will refresh the secret with the given frequency.
+    /// This takes precedence over any vault secret lease duration and can be used to force a refresh.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshPeriod")]
     pub refresh_period: Option<String>,
-    /// RefreshThreshold if specified, will instruct the operator to refresh when a percentage of the lease duration is met when there is no RefreshPeriod specified. This is particularly useful for controlling when dynamic secrets should be refreshed before the lease duration is exceeded. The default is 90, meaning the secret would refresh after 90% of the time has passed from the vault secret's lease duration.
+    /// RefreshThreshold if specified, will instruct the operator to refresh when a percentage of the lease duration is met when there is no RefreshPeriod specified.
+    /// This is particularly useful for controlling when dynamic secrets should be refreshed before the lease duration is exceeded.
+    /// The default is 90, meaning the secret would refresh after 90% of the time has passed from the vault secret's lease duration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshThreshold")]
     pub refresh_threshold: Option<i64>,
     /// VaultSecretDefinitions are the secrets in Vault.
@@ -46,7 +49,9 @@ pub struct VaultSecretOutput {
     /// Name is the K8s Secret name to output to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// StringData is the K8s Secret stringData and allows specifying non-binary secret data in string form with go templating support to transform the Vault KV secrets into a formatted K8s Secret. The Sprig template library and Helm functions (like toYaml) are supported.
+    /// StringData is the K8s Secret stringData and allows specifying non-binary secret data in string form with go templating support
+    /// to transform the Vault KV secrets into a formatted K8s Secret.
+    /// The Sprig template library and Helm functions (like toYaml) are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stringData")]
     pub string_data: Option<BTreeMap<String, String>>,
     /// Type is the K8s Secret type to output to.
@@ -96,7 +101,9 @@ pub struct VaultSecretVaultSecretDefinitionsAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultSecretVaultSecretDefinitionsAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -136,7 +143,9 @@ pub struct VaultSecretVaultSecretDefinitionsConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VaultSecretVaultSecretDefinitionsConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

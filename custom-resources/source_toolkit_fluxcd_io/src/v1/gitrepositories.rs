@@ -58,6 +58,11 @@ pub struct GitRepositorySpec {
     /// and 'known_hosts' fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<GitRepositorySecretRef>,
+    /// SparseCheckout specifies a list of directories to checkout when cloning
+    /// the repository. If specified, only these directories are included in the
+    /// Artifact produced for this GitRepository.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparseCheckout")]
+    pub sparse_checkout: Option<Vec<String>>,
     /// Suspend tells the controller to suspend the reconciliation of this
     /// GitRepository.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -229,6 +234,10 @@ pub struct GitRepositoryStatus {
     /// configuration used to produce the current Artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedRecurseSubmodules")]
     pub observed_recurse_submodules: Option<bool>,
+    /// ObservedSparseCheckout is the observed list of directories used to
+    /// produce the current Artifact.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedSparseCheckout")]
+    pub observed_sparse_checkout: Option<Vec<String>>,
     /// SourceVerificationMode is the last used verification mode indicating
     /// which Git object(s) have been verified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceVerificationMode")]

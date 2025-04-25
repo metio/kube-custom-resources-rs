@@ -278,6 +278,9 @@ pub struct ScheduledSparkApplicationTemplateDriver {
     /// Memory is the amount of memory to request for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
+    /// MemoryLimit overrides the memory limit of the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<String>,
     /// MemoryOverhead is the amount of off-heap memory to allocate in cluster mode, in MiB unless otherwise specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryOverhead")]
     pub memory_overhead: Option<String>,
@@ -4545,6 +4548,9 @@ pub struct ScheduledSparkApplicationTemplateExecutor {
     /// Memory is the amount of memory to request for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
+    /// MemoryLimit overrides the memory limit of the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryLimit")]
+    pub memory_limit: Option<String>,
     /// MemoryOverhead is the amount of off-heap memory to allocate in cluster mode, in MiB unless otherwise specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryOverhead")]
     pub memory_overhead: Option<String>,

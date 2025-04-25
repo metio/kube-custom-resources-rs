@@ -26,10 +26,12 @@ pub struct GroupSpec {
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<GroupConnection>,
-    /// MemberEntityIDs Entity IDs to be assigned as group members. kubebuilder:validation:UniqueItems=true
+    /// MemberEntityIDs Entity IDs to be assigned as group members.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberEntityIDs")]
     pub member_entity_i_ds: Option<Vec<String>>,
-    /// MemberGroupIDs Group IDs to be assigned as group members. kubebuilder:validation:UniqueItems=true
+    /// MemberGroupIDs Group IDs to be assigned as group members.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memberGroupIDs")]
     pub member_group_i_ds: Option<Vec<String>>,
     /// Metadata Metadata to be associated with the group.
@@ -38,7 +40,8 @@ pub struct GroupSpec {
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Policies Policies to be tied to the group. kubebuilder:validation:UniqueItems=true
+    /// Policies Policies to be tied to the group.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<String>>,
     /// Type Type of the group, internal or external. Defaults to internal
@@ -66,7 +69,9 @@ pub struct GroupAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GroupAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -106,7 +111,9 @@ pub struct GroupConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GroupConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

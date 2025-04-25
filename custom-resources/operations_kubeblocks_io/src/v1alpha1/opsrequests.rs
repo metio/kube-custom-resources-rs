@@ -1705,10 +1705,10 @@ pub struct OpsRequestRebuildFrom {
     #[serde(rename = "componentName")]
     pub component_name: String,
     /// When it is set to true, the instance will be rebuilt in-place.
-    /// By default, a new pod will be created. Once the new pod is ready to serve,
+    /// If false, a new pod will be created. Once the new pod is ready to serve,
     /// the instance that require rebuilding will be taken offline.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inPlace")]
-    pub in_place: Option<bool>,
+    #[serde(rename = "inPlace")]
+    pub in_place: bool,
     /// Specifies the instances (Pods) that need to be rebuilt, typically operating as standbys.
     pub instances: Vec<OpsRequestRebuildFromInstances>,
     /// Defines container environment variables for the restore process.

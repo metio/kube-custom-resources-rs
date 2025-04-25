@@ -183,10 +183,14 @@ pub struct BundleTargetAdditionalFormats {
     /// JKS requests a JKS-formatted binary trust bundle to be written to the target.
     /// The bundle has "changeit" as the default password.
     /// For more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords
+    /// Deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
+    /// PKCS#12 trust stores created by trust-manager are compatible with Java.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jks: Option<BundleTargetAdditionalFormatsJks>,
     /// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+    /// 
     /// The bundle is by default created without a password.
+    /// For more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pkcs12: Option<BundleTargetAdditionalFormatsPkcs12>,
 }
@@ -194,6 +198,8 @@ pub struct BundleTargetAdditionalFormats {
 /// JKS requests a JKS-formatted binary trust bundle to be written to the target.
 /// The bundle has "changeit" as the default password.
 /// For more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords
+/// Deprecated: Writing JKS is subject for removal. Please migrate to PKCS12.
+/// PKCS#12 trust stores created by trust-manager are compatible with Java.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormatsJks {
     /// Key is the key of the entry in the object's `data` field to be used.
@@ -204,7 +210,9 @@ pub struct BundleTargetAdditionalFormatsJks {
 }
 
 /// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+/// 
 /// The bundle is by default created without a password.
+/// For more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundleTargetAdditionalFormatsPkcs12 {
     /// Key is the key of the entry in the object's `data` field to be used.
@@ -226,7 +234,9 @@ pub struct BundleTargetAdditionalFormatsPkcs12 {
 }
 
 /// PKCS12 requests a PKCS12-formatted binary trust bundle to be written to the target.
+/// 
 /// The bundle is by default created without a password.
+/// For more information refer to this link https://cert-manager.io/docs/faq/#keystore-passwords
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BundleTargetAdditionalFormatsPkcs12Profile {
     #[serde(rename = "LegacyRC2")]
@@ -242,6 +252,20 @@ pub enum BundleTargetAdditionalFormatsPkcs12Profile {
 pub struct BundleTargetConfigMap {
     /// Key is the key of the entry in the object's `data` field to be used.
     pub key: String,
+    /// Metadata is an optional set of labels and annotations to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BundleTargetConfigMapMetadata>,
+}
+
+/// Metadata is an optional set of labels and annotations to be copied to the target.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundleTargetConfigMapMetadata {
+    /// Annotations is a key value map to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a key value map to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// NamespaceSelector will, if set, only sync the target resource in
@@ -282,6 +306,20 @@ pub struct BundleTargetNamespaceSelectorMatchExpressions {
 pub struct BundleTargetSecret {
     /// Key is the key of the entry in the object's `data` field to be used.
     pub key: String,
+    /// Metadata is an optional set of labels and annotations to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BundleTargetSecretMetadata>,
+}
+
+/// Metadata is an optional set of labels and annotations to be copied to the target.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BundleTargetSecretMetadata {
+    /// Annotations is a key value map to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a key value map to be copied to the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Status of the Bundle. This is set and managed automatically.

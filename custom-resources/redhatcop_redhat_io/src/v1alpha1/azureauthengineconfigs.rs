@@ -24,13 +24,16 @@ pub struct AzureAuthEngineConfigSpec {
     /// AzureCredentials consists in ClientID and ClientSecret, which can be created as Kubernetes Secret, VaultSecret or RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureCredentials")]
     pub azure_credentials: Option<AzureAuthEngineConfigAzureCredentials>,
-    /// The client id for credentials to query the Azure APIs. Currently read permissions to query compute resources are required. This value can also be provided with the AZURE_CLIENT_ID environment variable.
+    /// The client id for credentials to query the Azure APIs.
+    /// Currently read permissions to query compute resources are required.
+    /// This value can also be provided with the AZURE_CLIENT_ID environment variable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<AzureAuthEngineConfigConnection>,
-    /// The Azure cloud environment. Valid values: AzurePublicCloud, AzureUSGovernmentCloud, AzureChinaCloud, AzureGermanCloud. This value can also be provided with the AZURE_ENVIRONMENT environment variable
+    /// The Azure cloud environment. Valid values: AzurePublicCloud, AzureUSGovernmentCloud, AzureChinaCloud, AzureGermanCloud.
+    /// This value can also be provided with the AZURE_ENVIRONMENT environment variable
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<String>,
     /// The maximum number of attempts a failed operation will be retried before producing an error.
@@ -39,12 +42,18 @@ pub struct AzureAuthEngineConfigSpec {
     /// The maximum delay, in seconds, allowed before retrying an operation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryDelay")]
     pub max_retry_delay: Option<i64>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// The resource URL for the application registered in Azure Active Directory. The value is expected to match the audience (aud claim) of the JWT provided to the login API. See the resource parameter for how the audience is set when requesting a JWT access token from the Azure Instance Metadata Service (IMDS) endpoint. This value can also be provided with the AZURE_AD_RESOURCE environment variable.
+    /// The resource URL for the application registered in Azure Active Directory.
+    /// The value is expected to match the audience (aud claim) of the JWT provided to the login API.
+    /// See the resource parameter for how the audience is set when requesting a JWT access token from the Azure Instance Metadata Service (IMDS) endpoint.
+    /// This value can also be provided with the AZURE_AD_RESOURCE environment variable.
     pub resource: String,
-    /// The initial amount of delay, in seconds, to use before retrying an operation. Increases exponentially
+    /// The initial amount of delay, in seconds, to use before retrying an operation.
+    /// Increases exponentially
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryDelay")]
     pub retry_delay: Option<i64>,
     /// The tenant id for the Azure Active Directory organization. This value can also be provided with the AZURE_TENANT_ID environment variable.
@@ -71,7 +80,9 @@ pub struct AzureAuthEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureAuthEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -82,37 +93,57 @@ pub struct AzureAuthEngineConfigAzureCredentials {
     /// PasswordKey key to be used when retrieving the password, required with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// When using randomSecret a username must be specified in the spec.username
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSecret")]
     pub random_secret: Option<AzureAuthEngineConfigAzureCredentialsRandomSecret>,
-    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<AzureAuthEngineConfigAzureCredentialsSecret>,
     /// UsernameKey key to be used when retrieving the username, optional with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
-    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecret")]
     pub vault_secret: Option<AzureAuthEngineConfigAzureCredentialsVaultSecret>,
 }
 
-/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// When using randomSecret a username must be specified in the spec.username
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureAuthEngineConfigAzureCredentialsRandomSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureAuthEngineConfigAzureCredentialsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureAuthEngineConfigAzureCredentialsVaultSecret {
     /// Path is the path to the secret
@@ -155,7 +186,9 @@ pub struct AzureAuthEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureAuthEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

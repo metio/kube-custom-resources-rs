@@ -5300,6 +5300,8 @@ spec:
                             type: "string"
                           name:
                             type: "string"
+                          search:
+                            type: "string"
                         type: "object"
                       ready:
                         description: "Fail the check if any resources are not ready"
@@ -5314,6 +5316,8 @@ spec:
                           labelSelector:
                             type: "string"
                           name:
+                            type: "string"
+                          search:
                             type: "string"
                         type: "object"
                       test:

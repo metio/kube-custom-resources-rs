@@ -152,7 +152,7 @@ pub struct FlowCollectorAgentEbpf {
     /// For more information, see https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<FlowCollectorAgentEbpfResources>,
-    /// Sampling rate of the flow reporter. 100 means one flow on 100 is sent. 0 or 1 means all flows are sampled.
+    /// Sampling ratio of the eBPF probe. 100 means one packet on 100 is sent. 0 or 1 means all packets are sampled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
 }
@@ -978,7 +978,7 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<FlowCollectorAgentEbpfFlowFilterRules>>,
-    /// `sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
+    /// `sampling` is the sampling ratio for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
     /// `sourcePorts` optionally defines the source ports to filter flows by.
@@ -1067,7 +1067,7 @@ pub struct FlowCollectorAgentEbpfFlowFilterRules {
     /// `protocol` optionally defines a protocol to filter flows by. The available options are `TCP`, `UDP`, `ICMP`, `ICMPv6`, and `SCTP`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorAgentEbpfFlowFilterRulesProtocol>,
-    /// `sampling` sampling rate for the matched flows, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
+    /// `sampling` is the sampling ratio for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
     /// `sourcePorts` optionally defines the source ports to filter flows by.
@@ -4467,7 +4467,7 @@ pub struct FlowCollectorProcessorDeduper {
     /// - Use `Disabled` to turn off Processor-based de-duplication.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<FlowCollectorProcessorDeduperMode>,
-    /// `sampling` is the sampling rate when deduper `mode` is `Sample`.
+    /// `sampling` is the sampling ratio when deduper `mode` is `Sample`. For example, a value of `50` means that 1 flow in 50 is sampled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
 }
@@ -4490,7 +4490,7 @@ pub struct FlowCollectorProcessorFilters {
     /// If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
     pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
-    /// `sampling` is an optional sampling rate to apply to this filter.
+    /// `sampling` is an optional sampling ratio to apply to this filter. For example, a value of `50` means that 1 matching flow in 50 is sampled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
 }

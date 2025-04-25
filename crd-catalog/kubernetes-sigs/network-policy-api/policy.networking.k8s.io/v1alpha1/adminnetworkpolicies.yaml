@@ -41,60 +41,60 @@ spec:
               description: "Specification of the desired behavior of AdminNetworkPolicy."
               properties:
                 egress:
-                  description: "Egress is the list of Egress rules to be applied to the selected pods.\nA total of 100 rules will be allowed in each ANP instance.\nThe relative precedence of egress rules within a single ANP object (all of\nwhich share the priority) will be determined by the order in which the rule\nis written. Thus, a rule that appears at the top of the egress rules\nwould take the highest precedence.\nANPs with no egress rules do not affect egress traffic.\n\nSupport: Core"
+                  description: "Egress is the list of Egress rules to be applied to the selected pods.\nA total of 100 rules will be allowed in each ANP instance.\nThe relative precedence of egress rules within a single ANP object (all of\nwhich share the priority) will be determined by the order in which the rule\nis written. Thus, a rule that appears at the top of the egress rules\nwould take the highest precedence.\nANPs with no egress rules do not affect egress traffic."
                   items:
                     description: "AdminNetworkPolicyEgressRule describes an action to take on a particular\nset of traffic originating from pods selected by a AdminNetworkPolicy's\nSubject field.\n<network-policy-api:experimental:validation>"
                     properties:
                       action:
-                        description: "Action specifies the effect this rule will have on matching traffic.\nCurrently the following actions are supported:\nAllow: allows the selected traffic (even if it would otherwise have been denied by NetworkPolicy)\nDeny: denies the selected traffic\nPass: instructs the selected traffic to skip any remaining ANP rules, and\nthen pass execution to any NetworkPolicies that select the pod.\nIf the pod is not selected by any NetworkPolicies then execution\nis passed to any BaselineAdminNetworkPolicies that select the pod.\n\nSupport: Core"
+                        description: "Action specifies the effect this rule will have on matching traffic.\nCurrently the following actions are supported:\nAllow: allows the selected traffic (even if it would otherwise have been denied by NetworkPolicy)\nDeny: denies the selected traffic\nPass: instructs the selected traffic to skip any remaining ANP rules, and\nthen pass execution to any NetworkPolicies that select the pod.\nIf the pod is not selected by any NetworkPolicies then execution\nis passed to any BaselineAdminNetworkPolicies that select the pod."
                         enum:
                           - "Allow"
                           - "Deny"
                           - "Pass"
                         type: "string"
                       name:
-                        description: "Name is an identifier for this rule, that may be no more than 100 characters\nin length. This field should be used by the implementation to help\nimprove observability, readability and error-reporting for any applied\nAdminNetworkPolicies.\n\nSupport: Core"
+                        description: "Name is an identifier for this rule, that may be no more than 100 characters\nin length. This field should be used by the implementation to help\nimprove observability, readability and error-reporting for any applied\nAdminNetworkPolicies."
                         maxLength: 100
                         type: "string"
                       ports:
-                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of destination ports for the outgoing egress traffic.\nIf Ports is not set then the rule does not filter traffic via port.\n\nSupport: Core"
+                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of destination ports for the outgoing egress traffic.\nIf Ports is not set then the rule does not filter traffic via port."
                         items:
                           description: "AdminNetworkPolicyPort describes how to select network ports on pod(s).\nExactly one field must be set."
                           maxProperties: 1
                           minProperties: 1
                           properties:
                             portNumber:
-                              description: "Port selects a port on a pod(s) based on number.\n\nSupport: Core"
+                              description: "Port selects a port on a pod(s) based on number."
                               properties:
                                 port:
-                                  description: "Number defines a network port value.\n\nSupport: Core"
+                                  description: "Number defines a network port value."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
                                   type: "integer"
                                 protocol:
                                   default: "TCP"
-                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP.\n\nSupport: Core"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
                                   type: "string"
                               required:
                                 - "port"
                                 - "protocol"
                               type: "object"
                             portRange:
-                              description: "PortRange selects a port range on a pod(s) based on provided start and end\nvalues.\n\nSupport: Core"
+                              description: "PortRange selects a port range on a pod(s) based on provided start and end\nvalues."
                               properties:
                                 end:
-                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start.\n\nSupport: Core"
+                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
                                   type: "integer"
                                 protocol:
                                   default: "TCP"
-                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP.\n\nSupport: Core"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
                                   type: "string"
                                 start:
-                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End.\n\nSupport: Core"
+                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
@@ -108,14 +108,14 @@ spec:
                         minItems: 1
                         type: "array"
                       to:
-                        description: "To is the List of destinations whose traffic this rule applies to.\nIf any AdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item.\n\nSupport: Core"
+                        description: "To is the List of destinations whose traffic this rule applies to.\nIf any AdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
                         items:
                           description: "AdminNetworkPolicyEgressPeer defines a peer to allow traffic to.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Allow\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
                           maxProperties: 1
                           minProperties: 1
                           properties:
                             namespaces:
-                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer.\n\nSupport: Core"
+                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer."
                               properties:
                                 matchExpressions:
                                   description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -148,7 +148,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             pods:
-                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer.\n\nSupport: Core"
+                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer."
                               properties:
                                 namespaceSelector:
                                   description: "NamespaceSelector follows standard label selector semantics; if empty,\nit selects all Namespaces."
@@ -231,26 +231,26 @@ spec:
                   maxItems: 100
                   type: "array"
                 ingress:
-                  description: "Ingress is the list of Ingress rules to be applied to the selected pods.\nA total of 100 rules will be allowed in each ANP instance.\nThe relative precedence of ingress rules within a single ANP object (all of\nwhich share the priority) will be determined by the order in which the rule\nis written. Thus, a rule that appears at the top of the ingress rules\nwould take the highest precedence.\nANPs with no ingress rules do not affect ingress traffic.\n\nSupport: Core"
+                  description: "Ingress is the list of Ingress rules to be applied to the selected pods.\nA total of 100 rules will be allowed in each ANP instance.\nThe relative precedence of ingress rules within a single ANP object (all of\nwhich share the priority) will be determined by the order in which the rule\nis written. Thus, a rule that appears at the top of the ingress rules\nwould take the highest precedence.\nANPs with no ingress rules do not affect ingress traffic."
                   items:
                     description: "AdminNetworkPolicyIngressRule describes an action to take on a particular\nset of traffic destined for pods selected by an AdminNetworkPolicy's\nSubject field."
                     properties:
                       action:
-                        description: "Action specifies the effect this rule will have on matching traffic.\nCurrently the following actions are supported:\nAllow: allows the selected traffic (even if it would otherwise have been denied by NetworkPolicy)\nDeny: denies the selected traffic\nPass: instructs the selected traffic to skip any remaining ANP rules, and\nthen pass execution to any NetworkPolicies that select the pod.\nIf the pod is not selected by any NetworkPolicies then execution\nis passed to any BaselineAdminNetworkPolicies that select the pod.\n\nSupport: Core"
+                        description: "Action specifies the effect this rule will have on matching traffic.\nCurrently the following actions are supported:\nAllow: allows the selected traffic (even if it would otherwise have been denied by NetworkPolicy)\nDeny: denies the selected traffic\nPass: instructs the selected traffic to skip any remaining ANP rules, and\nthen pass execution to any NetworkPolicies that select the pod.\nIf the pod is not selected by any NetworkPolicies then execution\nis passed to any BaselineAdminNetworkPolicies that select the pod."
                         enum:
                           - "Allow"
                           - "Deny"
                           - "Pass"
                         type: "string"
                       from:
-                        description: "From is the list of sources whose traffic this rule applies to.\nIf any AdminNetworkPolicyIngressPeer matches the source of incoming\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item.\n\nSupport: Core"
+                        description: "From is the list of sources whose traffic this rule applies to.\nIf any AdminNetworkPolicyIngressPeer matches the source of incoming\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
                         items:
                           description: "AdminNetworkPolicyIngressPeer defines a peer to allow traffic to.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Allow\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
                           maxProperties: 1
                           minProperties: 1
                           properties:
                             namespaces:
-                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer.\n\nSupport: Core"
+                              description: "Namespaces defines a way to select all pods within a set of Namespaces.\nNote that host-networked pods are not included in this type of peer."
                               properties:
                                 matchExpressions:
                                   description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -283,7 +283,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             pods:
-                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer.\n\nSupport: Core"
+                              description: "Pods defines a way to select a set of pods in\na set of namespaces. Note that host-networked pods\nare not included in this type of peer."
                               properties:
                                 namespaceSelector:
                                   description: "NamespaceSelector follows standard label selector semantics; if empty,\nit selects all Namespaces."
@@ -360,48 +360,48 @@ spec:
                         minItems: 1
                         type: "array"
                       name:
-                        description: "Name is an identifier for this rule, that may be no more than 100 characters\nin length. This field should be used by the implementation to help\nimprove observability, readability and error-reporting for any applied\nAdminNetworkPolicies.\n\nSupport: Core"
+                        description: "Name is an identifier for this rule, that may be no more than 100 characters\nin length. This field should be used by the implementation to help\nimprove observability, readability and error-reporting for any applied\nAdminNetworkPolicies."
                         maxLength: 100
                         type: "string"
                       ports:
-                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of ports which should be matched on\nthe pods selected for this policy i.e the subject of the policy.\nSo it matches on the destination port for the ingress traffic.\nIf Ports is not set then the rule does not filter traffic via port.\n\nSupport: Core"
+                        description: "Ports allows for matching traffic based on port and protocols.\nThis field is a list of ports which should be matched on\nthe pods selected for this policy i.e the subject of the policy.\nSo it matches on the destination port for the ingress traffic.\nIf Ports is not set then the rule does not filter traffic via port."
                         items:
                           description: "AdminNetworkPolicyPort describes how to select network ports on pod(s).\nExactly one field must be set."
                           maxProperties: 1
                           minProperties: 1
                           properties:
                             portNumber:
-                              description: "Port selects a port on a pod(s) based on number.\n\nSupport: Core"
+                              description: "Port selects a port on a pod(s) based on number."
                               properties:
                                 port:
-                                  description: "Number defines a network port value.\n\nSupport: Core"
+                                  description: "Number defines a network port value."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
                                   type: "integer"
                                 protocol:
                                   default: "TCP"
-                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP.\n\nSupport: Core"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
                                   type: "string"
                               required:
                                 - "port"
                                 - "protocol"
                               type: "object"
                             portRange:
-                              description: "PortRange selects a port range on a pod(s) based on provided start and end\nvalues.\n\nSupport: Core"
+                              description: "PortRange selects a port range on a pod(s) based on provided start and end\nvalues."
                               properties:
                                 end:
-                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start.\n\nSupport: Core"
+                                  description: "End defines a network port that is the end of a port range, the End value\nmust be greater than Start."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
                                   type: "integer"
                                 protocol:
                                   default: "TCP"
-                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP.\n\nSupport: Core"
+                                  description: "Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must\nmatch. If not specified, this field defaults to TCP."
                                   type: "string"
                                 start:
-                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End.\n\nSupport: Core"
+                                  description: "Start defines a network port that is the start of a port range, the Start\nvalue must be less than End."
                                   format: "int32"
                                   maximum: 65535.0
                                   minimum: 1.0
@@ -421,13 +421,13 @@ spec:
                   maxItems: 100
                   type: "array"
                 priority:
-                  description: "Priority is a value from 0 to 1000. Policies with lower priority values have\nhigher precedence, and are checked before policies with higher priority values.\nAll AdminNetworkPolicy rules have higher precedence than NetworkPolicy or\nBaselineAdminNetworkPolicy rules.\nIf two (or more) policies with the same priority could both match a connection,\nthen the implementation can apply any of the matching policies to the\nconnection, and there is no way for the user to reliably determine which one it\nwill choose. Administrators must be careful about assigning the priorities for\npolicies with rules that will match many connections, and ensure that policies\nhave unique priority values in cases where ambiguity would be unacceptable.\n\nSupport: Core"
+                  description: "Priority is a value from 0 to 1000. Policies with lower priority values have\nhigher precedence, and are checked before policies with higher priority values.\nAll AdminNetworkPolicy rules have higher precedence than NetworkPolicy or\nBaselineAdminNetworkPolicy rules.\nIf two (or more) policies with the same priority could both match a connection,\nthen the implementation can apply any of the matching policies to the\nconnection, and there is no way for the user to reliably determine which one it\nwill choose. Administrators must be careful about assigning the priorities for\npolicies with rules that will match many connections, and ensure that policies\nhave unique priority values in cases where ambiguity would be unacceptable."
                   format: "int32"
                   maximum: 1000.0
                   minimum: 0.0
                   type: "integer"
                 subject:
-                  description: "Subject defines the pods to which this AdminNetworkPolicy applies.\nNote that host-networked pods are not included in subject selection.\n\nSupport: Core"
+                  description: "Subject defines the pods to which this AdminNetworkPolicy applies.\nNote that host-networked pods are not included in subject selection."
                   maxProperties: 1
                   minProperties: 1
                   properties:

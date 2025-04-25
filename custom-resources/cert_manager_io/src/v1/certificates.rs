@@ -168,6 +168,12 @@ pub struct CertificateSpec {
     /// cert-manager sets on the Certificate's Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<CertificateSecretTemplate>,
+    /// Signature algorith to use.
+    /// Allowed values for RSA keys: SHA256WithRSA, SHA384WithRSA, SHA512WithRSA.
+    /// Allowed values for ECDSA keys: ECDSAWithSHA256, ECDSAWithSHA384, ECDSAWithSHA512.
+    /// Allowed values for Ed25519 keys: PureEd25519.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<CertificateSignatureAlgorithm>,
     /// Requested set of X509 certificate subject attributes.
     /// More info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.6
     /// 
@@ -513,6 +519,25 @@ pub struct CertificateSecretTemplate {
     /// Labels is a key value map to be copied to the target Kubernetes Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// Specification of the desired state of the Certificate resource.
+/// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CertificateSignatureAlgorithm {
+    #[serde(rename = "SHA256WithRSA")]
+    Sha256WithRsa,
+    #[serde(rename = "SHA384WithRSA")]
+    Sha384WithRsa,
+    #[serde(rename = "SHA512WithRSA")]
+    Sha512WithRsa,
+    #[serde(rename = "ECDSAWithSHA256")]
+    EcdsaWithSha256,
+    #[serde(rename = "ECDSAWithSHA384")]
+    EcdsaWithSha384,
+    #[serde(rename = "ECDSAWithSHA512")]
+    EcdsaWithSha512,
+    PureEd25519,
 }
 
 /// Requested set of X509 certificate subject attributes.

@@ -25,7 +25,8 @@ pub struct DatabaseSecretEngineRoleSpec {
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<DatabaseSecretEngineRoleConnection>,
-    /// CreationStatements Specifies the database statements executed to create and configure a user. See the plugin's API page for more information on support and formatting for this parameter. kubebuilder:validation:UniqueItems=true
+    /// CreationStatements Specifies the database statements executed to create and configure a user. See the plugin's API page for more information on support and formatting for this parameter.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationStatements")]
     pub creation_statements: Option<Vec<String>>,
     /// DBName The name of the database connection to use for this role.
@@ -40,16 +41,21 @@ pub struct DatabaseSecretEngineRoleSpec {
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// RenewStatements Specifies the database statements to be executed to renew a user. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter. kubebuilder:validation:UniqueItems=true
+    /// RenewStatements Specifies the database statements to be executed to renew a user. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renewStatements")]
     pub renew_statements: Option<Vec<String>>,
-    /// RevocationStatements Specifies the database statements to be executed to revoke a user. See the plugin's API page for more information on support and formatting for this parameter. kubebuilder:validation:UniqueItems=true
+    /// RevocationStatements Specifies the database statements to be executed to revoke a user. See the plugin's API page for more information on support and formatting for this parameter.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revocationStatements")]
     pub revocation_statements: Option<Vec<String>>,
-    /// RollbackStatements Specifies the database statements to be executed to rollback a create operation in the event of an error. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter. kubebuilder:validation:UniqueItems=true
+    /// RollbackStatements Specifies the database statements to be executed to rollback a create operation in the event of an error. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollbackStatements")]
     pub rollback_statements: Option<Vec<String>>,
 }
@@ -74,7 +80,9 @@ pub struct DatabaseSecretEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseSecretEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -114,7 +122,9 @@ pub struct DatabaseSecretEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseSecretEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

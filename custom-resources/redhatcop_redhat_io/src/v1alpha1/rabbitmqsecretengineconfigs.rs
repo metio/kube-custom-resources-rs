@@ -37,13 +37,16 @@ pub struct RabbitMQSecretEngineConfigSpec {
     /// PasswordPolicy The name of the password policy to use when generating passwords for this engine. Defaults to generating an alphanumeric password if not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPolicy")]
     pub password_policy: Option<String>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/{metadata.name}/config/connection. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/{metadata.name}/config/connection.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// RootCredentials specifies how to retrieve the credentials for this RabbitMQEngine connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootCredentials")]
     pub root_credentials: Option<RabbitMQSecretEngineConfigRootCredentials>,
-    /// Username Specifies the name of the user to use as the "administrator" user when connecting to the RabbitMQ cluster. This "administrator" user is used to create/update/delete users, so you will need to ensure that this user has permissions to manipulate users. If management plugin is used, this user need to have "administrator" tag, no additional permissions necessary. If username is provided it takes precedence over the username retrieved from the referenced secrets
+    /// Username Specifies the name of the user to use as the "administrator" user when connecting to the RabbitMQ cluster. This "administrator" user is used to create/update/delete users, so you will need to ensure that this user has permissions to manipulate users. If management plugin is used, this user need to have "administrator" tag, no additional permissions necessary.
+    /// If username is provided it takes precedence over the username retrieved from the referenced secrets
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username: Option<String>,
     /// UsernameTemplate Vault username template describing how dynamic usernames are generated.
@@ -74,7 +77,9 @@ pub struct RabbitMQSecretEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RabbitMQSecretEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -114,7 +119,9 @@ pub struct RabbitMQSecretEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RabbitMQSecretEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -125,37 +132,57 @@ pub struct RabbitMQSecretEngineConfigRootCredentials {
     /// PasswordKey key to be used when retrieving the password, required with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// When using randomSecret a username must be specified in the spec.username
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSecret")]
     pub random_secret: Option<RabbitMQSecretEngineConfigRootCredentialsRandomSecret>,
-    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<RabbitMQSecretEngineConfigRootCredentialsSecret>,
     /// UsernameKey key to be used when retrieving the username, optional with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
-    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecret")]
     pub vault_secret: Option<RabbitMQSecretEngineConfigRootCredentialsVaultSecret>,
 }
 
-/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// When using randomSecret a username must be specified in the spec.username
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RabbitMQSecretEngineConfigRootCredentialsRandomSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RabbitMQSecretEngineConfigRootCredentialsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RabbitMQSecretEngineConfigRootCredentialsVaultSecret {
     /// Path is the path to the secret

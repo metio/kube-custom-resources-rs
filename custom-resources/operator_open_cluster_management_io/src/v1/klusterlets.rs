@@ -177,6 +177,10 @@ pub struct KlusterletRegistrationConfiguration {
     /// ManagedCluster when creating only, other actors can update it afterwards.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAnnotations")]
     pub cluster_annotations: Option<BTreeMap<String, String>>,
+    /// ClusterClaimConfiguration represents the configuration of ClusterClaim
+    /// Effective only when the `ClusterClaim` feature gate is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterClaimConfiguration")]
+    pub cluster_claim_configuration: Option<KlusterletRegistrationConfigurationClusterClaimConfiguration>,
     /// FeatureGates represents the list of feature gates for registration
     /// If it is set empty, default feature gates will be used.
     /// If it is set, featuregate/Foo is an example of one item in FeatureGates:
@@ -249,6 +253,18 @@ pub struct KlusterletRegistrationConfigurationBootstrapKubeConfigsLocalSecretsCo
 pub enum KlusterletRegistrationConfigurationBootstrapKubeConfigsType {
     None,
     LocalSecrets,
+}
+
+/// ClusterClaimConfiguration represents the configuration of ClusterClaim
+/// Effective only when the `ClusterClaim` feature gate is enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KlusterletRegistrationConfigurationClusterClaimConfiguration {
+    /// Maximum number of custom ClusterClaims allowed.
+    #[serde(rename = "maxCustomClusterClaims")]
+    pub max_custom_cluster_claims: i32,
+    /// Custom suffixes for reserved ClusterClaims.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservedClusterClaimSuffixes")]
+    pub reserved_cluster_claim_suffixes: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

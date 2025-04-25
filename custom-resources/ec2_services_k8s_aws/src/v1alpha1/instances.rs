@@ -244,6 +244,15 @@ pub struct InstanceSpec {
     /// of the network interface instead of using this parameter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 	from:
+    /// 	  name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRef")]
+    pub subnet_ref: Option<InstanceSubnetRef>,
     /// The tags. The value parameter is required, but if you don't want the tag
     /// to have a value, specify the parameter with no value, and we set the value
     /// to an empty string.
@@ -440,8 +449,30 @@ pub struct InstanceLaunchTemplate {
     pub launch_template_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchTemplateName")]
     pub launch_template_name: Option<String>,
+    /// Reference field for LaunchTemplateID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchTemplateRef")]
+    pub launch_template_ref: Option<InstanceLaunchTemplateLaunchTemplateRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// Reference field for LaunchTemplateID
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceLaunchTemplateLaunchTemplateRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<InstanceLaunchTemplateLaunchTemplateRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceLaunchTemplateLaunchTemplateRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a license configuration.
@@ -584,6 +615,31 @@ pub struct InstancePrivateDnsNameOptions {
     pub enable_resource_name_dnsa_record: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameType")]
     pub hostname_type: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSubnetRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<InstanceSubnetRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanceSubnetRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// Describes a tag.

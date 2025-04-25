@@ -300,6 +300,17 @@ spec:
                       description: "Labels is a key value map to be copied to the target Kubernetes Secret."
                       type: "object"
                   type: "object"
+                signatureAlgorithm:
+                  description: "Signature algorith to use.\nAllowed values for RSA keys: SHA256WithRSA, SHA384WithRSA, SHA512WithRSA.\nAllowed values for ECDSA keys: ECDSAWithSHA256, ECDSAWithSHA384, ECDSAWithSHA512.\nAllowed values for Ed25519 keys: PureEd25519."
+                  enum:
+                    - "SHA256WithRSA"
+                    - "SHA384WithRSA"
+                    - "SHA512WithRSA"
+                    - "ECDSAWithSHA256"
+                    - "ECDSAWithSHA384"
+                    - "ECDSAWithSHA512"
+                    - "PureEd25519"
+                  type: "string"
                 subject:
                   description: "Requested set of X509 certificate subject attributes.\nMore info: https://datatracker.ietf.org/doc/html/rfc5280#section-4.1.2.6\n\nThe common name attribute is specified separately in the `commonName` field.\nCannot be set if the `literalSubject` field is set."
                   properties:

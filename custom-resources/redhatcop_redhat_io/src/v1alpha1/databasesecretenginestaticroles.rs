@@ -37,13 +37,16 @@ pub struct DatabaseSecretEngineStaticRoleSpec {
     /// PasswordCredentialConfig specifies the configuraiton when the password credential type is chosen.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordCredentialConfig")]
     pub password_credential_config: Option<DatabaseSecretEngineStaticRolePasswordCredentialConfig>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// RotationPeriod Specifies the amount of time Vault should wait before rotating the password. The minimum is 5 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotationPeriod")]
     pub rotation_period: Option<i64>,
-    /// RotationStatements Specifies the database statements to be executed to rotate the password for the configured database user. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter. kubebuilder:validation:UniqueItems=true
+    /// RotationStatements Specifies the database statements to be executed to rotate the password for the configured database user. Not every plugin type will support this functionality. See the plugin's API page for more information on support and formatting for this parameter.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rotationStatements")]
     pub rotation_statements: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rsaPrivateKeyCredentialConfig")]
@@ -73,7 +76,9 @@ pub struct DatabaseSecretEngineStaticRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseSecretEngineStaticRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -113,7 +118,9 @@ pub struct DatabaseSecretEngineStaticRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseSecretEngineStaticRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

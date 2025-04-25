@@ -120,13 +120,13 @@ pub struct XBackendTrafficPolicyRetryConstraint {
 /// Budget holds the details of the retry budget configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct XBackendTrafficPolicyRetryConstraintBudget {
-    /// BudgetInterval defines the duration in which requests will be considered
+    /// Interval defines the duration in which requests will be considered
     /// for calculating the budget for retries.
     /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// BudgetPercent defines the maximum percentage of active requests that may
+    /// Percent defines the maximum percentage of active requests that may
     /// be made up of retries.
     /// 
     /// Support: Extended

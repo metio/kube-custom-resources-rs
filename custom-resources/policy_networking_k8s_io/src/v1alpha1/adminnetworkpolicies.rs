@@ -26,8 +26,6 @@ pub struct AdminNetworkPolicySpec {
     /// is written. Thus, a rule that appears at the top of the egress rules
     /// would take the highest precedence.
     /// ANPs with no egress rules do not affect egress traffic.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub egress: Option<Vec<AdminNetworkPolicyEgress>>,
     /// Ingress is the list of Ingress rules to be applied to the selected pods.
@@ -37,8 +35,6 @@ pub struct AdminNetworkPolicySpec {
     /// is written. Thus, a rule that appears at the top of the ingress rules
     /// would take the highest precedence.
     /// ANPs with no ingress rules do not affect ingress traffic.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<Vec<AdminNetworkPolicyIngress>>,
     /// Priority is a value from 0 to 1000. Policies with lower priority values have
@@ -51,13 +47,9 @@ pub struct AdminNetworkPolicySpec {
     /// will choose. Administrators must be careful about assigning the priorities for
     /// policies with rules that will match many connections, and ensure that policies
     /// have unique priority values in cases where ambiguity would be unacceptable.
-    /// 
-    /// Support: Core
     pub priority: i32,
     /// Subject defines the pods to which this AdminNetworkPolicy applies.
     /// Note that host-networked pods are not included in subject selection.
-    /// 
-    /// Support: Core
     pub subject: AdminNetworkPolicySubject,
 }
 
@@ -75,30 +67,22 @@ pub struct AdminNetworkPolicyEgress {
     /// then pass execution to any NetworkPolicies that select the pod.
     /// If the pod is not selected by any NetworkPolicies then execution
     /// is passed to any BaselineAdminNetworkPolicies that select the pod.
-    /// 
-    /// Support: Core
     pub action: AdminNetworkPolicyEgressAction,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// AdminNetworkPolicies.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Ports allows for matching traffic based on port and protocols.
     /// This field is a list of destination ports for the outgoing egress traffic.
     /// If Ports is not set then the rule does not filter traffic via port.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<AdminNetworkPolicyEgressPorts>>,
     /// To is the List of destinations whose traffic this rule applies to.
     /// If any AdminNetworkPolicyEgressPeer matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
-    /// 
-    /// Support: Core
     pub to: Vec<AdminNetworkPolicyEgressTo>,
 }
 
@@ -118,55 +102,37 @@ pub enum AdminNetworkPolicyEgressAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPorts {
     /// Port selects a port on a pod(s) based on number.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<AdminNetworkPolicyEgressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
     pub port_range: Option<AdminNetworkPolicyEgressPortsPortRange>,
 }
 
 /// Port selects a port on a pod(s) based on number.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPortsPortNumber {
     /// Number defines a network port value.
-    /// 
-    /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
-    /// Support: Core
     pub protocol: String,
 }
 
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
-    /// 
-    /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
-    /// 
-    /// Support: Core
     pub start: i32,
 }
 
@@ -184,23 +150,17 @@ pub struct AdminNetworkPolicyEgressPortsPortRange {
 pub struct AdminNetworkPolicyEgressTo {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<AdminNetworkPolicyEgressToNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<AdminNetworkPolicyEgressToPods>,
 }
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToNamespaces {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -233,8 +193,6 @@ pub struct AdminNetworkPolicyEgressToNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyEgressToPods {
     /// NamespaceSelector follows standard label selector semantics; if empty,
@@ -322,22 +280,16 @@ pub struct AdminNetworkPolicyIngress {
     /// then pass execution to any NetworkPolicies that select the pod.
     /// If the pod is not selected by any NetworkPolicies then execution
     /// is passed to any BaselineAdminNetworkPolicies that select the pod.
-    /// 
-    /// Support: Core
     pub action: AdminNetworkPolicyIngressAction,
     /// From is the list of sources whose traffic this rule applies to.
     /// If any AdminNetworkPolicyIngressPeer matches the source of incoming
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
-    /// 
-    /// Support: Core
     pub from: Vec<AdminNetworkPolicyIngressFrom>,
     /// Name is an identifier for this rule, that may be no more than 100 characters
     /// in length. This field should be used by the implementation to help
     /// improve observability, readability and error-reporting for any applied
     /// AdminNetworkPolicies.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Ports allows for matching traffic based on port and protocols.
@@ -345,8 +297,6 @@ pub struct AdminNetworkPolicyIngress {
     /// the pods selected for this policy i.e the subject of the policy.
     /// So it matches on the destination port for the ingress traffic.
     /// If Ports is not set then the rule does not filter traffic via port.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<AdminNetworkPolicyIngressPorts>>,
 }
@@ -375,23 +325,17 @@ pub enum AdminNetworkPolicyIngressAction {
 pub struct AdminNetworkPolicyIngressFrom {
     /// Namespaces defines a way to select all pods within a set of Namespaces.
     /// Note that host-networked pods are not included in this type of peer.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<AdminNetworkPolicyIngressFromNamespaces>,
     /// Pods defines a way to select a set of pods in
     /// a set of namespaces. Note that host-networked pods
     /// are not included in this type of peer.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<AdminNetworkPolicyIngressFromPods>,
 }
 
 /// Namespaces defines a way to select all pods within a set of Namespaces.
 /// Note that host-networked pods are not included in this type of peer.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromNamespaces {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -424,8 +368,6 @@ pub struct AdminNetworkPolicyIngressFromNamespacesMatchExpressions {
 /// Pods defines a way to select a set of pods in
 /// a set of namespaces. Note that host-networked pods
 /// are not included in this type of peer.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressFromPods {
     /// NamespaceSelector follows standard label selector semantics; if empty,
@@ -505,62 +447,42 @@ pub struct AdminNetworkPolicyIngressFromPodsPodSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPorts {
     /// Port selects a port on a pod(s) based on number.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<AdminNetworkPolicyIngressPortsPortNumber>,
     /// PortRange selects a port range on a pod(s) based on provided start and end
     /// values.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portRange")]
     pub port_range: Option<AdminNetworkPolicyIngressPortsPortRange>,
 }
 
 /// Port selects a port on a pod(s) based on number.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPortsPortNumber {
     /// Number defines a network port value.
-    /// 
-    /// Support: Core
     pub port: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
-    /// Support: Core
     pub protocol: String,
 }
 
 /// PortRange selects a port range on a pod(s) based on provided start and end
 /// values.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicyIngressPortsPortRange {
     /// End defines a network port that is the end of a port range, the End value
     /// must be greater than Start.
-    /// 
-    /// Support: Core
     pub end: i32,
     /// Protocol is the network protocol (TCP, UDP, or SCTP) which traffic must
     /// match. If not specified, this field defaults to TCP.
-    /// 
-    /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
     /// Start defines a network port that is the start of a port range, the Start
     /// value must be less than End.
-    /// 
-    /// Support: Core
     pub start: i32,
 }
 
 /// Subject defines the pods to which this AdminNetworkPolicy applies.
 /// Note that host-networked pods are not included in subject selection.
-/// 
-/// Support: Core
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AdminNetworkPolicySubject {
     /// Namespaces is used to select pods via namespace selectors.

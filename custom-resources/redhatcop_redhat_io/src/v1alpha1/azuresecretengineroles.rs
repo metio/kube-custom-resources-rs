@@ -19,40 +19,50 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct AzureSecretEngineRoleSpec {
-    /// Specifies the default TTL for service principals generated using this role. Accepts time suffixed strings ("1h") or an integer number of seconds. Defaults to the system/engine default TTL time.
+    /// Specifies the default TTL for service principals generated using this role.
+    /// Accepts time suffixed strings ("1h") or an integer number of seconds. Defaults to the system/engine default TTL time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "TTL")]
     pub ttl: Option<String>,
-    /// Application Object ID for an existing service principal that will be used instead of creating dynamic service principals. If present, azure_roles will be ignored. See roles docs for details on role definition.
+    /// Application Object ID for an existing service principal that will be used instead of creating dynamic service principals.
+    /// If present, azure_roles will be ignored. See roles docs for details on role definition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationObjectID")]
     pub application_object_id: Option<String>,
     /// Authentication is the kube auth configuraiton to be used to execute this request
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<AzureSecretEngineRoleAuthentication>,
-    /// List of Azure groups that the generated service principal will be assigned to. The array must be in JSON format, properly escaped as a string. See groups docs for more details.
+    /// List of Azure groups that the generated service principal will be assigned to.
+    /// The array must be in JSON format, properly escaped as a string. See groups docs for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureGroups")]
     pub azure_groups: Option<String>,
-    /// List of Azure roles to be assigned to the generated service principal. The array must be in JSON format, properly escaped as a string. See roles docs for details on role definition.
+    /// List of Azure roles to be assigned to the generated service principal.
+    /// The array must be in JSON format, properly escaped as a string. See roles docs for details on role definition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureRoles")]
     pub azure_roles: Option<String>,
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<AzureSecretEngineRoleConnection>,
-    /// Specifies the maximum TTL for service principals generated using this role. Accepts time suffixed strings ("1h") or an integer number of seconds. Defaults to the system/engine max TTL time.
+    /// Specifies the maximum TTL for service principals generated using this role.
+    /// Accepts time suffixed strings ("1h") or an integer number of seconds. Defaults to the system/engine max TTL time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTTL")]
     pub max_ttl: Option<String>,
     /// The name of the object created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/groups/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/groups/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Specifies whether to permanently delete Applications and Service Principals that are dynamically created by Vault. If application_object_id is present, permanently_delete must be false.
+    /// Specifies whether to permanently delete Applications and Service Principals that are dynamically created by Vault.
+    /// If application_object_id is present, permanently_delete must be false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "permanentlyDelete")]
     pub permanently_delete: Option<String>,
-    /// If set to true, persists the created service principal and application for the lifetime of the role. Useful for when the Service Principal needs to maintain ownership of objects it creates
+    /// If set to true, persists the created service principal and application for the lifetime of the role.
+    /// Useful for when the Service Principal needs to maintain ownership of objects it creates
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistApp")]
     pub persist_app: Option<bool>,
-    /// Specifies the security principal types that are allowed to sign in to the application. Valid values are: AzureADMyOrg, AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, PersonalMicrosoftAccount.
+    /// Specifies the security principal types that are allowed to sign in to the application.
+    /// Valid values are: AzureADMyOrg, AzureADMultipleOrgs, AzureADandPersonalMicrosoftAccount, PersonalMicrosoftAccount.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signInAudience")]
     pub sign_in_audience: Option<String>,
     /// A comma-separated string of Azure tags to attach to an application.
@@ -80,7 +90,9 @@ pub struct AzureSecretEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureSecretEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -120,7 +132,9 @@ pub struct AzureSecretEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AzureSecretEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

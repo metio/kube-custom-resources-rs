@@ -37,7 +37,8 @@ pub struct KubernetesAuthEngineConfigSpec {
     /// Issuer Optional JWT issuer. If no issuer is specified, then this plugin will use kubernetes/serviceaccount as the default issuer. See these instructions for looking up the issuer for a given Kubernetes cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// kubernetesCACert PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API. NOTE: Every line must end with a newline: \n if omitted will default to the content of the file "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" in the operator pod
+    /// kubernetesCACert PEM encoded CA cert for use by the TLS client used to talk with the Kubernetes API. NOTE: Every line must end with a newline: \n
+    /// if omitted will default to the content of the file "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt" in the operator pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesCACert")]
     pub kubernetes_ca_cert: Option<String>,
     /// KubernetesHost Host must be a host string, a host:port pair, or a URL to the base of the Kubernetes API server.
@@ -46,7 +47,9 @@ pub struct KubernetesAuthEngineConfigSpec {
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// TokenReviewerServiceAccount A service account JWT used to access the TokenReview API to validate other JWTs during login. If not set, the JWT submitted in the login payload will be used to access the Kubernetes TokenReview API.
@@ -55,7 +58,9 @@ pub struct KubernetesAuthEngineConfigSpec {
     /// UseAnnotationsAsAliasMetadata  Use annotations from the client token's associated service account as alias metadata for the Vault entity. Only annotations with the vault.hashicorp.com/alias-metadata- key prefix are targeted as alias metadata and your annotations must be 512 characters or less due to the Vault alias metadata value limit. For example, if you configure the annotation vault.hashicorp.com/alias-metadata-foo, Vault saves the string "foo" along with the annotation value to the alias metadata. To save alias metadata, Vault must have permission to read service accounts from the Kubernetes API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useAnnotationsAsAliasMetadata")]
     pub use_annotations_as_alias_metadata: Option<bool>,
-    /// UseOperatorPodCA . This field is considered only if `kubernetesCACert` is not set and `disableLocalCAJWT` is set to true. In this case if this field is set to true the operator pod's CA is injected. This is the original behavior before the introduction of this field If tis field is set to false, the os ca bundle of where vault is running will be used.
+    /// UseOperatorPodCA . This field is considered only if `kubernetesCACert` is not set and `disableLocalCAJWT` is set to true.
+    /// In this case if this field is set to true the operator pod's CA is injected. This is the original behavior before the introduction of this field
+    /// If tis field is set to false, the os ca bundle of where vault is running will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useOperatorPodCA")]
     pub use_operator_pod_ca: Option<bool>,
 }
@@ -80,7 +85,9 @@ pub struct KubernetesAuthEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesAuthEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -120,7 +127,9 @@ pub struct KubernetesAuthEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesAuthEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -128,7 +137,9 @@ pub struct KubernetesAuthEngineConfigConnectionTLsConfigTlsSecret {
 /// TokenReviewerServiceAccount A service account JWT used to access the TokenReview API to validate other JWTs during login. If not set, the JWT submitted in the login payload will be used to access the Kubernetes TokenReview API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesAuthEngineConfigTokenReviewerServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

@@ -20,10 +20,13 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KubernetesSecretEngineRoleSpec {
-    /// A label selector for Kubernetes namespaces in which credentials can be generated. Accepts either a JSON or YAML object. The value should be of type LabelSelector as illustrated: "'{'matchLabels':{'stage':'prod','sa-generator':'vault'}}". If set with allowed_kubernetes_namespaces, the conditions are ORed.
+    /// A label selector for Kubernetes namespaces in which credentials can be generated.
+    /// Accepts either a JSON or YAML object. The value should be of type LabelSelector as illustrated: "'{'matchLabels':{'stage':'prod','sa-generator':'vault'}}".
+    /// If set with allowed_kubernetes_namespaces, the conditions are ORed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedKubernetesNamespaceSelector")]
     pub allowed_kubernetes_namespace_selector: Option<String>,
-    /// AllowedKubernetesNamespaces The list of Kubernetes namespaces this role can generate credentials for. If set to "*" all namespaces are allowed. kubebuilder:validation:UniqueItems=true
+    /// AllowedKubernetesNamespaces The list of Kubernetes namespaces this role can generate credentials for. If set to "*" all namespaces are allowed.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedKubernetesNamespaces")]
     pub allowed_kubernetes_namespaces: Option<Vec<String>>,
     /// Authentication is the kube auth configuration to be used to execute this request
@@ -32,7 +35,8 @@ pub struct KubernetesSecretEngineRoleSpec {
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<KubernetesSecretEngineRoleConnection>,
-    /// DefaultAudiences The default intended audiences for generated Kubernetes tokens, specified by a comma separated string. e.g "custom-audience-0,custom-audience-1". If not set or set to "", the Kubernetes cluster default for audiences of service account tokens will be used.
+    /// DefaultAudiences The default intended audiences for generated Kubernetes tokens, specified by a comma separated string. e.g "custom-audience-0,custom-audience-1".
+    /// If not set or set to "", the Kubernetes cluster default for audiences of service account tokens will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultAudiences")]
     pub default_audiences: Option<String>,
     /// DeafulTTL Specifies the TTL for the leases associated with this role. Accepts time suffixed strings ("1h") or an integer number of seconds. Defaults to system/engine default TTL time.
@@ -62,7 +66,9 @@ pub struct KubernetesSecretEngineRoleSpec {
     /// NameTemplate The name template to use when generating service accounts, roles and role bindings. If unset, a default template is used. See username templating for details on how to write a custom template.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameTemplate")]
     pub name_template: Option<String>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// ServiceAccountName The pre-existing service account to generate tokens for. Mutually exclusive with all role parameters. If set, only a Kubernetes token will be created when credentials are requested. See the Kubernetes service account documentation for more details on service accounts.
@@ -93,7 +99,9 @@ pub struct KubernetesSecretEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesSecretEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -133,7 +141,9 @@ pub struct KubernetesSecretEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesSecretEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -151,7 +161,8 @@ pub struct KubernetesSecretEngineRoleTargetNamespaces {
     /// TargetNamespaceSelector is a selector of namespaces from which service accounts will receove this role. Either TargetNamespaceSelector or TargetNamespaces can be specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaceSelector")]
     pub target_namespace_selector: Option<KubernetesSecretEngineRoleTargetNamespacesTargetNamespaceSelector>,
-    /// TargetNamespaces is a list of namespace from which service accounts will receive this role. Either TargetNamespaceSelector or TargetNamespaces can be specified. kubebuilder:validation:UniqueItems=true
+    /// TargetNamespaces is a list of namespace from which service accounts will receive this role. Either TargetNamespaceSelector or TargetNamespaces can be specified.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNamespaces")]
     pub target_namespaces: Option<Vec<String>>,
 }
@@ -162,19 +173,26 @@ pub struct KubernetesSecretEngineRoleTargetNamespacesTargetNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<KubernetesSecretEngineRoleTargetNamespacesTargetNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesSecretEngineRoleTargetNamespacesTargetNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -182,7 +200,8 @@ pub struct KubernetesSecretEngineRoleTargetNamespacesTargetNamespaceSelectorMatc
 /// KubernetesSecretEngineRoleStatus defines the observed state of KubernetesSecretEngineRole
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesSecretEngineRoleStatus {
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

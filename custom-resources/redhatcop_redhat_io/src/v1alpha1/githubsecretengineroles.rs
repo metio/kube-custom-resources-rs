@@ -26,7 +26,7 @@ pub struct GitHubSecretEngineRoleSpec {
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<GitHubSecretEngineRoleConnection>,
-    /// InstallationID the ID of the app installation. Note the Installation ID from the URL of this page (usually: https://github.com/settings/installations/<installation id>) if you wish to configure using the installation ID directly. Only one of installationID or organizationName is required. If both are provided, installationID takes precedence.
+    ///  InstallationID the ID of the app installation. Note the Installation ID from the URL of this page (usually: https://github.com/settings/installations/<installation id>) if you wish to configure using the installation ID directly. Only one of installationID or organizationName is required. If both are provided, installationID takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installationID")]
     pub installation_id: Option<i64>,
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
@@ -35,7 +35,9 @@ pub struct GitHubSecretEngineRoleSpec {
     /// OrganizationName the name of the organization with the GitHub App installation. Only one of installationID or organizationName is required. If both are provided, installationID takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "organizationName")]
     pub organization_name: Option<String>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/permissionset/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/permissionset/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Permissions a key value map of permission names to their access type (read or write). See [GitHub’s documentation](https://developer.github.com/v3/apps/permissions) on permission names and access types.
@@ -69,7 +71,9 @@ pub struct GitHubSecretEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitHubSecretEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -109,7 +113,9 @@ pub struct GitHubSecretEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GitHubSecretEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
