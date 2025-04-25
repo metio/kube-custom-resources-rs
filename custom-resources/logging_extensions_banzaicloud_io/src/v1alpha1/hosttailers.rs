@@ -51,6 +51,8 @@ pub struct HostTailerFileTailers {
     pub read_from_head: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skip_long_lines: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbose: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -362,6 +364,8 @@ pub struct HostTailerSystemdTailers {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdFilter")]
     pub systemd_filter: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub verbose: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

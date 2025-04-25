@@ -38,12 +38,6 @@ pub struct ImageValidatingPolicySpec {
     /// or mis-configured policy definitions or bindings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<ImageValidatingPolicyFailurePolicy>,
-    /// ImagesRules is a list of Glob and CELExpressions to match images.
-    /// Any image that matches one of the rules is considered for validation
-    /// Any image that does not match a rule is skipped, even when they are passed as arguments to
-    /// image verification functions
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRules")]
-    pub image_rules: Option<Vec<ImageValidatingPolicyImageRules>>,
     /// Images is a list of CEL expression to extract images from the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<ImageValidatingPolicyImages>>,
@@ -56,26 +50,25 @@ pub struct ImageValidatingPolicySpec {
     /// MatchConstraints specifies what resources this policy is designed to validate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConstraints")]
     pub match_constraints: Option<ImageValidatingPolicyMatchConstraints>,
-    /// MutateDigest enables replacement of image tags with digests.
-    /// Defaults to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
-    pub mutate_digest: Option<bool>,
-    /// Required validates that images are verified i.e. have matched passed a signature or attestation check.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub required: Option<bool>,
+    /// MatchImageReferences is a list of Glob and CELExpressions to match images.
+    /// Any image that matches one of the rules is considered for validation
+    /// Any image that does not match a rule is skipped, even when they are passed as arguments to
+    /// image verification functions
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchImageReferences")]
+    pub match_image_references: Option<Vec<ImageValidatingPolicyMatchImageReferences>>,
     /// ValidationAction specifies the action to be taken when the matched resource violates the policy.
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationActions")]
     pub validation_actions: Option<Vec<String>>,
+    /// ValidationConfigurations defines settings for mutating and verifying image digests, and enforcing image verification through signatures.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationConfigurations")]
+    pub validation_configurations: Option<ImageValidatingPolicyValidationConfigurations>,
     /// Validations contain CEL expressions which is used to apply the image validation checks.
     pub validations: Vec<ImageValidatingPolicyValidations>,
     /// Variables contain definitions of variables that can be used in composition of other expressions.
     /// Each variable is defined as a named CEL expression.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ImageValidatingPolicyVariables>>,
-    /// VerifyDigest validates that images have a digest.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
-    pub verify_digest: Option<bool>,
     /// WebhookConfiguration defines the configuration for the webhook.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfiguration")]
     pub webhook_configuration: Option<ImageValidatingPolicyWebhookConfiguration>,
@@ -156,12 +149,36 @@ pub struct ImageValidatingPolicyAttestorsCosign {
 pub struct ImageValidatingPolicyAttestorsCosignCertificate {
     /// Certificate is the to the public certificate for local signature verification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<String>,
+    pub cert: Option<ImageValidatingPolicyAttestorsCosignCertificateCert>,
     /// CertificateChain is the list of CA certificates in PEM format which will be needed
     /// when building the certificate chain for the signing certificate. Must start with the
     /// parent intermediate CA certificate of the signing certificate and end with the root certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
-    pub cert_chain: Option<String>,
+    pub cert_chain: Option<ImageValidatingPolicyAttestorsCosignCertificateCertChain>,
+}
+
+/// Certificate is the to the public certificate for local signature verification.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyAttestorsCosignCertificateCert {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// CertificateChain is the list of CA certificates in PEM format which will be needed
+/// when building the certificate chain for the signing certificate. Must start with the
+/// parent intermediate CA certificate of the signing certificate and end with the root certificate
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyAttestorsCosignCertificateCertChain {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// CTLog sets the configuration to verify the authority against a Rekor instance.
@@ -197,6 +214,9 @@ pub struct ImageValidatingPolicyAttestorsCosignKey {
     /// Data contains the inline public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
+    /// Expression is a Expression expression that returns the public key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
     /// HashAlgorithm specifues signature algorithm for public keys. Supported values are
     /// sha224, sha256, sha384 and sha512. Defaults to sha256.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashAlgorithm")]
@@ -205,20 +225,6 @@ pub struct ImageValidatingPolicyAttestorsCosignKey {
     /// Supported formats differ based on the KMS system used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// SecretRef sets a reference to a secret with the key.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ImageValidatingPolicyAttestorsCosignKeySecretRef>,
-}
-
-/// SecretRef sets a reference to a secret with the key.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyAttestorsCosignKeySecretRef {
-    /// name is unique within a namespace to reference a secret resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// namespace defines the space within which the secret name must be unique.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Keyless sets the configuration to verify the authority against a Fulcio instance.
@@ -309,10 +315,33 @@ pub struct ImageValidatingPolicyAttestorsCosignTufRoot {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageValidatingPolicyAttestorsNotary {
     /// Certs define the cert chain for Notary signature verification
-    pub certs: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certs: Option<ImageValidatingPolicyAttestorsNotaryCerts>,
     /// TSACerts define the cert chain for verifying timestamps of notary signature
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCerts")]
-    pub tsa_certs: Option<String>,
+    pub tsa_certs: Option<ImageValidatingPolicyAttestorsNotaryTsaCerts>,
+}
+
+/// Certs define the cert chain for Notary signature verification
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyAttestorsNotaryCerts {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TSACerts define the cert chain for verifying timestamps of notary signature
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyAttestorsNotaryTsaCerts {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// AutogenConfiguration defines the configuration for the generation controller.
@@ -386,17 +415,6 @@ pub struct ImageValidatingPolicyEvaluationBackground {
 pub enum ImageValidatingPolicyFailurePolicy {
     Ignore,
     Fail,
-}
-
-/// ImageRule defines a Glob or a CEL expression for matching images
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyImageRules {
-    /// Cel defines CEL Expressions for matching images
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cel: Option<String>,
-    /// Glob defines a globbing pattern for matching images
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glob: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -737,6 +755,32 @@ pub struct ImageValidatingPolicyMatchConstraintsResourceRules {
     pub scope: Option<String>,
 }
 
+/// MatchImageReference defines a Glob or a CEL expression for matching images
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyMatchImageReferences {
+    /// Expression defines CEL Expressions for matching images
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Glob defines a globbing pattern for matching images
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glob: Option<String>,
+}
+
+/// ValidationConfigurations defines settings for mutating and verifying image digests, and enforcing image verification through signatures.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyValidationConfigurations {
+    /// MutateDigest enables replacement of image tags with digests.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
+    pub mutate_digest: Option<bool>,
+    /// Required validates that images are verified, i.e., have passed a signature or attestation check.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    /// VerifyDigest validates that images have a digest.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
+    pub verify_digest: Option<bool>,
+}
+
 /// Validation specifies the CEL expression which is used to apply the validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageValidatingPolicyValidations {
@@ -848,98 +892,90 @@ pub struct ImageValidatingPolicyStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageValidatingPolicyStatusAutogen {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rules: Option<Vec<ImageValidatingPolicyStatusAutogenRules>>,
+    pub configs: Option<BTreeMap<String, ImageValidatingPolicyStatusAutogenConfigs>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRules {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+pub struct ImageValidatingPolicyStatusAutogenConfigs {
     /// ImageValidatingPolicySpec is the specification of the desired behavior of the ImageValidatingPolicy.
-    pub spec: ImageValidatingPolicyStatusAutogenRulesSpec,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ImageValidatingPolicyStatusAutogenConfigsSpec>,
 }
 
 /// ImageValidatingPolicySpec is the specification of the desired behavior of the ImageValidatingPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpec {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpec {
     /// Attestations provides a list of image metadata to verify
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attestations: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecAttestations>>,
+    pub attestations: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestations>>,
     /// Attestors provides a list of trusted authorities.
-    pub attestors: Vec<ImageValidatingPolicyStatusAutogenRulesSpecAttestors>,
+    pub attestors: Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestors>,
     /// AutogenConfiguration defines the configuration for the generation controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub autogen: Option<ImageValidatingPolicyStatusAutogenRulesSpecAutogen>,
+    pub autogen: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAutogen>,
     /// Credentials provides credentials that will be used for authentication with registry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials: Option<ImageValidatingPolicyStatusAutogenRulesSpecCredentials>,
+    pub credentials: Option<ImageValidatingPolicyStatusAutogenConfigsSpecCredentials>,
     /// EvaluationConfiguration defines the configuration for the policy evaluation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub evaluation: Option<ImageValidatingPolicyStatusAutogenRulesSpecEvaluation>,
+    pub evaluation: Option<ImageValidatingPolicyStatusAutogenConfigsSpecEvaluation>,
     /// FailurePolicy defines how to handle failures for the admission policy. Failures can
     /// occur from CEL expression parse errors, type check errors, runtime errors and invalid
     /// or mis-configured policy definitions or bindings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
-    pub failure_policy: Option<ImageValidatingPolicyStatusAutogenRulesSpecFailurePolicy>,
-    /// ImagesRules is a list of Glob and CELExpressions to match images.
-    /// Any image that matches one of the rules is considered for validation
-    /// Any image that does not match a rule is skipped, even when they are passed as arguments to
-    /// image verification functions
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRules")]
-    pub image_rules: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecImageRules>>,
+    pub failure_policy: Option<ImageValidatingPolicyStatusAutogenConfigsSpecFailurePolicy>,
     /// Images is a list of CEL expression to extract images from the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub images: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecImages>>,
+    pub images: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecImages>>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
     /// Match conditions filter requests that have already been matched by the rules,
     /// namespaceSelector, and objectSelector. An empty list of matchConditions matches all requests.
     /// There are a maximum of 64 match conditions allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConditions")]
-    pub match_conditions: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecMatchConditions>>,
+    pub match_conditions: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConditions>>,
     /// MatchConstraints specifies what resources this policy is designed to validate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConstraints")]
-    pub match_constraints: Option<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraints>,
-    /// MutateDigest enables replacement of image tags with digests.
-    /// Defaults to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
-    pub mutate_digest: Option<bool>,
-    /// Required validates that images are verified i.e. have matched passed a signature or attestation check.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub required: Option<bool>,
+    pub match_constraints: Option<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraints>,
+    /// MatchImageReferences is a list of Glob and CELExpressions to match images.
+    /// Any image that matches one of the rules is considered for validation
+    /// Any image that does not match a rule is skipped, even when they are passed as arguments to
+    /// image verification functions
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchImageReferences")]
+    pub match_image_references: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchImageReferences>>,
     /// ValidationAction specifies the action to be taken when the matched resource violates the policy.
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationActions")]
     pub validation_actions: Option<Vec<String>>,
+    /// ValidationConfigurations defines settings for mutating and verifying image digests, and enforcing image verification through signatures.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationConfigurations")]
+    pub validation_configurations: Option<ImageValidatingPolicyStatusAutogenConfigsSpecValidationConfigurations>,
     /// Validations contain CEL expressions which is used to apply the image validation checks.
-    pub validations: Vec<ImageValidatingPolicyStatusAutogenRulesSpecValidations>,
+    pub validations: Vec<ImageValidatingPolicyStatusAutogenConfigsSpecValidations>,
     /// Variables contain definitions of variables that can be used in composition of other expressions.
     /// Each variable is defined as a named CEL expression.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecVariables>>,
-    /// VerifyDigest validates that images have a digest.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
-    pub verify_digest: Option<bool>,
+    pub variables: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecVariables>>,
     /// WebhookConfiguration defines the configuration for the webhook.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookConfiguration")]
-    pub webhook_configuration: Option<ImageValidatingPolicyStatusAutogenRulesSpecWebhookConfiguration>,
+    pub webhook_configuration: Option<ImageValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration>,
 }
 
 /// Attestation defines the identification details of the  metadata that has to be verified
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestations {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestations {
     /// InToto defines the details of attestation attached using intoto format
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub intoto: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestationsIntoto>,
+    pub intoto: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestationsIntoto>,
     /// Name is the name for this attestation. It is used to refer to the attestation in verification
     pub name: String,
     /// Referrer defines the details of attestation attached using OCI 1.1 format
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub referrer: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestationsReferrer>,
+    pub referrer: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestationsReferrer>,
 }
 
 /// InToto defines the details of attestation attached using intoto format
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestationsIntoto {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestationsIntoto {
     /// Type defines the type of attestation contained within the statement.
     #[serde(rename = "type")]
     pub r#type: String,
@@ -947,7 +983,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestationsIntoto {
 
 /// Referrer defines the details of attestation attached using OCI 1.1 format
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestationsReferrer {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestationsReferrer {
     /// Type defines the type of attestation attached to the image.
     #[serde(rename = "type")]
     pub r#type: String,
@@ -955,20 +991,20 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestationsReferrer {
 
 /// Attestor is an identity that confirms or verifies the authenticity of an image or an attestation
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestors {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestors {
     /// Cosign defines attestor configuration for Cosign based signatures
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cosign: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosign>,
+    pub cosign: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosign>,
     /// Name is the name for this attestor. It is used to refer to the attestor in verification
     pub name: String,
     /// Notary defines attestor configuration for Notary based signatures
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub notary: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsNotary>,
+    pub notary: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotary>,
 }
 
 /// Cosign defines attestor configuration for Cosign based signatures
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosign {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosign {
     /// Annotations are used for image verification.
     /// Every specified key-value pair must exist and match in the verified payload.
     /// The payload may contain other key-value pairs.
@@ -976,40 +1012,64 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosign {
     pub annotations: Option<BTreeMap<String, String>>,
     /// Certificate defines the configuration for local signature verification
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub certificate: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignCertificate>,
+    pub certificate: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificate>,
     /// CTLog sets the configuration to verify the authority against a Rekor instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ctlog: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignCtlog>,
+    pub ctlog: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCtlog>,
     /// Key defines the type of key to validate the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKey>,
+    pub key: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKey>,
     /// Keyless sets the configuration to verify the authority against a Fulcio instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub keyless: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeyless>,
+    pub keyless: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKeyless>,
     /// Sources sets the configuration to specify the sources from where to consume the signature and attestations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSource>,
+    pub source: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignSource>,
     /// TUF defines the configuration to fetch sigstore root
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tuf: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignTuf>,
+    pub tuf: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignTuf>,
 }
 
 /// Certificate defines the configuration for local signature verification
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignCertificate {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificate {
     /// Certificate is the to the public certificate for local signature verification.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<String>,
+    pub cert: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificateCert>,
     /// CertificateChain is the list of CA certificates in PEM format which will be needed
     /// when building the certificate chain for the signing certificate. Must start with the
     /// parent intermediate CA certificate of the signing certificate and end with the root certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certChain")]
-    pub cert_chain: Option<String>,
+    pub cert_chain: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificateCertChain>,
+}
+
+/// Certificate is the to the public certificate for local signature verification.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificateCert {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// CertificateChain is the list of CA certificates in PEM format which will be needed
+/// when building the certificate chain for the signing certificate. Must start with the
+/// parent intermediate CA certificate of the signing certificate and end with the root certificate
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCertificateCertChain {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// CTLog sets the configuration to verify the authority against a Rekor instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignCtlog {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignCtlog {
     /// CTLogPubKey, if set, is used to validate SCTs against a custom source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ctLogPubKey")]
     pub ct_log_pub_key: Option<String>,
@@ -1036,10 +1096,13 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignCtlog {
 
 /// Key defines the type of key to validate the image.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKey {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKey {
     /// Data contains the inline public key
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
+    /// Expression is a Expression expression that returns the public key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
     /// HashAlgorithm specifues signature algorithm for public keys. Supported values are
     /// sha224, sha256, sha384 and sha512. Defaults to sha256.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashAlgorithm")]
@@ -1048,27 +1111,13 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKey {
     /// Supported formats differ based on the KMS system used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kms: Option<String>,
-    /// SecretRef sets a reference to a secret with the key.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeySecretRef>,
-}
-
-/// SecretRef sets a reference to a secret with the key.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeySecretRef {
-    /// name is unique within a namespace to reference a secret resource.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// namespace defines the space within which the secret name must be unique.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
 }
 
 /// Keyless sets the configuration to verify the authority against a Fulcio instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeyless {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKeyless {
     /// Identities sets a list of identities.
-    pub identities: Vec<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeylessIdentities>,
+    pub identities: Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKeylessIdentities>,
     /// Roots is an optional set of PEM encoded trusted root certificates.
     /// If not provided, the system roots are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1080,7 +1129,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeyless {
 /// Issuer/Subject uses a strict match, while IssuerRegExp and SubjectRegExp
 /// apply a regexp for matching.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeylessIdentities {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignKeylessIdentities {
     /// Issuer defines the issuer for this identity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
@@ -1097,12 +1146,12 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignKeylessIden
 
 /// Sources sets the configuration to specify the sources from where to consume the signature and attestations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSource {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignSource {
     /// SignaturePullSecrets is an optional list of references to secrets in the
     /// same namespace as the deploying resource for pulling any of the signatures
     /// used by this Source.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "PullSecrets")]
-    pub pull_secrets: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSourcePullSecrets>>,
+    pub pull_secrets: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignSourcePullSecrets>>,
     /// Repository defines the location from where to pull the signature / attestations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
@@ -1116,7 +1165,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSource {
 /// LocalObjectReference contains enough information to let you locate the
 /// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSourcePullSecrets {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignSourcePullSecrets {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -1128,18 +1177,18 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignSourcePullS
 
 /// TUF defines the configuration to fetch sigstore root
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignTuf {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignTuf {
     /// Mirror is the base URL of Sigstore TUF repository
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirror: Option<String>,
     /// Root defines the path or data of the trusted root
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub root: Option<ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignTufRoot>,
+    pub root: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignTufRoot>,
 }
 
 /// Root defines the path or data of the trusted root
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignTufRoot {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsCosignTufRoot {
     /// Data is the base64 encoded TUF root
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
@@ -1150,32 +1199,55 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsCosignTufRoot {
 
 /// Notary defines attestor configuration for Notary based signatures
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAttestorsNotary {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotary {
     /// Certs define the cert chain for Notary signature verification
-    pub certs: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub certs: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotaryCerts>,
     /// TSACerts define the cert chain for verifying timestamps of notary signature
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tsaCerts")]
-    pub tsa_certs: Option<String>,
+    pub tsa_certs: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotaryTsaCerts>,
+}
+
+/// Certs define the cert chain for Notary signature verification
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotaryCerts {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TSACerts define the cert chain for verifying timestamps of notary signature
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotaryTsaCerts {
+    /// Expression defines the a CEL expression input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Value defines the raw string input.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// AutogenConfiguration defines the configuration for the generation controller.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAutogen {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAutogen {
     /// PodControllers specifies whether to generate a pod controllers rules.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podControllers")]
-    pub pod_controllers: Option<ImageValidatingPolicyStatusAutogenRulesSpecAutogenPodControllers>,
+    pub pod_controllers: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAutogenPodControllers>,
 }
 
 /// PodControllers specifies whether to generate a pod controllers rules.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecAutogenPodControllers {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAutogenPodControllers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controllers: Option<Vec<String>>,
 }
 
 /// Credentials provides credentials that will be used for authentication with registry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecCredentials {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
@@ -1191,13 +1263,13 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecCredentials {
 
 /// EvaluationConfiguration defines the configuration for the policy evaluation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluation {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecEvaluation {
     /// Admission controls policy evaluation during admission.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub admission: Option<ImageValidatingPolicyStatusAutogenRulesSpecEvaluationAdmission>,
+    pub admission: Option<ImageValidatingPolicyStatusAutogenConfigsSpecEvaluationAdmission>,
     /// Background  controls policy evaluation during background scan.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub background: Option<ImageValidatingPolicyStatusAutogenRulesSpecEvaluationBackground>,
+    pub background: Option<ImageValidatingPolicyStatusAutogenConfigsSpecEvaluationBackground>,
     /// Mode is the mode of policy evaluation.
     /// Allowed values are "Kubernetes" or "JSON".
     /// Optional. Default value is "Kubernetes".
@@ -1207,7 +1279,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluation {
 
 /// Admission controls policy evaluation during admission.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluationAdmission {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecEvaluationAdmission {
     /// Enabled controls if rules are applied during admission.
     /// Optional. Default value is "true".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1216,7 +1288,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluationAdmission {
 
 /// Background  controls policy evaluation during background scan.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluationBackground {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecEvaluationBackground {
     /// Enabled controls if rules are applied to existing resources during a background scan.
     /// Optional. Default value is "true". The value must be set to "false" if the policy rule
     /// uses variables that are only available in the admission review request (e.g. user name).
@@ -1226,24 +1298,13 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecEvaluationBackground {
 
 /// ImageValidatingPolicySpec is the specification of the desired behavior of the ImageValidatingPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ImageValidatingPolicyStatusAutogenRulesSpecFailurePolicy {
+pub enum ImageValidatingPolicyStatusAutogenConfigsSpecFailurePolicy {
     Ignore,
     Fail,
 }
 
-/// ImageRule defines a Glob or a CEL expression for matching images
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecImageRules {
-    /// Cel defines CEL Expressions for matching images
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cel: Option<String>,
-    /// Glob defines a globbing pattern for matching images
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glob: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecImages {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecImages {
     /// Expression defines CEL expression to extract images from the resource.
     pub expression: String,
     /// Name is the name for this imageList. It is used to refer to the images in verification block as images.<name>
@@ -1252,7 +1313,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecImages {
 
 /// MatchCondition represents a condition which must by fulfilled for a request to be sent to a webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConditions {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConditions {
     /// Expression represents the expression which will be evaluated by CEL. Must evaluate to bool.
     /// CEL expressions have access to the contents of the AdmissionRequest and Authorizer, organized into CEL variables:
     /// 
@@ -1281,11 +1342,11 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConditions {
 
 /// MatchConstraints specifies what resources this policy is designed to validate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraints {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraints {
     /// ExcludeResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy should not care about.
     /// The exclude rules take precedence over include rules (if a resource matches both, it is excluded)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeResourceRules")]
-    pub exclude_resource_rules: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsExcludeResourceRules>>,
+    pub exclude_resource_rules: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsExcludeResourceRules>>,
     /// matchPolicy defines how the "MatchResources" list is used to match incoming requests.
     /// Allowed values are "Exact" or "Equivalent".
     /// 
@@ -1346,7 +1407,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraints {
     /// 
     /// Default to the empty LabelSelector, which matches everything.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceSelector>,
+    pub namespace_selector: Option<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelector>,
     /// ObjectSelector decides whether to run the validation based on if the
     /// object has matching labels. objectSelector is evaluated against both
     /// the oldObject and newObject that would be sent to the cel validation, and
@@ -1359,16 +1420,16 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraints {
     /// users may skip the admission webhook by setting the labels.
     /// Default to the empty LabelSelector, which matches everything.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSelector")]
-    pub object_selector: Option<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSelector>,
+    pub object_selector: Option<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelector>,
     /// ResourceRules describes what operations on what resources/subresources the ValidatingAdmissionPolicy matches.
     /// The policy cares about an operation if it matches _any_ Rule.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRules")]
-    pub resource_rules: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsResourceRules>>,
+    pub resource_rules: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsResourceRules>>,
 }
 
 /// NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsExcludeResourceRules {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsExcludeResourceRules {
     /// APIGroups is the API groups the resources belong to. '*' is all groups.
     /// If '*' is present, the length of the slice must be one.
     /// Required.
@@ -1461,10 +1522,10 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsExcludeRes
 /// 
 /// Default to the empty LabelSelector, which matches everything.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceSelector {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1475,7 +1536,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceSelectorMatchExpressions {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1501,10 +1562,10 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsNamespaceS
 /// users may skip the admission webhook by setting the labels.
 /// Default to the empty LabelSelector, which matches everything.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSelector {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1515,7 +1576,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSele
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSelectorMatchExpressions {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsObjectSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1531,7 +1592,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsObjectSele
 
 /// NamedRuleWithOperations is a tuple of Operations and Resources with ResourceNames.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsResourceRules {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchConstraintsResourceRules {
     /// APIGroups is the API groups the resources belong to. '*' is all groups.
     /// If '*' is present, the length of the slice must be one.
     /// Required.
@@ -1580,9 +1641,35 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecMatchConstraintsResourceRu
     pub scope: Option<String>,
 }
 
+/// MatchImageReference defines a Glob or a CEL expression for matching images
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecMatchImageReferences {
+    /// Expression defines CEL Expressions for matching images
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression: Option<String>,
+    /// Glob defines a globbing pattern for matching images
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glob: Option<String>,
+}
+
+/// ValidationConfigurations defines settings for mutating and verifying image digests, and enforcing image verification through signatures.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecValidationConfigurations {
+    /// MutateDigest enables replacement of image tags with digests.
+    /// Defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mutateDigest")]
+    pub mutate_digest: Option<bool>,
+    /// Required validates that images are verified, i.e., have passed a signature or attestation check.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
+    /// VerifyDigest validates that images have a digest.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDigest")]
+    pub verify_digest: Option<bool>,
+}
+
 /// Validation specifies the CEL expression which is used to apply the validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecValidations {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecValidations {
     /// Expression represents the expression which will be evaluated by CEL.
     /// ref: https://github.com/google/cel-spec
     /// CEL expressions have access to the contents of the API request/response, organized into CEL variables as well as some other useful variables:
@@ -1658,7 +1745,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecValidations {
 
 /// Variable is the definition of a variable that is used for composition. A variable is defined as a named expression.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecVariables {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecVariables {
     /// Expression is the expression that will be evaluated as the value of the variable.
     /// The CEL expression has access to the same identifiers as the CEL expressions in Validation.
     pub expression: String,
@@ -1670,7 +1757,7 @@ pub struct ImageValidatingPolicyStatusAutogenRulesSpecVariables {
 
 /// WebhookConfiguration defines the configuration for the webhook.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ImageValidatingPolicyStatusAutogenRulesSpecWebhookConfiguration {
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration {
     /// TimeoutSeconds specifies the maximum time in seconds allowed to apply this policy.
     /// After the configured time expires, the admission request may fail, or may simply ignore the policy results,
     /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.

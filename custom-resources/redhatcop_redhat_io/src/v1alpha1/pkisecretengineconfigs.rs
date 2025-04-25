@@ -22,7 +22,8 @@ pub struct PKISecretEngineConfigSpec {
     /// Disables or enables CRL building.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "CRLDisable")]
     pub crl_disable: Option<bool>,
-    /// Specifies the URL values for the CRL Distribution Points field. This can be an array or a comma-separated string list. kubebuilder:validation:UniqueItems=true
+    /// Specifies the URL values for the CRL Distribution Points field. This can be an array or a comma-separated string list.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "CRLDistributionPoints")]
     pub crl_distribution_points: Option<Vec<String>>,
     /// Specifies the time until expiration.
@@ -67,7 +68,8 @@ pub struct PKISecretEngineConfigSpec {
     /// Use the configured refered Vault PKISecretEngineConfig to issue a certificate with appropriate values for acting as an intermediate CA.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalSign")]
     pub internal_sign: Option<PKISecretEngineConfigInternalSign>,
-    /// Specifies the URL values for the Issuing Certificate field. This can be an array or a comma-separated string list. kubebuilder:validation:UniqueItems=true
+    /// Specifies the URL values for the Issuing Certificate field. This can be an array or a comma-separated string list.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuingCertificates")]
     pub issuing_certificates: Option<Vec<String>>,
     /// Specifies the number of bits to use. This must be changed to a valid value if the key_type is ec, e.g., 224, 256, 384 or 521.
@@ -82,7 +84,8 @@ pub struct PKISecretEngineConfigSpec {
     /// Specifies the maximum path length to encode in the generated certificate. -1 means no limit. Unless the signing certificate has a maximum path length set, in which case the path length is set to one less than that of the signing certificate. A limit of 0 means a literal path length of zero.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathLength")]
     pub max_path_length: Option<i64>,
-    /// Specifies the URL values for the OCSP Servers field. This can be an array or a comma-separated string list. kubebuilder:validation:UniqueItems=true
+    /// Specifies the URL values for the OCSP Servers field. This can be an array or a comma-separated string list.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspServers")]
     pub ocsp_servers: Option<Vec<String>>,
     /// Specifies the O (Organization) values in the subject field of issued certificates. This is a comma-separated string or JSON array.
@@ -94,10 +97,13 @@ pub struct PKISecretEngineConfigSpec {
     /// Specifies the OU (OrganizationalUnit) values in the subject field of issued certificates. This is a comma-separated string or JSON array.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ou: Option<String>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/config/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/config/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// A comma separated string (or, string array) containing DNS domains for which certificates are allowed to be issued or signed by this CA certificate. Note that subdomains are allowed, as per RFC. kubebuilder:validation:UniqueItems=true
+    /// A comma separated string (or, string array) containing DNS domains for which certificates are allowed to be issued or signed by this CA certificate. Note that subdomains are allowed, as per RFC.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "permittedDnsDomains")]
     pub permitted_dns_domains: Option<Vec<String>>,
     /// Specifies the Postal Code values in the subject field of issued certificates. This is a comma-separated string or JSON array.
@@ -143,7 +149,9 @@ pub struct PKISecretEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -183,7 +191,9 @@ pub struct PKISecretEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -191,7 +201,9 @@ pub struct PKISecretEngineConfigConnectionTLsConfigTlsSecret {
 /// ExternalSignSecret retrieves the signed intermediate certificate from a Kubernetes secret. Allows submitting the signed CA certificate corresponding to a private key generated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineConfigExternalSignSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -210,7 +222,9 @@ pub enum PKISecretEngineConfigFormat {
 /// Use the configured refered Vault PKISecretEngineConfig to issue a certificate with appropriate values for acting as an intermediate CA.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineConfigInternalSign {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -245,7 +259,8 @@ pub enum PKISecretEngineConfigType {
 /// PKISecretEngineConfigStatus defines the observed state of PKISecretEngineConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineConfigStatus {
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -19,34 +19,44 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct JWTOIDCAuthEngineConfigSpec {
-    /// The CA certificate or chain of certificates, in PEM format, to use to validate connections to the JWKS URL. If not set, system certificates are used.
+    /// The CA certificate or chain of certificates, in PEM format, to use to validate connections to the JWKS URL.
+    /// If not set, system certificates are used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "JWKSCAPEM")]
     pub jwkscapem: Option<String>,
-    /// JWKS URL to use to authenticate signatures. Cannot be used with "oidc_discovery_url" or "jwt_validation_pubkeys"
+    /// JWKS URL to use to authenticate signatures.
+    /// Cannot be used with "oidc_discovery_url" or "jwt_validation_pubkeys"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "JWKSURL")]
     pub jwksurl: Option<String>,
-    /// A list of supported signing algorithms. Defaults to [RS256] for OIDC roles. Defaults to all available algorithms for JWT roles kubebuilder:validation:UniqueItems=true
+    /// A list of supported signing algorithms. Defaults to [RS256] for OIDC roles. Defaults to all available algorithms for JWT roles
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "JWTSupportedAlgs")]
     pub jwt_supported_algs: Option<Vec<String>>,
-    /// A list of PEM-encoded public keys to use to authenticate signatures locally. Cannot be used with "jwks_url" or "oidc_discovery_url" kubebuilder:validation:UniqueItems=true
+    /// A list of PEM-encoded public keys to use to authenticate signatures locally. Cannot be used with "jwks_url" or "oidc_discovery_url"
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "JWTValidationPubKeys")]
     pub jwt_validation_pub_keys: Option<Vec<String>>,
     /// The OAuth Client ID from the provider for OIDC roles.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCClientID")]
     pub oidc_client_id: Option<String>,
-    /// OIDCCredentials from the provider for OIDC roles OIDCCredentials consists in OIDCClientID and OIDCClientSecret, which can be created as Kubernetes Secret, VaultSecret or RandomSecret
+    /// OIDCCredentials from the provider for OIDC roles
+    /// OIDCCredentials consists in OIDCClientID and OIDCClientSecret, which can be created as Kubernetes Secret, VaultSecret or RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCCredentials")]
     pub oidc_credentials: Option<JWTOIDCAuthEngineConfigOidcCredentials>,
-    /// The CA certificate or chain of certificates, in PEM format, to use to validate connections to the OIDC Discovery URL. If not set, system certificates are used
+    /// The CA certificate or chain of certificates, in PEM format, to use to validate connections to the OIDC Discovery URL.
+    /// If not set, system certificates are used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCDiscoveryCAPEM")]
     pub oidc_discovery_capem: Option<String>,
     /// The OIDC Discovery URL, without any .well-known component (base path). Cannot be used with "jwks_url" or "jwt_validation_pubkeys"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCDiscoveryURL")]
     pub oidc_discovery_url: Option<String>,
-    /// The response mode to be used in the OAuth2 request. Allowed values are "query" and "form_post". Defaults to "query". If using Vault namespaces, and oidc_response_mode is "form_post", then "namespace_in_state" should be set to false
+    /// The response mode to be used in the OAuth2 request.
+    /// Allowed values are "query" and "form_post". Defaults to "query".
+    /// If using Vault namespaces, and oidc_response_mode is "form_post", then "namespace_in_state" should be set to false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCResponseMode")]
     pub oidc_response_mode: Option<String>,
-    /// The response types to request. Allowed values are "code" and "id_token". Defaults to "code". Note: "id_token" may only be used if "oidc_response_mode" is set to "form_post" kubebuilder:validation:UniqueItems=true
+    /// The response types to request. Allowed values are "code" and "id_token". Defaults to "code".
+    /// Note: "id_token" may only be used if "oidc_response_mode" is set to "form_post"
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "OIDCResponseTypes")]
     pub oidc_response_types: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,54 +70,81 @@ pub struct JWTOIDCAuthEngineConfigSpec {
     /// The default role to use if none is provided during login
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRole")]
     pub default_role: Option<String>,
-    /// Pass namespace in the OIDC state parameter instead of as a separate query parameter. With this setting, the allowed redirect URL(s) in Vault and on the provider side should not contain a namespace query parameter. This means only one redirect URL entry needs to be maintained on the provider side for all vault namespaces that will be authenticating against it. Defaults to true for new configs
+    /// Pass namespace in the OIDC state parameter instead of as a separate query parameter.
+    /// With this setting, the allowed redirect URL(s) in Vault and on the provider side should not contain a namespace query parameter.
+    /// This means only one redirect URL entry needs to be maintained on the provider side for all vault namespaces that will be authenticating against it.
+    /// Defaults to true for new configs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceInState")]
     pub namespace_in_state: Option<bool>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Configuration options for provider-specific handling. Providers with specific handling include: Azure, Google. The options are described in each provider's section in OIDC Provider Setup
+    /// Configuration options for provider-specific handling. Providers with specific handling include: Azure, Google.
+    /// The options are described in each provider's section in OIDC Provider Setup
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerConfig")]
     pub provider_config: Option<serde_json::Value>,
 }
 
-/// OIDCCredentials from the provider for OIDC roles OIDCCredentials consists in OIDCClientID and OIDCClientSecret, which can be created as Kubernetes Secret, VaultSecret or RandomSecret
+/// OIDCCredentials from the provider for OIDC roles
+/// OIDCCredentials consists in OIDCClientID and OIDCClientSecret, which can be created as Kubernetes Secret, VaultSecret or RandomSecret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigOidcCredentials {
     /// PasswordKey key to be used when retrieving the password, required with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// When using randomSecret a username must be specified in the spec.username
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSecret")]
     pub random_secret: Option<JWTOIDCAuthEngineConfigOidcCredentialsRandomSecret>,
-    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<JWTOIDCAuthEngineConfigOidcCredentialsSecret>,
     /// UsernameKey key to be used when retrieving the username, optional with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
-    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecret")]
     pub vault_secret: Option<JWTOIDCAuthEngineConfigOidcCredentialsVaultSecret>,
 }
 
-/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// When using randomSecret a username must be specified in the spec.username
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigOidcCredentialsRandomSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigOidcCredentialsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigOidcCredentialsVaultSecret {
     /// Path is the path to the secret
@@ -134,7 +171,9 @@ pub struct JWTOIDCAuthEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -174,7 +213,9 @@ pub struct JWTOIDCAuthEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JWTOIDCAuthEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

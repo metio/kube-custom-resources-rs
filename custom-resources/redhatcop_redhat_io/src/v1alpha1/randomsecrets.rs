@@ -28,10 +28,18 @@ pub struct RandomSecretSpec {
     /// IsKVSecretsEngineV2 indicates if the KV Secrets engine is V2 or not. Default is false to indicate the payload to send is for KV Secret Engine V1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isKVSecretsEngineV2")]
     pub is_kv_secrets_engine_v2: Option<bool>,
+    /// The KV secret retain policy to apply when the Kubernetes resource is deleted.
+    /// When unspecified, the KV secret is also deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kvSecretRetainPolicy")]
+    pub kv_secret_retain_policy: Option<RandomSecretKvSecretRetainPolicy>,
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path at which to create the secret. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/{metadata.name}. If IsKVSecretsEngineV2 is false, the authentication role must have the following capabilities = [ "create", "update", "delete"] on the {[spec.authentication.namespace]}/{spec.path}/{metadata.name} path. If IsKVSecretsEngineV2 is true, the authentication role must have the following capabilities = [ "create", "update"] on the {[spec.authentication.namespace]}/{spec.path}/data/{metadata.name} path and capabilities = [ "delete"] on the {[spec.authentication.namespace]}/{spec.path}/metadata/{metadata.name} path. Additionally, if IsKVSecretsEngineV2 is true, it is acceptable for this value to have a suffix of "/data" or not. This suffix is no longer needed but still supported for backwards compatibility.
+    /// Path at which to create the secret.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/{metadata.name}.
+    /// If IsKVSecretsEngineV2 is false, the authentication role must have the following capabilities = [ "create", "update", "delete"] on the {[spec.authentication.namespace]}/{spec.path}/{metadata.name} path.
+    /// If IsKVSecretsEngineV2 is true, the authentication role must have the following capabilities = [ "create", "update"] on the {[spec.authentication.namespace]}/{spec.path}/data/{metadata.name} path and capabilities = [ "delete"] on the {[spec.authentication.namespace]}/{spec.path}/metadata/{metadata.name} path.
+    /// Additionally, if IsKVSecretsEngineV2 is true, it is acceptable for this value to have a suffix of "/data" or not. This suffix is no longer needed but still supported for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// RefreshPeriod if specified, the operator will refresh the secret with the given frequency. This will also set the ttl of the secret which provides a hint for how often consumers should check back for a new value when reading the secret's lease_duration.
@@ -65,7 +73,9 @@ pub struct RandomSecretAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RandomSecretAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -105,18 +115,29 @@ pub struct RandomSecretConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RandomSecretConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// RandomSecretSpec defines the desired state of RandomSecret
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RandomSecretKvSecretRetainPolicy {
+    Delete,
+    Retain,
 }
 
 /// SecretFormat specifies a map of key and password policies used to generate random values
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RandomSecretSecretFormat {
-    /// InlinePasswordPolicy is an inline password policy specified using Vault password policy syntax (https://www.vaultproject.io/docs/concepts/password-policies#password-policy-syntax) Only one of PasswordPolicyName or InlinePasswordPolicy can be specified
+    /// InlinePasswordPolicy is an inline password policy specified using Vault password policy syntax (https://www.vaultproject.io/docs/concepts/password-policies#password-policy-syntax)
+    /// Only one of PasswordPolicyName or InlinePasswordPolicy can be specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inlinePasswordPolicy")]
     pub inline_password_policy: Option<String>,
-    /// PasswordPolicyName a ref to a password policy defined in Vault. Notice that in order to use this, the Vault role you use needs the following capabilities = ["read"] on /sys/policy/password. Only one of PasswordPolicyName or InlinePasswordPolicy can be specified
+    /// PasswordPolicyName a ref to a password policy defined in Vault. Notice that in order to use this, the Vault role you use needs the following capabilities = ["read"] on /sys/policy/password.
+    /// Only one of PasswordPolicyName or InlinePasswordPolicy can be specified
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPolicyName")]
     pub password_policy_name: Option<String>,
 }

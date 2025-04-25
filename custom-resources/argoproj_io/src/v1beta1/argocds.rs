@@ -190,6 +190,9 @@ pub struct ArgoCDApplicationSet {
     /// LogLevel describes the log level that should be used by the ApplicationSet controller. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
+    /// LogFormat refers to the log format used by the ApplicationSet component. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logformat: Option<ArgoCDApplicationSetLogformat>,
     /// Resources defines the Compute Resources required by the container for ApplicationSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDApplicationSetResources>,
@@ -310,6 +313,15 @@ pub struct ArgoCDApplicationSetEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// ArgoCDApplicationSet defines whether the Argo CD ApplicationSet controller should be installed.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDApplicationSetLogformat {
+    #[serde(rename = "text")]
+    Text,
+    #[serde(rename = "json")]
+    Json,
 }
 
 /// Resources defines the Compute Resources required by the container for ApplicationSet.
@@ -6668,6 +6680,9 @@ pub struct ArgoCDNotifications {
     /// LogLevel describes the log level that should be used by the argocd-notifications. Defaults to ArgoCDDefaultLogLevel if not set.  Valid options are debug,info, error, and warn.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
+    /// LogFormat refers to the log format used by the argocd-notifications. Defaults to ArgoCDDefaultLogFormat if not configured. Valid options are text or json.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logformat: Option<ArgoCDNotificationsLogformat>,
     /// Replicas defines the number of replicas to run for notifications-controller
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -6773,6 +6788,15 @@ pub struct ArgoCDNotificationsEnvValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Notifications defines whether the Argo CD Notifications controller should be installed.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ArgoCDNotificationsLogformat {
+    #[serde(rename = "text")]
+    Text,
+    #[serde(rename = "json")]
+    Json,
 }
 
 /// Resources defines the Compute Resources required by the container for Argo CD Notifications.

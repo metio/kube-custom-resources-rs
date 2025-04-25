@@ -289,7 +289,7 @@ pub struct VMScrapeConfigBearerTokenSecret {
 /// See [here](https://docs.victoriametrics.com/sd_configs/#consul_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigConsulSdConfigs {
-    /// Allow stale Consul results (see https://developer.hashicorp.com/consul/api-docs/features/consistency). Will reduce load on Consul.
+    /// Allow stale Consul results (see https://developer.hashicorp.com/consul/api-docs/features/consistency ). Will reduce load on Consul.
     /// If unset, use its default value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,

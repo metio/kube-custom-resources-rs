@@ -132,7 +132,7 @@ pub struct SyslogNGClusterOutputElasticsearchDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -434,7 +434,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -705,7 +705,7 @@ pub struct SyslogNGClusterOutputFileDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -769,7 +769,7 @@ pub struct SyslogNGClusterOutputHttpDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -1056,7 +1056,7 @@ pub struct SyslogNGClusterOutputLogglyDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -1338,7 +1338,7 @@ pub struct SyslogNGClusterOutputLogscaleDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -1442,6 +1442,8 @@ pub struct SyslogNGClusterOutputLoki {
     pub retries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenant-id")]
+    pub tenant_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time_reopen: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1620,7 +1622,7 @@ pub struct SyslogNGClusterOutputLokiDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -1681,7 +1683,7 @@ pub struct SyslogNGClusterOutputMongodbDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -1829,7 +1831,7 @@ pub struct SyslogNGClusterOutputOpenobserveDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -2256,7 +2258,7 @@ pub struct SyslogNGClusterOutputOpentelemetryDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -2352,7 +2354,7 @@ pub struct SyslogNGClusterOutputRedisDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -2456,7 +2458,7 @@ pub struct SyslogNGClusterOutputS3DiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -2588,7 +2590,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -2948,7 +2950,7 @@ pub struct SyslogNGClusterOutputSumologicHttpDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -3218,7 +3220,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 
@@ -3462,7 +3464,7 @@ pub struct SyslogNGClusterOutputSyslogDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mem_buf_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub q_out_size: Option<i64>,
+    pub qout_size: Option<i64>,
     pub reliable: bool,
 }
 

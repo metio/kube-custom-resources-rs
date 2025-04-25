@@ -38,7 +38,9 @@ pub struct AuthEngineMountSpec {
     /// The name of the obejct created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Path at which this auth engine will be mounted The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path /sys/auth/{[spec.authentication.namespace]}/{spec.path}/{metadata.name}.
+    /// Path at which this auth engine will be mounted
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path /sys/auth/{[spec.authentication.namespace]}/{spec.path}/{metadata.name}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// SealWrap Enable seal wrapping for the mount, causing values stored by the mount to be wrapped by the seal's encryption capability.
@@ -69,7 +71,9 @@ pub struct AuthEngineMountAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthEngineMountAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -77,13 +81,16 @@ pub struct AuthEngineMountAuthenticationServiceAccount {
 /// Config Specifies configuration options for this auth method.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthEngineMountConfig {
-    /// AllowedResponseHeaders list of headers to whitelist, allowing a plugin to include them in the response. kubebuilder:validation:UniqueItems=true
+    /// AllowedResponseHeaders list of headers to whitelist, allowing a plugin to include them in the response.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedResponseHeaders")]
     pub allowed_response_headers: Option<Vec<String>>,
-    /// AuditNonHMACRequestKeys list of keys that will not be HMAC'd by audit devices in the request data object. kubebuilder:validation:UniqueItems:=true
+    /// AuditNonHMACRequestKeys list of keys that will not be HMAC'd by audit devices in the request data object.
+    /// kubebuilder:validation:UniqueItems:=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditNonHMACRequestKeys")]
     pub audit_non_hmac_request_keys: Option<Vec<String>>,
-    /// AuditNonHMACResponseKeys list of keys that will not be HMAC'd by audit devices in the response data object. kubebuilder:validation:UniqueItems=true
+    /// AuditNonHMACResponseKeys list of keys that will not be HMAC'd by audit devices in the response data object.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditNonHMACResponseKeys")]
     pub audit_non_hmac_response_keys: Option<Vec<String>>,
     /// DefaultLeaseTTL  The default lease duration, specified as a string duration like "5s" or "30m".
@@ -101,7 +108,8 @@ pub struct AuthEngineMountConfig {
     /// Options undocumented
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
-    /// PassthroughRequestHeaders list of headers to whitelist and pass from the request to the plugin. kubebuilder:validation:UniqueItems:=true
+    /// PassthroughRequestHeaders list of headers to whitelist and pass from the request to the plugin.
+    /// kubebuilder:validation:UniqueItems:=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passthroughRequestHeaders")]
     pub passthrough_request_headers: Option<Vec<String>>,
     /// TokenType undocumented
@@ -153,7 +161,9 @@ pub struct AuthEngineMountConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthEngineMountConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

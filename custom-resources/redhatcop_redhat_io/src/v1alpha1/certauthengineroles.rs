@@ -19,22 +19,34 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CertAuthEngineRoleSpec {
-    /// Constrain the Common Names in the client certificate with a globbed pattern. Value is a comma-separated list of patterns. Authentication requires at least one Name matching at least one pattern. If not set, defaults to allowing all names.
+    /// Constrain the Common Names in the client certificate with a globbed pattern.
+    /// Value is a comma-separated list of patterns.
+    /// Authentication requires at least one Name matching at least one pattern. If not set, defaults to allowing all names.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedCommonNames")]
     pub allowed_common_names: Option<Vec<String>>,
-    /// Constrain the Alternative Names in the client certificate with a globbed pattern. Value is a comma-separated list of patterns. Authentication requires at least one DNS matching at least one pattern. If not set, defaults to allowing all dns.
+    /// Constrain the Alternative Names in the client certificate with a globbed pattern.
+    /// Value is a comma-separated list of patterns.
+    /// Authentication requires at least one DNS matching at least one pattern. If not set, defaults to allowing all dns.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedDNSSANs")]
     pub allowed_dnssa_ns: Option<Vec<String>>,
-    /// Constrain the Alternative Names in the client certificate with a globbed pattern. Value is a comma-separated list of patterns. Authentication requires at least one Email matching at least one pattern. If not set, defaults to allowing all emails.
+    /// Constrain the Alternative Names in the client certificate with a globbed pattern.
+    /// Value is a comma-separated list of patterns.
+    /// Authentication requires at least one Email matching at least one pattern. If not set, defaults to allowing all emails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedEmailSANs")]
     pub allowed_email_sa_ns: Option<Vec<String>>,
-    /// A comma separated string or array of oid extensions. Upon successful authentication, these extensions will be added as metadata if they are present in the certificate. The metadata key will be the string consisting of the oid numbers separated by a dash (-) instead of a dot (.) to allow usage in ACL templates.
+    /// A comma separated string or array of oid extensions.
+    /// Upon successful authentication, these extensions will be added as metadata if they are present in the certificate.
+    /// The metadata key will be the string consisting of the oid numbers separated by a dash (-) instead of a dot (.) to allow usage in ACL templates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedMetadataExtensions")]
     pub allowed_metadata_extensions: Option<Vec<String>>,
-    /// Constrain the Organizational Units (OU) in the client certificate with a globbed pattern. Value is a comma-separated list of OU patterns. Authentication requires at least one OU matching at least one pattern. If not set, defaults to allowing all OUs.
+    /// Constrain the Organizational Units (OU) in the client certificate with a globbed pattern.
+    /// Value is a comma-separated list of OU patterns.
+    /// Authentication requires at least one OU matching at least one pattern. If not set, defaults to allowing all OUs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedOrganizationalUnits")]
     pub allowed_organizational_units: Option<Vec<String>>,
-    /// Constrain the Alternative Names in the client certificate with a globbed pattern. Value is a comma-separated list of URI patterns. Authentication requires at least one URI matching at least one pattern. If not set, defaults to allowing all URIs.
+    /// Constrain the Alternative Names in the client certificate with a globbed pattern.
+    /// Value is a comma-separated list of URI patterns.
+    /// Authentication requires at least one URI matching at least one pattern. If not set, defaults to allowing all URIs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedURISANs")]
     pub allowed_urisa_ns: Option<Vec<String>>,
     /// Authentication is the kube auth configuration to be used to execute this request
@@ -46,13 +58,15 @@ pub struct CertAuthEngineRoleSpec {
     /// Connection represents the information needed to connect to Vault. This operator uses the standard Vault environment variables to connect to Vault. If you need to override those settings and for example connect to a different Vault instance, you can do with this section of the CR.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection: Option<CertAuthEngineRoleConnection>,
-    /// The display_name to set on tokens issued when authenticating against this CA certificate. If not set, defaults to the name of the role.
+    /// The display_name to set on tokens issued when authenticating against this CA certificate.
+    /// If not set, defaults to the name of the role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// The name of the object created in Vault. If this is specified it takes precedence over {metatada.name}
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Any additional OCSP responder certificates needed to verify OCSP responses. Provided as base64 encoded PEM data.
+    /// Any additional OCSP responder certificates needed to verify OCSP responses.
+    /// Provided as base64 encoded PEM data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspCACertificates")]
     pub ocsp_ca_certificates: Option<String>,
     /// If enabled, validate certificates' revocation status using OCSP.
@@ -67,22 +81,31 @@ pub struct CertAuthEngineRoleSpec {
     /// If set to true, rather than accepting the first successful OCSP response, query all servers and consider the certificate valid only if all servers agree.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspQueryAllServers")]
     pub ocsp_query_all_servers: Option<bool>,
-    /// A comma-separated list of OCSP server addresses. If unset, the OCSP server is determined from the AuthorityInformationAccess extension on the certificate being inspected.
+    /// A comma-separated list of OCSP server addresses.
+    /// If unset, the OCSP server is determined from the AuthorityInformationAccess extension on the certificate being inspected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspServersOverride")]
     pub ocsp_servers_override: Option<Vec<String>>,
-    /// If greater than 0, specifies the maximum age of an OCSP thisUpdate field. This avoids accepting old responses without a nextUpdate field.
+    /// If greater than 0, specifies the maximum age of an OCSP thisUpdate field.
+    /// This avoids accepting old responses without a nextUpdate field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ocspThisUpdateMaxAge")]
     pub ocsp_this_update_max_age: Option<String>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/certs/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/certs/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Require specific Custom Extension OIDs to exist and match the pattern. Value is a comma separated string or array of oid:value. Expects the extension value to be some type of ASN1 encoded string. All conditions must be met. To match on the hex-encoded value of the extension, including non-string extensions, use the format hex:<oid>:<value>. Supports globbing on value.
+    /// Require specific Custom Extension OIDs to exist and match the pattern.
+    /// Value is a comma separated string or array of oid:value.
+    /// Expects the extension value to be some type of ASN1 encoded string. All conditions must be met.
+    /// To match on the hex-encoded value of the extension, including non-string extensions, use the format hex:<oid>:<value>.
+    /// Supports globbing on value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredExtensions")]
     pub required_extensions: Option<Vec<String>>,
     /// List of CIDR blocks; if set, specifies blocks of IP addresses which can authenticate successfully, and ties the resulting token to these blocks as well.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenBoundCIDRs")]
     pub token_bound_cid_rs: Option<Vec<String>>,
-    /// If set, will encode an explicit max TTL onto the token. This is a hard cap even if tokenTTL and tokenMaxTTL would otherwise allow a renewal.
+    /// If set, will encode an explicit max TTL onto the token.
+    /// This is a hard cap even if tokenTTL and tokenMaxTTL would otherwise allow a renewal.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenExplicitMaxTTL")]
     pub token_explicit_max_ttl: Option<String>,
     /// The maximum lifetime for generated tokens. This current value of this will be referenced at renewal time.
@@ -91,19 +114,24 @@ pub struct CertAuthEngineRoleSpec {
     /// If set, the default policy will not be set on generated tokens; otherwise it will be added to the policies set in tokenPolicies.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenNoDefaultPolicy")]
     pub token_no_default_policy: Option<bool>,
-    /// The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited. If you require the token to have the ability to create child tokens, you will need to set this value to 0.
+    /// The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited.
+    /// If you require the token to have the ability to create child tokens, you will need to set this value to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenNumUses")]
     pub token_num_uses: Option<i64>,
     /// The maximum allowed period value when a periodic token is requested from this role.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenPeriod")]
     pub token_period: Option<String>,
-    /// List of token policies to encode onto generated tokens. Depending on the auth method, this list may be supplemented by user/group/other values.
+    /// List of token policies to encode onto generated tokens.
+    /// Depending on the auth method, this list may be supplemented by user/group/other values.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenPolicies")]
     pub token_policies: Option<Vec<String>>,
     /// The incremental lifetime for generated tokens. This current value of this will be referenced at renewal time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenTTL")]
     pub token_ttl: Option<String>,
-    /// The type of token that should be generated. Can be service, batch, or default to use the mount's tuned default (which unless changed will be service tokens). For token store roles, there are two additional possibilities: default-service and default-batch which specify the type to return unless the client requests a different type at generation time. For machine based authentication cases, you should use batch type tokens.
+    /// The type of token that should be generated.
+    /// Can be service, batch, or default to use the mount's tuned default (which unless changed will be service tokens).
+    /// For token store roles, there are two additional possibilities: default-service and default-batch which specify the type to return unless the client requests a different type at generation time.
+    /// For machine based authentication cases, you should use batch type tokens.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenType")]
     pub token_type: Option<String>,
 }
@@ -128,7 +156,9 @@ pub struct CertAuthEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertAuthEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -168,7 +198,9 @@ pub struct CertAuthEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CertAuthEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

@@ -170,6 +170,9 @@ pub struct AlertmanagerSpec {
     /// this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AlertmanagerInitContainers>>,
+    /// Defines the limits command line flags when starting Alertmanager.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<AlertmanagerLimits>,
     /// ListenLocal makes the Alertmanager server listen on loopback, so that it
     /// does not bind against the Pod IP. Note this is only for the Alertmanager
     /// UI, not the gossip communication.
@@ -4816,6 +4819,21 @@ pub struct AlertmanagerInitContainersVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Defines the limits command line flags when starting Alertmanager.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerLimits {
+    /// The maximum size of an individual silence as stored on disk. This corresponds to the Alertmanager's
+    /// `--silences.max-per-silence-bytes` flag.
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPerSilenceBytes")]
+    pub max_per_silence_bytes: Option<String>,
+    /// The maximum number active and pending silences. This corresponds to the
+    /// Alertmanager's `--silences.max-silences` flag.
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSilences")]
+    pub max_silences: Option<i32>,
 }
 
 /// Specification of the desired behavior of the Alertmanager cluster. More info:

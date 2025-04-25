@@ -25,7 +25,8 @@ pub struct LDAPAuthEngineConfigSpec {
     /// TLSMinVersion Minimum TLS version to use. Accepted values are tls10, tls11, tls12 or tls13
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "TLSMinVersion")]
     pub tls_min_version: Option<String>,
-    /// UPNDomain  The userPrincipalDomain used to construct the UPN string for the authenticating user. The constructed UPN will appear as [username]@UPNDomain. Example: example.com, which will cause vault to bind as username@example.com
+    /// UPNDomain  The userPrincipalDomain used to construct the UPN string for the authenticating user.
+    /// The constructed UPN will appear as [username]@UPNDomain. Example: example.com, which will cause vault to bind as username@example.com
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "UPNDomain")]
     pub upn_domain: Option<String>,
     /// AnonymousGroupSearch Use anonymous binds when performing LDAP group searches (note: even when true, the initial credentials will still be used for the initial connection test).
@@ -33,13 +34,17 @@ pub struct LDAPAuthEngineConfigSpec {
     pub anonymous_group_search: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<LDAPAuthEngineConfigAuthentication>,
-    /// BindCredentials is used to connect to the LDAP service on the specified LDAP Server. BindCredentials consists in bindDN and bindPass, which can be created as Kubernetes Secret, VaultSecret or RandomSecret.
+    /// BindCredentials is used to connect to the LDAP service on the specified LDAP Server.
+    /// BindCredentials consists in bindDN and bindPass, which can be created as Kubernetes Secret, VaultSecret or RandomSecret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindCredentials")]
     pub bind_credentials: Option<LDAPAuthEngineConfigBindCredentials>,
-    /// BindDN - Username used to connect to the LDAP service on the specified LDAP Server. If in the form accountname@domain.com, the username is transformed into a proper LDAP bind DN, for example, CN=accountname,CN=users,DC=domain,DC=com, when accessing the LDAP server. If username is provided it takes precedence over the username retrieved from the referenced secrets
+    /// BindDN - Username used to connect to the LDAP service on the specified LDAP Server.
+    /// If in the form accountname@domain.com, the username is transformed into a proper LDAP bind DN, for example, CN=accountname,CN=users,DC=domain,DC=com, when accessing the LDAP server.
+    /// If username is provided it takes precedence over the username retrieved from the referenced secrets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindDN")]
     pub bind_dn: Option<String>,
-    /// CaseSensitiveNames If set, user and group names assigned to policies within the backend will be case sensitive. Otherwise, names will be normalized to lower case. Case will still be preserved when sending the username to the LDAP server at login time; this is only for matching local user/group definitions.
+    /// CaseSensitiveNames If set, user and group names assigned to policies within the backend will be case sensitive.
+    /// Otherwise, names will be normalized to lower case. Case will still be preserved when sending the username to the LDAP server at login time; this is only for matching local user/group definitions.
     #[serde(rename = "caseSensitiveNames")]
     pub case_sensitive_names: bool,
     /// Certificate CA certificate to use when verifying LDAP server certificate, must be x509 PEM encoded.
@@ -60,19 +65,24 @@ pub struct LDAPAuthEngineConfigSpec {
     /// DiscoverDN Use anonymous bind to discover the bind DN of a user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoverDN")]
     pub discover_dn: Option<bool>,
-    /// GroupAttr LDAP attribute to follow on objects returned by groupfilter in order to enumerate user group membership. Examples: for groupfilter queries returning group objects, use: cn. For queries returning user objects, use: memberOf. The default is cn.
+    /// GroupAttr LDAP attribute to follow on objects returned by groupfilter in order to enumerate user group membership.
+    /// Examples: for groupfilter queries returning group objects, use: cn. For queries returning user objects, use: memberOf. The default is cn.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupAttr")]
     pub group_attr: Option<String>,
     /// GroupDN LDAP search base to use for group membership search. This can be the root containing either groups or users. Example: ou=Groups,dc=example,dc=com
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupDN")]
     pub group_dn: Option<String>,
-    /// GroupFilter Go template used when constructing the group membership query. The template can access the following context variables: [UserDN, Username]. The default is (|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}})), which is compatible with several common directory schemas. To support nested group resolution for Active Directory, instead use the following query: (&(objectClass=group)(member:1.2.840.113556.1.4.1941:={{.UserDN}}))
+    /// GroupFilter Go template used when constructing the group membership query. The template can access the following context variables: [UserDN, Username].
+    /// The default is (|(memberUid={{.Username}})(member={{.UserDN}})(uniqueMember={{.UserDN}})), which is compatible with several common directory schemas.
+    /// To support nested group resolution for Active Directory, instead use the following query: (&(objectClass=group)(member:1.2.840.113556.1.4.1941:={{.UserDN}}))
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupFilter")]
     pub group_filter: Option<String>,
     /// InsecureTLS If true, skips LDAP server SSL certificate verification - insecure, use with caution!
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureTLS")]
     pub insecure_tls: Option<bool>,
-    /// Path at which to make the configuration. The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to make the configuration.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/auth/{spec.path}/config/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// RequestTimeout Timeout, in seconds, for the connection when making requests against the server before returning back an error.
@@ -81,7 +91,8 @@ pub struct LDAPAuthEngineConfigSpec {
     /// StartTLS If true, issues a StartTLS command after establishing an unencrypted connection.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTLS")]
     pub start_tls: Option<bool>,
-    /// CertificateConfig represents the LDAP service certificate configuration. CertificateConfig consists in certificate, clientTLSCert and clientTLSKey which can be consumed from an Kubernetes Secret.
+    /// CertificateConfig represents the LDAP service certificate configuration.
+    /// CertificateConfig consists in certificate, clientTLSCert and clientTLSKey which can be consumed from an Kubernetes Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tLSConfig")]
     pub t_ls_config: Option<LDAPAuthEngineConfigTLsConfig>,
     /// TokenBoundCIDRs List of CIDR blocks; if set, specifies blocks of IP addresses which can authenticate successfully, and ties the resulting token to these blocks as well.
@@ -96,7 +107,8 @@ pub struct LDAPAuthEngineConfigSpec {
     /// TokenNoDefaultPolicy If set, the default policy will not be set on generated tokens; otherwise it will be added to the policies set in token_policies.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenNoDefaultPolicy")]
     pub token_no_default_policy: Option<bool>,
-    /// TokenNumUses The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited. If you require the token to have the ability to create child tokens, you will need to set this value to 0.
+    /// TokenNumUses The maximum number of times a generated token may be used (within its lifetime); 0 means unlimited.
+    /// If you require the token to have the ability to create child tokens, you will need to set this value to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenNumUses")]
     pub token_num_uses: Option<i64>,
     /// TokenPeriod The period, if any, to set on the token
@@ -108,10 +120,12 @@ pub struct LDAPAuthEngineConfigSpec {
     /// TokenTTL The incremental lifetime for generated tokens. This current value of this will be referenced at renewal time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenTTL")]
     pub token_ttl: Option<String>,
-    /// The type of token that should be generated. Can be service, batch, or default to use the mount's tuned default (which unless changed will be service tokens). For token store roles, there are two additional possibilities: default-service and default-batch which specify the type to return unless the client requests a different type at generation time.
+    /// The type of token that should be generated. Can be service, batch, or default to use the mount's tuned default (which unless changed will be service tokens).
+    /// For token store roles, there are two additional possibilities: default-service and default-batch which specify the type to return unless the client requests a different type at generation time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenType")]
     pub token_type: Option<String>,
-    /// URL The LDAP server to connect to. Examples: ldap://ldap.myorg.com, ldaps://ldap.myorg.com:636. Multiple URLs can be specified with commas, e.g. ldap://ldap.myorg.com,ldap://ldap2.myorg.com; these will be tried in-order.
+    /// URL The LDAP server to connect to. Examples: ldap://ldap.myorg.com, ldaps://ldap.myorg.com:636.
+    /// Multiple URLs can be specified with commas, e.g. ldap://ldap.myorg.com,ldap://ldap2.myorg.com; these will be tried in-order.
     pub url: String,
     /// UserAttr Attribute on user attribute object matching the username passed when authenticating. Examples: sAMAccountName, cn, uid
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userAttr")]
@@ -119,7 +133,8 @@ pub struct LDAPAuthEngineConfigSpec {
     /// UserDN Base DN under which to perform user search. Example: ou=Users,dc=example,dc=com
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userDN")]
     pub user_dn: Option<String>,
-    /// UserFilter An optional LDAP user search filter. The template can access the following context variables: UserAttr, Username. The default is ({{.UserAttr}}={{.Username}}), or ({{.UserAttr}}={{.Username@.upndomain}}) if upndomain is set.
+    /// UserFilter An optional LDAP user search filter. The template can access the following context variables: UserAttr, Username.
+    /// The default is ({{.UserAttr}}={{.Username}}), or ({{.UserAttr}}={{.Username@.upndomain}}) if upndomain is set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userFilter")]
     pub user_filter: Option<String>,
     /// UsernameAsAlias If set to true, forces the auth method to use the username passed by the user as the alias name.
@@ -146,48 +161,71 @@ pub struct LDAPAuthEngineConfigAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// BindCredentials is used to connect to the LDAP service on the specified LDAP Server. BindCredentials consists in bindDN and bindPass, which can be created as Kubernetes Secret, VaultSecret or RandomSecret.
+/// BindCredentials is used to connect to the LDAP service on the specified LDAP Server.
+/// BindCredentials consists in bindDN and bindPass, which can be created as Kubernetes Secret, VaultSecret or RandomSecret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigBindCredentials {
     /// PasswordKey key to be used when retrieving the password, required with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
-    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+    /// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// When using randomSecret a username must be specified in the spec.username
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "randomSecret")]
     pub random_secret: Option<LDAPAuthEngineConfigBindCredentialsRandomSecret>,
-    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<LDAPAuthEngineConfigBindCredentialsSecret>,
     /// UsernameKey key to be used when retrieving the username, optional with VaultSecrets and Kubernetes secrets, ignored with RandomSecret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
     pub username_key: Option<String>,
-    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+    /// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+    /// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+    /// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+    /// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecret")]
     pub vault_secret: Option<LDAPAuthEngineConfigBindCredentialsVaultSecret>,
 }
 
-/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. When using randomSecret a username must be specified in the spec.username password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
+/// RandomSecret retrieves the credentials from the Vault secret corresponding to this RandomSecret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. If the RandomSecret is refreshed the operator retrieves the new secret from Vault and updates this configuration. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// When using randomSecret a username must be specified in the spec.username
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}"".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigBindCredentialsRandomSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// Secret retrieves the credentials from a Kubernetes secret. The secret must be of basicauth type (https://kubernetes.io/docs/concepts/configuration/secret/#basic-authentication-secret). This will map the "username" and "password" keys of the secret to the username and password of this config. If the kubernetes secret is updated, this configuration will also be updated. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigBindCredentialsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified. username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}". password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}". If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
+/// VaultSecret retrieves the credentials from a Vault secret. This will map the "username" and "password" keys of the secret to the username and password of this config. All other keys will be ignored. Only one of RootCredentialsFromVaultSecret or RootCredentialsFromSecret or RootCredentialsFromRandomSecret can be specified.
+/// username: Specifies the name of the user to use as the "root" user when connecting to the database. This "root" user is used to create/update/delete users managed by these plugins, so you will need to ensure that this user has permissions to manipulate users appropriate to the database. This is typically used in the connection_url field via the templating directive "{{"username"}}" or "{{"name"}}".
+/// password: Specifies the password to use when connecting with the username. This value will not be returned by Vault when performing a read upon the configuration. This is typically used in the connection_url field via the templating directive "{{"password"}}".
+/// If username is provided as spec.username, it takes precedence over the username retrieved from the referenced secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigBindCredentialsVaultSecret {
     /// Path is the path to the secret
@@ -230,12 +268,15 @@ pub struct LDAPAuthEngineConfigConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// CertificateConfig represents the LDAP service certificate configuration. CertificateConfig consists in certificate, clientTLSCert and clientTLSKey which can be consumed from an Kubernetes Secret.
+/// CertificateConfig represents the LDAP service certificate configuration.
+/// CertificateConfig consists in certificate, clientTLSCert and clientTLSKey which can be consumed from an Kubernetes Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigTLsConfig {
     /// Cacert Path to a PEM-encoded CA certificate file on the local disk. This file is used to verify the Vault server's SSL certificate. This environment variable takes precedence over a cert passed via the secret.
@@ -255,7 +296,9 @@ pub struct LDAPAuthEngineConfigTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LDAPAuthEngineConfigTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

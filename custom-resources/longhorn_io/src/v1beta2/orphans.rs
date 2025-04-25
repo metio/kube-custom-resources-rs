@@ -20,6 +20,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct OrphanSpec {
+    /// The type of data engine for instance orphan.
+    /// Can be "v1", "v2".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataEngine")]
+    pub data_engine: Option<OrphanDataEngine>,
     /// The node ID on which the controller is responsible to reconcile this orphan CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeID")]
     pub node_id: Option<String>,
@@ -30,6 +34,15 @@ pub struct OrphanSpec {
     /// The parameters of the orphaned data
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
+}
+
+/// OrphanSpec defines the desired state of the Longhorn orphaned data
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OrphanDataEngine {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
 }
 
 /// OrphanStatus defines the observed state of the Longhorn orphaned data

@@ -39,7 +39,8 @@ pub struct PKISecretEngineRoleSpec {
     /// Specifies if clients can request certificates with CNs that are subdomains of the CNs allowed by the other role options. This includes wildcard subdomains. For example, an allowed_domains value of example.com with this option set to true will allow foo.example.com and bar.example.com as well as *.example.com. This is redundant when using the allow_any_name option.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowSubdomains")]
     pub allow_subdomains: Option<bool>,
-    /// Specifies the domains of the role. This is used with the allow_bare_domains and allow_subdomains options. kubebuilder:validation:UniqueItems=true
+    /// Specifies the domains of the role. This is used with the allow_bare_domains and allow_subdomains options.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedDomains")]
     pub allowed_domains: Option<Vec<String>>,
     /// When set, allowed_domains may contain templates, as with ACL Path Templating.
@@ -48,7 +49,8 @@ pub struct PKISecretEngineRoleSpec {
     /// Defines allowed custom OID/UTF8-string SANs. This can be a comma-delimited list or a JSON string slice, where each element has the same format as OpenSSL: <oid>;<type>:<value>, but the only valid type is UTF8 or UTF-8. The value part of an element may be a * to allow any value with that OID. Alternatively, specifying a single * will allow any other_sans input.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedOtherSans")]
     pub allowed_other_sans: Option<String>,
-    /// Defines allowed URI Subject Alternative Names. No authorization checking is performed except to verify that the given values are valid URIs. This can be a comma-delimited list or a JSON string slice. Values can contain glob patterns (e.g. spiffe://hostname/*). kubebuilder:validation:UniqueItems=true
+    /// Defines allowed URI Subject Alternative Names. No authorization checking is performed except to verify that the given values are valid URIs. This can be a comma-delimited list or a JSON string slice. Values can contain glob patterns (e.g. spiffe://hostname/*).
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedURISans")]
     pub allowed_uri_sans: Option<Vec<String>>,
     /// Authentication is the kube auth configuration to be used to execute this request
@@ -75,10 +77,12 @@ pub struct PKISecretEngineRoleSpec {
     /// Specifies if only valid host names are allowed for CNs, DNS SANs, and the host part of email addresses.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enforceHostnames")]
     pub enforce_hostnames: Option<bool>,
-    /// Specifies the allowed extended key usage constraint on issued certificates. Valid values can be found at https://golang.org/pkg/crypto/x509/#ExtKeyUsage - simply drop the ExtKeyUsage part of the value. Values are not case-sensitive. To specify no key usage constraints, set this to an empty list. kubebuilder:validation:UniqueItems=true
+    /// Specifies the allowed extended key usage constraint on issued certificates. Valid values can be found at https://golang.org/pkg/crypto/x509/#ExtKeyUsage - simply drop the ExtKeyUsage part of the value. Values are not case-sensitive. To specify no key usage constraints, set this to an empty list.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extKeyUsage")]
     pub ext_key_usage: Option<Vec<String>>,
-    /// A comma-separated string or list of extended key usage oids. kubebuilder:validation:UniqueItems=true
+    /// A comma-separated string or list of extended key usage oids.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extKeyUsageOids")]
     pub ext_key_usage_oids: Option<Vec<String>>,
     /// Specifies if certificates issued/signed against this role will have Vault leases attached to them. Certificates can be added to the CRL by vault revoke <lease_id> when certificates are associated with leases. It can also be done using the pki/revoke endpoint. However, when lease generation is disabled, invoking pki/revoke would be the only way to add the certificates to the CRL.
@@ -90,7 +94,8 @@ pub struct PKISecretEngineRoleSpec {
     /// Specifies the type of key to generate for generated private keys and the type of key expected for submitted CSRs. Currently, rsa and ec are supported, or when signing CSRs any can be specified to allow keys of either type and with any bit size (subject to > 1024 bits for RSA keys).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyType")]
     pub key_type: Option<PKISecretEngineRoleKeyType>,
-    /// Specifies the allowed key usage constraint on issued certificates. Valid values can be found at https://golang.org/pkg/crypto/x509/#KeyUsage - simply drop the KeyUsage part of the value. Values are not case-sensitive. To specify no key usage constraints, set this to an empty list. kubebuilder:validation:UniqueItems=true
+    /// Specifies the allowed key usage constraint on issued certificates. Valid values can be found at https://golang.org/pkg/crypto/x509/#KeyUsage - simply drop the KeyUsage part of the value. Values are not case-sensitive. To specify no key usage constraints, set this to an empty list.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyUsage")]
     pub key_usage: Option<Vec<String>>,
     /// Specifies the L (Locality) values in the subject field of issued certificates. This is a comma-separated string or JSON array.
@@ -114,10 +119,13 @@ pub struct PKISecretEngineRoleSpec {
     /// Specifies the OU (OrganizationalUnit) values in the subject field of issued certificates. This is a comma-separated string or JSON array.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ou: Option<String>,
-    /// Path at which to create the role. The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}. The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
+    /// Path at which to create the role.
+    /// The final path in Vault will be {[spec.authentication.namespace]}/{spec.path}/roles/{metadata.name}.
+    /// The authentication role must have the following capabilities = [ "create", "read", "update", "delete"] on that path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// A comma-separated string or list of policy OIDs. kubebuilder:validation:UniqueItems=true
+    /// A comma-separated string or list of policy OIDs.
+    /// kubebuilder:validation:UniqueItems=true
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyIdentifiers")]
     pub policy_identifiers: Option<Vec<String>>,
     /// Specifies the Postal Code values in the subject field of issued certificates. This is a comma-separated string or JSON array.
@@ -166,7 +174,9 @@ pub struct PKISecretEngineRoleAuthentication {
 /// ServiceAccount is the service account used for the kube auth authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineRoleAuthenticationServiceAccount {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -206,7 +216,9 @@ pub struct PKISecretEngineRoleConnectionTLsConfig {
 /// TLSSecret namespace-local secret containing the tls material for the connection. the expected keys for the secret are: ca bundle -> "ca.crt", certificate -> "tls.crt", key -> "tls.key"
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineRoleConnectionTLsConfigTlsSecret {
-    /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -223,7 +235,8 @@ pub enum PKISecretEngineRoleKeyType {
 /// PKISecretEngineRoleStatus defines the observed state of PKISecretEngineRole
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PKISecretEngineRoleStatus {
-    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file
+    /// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+    /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

@@ -353,6 +353,7 @@ pub struct DeviceConfigDriver {
     /// for OpenShift the default value is image-registry.openshift-image-registry.svc:5000/$MOD_NAMESPACE/amdgpu_kmod
     /// image tag will be in the format of <linux distro>-<release version>-<kernel version>-<driver version>
     /// example tag is coreos-416.94-5.14.0-427.28.1.el9_4.x86_64-6.2.2 and ubuntu-22.04-5.15.0-94-generic-6.1.3
+    /// NOTE: Updating the driver image repository is not supported. Please delete the existing DeviceConfig and create a new one with the updated image repository
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// secrets used for pull/push images from/to private registry specified in driversImage

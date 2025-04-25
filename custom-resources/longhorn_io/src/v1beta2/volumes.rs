@@ -63,6 +63,12 @@ pub struct VolumeSpec {
     pub node_selector: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfReplicas")]
     pub number_of_replicas: Option<i64>,
+    /// Specifies whether Longhorn should rebuild replicas while the detached volume is degraded.
+    /// - ignored: Use the global setting for offline replica rebuilding.
+    /// - enabled: Enable offline rebuilding for this volume, regardless of the global setting.
+    /// - disabled: Disable offline rebuilding for this volume, regardless of the global setting
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineRebuilding")]
+    pub offline_rebuilding: Option<VolumeOfflineRebuilding>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAutoBalance")]
     pub replica_auto_balance: Option<VolumeReplicaAutoBalance>,
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.
@@ -156,6 +162,17 @@ pub enum VolumeFrontend {
     Ublk,
     #[serde(rename = "")]
     KopiumEmpty,
+}
+
+/// VolumeSpec defines the desired state of the Longhorn volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VolumeOfflineRebuilding {
+    #[serde(rename = "ignored")]
+    Ignored,
+    #[serde(rename = "disabled")]
+    Disabled,
+    #[serde(rename = "enabled")]
+    Enabled,
 }
 
 /// VolumeSpec defines the desired state of the Longhorn volume
