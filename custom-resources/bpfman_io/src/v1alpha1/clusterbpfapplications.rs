@@ -11,7 +11,12 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// ClBpfApplicationSpec defines the desired state of BpfApplication
+/// spec defines the desired state of the ClusterBpfApplication. The
+/// ClusterBpfApplication describes the set of one or more cluster scoped eBPF
+/// programs that should be loaded for a given application and attributes for
+/// how they should be loaded. eBPF programs that are grouped together under the
+/// same ClusterBpfApplication instance can share maps and global data between
+/// the eBPF programs loaded on the same Kubernetes Node.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "bpfman.io", version = "v1alpha1", kind = "ClusterBpfApplication", plural = "clusterbpfapplications")]
 #[kube(status = "ClusterBpfApplicationStatus")]
@@ -19,60 +24,95 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterBpfApplicationSpec {
-    /// bytecode configures where the bpf program's bytecode should be loaded
-    /// from.
+    /// bytecode is a required field and configures where the eBPF program's
+    /// bytecode should be loaded from. The image must contain one or more
+    /// eBPF programs.
     #[serde(rename = "byteCode")]
     pub byte_code: ClusterBpfApplicationByteCode,
-    /// globalData allows the user to set global variables when the program is loaded
-    /// with an array of raw bytes. This is a very low level primitive. The caller
-    /// is responsible for formatting the byte string appropriately considering
-    /// such things as size, endianness, alignment and packing of data structures.
+    /// globalData is an optional field that allows the user to set global variables
+    /// when the program is loaded. This allows the same compiled bytecode to be
+    /// deployed by different BPF Applications to behave differently based on
+    /// globalData configuration values.  It uses an array of raw bytes. This is a
+    /// very low level primitive. The caller is responsible for formatting the byte
+    /// string appropriately considering such things as size, endianness, alignment
+    /// and packing of data structures.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalData")]
     pub global_data: Option<BTreeMap<String, String>>,
-    /// TODO: need to work out how MapOwnerSelector will work after load-attach-split
-    /// mapOwnerSelector is used to select the loaded eBPF program this eBPF program
-    /// will share a map with.
+    /// mapOwnerSelector is an optional field used to share maps across
+    /// applications. eBPF programs loaded with the same ClusterBpfApplication or
+    /// BpfApplication instance do not need to use this field. This label selector
+    /// allows maps from a different ClusterBpfApplication or BpfApplication
+    /// instance to be used by this instance.
+    /// TODO: mapOwnerSelector is currently not supported due to recent code rework.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mapOwnerSelector")]
     pub map_owner_selector: Option<ClusterBpfApplicationMapOwnerSelector>,
-    /// nodeSelector allows the user to specify which nodes to deploy the
-    /// bpf program to. This field must be specified, to select all nodes
-    /// use standard metav1.LabelSelector semantics and make it empty.
+    /// nodeSelector is a required field and allows the user to specify which
+    /// Kubernetes nodes to deploy the eBPF programs. To select all nodes use
+    /// standard metav1.LabelSelector semantics and make it empty.
     #[serde(rename = "nodeSelector")]
     pub node_selector: ClusterBpfApplicationNodeSelector,
-    /// programs is the list of bpf programs in the BpfApplication that should be
-    /// loaded. The application can selectively choose which program(s) to run
-    /// from this list based on the optional attach points provided.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub programs: Option<Vec<ClusterBpfApplicationPrograms>>,
+    /// programs is a required field and is the list of eBPF programs in a BPF
+    /// Application CRD that should be loaded in kernel memory. At least one entry
+    /// is required. eBPF programs in this list will be loaded on the system based
+    /// the nodeSelector. Even if an eBPF program is loaded in kernel memory, it
+    /// cannot be triggered until an attachment point is provided. The different
+    /// program types have different ways of attaching. The attachment points can be
+    /// added at creation time or modified (added or removed) at a later time to
+    /// activate or deactivate the eBPF program as desired.
+    /// CAUTION: When programs are added or removed from the list, that requires all
+    /// programs in the list to be reloaded, which could be temporarily service
+    /// effecting. For this reason, modifying the list is currently not allowed.
+    pub programs: Vec<ClusterBpfApplicationPrograms>,
 }
 
-/// bytecode configures where the bpf program's bytecode should be loaded
-/// from.
+/// bytecode is a required field and configures where the eBPF program's
+/// bytecode should be loaded from. The image must contain one or more
+/// eBPF programs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationByteCode {
-    /// image used to specify a bytecode container image.
+    /// image is an optional field and used to specify details on how to retrieve an
+    /// eBPF program packaged in a OCI container image from a given registry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<ClusterBpfApplicationByteCodeImage>,
-    /// path is used to specify a bytecode object via filepath.
+    /// path is an optional field and used to specify a bytecode object file via
+    /// filepath on a Kubernetes node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
 
-/// image used to specify a bytecode container image.
+/// image is an optional field and used to specify details on how to retrieve an
+/// eBPF program packaged in a OCI container image from a given registry.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationByteCodeImage {
-    /// pullPolicy describes a policy for if/when to pull a bytecode image. Defaults to IfNotPresent.
+    /// pullPolicy is an optional field that describes a policy for if/when to pull
+    /// a bytecode image. Defaults to IfNotPresent. Allowed values are:
+    ///   Always, IfNotPresent and Never
+    /// 
+    /// 
+    /// When set to Always, the given image will be pulled even if the image is
+    /// already present on the node.
+    /// 
+    /// 
+    /// When set to IfNotPresent, the given image will only be pulled if it is not
+    /// present on the node.
+    /// 
+    /// 
+    /// When set to Never, the given image will never be pulled and must be
+    /// loaded on the node by some other means.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<ClusterBpfApplicationByteCodeImageImagePullPolicy>,
-    /// imagePullSecret is the name of the secret bpfman should use to get remote image
-    /// repository secrets.
+    /// imagePullSecret is an optional field and indicates the secret which contains
+    /// the credentials to access the image repository.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<ClusterBpfApplicationByteCodeImageImagePullSecret>,
-    /// url is a valid container image URL used to reference a remote bytecode image.
+    /// url is a required field and is a valid container image URL used to reference
+    /// a remote bytecode image. url must not be an empty string, must not exceed
+    /// 525 characters in length and must be a valid URL.
     pub url: String,
 }
 
-/// image used to specify a bytecode container image.
+/// image is an optional field and used to specify details on how to retrieve an
+/// eBPF program packaged in a OCI container image from a given registry.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterBpfApplicationByteCodeImageImagePullPolicy {
     Always,
@@ -80,19 +120,24 @@ pub enum ClusterBpfApplicationByteCodeImageImagePullPolicy {
     IfNotPresent,
 }
 
-/// imagePullSecret is the name of the secret bpfman should use to get remote image
-/// repository secrets.
+/// imagePullSecret is an optional field and indicates the secret which contains
+/// the credentials to access the image repository.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationByteCodeImageImagePullSecret {
-    /// name of the secret which contains the credentials to access the image repository.
+    /// name is a required field and is the name of the secret which contains the
+    /// credentials to access the image repository.
     pub name: String,
-    /// namespace of the secret which contains the credentials to access the image repository.
+    /// namespace is a required field and is the namespace of the secret which
+    /// contains the credentials to access the image repository.
     pub namespace: String,
 }
 
-/// TODO: need to work out how MapOwnerSelector will work after load-attach-split
-/// mapOwnerSelector is used to select the loaded eBPF program this eBPF program
-/// will share a map with.
+/// mapOwnerSelector is an optional field used to share maps across
+/// applications. eBPF programs loaded with the same ClusterBpfApplication or
+/// BpfApplication instance do not need to use this field. This label selector
+/// allows maps from a different ClusterBpfApplication or BpfApplication
+/// instance to be used by this instance.
+/// TODO: mapOwnerSelector is currently not supported due to recent code rework.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationMapOwnerSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -122,9 +167,9 @@ pub struct ClusterBpfApplicationMapOwnerSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// nodeSelector allows the user to specify which nodes to deploy the
-/// bpf program to. This field must be specified, to select all nodes
-/// use standard metav1.LabelSelector semantics and make it empty.
+/// nodeSelector is a required field and allows the user to specify which
+/// Kubernetes nodes to deploy the eBPF programs. To select all nodes use
+/// standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -154,166 +199,412 @@ pub struct ClusterBpfApplicationNodeSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// ClBpfApplicationProgram defines the desired state of BpfApplication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBpfApplicationPrograms {
-    /// fentry defines the desired state of the application's FentryPrograms.
+    /// fentry is an optional field, but required when the type field is set to
+    /// FEntry. fentry defines the desired state of the application's FEntry
+    /// programs. FEntry programs are attached to the entry of a Linux kernel
+    /// function or to another eBPF program function. They are attached to the first
+    /// instruction, before control passes to the function. FEntry programs are
+    /// similar to KProbe programs, but have higher performance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fentry: Option<ClusterBpfApplicationProgramsFentry>,
-    /// fexit defines the desired state of the application's FexitPrograms.
+    /// fexit is an optional field, but required when the type field is set to
+    /// FExit. fexit defines the desired state of the application's FExit programs.
+    /// FExit programs are attached to the exit of a Linux kernel function or to
+    /// another eBPF program function. The program is invoked when the function
+    /// returns, independent of where in the function that occurs. FExit programs
+    /// are similar to KRetProbe programs, but get invoked with the input arguments
+    /// and the return values. They also have higher performance over KRetProbe
+    /// programs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fexit: Option<ClusterBpfApplicationProgramsFexit>,
-    /// kprobe defines the desired state of the application's KprobePrograms.
+    /// kprobe is an optional field, but required when the type field is set to
+    /// KProbe. kprobe defines the desired state of the application's Kprobe
+    /// programs. KProbe programs are attached to a Linux kernel function. Unlike
+    /// FEntry programs, which must always be attached at the entry point of a Linux
+    /// kernel function, KProbe programs can be attached at any point in the
+    /// function using the optional offset field. However, caution must be taken
+    /// when using the offset, ensuring the offset is still in the function
+    /// bytecode. FEntry programs have less overhead than KProbe programs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kprobe: Option<ClusterBpfApplicationProgramsKprobe>,
-    /// kretprobe defines the desired state of the application's KretprobePrograms.
+    /// kretprobe is an optional field, but required when the type field is set to
+    /// KRetProbe. kretprobe defines the desired state of the application's
+    /// KRetProbe programs. KRetProbe programs are attached to the exit of a Linux
+    /// kernel function. FExit programs have less overhead than KRetProbe programs
+    /// and FExit programs have access to both the input arguments as well as the
+    /// return values. KRetProbes only have access to the return values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kretprobe: Option<ClusterBpfApplicationProgramsKretprobe>,
-    /// name is the name of the function that is the entry point for the BPF
-    /// program
+    /// name is a required field and is the name of the function that is the entry
+    /// point for the eBPF program. name must not be an empty string, must not
+    /// exceed 64 characters in length, must start with alpha characters and must
+    /// only contain alphanumeric characters.
     pub name: String,
-    /// tc defines the desired state of the application's TcPrograms.
+    /// tc is an optional field, but required when the type field is set to TC. tc
+    /// defines the desired state of the application's TC programs. TC programs are
+    /// attached to network devices (interfaces). The program can be attached on
+    /// either packet ingress or egress, so the program will be called on every
+    /// incoming or outgoing packet seen by the network device. The TC attachment
+    /// point is in Linux's Traffic Control (tc) subsystem, which is after the
+    /// Linux kernel has allocated an sk_buff. TCX is newer implementation of TC
+    /// with enhanced performance and better support for running multiple programs
+    /// on a given network device. This makes TC useful for packet classification
+    /// actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tc: Option<ClusterBpfApplicationProgramsTc>,
-    /// tcx defines the desired state of the application's TcxPrograms.
+    /// tcx is an optional field, but required when the type field is set to TCX.
+    /// tcx defines the desired state of the application's TCX programs. TCX
+    /// programs are attached to network devices (interfaces). The program can be
+    /// attached on either packet ingress or egress, so the program will be called
+    /// on every incoming or outgoing packet seen by the network device. The TCX
+    /// attachment point is in Linux's Traffic Control (tc) subsystem, which is
+    /// after the Linux kernel has allocated an sk_buff. This makes TCX useful for
+    /// packet classification actions. TCX is a newer implementation of TC with
+    /// enhanced performance and better support for running multiple programs on a
+    /// given network device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcx: Option<ClusterBpfApplicationProgramsTcx>,
-    /// tracepointInfo defines the desired state of the application's TracepointPrograms.
+    /// tracepoint is an optional field, but required when the type field is set to
+    /// Tracepoint. tracepoint defines the desired state of the application's
+    /// Tracepoint programs. Whereas KProbes attach to dynamically to any Linux
+    /// kernel function, Tracepoint programs are programs that can only be attached
+    /// at predefined locations in the Linux kernel. Use the following command to
+    /// see the available attachment points:
+    ///  `sudo find /sys/kernel/debug/tracing/events -type d`
+    /// While KProbes are more flexible in where in the kernel the probe can be
+    /// attached, the functions and data structure rely on the kernel your system is
+    /// running. Tracepoints tend to be more stable across kernel versions and are
+    /// better for portability.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracepoint: Option<ClusterBpfApplicationProgramsTracepoint>,
-    /// type specifies the bpf program type
+    /// type is a required field used to specify the type of the eBPF program.
+    /// 
+    /// 
+    /// Allowed values are:
+    ///   FEntry, FExit, KProbe, KRetProbe, TC, TCX, TracePoint, UProbe, URetProbe,
+    ///   XDP
+    /// 
+    /// 
+    /// When set to FEntry, the program is attached to the entry of a Linux kernel
+    /// function or to another eBPF program function. When using the FEntry program
+    /// type, the fentry field is required. See fentry for more details on FEntry
+    /// programs.
+    /// 
+    /// 
+    /// When set to FExit, the program is attached to the exit of a Linux kernel
+    /// function or to another eBPF program function. When using the FExit program
+    /// type, the fexit field is required. See fexit for more details on FExit
+    /// programs.
+    /// 
+    /// 
+    /// When set to KProbe, the program is attached to entry of a Linux kernel
+    /// function. When using the KProbe program type, the kprobe field is required.
+    /// See kprobe for more details on KProbe programs.
+    /// 
+    /// 
+    /// When set to KRetProbe, the program is attached to exit of a Linux kernel
+    /// function. When using the KRetProbe program type, the kretprobe field is
+    /// required. See kretprobe for more details on KRetProbe programs.
+    /// 
+    /// 
+    /// When set to TC, the eBPF program can attach to network devices (interfaces).
+    /// The program can be attached on either packet ingress or egress, so the
+    /// program will be called on every incoming or outgoing packet seen by the
+    /// network device. When using the TC program type, the tc field is required.
+    /// See tc for more details on TC programs.
+    /// 
+    /// 
+    /// When set to TCX, the eBPF program can attach to network devices
+    /// (interfaces). The program can be attached on either packet ingress or
+    /// egress, so the program will be called on every incoming or outgoing packet
+    /// seen by the network device. When using the TCX program type, the tcx field
+    /// is required. See tcx for more details on TCX programs.
+    /// 
+    /// 
+    /// When set to Tracepoint, the program can attach to one of the predefined set
+    /// of Linux kernel functions. When using the Tracepoint program type, the
+    /// tracepoint field is required. See tracepoint for more details on Tracepoint
+    /// programs.
+    /// 
+    /// 
+    /// When set to UProbe, the program can attach in user-space. The UProbe is
+    /// attached to a binary, library or function name, and optionally an offset in
+    /// the code. When using the UProbe program type, the uprobe field is required.
+    /// See uprobe for more details on UProbe programs.
+    /// 
+    /// 
+    /// When set to URetProbe, the program can attach in user-space.
+    /// The URetProbe is attached to the return of a binary, library or function
+    /// name, and optionally an offset in the code.  When using the URetProbe
+    /// program type, the uretprobe field is required. See uretprobe for more
+    /// details on URetProbe programs.
+    /// 
+    /// 
+    /// When set to XDP, the eBPF program can attach to network devices (interfaces)
+    /// and will be called on every incoming packet received by the network device.
+    /// When using the XDP program type, the xdp field is required. See xdp for more
+    /// details on XDP programs.
     #[serde(rename = "type")]
     pub r#type: ClusterBpfApplicationProgramsType,
-    /// uprobe defines the desired state of the application's UprobePrograms.
+    /// uprobe is an optional field, but required when the type field is set to
+    /// UProbe. uprobe defines the desired state of the application's UProbe
+    /// programs. UProbe programs are user-space probes. A target must be provided,
+    /// which is the library name or absolute path to a binary or library where the
+    /// probe is attached. Optionally, a function name can also be provided to
+    /// provide finer granularity on where the probe is attached. They can be
+    /// attached at any point in the binary, library or function using the optional
+    /// offset field. However, caution must be taken when using the offset, ensuring
+    /// the offset is still in the desired bytecode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uprobe: Option<ClusterBpfApplicationProgramsUprobe>,
-    /// uretprobeInfo defines the desired state of the application's UretprobePrograms.
+    /// uretprobe is an optional field, but required when the type field is set to
+    /// URetProbe. uretprobe defines the desired state of the application's
+    /// URetProbe programs. URetProbe programs are user-space probes. A target must
+    /// be provided, which is the library name or absolute path to a binary or
+    /// library where the probe is attached. Optionally, a function name can also be
+    /// provided to provide finer granularity on where the probe is attached. They
+    /// are attached to the return point of the binary, library or function, but can
+    /// be set anywhere using the optional offset field. However, caution must be
+    /// taken when using the offset, ensuring the offset is still in the desired
+    /// bytecode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uretprobe: Option<ClusterBpfApplicationProgramsUretprobe>,
-    /// xdp defines the desired state of the application's XdpPrograms.
+    /// xdp is an optional field, but required when the type field is set to XDP.
+    /// xdp defines the desired state of the application's XDP programs. XDP program
+    /// can be attached to network devices (interfaces) and will be called on every
+    /// incoming packet received by the network device. The XDP attachment point is
+    /// just after the packet has been received off the wire, but before the Linux
+    /// kernel has allocated an sk_buff, which is used to pass the packet through
+    /// the kernel networking stack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub xdp: Option<ClusterBpfApplicationProgramsXdp>,
 }
 
-/// fentry defines the desired state of the application's FentryPrograms.
+/// fentry is an optional field, but required when the type field is set to
+/// FEntry. fentry defines the desired state of the application's FEntry
+/// programs. FEntry programs are attached to the entry of a Linux kernel
+/// function or to another eBPF program function. They are attached to the first
+/// instruction, before control passes to the function. FEntry programs are
+/// similar to KProbe programs, but have higher performance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsFentry {
-    /// function is the name of the function to attach the Fentry program to.
+    /// function is a required field and specifies the name of the Linux kernel
+    /// function to attach the FEntry program. function must not be an empty string,
+    /// must not exceed 64 characters in length, must start with alpha characters
+    /// and must only contain alphanumeric characters.
     pub function: String,
-    /// Whether the program should be attached to the function.
+    /// links is an optional field and is a flag to indicate if the FEntry program
+    /// should be attached. The attachment point for a FEntry program is a Linux
+    /// kernel function. Unlike other eBPF program types, an FEntry program must be
+    /// provided with the target function at load time. The links field is optional,
+    /// but unlike other program types where it represents a list of attachment
+    /// points, for FEntry programs it contains at most one entry that determines
+    /// whether the program should be attached to the specified function. To attach
+    /// the program, add an entry to links with mode set to Attach. To detach it,
+    /// remove the entry from links.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsFentryLinks>>,
 }
 
-/// ClFentryAttachInfo indicates that the Fentry program should be attached to
-/// the function identified in ClFentryLoadInfo. The only valid value for Attach
-/// is true.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBpfApplicationProgramsFentryLinks {
+    /// mode is a required field. When set to Attach, the FEntry program will
+    /// attempt to be attached. To detach the FEntry program, remove the link entry.
     pub mode: ClusterBpfApplicationProgramsFentryLinksMode,
 }
 
-/// ClFentryAttachInfo indicates that the Fentry program should be attached to
-/// the function identified in ClFentryLoadInfo. The only valid value for Attach
-/// is true.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterBpfApplicationProgramsFentryLinksMode {
     Attach,
-    Dettach,
 }
 
-/// fexit defines the desired state of the application's FexitPrograms.
+/// fexit is an optional field, but required when the type field is set to
+/// FExit. fexit defines the desired state of the application's FExit programs.
+/// FExit programs are attached to the exit of a Linux kernel function or to
+/// another eBPF program function. The program is invoked when the function
+/// returns, independent of where in the function that occurs. FExit programs
+/// are similar to KRetProbe programs, but get invoked with the input arguments
+/// and the return values. They also have higher performance over KRetProbe
+/// programs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsFexit {
-    /// function is the name of the function to attach the Fexit program to.
+    /// function is a required field and specifies the name of the Linux kernel
+    /// function to attach the FExit program. function must not be an empty string,
+    /// must not exceed 64 characters in length, must start with alpha characters
+    /// and must only contain alphanumeric characters.
     pub function: String,
-    /// Whether the program should be attached to the function.
+    /// links is an optional field and is a flag to indicate if the FExit program
+    /// should be attached. The attachment point for a FExit program is a Linux
+    /// kernel function. Unlike other eBPF program types, an FExit program must be
+    /// provided with the target function at load time. The links field is optional,
+    /// but unlike other program types where it represents a list of attachment
+    /// points, for FExit programs it contains at most one entry that determines
+    /// whether the program should be attached to the specified function. To attach
+    /// the program, add an entry to links with mode set to Attach. To detach it,
+    /// remove the entry from links.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsFexitLinks>>,
 }
 
-/// ClFexitAttachInfo indicates that the Fentry program should be attached to
-/// the function identified in ClFentryLoadInfo. The only valid value for Attach
-/// is true.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBpfApplicationProgramsFexitLinks {
+    /// mode is a required field. When set to Attach, the FExit program will
+    /// attempt to be attached. To detach the FExit program, remove the link entry.
     pub mode: ClusterBpfApplicationProgramsFexitLinksMode,
 }
 
-/// ClFexitAttachInfo indicates that the Fentry program should be attached to
-/// the function identified in ClFentryLoadInfo. The only valid value for Attach
-/// is true.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterBpfApplicationProgramsFexitLinksMode {
     Attach,
-    Dettach,
 }
 
-/// kprobe defines the desired state of the application's KprobePrograms.
+/// kprobe is an optional field, but required when the type field is set to
+/// KProbe. kprobe defines the desired state of the application's Kprobe
+/// programs. KProbe programs are attached to a Linux kernel function. Unlike
+/// FEntry programs, which must always be attached at the entry point of a Linux
+/// kernel function, KProbe programs can be attached at any point in the
+/// function using the optional offset field. However, caution must be taken
+/// when using the offset, ensuring the offset is still in the function
+/// bytecode. FEntry programs have less overhead than KProbe programs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsKprobe {
-    /// The list of points to which the program should be attached.  The list items
-    /// are optional and may be udated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// KProbe program should be attached. The eBPF program is loaded in kernel
+    /// memory when the BPF Application CRD is created and the selected Kubernetes
+    /// nodes are active. The eBPF program will not be triggered until the program
+    /// has also been attached to an attachment point described in this list. Items
+    /// may be added or removed from the list at any point, causing the eBPF program
+    /// to be attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a KProbe program is a Linux kernel function. By
+    /// default, the eBPF program is triggered at the entry of the attachment point,
+    /// but the attachment point can be adjusted using an optional offset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsKprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsKprobeLinks {
-    /// function to attach the kprobe to.
+    /// function is a required field and specifies the name of the Linux kernel
+    /// function to attach the KProbe program. function must not be an empty string,
+    /// must not exceed 64 characters in length, must start with alpha characters
+    /// and must only contain alphanumeric characters.
     pub function: String,
-    /// offset added to the address of the function for kprobe.
-    /// The offset must be zero for kretprobes.
-    /// TODO: Add a webhook to enforce kretprobe offset=0.
-    /// See: https://github.com/bpfman/bpfman-operator/issues/403
+    /// offset is an optional field and the value is added to the address of the
+    /// attachment point function. If not provided, offset defaults to 0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
 }
 
-/// kretprobe defines the desired state of the application's KretprobePrograms.
+/// kretprobe is an optional field, but required when the type field is set to
+/// KRetProbe. kretprobe defines the desired state of the application's
+/// KRetProbe programs. KRetProbe programs are attached to the exit of a Linux
+/// kernel function. FExit programs have less overhead than KRetProbe programs
+/// and FExit programs have access to both the input arguments as well as the
+/// return values. KRetProbes only have access to the return values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsKretprobe {
-    /// The list of points to which the program should be attached.  The list items
-    /// are optional and may be udated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// KRetProbe program should be attached. The eBPF program is loaded in kernel
+    /// memory when the BPF Application CRD is created and the selected Kubernetes
+    /// nodes are active. The eBPF program will not be triggered until the program
+    /// has also been attached to an attachment point described in this list. Items
+    /// may be added or removed from the list at any point, causing the eBPF program
+    /// to be attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a KRetProbe program is a Linux kernel function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsKretprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsKretprobeLinks {
-    /// function to attach the kprobe to.
+    /// function is a required field and specifies the name of the Linux kernel
+    /// function to attach the KRetProbe program. function must not be an empty
+    /// string, must not exceed 64 characters in length, must start with alpha
+    /// characters and must only contain alphanumeric characters.
     pub function: String,
 }
 
-/// tc defines the desired state of the application's TcPrograms.
+/// tc is an optional field, but required when the type field is set to TC. tc
+/// defines the desired state of the application's TC programs. TC programs are
+/// attached to network devices (interfaces). The program can be attached on
+/// either packet ingress or egress, so the program will be called on every
+/// incoming or outgoing packet seen by the network device. The TC attachment
+/// point is in Linux's Traffic Control (tc) subsystem, which is after the
+/// Linux kernel has allocated an sk_buff. TCX is newer implementation of TC
+/// with enhanced performance and better support for running multiple programs
+/// on a given network device. This makes TC useful for packet classification
+/// actions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTc {
-    /// The list of points to which the program should be attached.  The list items
-    /// are optional and may be udated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// TC program should be attached. The TC program is loaded in kernel memory
+    /// when the BPF Application CRD is created and the selected Kubernetes nodes
+    /// are active. The TC program will not be triggered until the program has also
+    /// been attached to an attachment point described in this list. Items may be
+    /// added or removed from the list at any point, causing the TC program to be
+    /// attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a TC program is a network interface (or device).
+    /// The interface can be specified by name, by allowing bpfman to discover each
+    /// interface, or by setting the primaryNodeInterface flag, which instructs
+    /// bpfman to use the primary interface of a Kubernetes node. Optionally, the
+    /// TC program can also be installed into a set of network namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsTcLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcLinks {
-    /// direction specifies the direction of traffic the tc program should
-    /// attach to for a given network device.
+    /// direction is a required field and specifies the direction of traffic.
+    /// Allowed values are:
+    ///    Ingress, Egress
+    /// 
+    /// 
+    /// When set to Ingress, the TC program is triggered when packets are received
+    /// by the interface.
+    /// 
+    /// 
+    /// When set to Egress, the TC program is triggered when packets are to be
+    /// transmitted by the interface.
     pub direction: ClusterBpfApplicationProgramsTcLinksDirection,
-    /// interfaceSelector to determine the network interface (or interfaces)
+    /// interfaceSelector is a required field and is used to determine the network
+    /// interface (or interfaces) the TC program is attached. Interface list is set
+    /// by providing a list of interface names, enabling auto discovery, or setting
+    /// the primaryNodeInterface flag, but only one option is allowed.
     #[serde(rename = "interfaceSelector")]
     pub interface_selector: ClusterBpfApplicationProgramsTcLinksInterfaceSelector,
-    /// networkNamespaces identifies the set of network namespaces in which to
-    /// attach the eBPF program. If networkNamespaces is not specified, the BPF
-    /// program will be attached in the root network namespace.
+    /// networkNamespaces is an optional field that identifies the set of network
+    /// namespaces in which to attach the eBPF program. If networkNamespaces is not
+    /// specified, the eBPF program will be attached in the root network namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespaces")]
     pub network_namespaces: Option<ClusterBpfApplicationProgramsTcLinksNetworkNamespaces>,
-    /// priority specifies the priority of the tc program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
+    /// priority is an optional field and determines the execution order of the TC
+    /// program relative to other TC programs attached to the same attachment point.
+    /// It must be a value between 0 and 1000, where lower values indicate higher
+    /// precedence. For TC programs on the same attachment point with the same
+    /// direction and priority, the most recently attached program has a lower
+    /// precedence. If not provided, priority will default to 1000.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// proceedOn allows the user to call other tc programs in chain on this exit code.
-    /// Multiple values are supported by repeating the parameter.
+    /// proceedOn is an optional field and allows the user to call other TC programs
+    /// in a chain, or not call the next program in a chain based on the exit code
+    /// of a TC program. Allowed values, which are the possible exit codes from a TC
+    /// eBPF program, are:
+    ///   UnSpec, OK, ReClassify, Shot, Pipe, Stolen, Queued, Repeat, ReDirect,
+    ///   Trap, DispatcherReturn
+    /// 
+    /// 
+    /// Multiple values are supported. Default is OK, Pipe and DispatcherReturn. So
+    /// using the default values, if a TC program returns Pipe, the next TC
+    /// program in the chain will be called. If a TC program returns Stolen, the
+    /// next TC program in the chain will NOT be called.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proceedOn")]
     pub proceed_on: Option<Vec<String>>,
 }
@@ -324,55 +615,80 @@ pub enum ClusterBpfApplicationProgramsTcLinksDirection {
     Egress,
 }
 
-/// interfaceSelector to determine the network interface (or interfaces)
+/// interfaceSelector is a required field and is used to determine the network
+/// interface (or interfaces) the TC program is attached. Interface list is set
+/// by providing a list of interface names, enabling auto discovery, or setting
+/// the primaryNodeInterface flag, but only one option is allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcLinksInterfaceSelector {
-    /// interfaces refers to a list of network interfaces to attach the BPF
-    /// program to.
+    /// interfaces is an optional field and is a list of network interface names to
+    /// attach the eBPF program. The interface names in the list are case-sensitive.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
-    /// discoveryConfig allow configuring interface discovery functionality,
+    /// interfacesDiscoveryConfig is an optional field that is used to control if
+    /// and how to automatically discover interfaces. If the agent should
+    /// automatically discover and attach eBPF programs to interfaces, use the
+    /// fields under interfacesDiscoveryConfig to control what is allow and excluded
+    /// from discovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfacesDiscoveryConfig")]
     pub interfaces_discovery_config: Option<ClusterBpfApplicationProgramsTcLinksInterfaceSelectorInterfacesDiscoveryConfig>,
-    /// primaryNodeInterface to attach BPF program to the primary interface on the node. Only 'true' accepted.
+    /// primaryNodeInterface is and optional field and indicates to attach the eBPF
+    /// program to the primary interface on the Kubernetes node. Only 'true' is
+    /// accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNodeInterface")]
     pub primary_node_interface: Option<bool>,
 }
 
-/// discoveryConfig allow configuring interface discovery functionality,
+/// interfacesDiscoveryConfig is an optional field that is used to control if
+/// and how to automatically discover interfaces. If the agent should
+/// automatically discover and attach eBPF programs to interfaces, use the
+/// fields under interfacesDiscoveryConfig to control what is allow and excluded
+/// from discovery.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcLinksInterfaceSelectorInterfacesDiscoveryConfig {
-    /// allowedInterfaces contains the interface names. If empty, the agent
-    /// fetches all the interfaces in the system, excepting the ones listed in `excludeInterfaces`.
-    /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
-    /// Otherwise, it is matched as a case-sensitive string.
+    /// allowedInterfaces is an optional field that contains a list of interface
+    /// names that are allowed to be discovered. If empty, the agent will fetch all
+    /// the interfaces in the system, excepting the ones listed in
+    /// excludeInterfaces. if non-empty, only entries in the list will be considered
+    /// for discovery. If an entry enclosed by slashes, such as `/br-/` or
+    /// `/veth*/`, then the entry is considered as a regular expression for
+    /// matching. Otherwise, the interface names in the list are case-sensitive.
+    /// This field is only taken into consideration if interfaceAutoDiscovery is set
+    /// to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedInterfaces")]
     pub allowed_interfaces: Option<Vec<String>>,
-    /// excludeInterfaces contains the interface names that are excluded from interface discovery
-    /// it is matched as a case-sensitive string.
+    /// excludeInterfaces is an optional field that contains a list of interface
+    /// names that are excluded from interface discovery. The interface names in
+    /// the list are case-sensitive. By default, the list contains the loopback
+    /// interface, "lo". This field is only taken into consideration if
+    /// interfaceAutoDiscovery is set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
-    /// interfaceAutoDiscovery when enabled, the agent process monitors the creation and deletion of interfaces,
-    /// automatically attaching eBPF hooks to newly discovered interfaces in both directions.
+    /// interfaceAutoDiscovery is an optional field. When enabled, the agent
+    /// monitors the creation and deletion of interfaces and automatically
+    /// attached eBPF programs to the newly discovered interfaces.
+    /// CAUTION: This has the potential to attach a given eBPF program to a large
+    /// number of interfaces. Use with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceAutoDiscovery")]
     pub interface_auto_discovery: Option<bool>,
 }
 
-/// networkNamespaces identifies the set of network namespaces in which to
-/// attach the eBPF program. If networkNamespaces is not specified, the BPF
-/// program will be attached in the root network namespace.
+/// networkNamespaces is an optional field that identifies the set of network
+/// namespaces in which to attach the eBPF program. If networkNamespaces is not
+/// specified, the eBPF program will be attached in the root network namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcLinksNetworkNamespaces {
-    /// Target namespace.
+    /// namespace is an optional field and indicates the target network namespace.
+    /// If not provided, the default network namespace is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Target pods. This field must be specified, to select all pods use
-    /// standard metav1.LabelSelector semantics and make it empty.
+    /// pods is a required field and indicates the target pods. To select all pods
+    /// use the standard metav1.LabelSelector semantics and make it empty.
     pub pods: ClusterBpfApplicationProgramsTcLinksNetworkNamespacesPods,
 }
 
-/// Target pods. This field must be specified, to select all pods use
-/// standard metav1.LabelSelector semantics and make it empty.
+/// pods is a required field and indicates the target pods. To select all pods
+/// use the standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcLinksNetworkNamespacesPods {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -402,31 +718,67 @@ pub struct ClusterBpfApplicationProgramsTcLinksNetworkNamespacesPodsMatchExpress
     pub values: Option<Vec<String>>,
 }
 
-/// tcx defines the desired state of the application's TcxPrograms.
+/// tcx is an optional field, but required when the type field is set to TCX.
+/// tcx defines the desired state of the application's TCX programs. TCX
+/// programs are attached to network devices (interfaces). The program can be
+/// attached on either packet ingress or egress, so the program will be called
+/// on every incoming or outgoing packet seen by the network device. The TCX
+/// attachment point is in Linux's Traffic Control (tc) subsystem, which is
+/// after the Linux kernel has allocated an sk_buff. This makes TCX useful for
+/// packet classification actions. TCX is a newer implementation of TC with
+/// enhanced performance and better support for running multiple programs on a
+/// given network device.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcx {
-    /// links is the list of points to which the program should be attached. The list items
-    /// are optional and may be updated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// TCX program should be attached. The TCX program is loaded in kernel memory
+    /// when the BPF Application CRD is created and the selected Kubernetes nodes
+    /// are active. The TCX program will not be triggered until the program has also
+    /// been attached to an attachment point described in this list. Items may be
+    /// added or removed from the list at any point, causing the TCX program to be
+    /// attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a TCX program is a network interface (or device).
+    /// The interface can be specified by name, by allowing bpfman to discover each
+    /// interface, or by setting the primaryNodeInterface flag, which instructs
+    /// bpfman to use the primary interface of a Kubernetes node. Optionally, the
+    /// TCX program can also be installed into a set of network namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsTcxLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcxLinks {
-    /// direction specifies the direction of traffic the tcx program should
-    /// attach to for a given network device.
+    /// direction is a required field and specifies the direction of traffic.
+    /// Allowed values are:
+    ///    Ingress, Egress
+    /// 
+    /// 
+    /// When set to Ingress, the TC program is triggered when packets are received
+    /// by the interface.
+    /// 
+    /// 
+    /// When set to Egress, the TC program is triggered when packets are to be
+    /// transmitted by the interface.
     pub direction: ClusterBpfApplicationProgramsTcxLinksDirection,
-    /// interfaceSelector to determine the network interface (or interfaces)
+    /// interfaceSelector is a required field and is used to determine the network
+    /// interface (or interfaces) the TCX program is attached. Interface list is set
+    /// by providing a list of interface names, enabling auto discovery, or setting
+    /// the primaryNodeInterface flag, but only one option is allowed.
     #[serde(rename = "interfaceSelector")]
     pub interface_selector: ClusterBpfApplicationProgramsTcxLinksInterfaceSelector,
-    /// networkNamespaces identifies the set of network namespaces in which to
-    /// attach the eBPF program. If networkNamespaces is not specified, the BPF
-    /// program will be attached in the root network namespace.
+    /// networkNamespaces is an optional field that identifies the set of network
+    /// namespaces in which to attach the eBPF program. If networkNamespaces is not
+    /// specified, the eBPF program will be attached in the root network namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespaces")]
     pub network_namespaces: Option<ClusterBpfApplicationProgramsTcxLinksNetworkNamespaces>,
-    /// priority specifies the priority of the tcx program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
+    /// priority is an optional field and determines the execution order of the TCX
+    /// program relative to other TCX programs attached to the same attachment
+    /// point. It must be a value between 0 and 1000, where lower values indicate
+    /// higher precedence. For TCX programs on the same attachment point with the
+    /// same direction and priority, the most recently attached program has a lower
+    /// precedence. If not provided, priority will default to 1000.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
 }
@@ -437,55 +789,80 @@ pub enum ClusterBpfApplicationProgramsTcxLinksDirection {
     Egress,
 }
 
-/// interfaceSelector to determine the network interface (or interfaces)
+/// interfaceSelector is a required field and is used to determine the network
+/// interface (or interfaces) the TCX program is attached. Interface list is set
+/// by providing a list of interface names, enabling auto discovery, or setting
+/// the primaryNodeInterface flag, but only one option is allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcxLinksInterfaceSelector {
-    /// interfaces refers to a list of network interfaces to attach the BPF
-    /// program to.
+    /// interfaces is an optional field and is a list of network interface names to
+    /// attach the eBPF program. The interface names in the list are case-sensitive.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
-    /// discoveryConfig allow configuring interface discovery functionality,
+    /// interfacesDiscoveryConfig is an optional field that is used to control if
+    /// and how to automatically discover interfaces. If the agent should
+    /// automatically discover and attach eBPF programs to interfaces, use the
+    /// fields under interfacesDiscoveryConfig to control what is allow and excluded
+    /// from discovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfacesDiscoveryConfig")]
     pub interfaces_discovery_config: Option<ClusterBpfApplicationProgramsTcxLinksInterfaceSelectorInterfacesDiscoveryConfig>,
-    /// primaryNodeInterface to attach BPF program to the primary interface on the node. Only 'true' accepted.
+    /// primaryNodeInterface is and optional field and indicates to attach the eBPF
+    /// program to the primary interface on the Kubernetes node. Only 'true' is
+    /// accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNodeInterface")]
     pub primary_node_interface: Option<bool>,
 }
 
-/// discoveryConfig allow configuring interface discovery functionality,
+/// interfacesDiscoveryConfig is an optional field that is used to control if
+/// and how to automatically discover interfaces. If the agent should
+/// automatically discover and attach eBPF programs to interfaces, use the
+/// fields under interfacesDiscoveryConfig to control what is allow and excluded
+/// from discovery.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcxLinksInterfaceSelectorInterfacesDiscoveryConfig {
-    /// allowedInterfaces contains the interface names. If empty, the agent
-    /// fetches all the interfaces in the system, excepting the ones listed in `excludeInterfaces`.
-    /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
-    /// Otherwise, it is matched as a case-sensitive string.
+    /// allowedInterfaces is an optional field that contains a list of interface
+    /// names that are allowed to be discovered. If empty, the agent will fetch all
+    /// the interfaces in the system, excepting the ones listed in
+    /// excludeInterfaces. if non-empty, only entries in the list will be considered
+    /// for discovery. If an entry enclosed by slashes, such as `/br-/` or
+    /// `/veth*/`, then the entry is considered as a regular expression for
+    /// matching. Otherwise, the interface names in the list are case-sensitive.
+    /// This field is only taken into consideration if interfaceAutoDiscovery is set
+    /// to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedInterfaces")]
     pub allowed_interfaces: Option<Vec<String>>,
-    /// excludeInterfaces contains the interface names that are excluded from interface discovery
-    /// it is matched as a case-sensitive string.
+    /// excludeInterfaces is an optional field that contains a list of interface
+    /// names that are excluded from interface discovery. The interface names in
+    /// the list are case-sensitive. By default, the list contains the loopback
+    /// interface, "lo". This field is only taken into consideration if
+    /// interfaceAutoDiscovery is set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
-    /// interfaceAutoDiscovery when enabled, the agent process monitors the creation and deletion of interfaces,
-    /// automatically attaching eBPF hooks to newly discovered interfaces in both directions.
+    /// interfaceAutoDiscovery is an optional field. When enabled, the agent
+    /// monitors the creation and deletion of interfaces and automatically
+    /// attached eBPF programs to the newly discovered interfaces.
+    /// CAUTION: This has the potential to attach a given eBPF program to a large
+    /// number of interfaces. Use with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceAutoDiscovery")]
     pub interface_auto_discovery: Option<bool>,
 }
 
-/// networkNamespaces identifies the set of network namespaces in which to
-/// attach the eBPF program. If networkNamespaces is not specified, the BPF
-/// program will be attached in the root network namespace.
+/// networkNamespaces is an optional field that identifies the set of network
+/// namespaces in which to attach the eBPF program. If networkNamespaces is not
+/// specified, the eBPF program will be attached in the root network namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcxLinksNetworkNamespaces {
-    /// Target namespace.
+    /// namespace is an optional field and indicates the target network namespace.
+    /// If not provided, the default network namespace is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Target pods. This field must be specified, to select all pods use
-    /// standard metav1.LabelSelector semantics and make it empty.
+    /// pods is a required field and indicates the target pods. To select all pods
+    /// use the standard metav1.LabelSelector semantics and make it empty.
     pub pods: ClusterBpfApplicationProgramsTcxLinksNetworkNamespacesPods,
 }
 
-/// Target pods. This field must be specified, to select all pods use
-/// standard metav1.LabelSelector semantics and make it empty.
+/// pods is a required field and indicates the target pods. To select all pods
+/// use the standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTcxLinksNetworkNamespacesPods {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -515,23 +892,43 @@ pub struct ClusterBpfApplicationProgramsTcxLinksNetworkNamespacesPodsMatchExpres
     pub values: Option<Vec<String>>,
 }
 
-/// tracepointInfo defines the desired state of the application's TracepointPrograms.
+/// tracepoint is an optional field, but required when the type field is set to
+/// Tracepoint. tracepoint defines the desired state of the application's
+/// Tracepoint programs. Whereas KProbes attach to dynamically to any Linux
+/// kernel function, Tracepoint programs are programs that can only be attached
+/// at predefined locations in the Linux kernel. Use the following command to
+/// see the available attachment points:
+///  `sudo find /sys/kernel/debug/tracing/events -type d`
+/// While KProbes are more flexible in where in the kernel the probe can be
+/// attached, the functions and data structure rely on the kernel your system is
+/// running. Tracepoints tend to be more stable across kernel versions and are
+/// better for portability.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTracepoint {
-    /// links is the list of points to which the program should be attached.  The list items
-    /// are optional and may be updated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// Tracepoint program should be attached. The Tracepoint program is loaded in
+    /// kernel memory when the BPF Application CRD is created and the selected
+    /// Kubernetes nodes are active. The Tracepoint program will not be triggered
+    /// until the program has also been attached to an attachment point described in
+    /// this list. Items may be added or removed from the list at any point, causing
+    /// the Tracepoint program to be attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a Tracepoint program is a one of a predefined set
+    /// of Linux kernel functions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsTracepointLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsTracepointLinks {
-    /// name refers to the name of a kernel tracepoint to attach the
-    /// bpf program to.
+    /// name is a required field and specifies the name of the Linux kernel
+    /// Tracepoint to attach the eBPF program. name must not be an empty string,
+    /// must not exceed 64 characters in length, must start with alpha characters
+    /// and must only contain alphanumeric characters.
     pub name: String,
 }
 
-/// ClBpfApplicationProgram defines the desired state of BpfApplication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterBpfApplicationProgramsType {
     #[serde(rename = "XDP")]
@@ -549,55 +946,84 @@ pub enum ClusterBpfApplicationProgramsType {
     TracePoint,
 }
 
-/// uprobe defines the desired state of the application's UprobePrograms.
+/// uprobe is an optional field, but required when the type field is set to
+/// UProbe. uprobe defines the desired state of the application's UProbe
+/// programs. UProbe programs are user-space probes. A target must be provided,
+/// which is the library name or absolute path to a binary or library where the
+/// probe is attached. Optionally, a function name can also be provided to
+/// provide finer granularity on where the probe is attached. They can be
+/// attached at any point in the binary, library or function using the optional
+/// offset field. However, caution must be taken when using the offset, ensuring
+/// the offset is still in the desired bytecode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUprobe {
-    /// links in the list of points to which the program should be attached.  The list items
-    /// are optional and may be udated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// UProbe or URetProbe program should be attached. The eBPF program is loaded
+    /// in kernel memory when the BPF Application CRD is created and the selected
+    /// Kubernetes nodes are active. The eBPF program will not be triggered until
+    /// the program has also been attached to an attachment point described in this
+    /// list. Items may be added or removed from the list at any point, causing the
+    /// eBPF program to be attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a UProbe and URetProbe program is a user-space
+    /// binary or function. By default, the eBPF program is triggered at the entry
+    /// of the attachment point, but the attachment point can be adjusted using an
+    /// optional function name and/or offset. Optionally, the eBPF program can be
+    /// installed in a set of containers or limited to a specified PID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsUprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUprobeLinks {
-    /// containers identify the set of containers in which to attach the
-    /// uprobe. If Containers is not specified, the uprobe will be attached in
-    /// the bpfman-agent container.
+    /// containers is an optional field that identifies the set of containers in
+    /// which to attach the UProbe or URetProbe program. If containers is not
+    /// specified, the eBPF program will be attached in the bpfman container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<ClusterBpfApplicationProgramsUprobeLinksContainers>,
-    /// function to attach the uprobe to.
+    /// function is an optional field and specifies the name of a user-space function
+    /// to attach the UProbe or URetProbe program. If not provided, the eBPF program
+    /// will be triggered on the entry of the target. function must not be an empty
+    /// string, must not exceed 64 characters in length, must start with alpha
+    /// characters and must only contain alphanumeric characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub function: Option<String>,
-    /// offset added to the address of the function for uprobe.
+    /// offset is an optional field and the value is added to the address of the
+    /// attachment point function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
-    /// pid only execute uprobe for given process identification number (PID). If PID
-    /// is not provided, uprobe executes for all PIDs.
+    /// pid is an optional field and if provided, limits the execution of the UProbe
+    /// or URetProbe to the provided process identification number (PID). If pid is
+    /// not provided, the UProbe or URetProbe executes for all PIDs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i32>,
-    /// target is the Library name or the absolute path to a binary or library.
+    /// target is a required field and is the user-space library name or the
+    /// absolute path to a binary or library.
     pub target: String,
 }
 
-/// containers identify the set of containers in which to attach the
-/// uprobe. If Containers is not specified, the uprobe will be attached in
-/// the bpfman-agent container.
+/// containers is an optional field that identifies the set of containers in
+/// which to attach the UProbe or URetProbe program. If containers is not
+/// specified, the eBPF program will be attached in the bpfman container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUprobeLinksContainers {
-    /// containerNames indicate the Name(s) of container(s).  If none are specified, all containers in the
-    /// pod are selected.
+    /// containerNames is an optional field and is a list of container names in a
+    /// pod to attach the eBPF program. If no names are specified, all containers
+    /// in the pod are selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
-    /// namespaces indicate the target namespaces.
+    /// namespace is an optional field and indicates the target Kubernetes
+    /// namespace. If not provided, all Kubernetes namespaces are included.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// pods indicate the target pods. This field must be specified, to select all pods use
-    /// standard metav1.LabelSelector semantics and make it empty.
+    /// pods is a required field and indicates the target pods. To select all pods
+    /// use the standard metav1.LabelSelector semantics and make it empty.
     pub pods: ClusterBpfApplicationProgramsUprobeLinksContainersPods,
 }
 
-/// pods indicate the target pods. This field must be specified, to select all pods use
-/// standard metav1.LabelSelector semantics and make it empty.
+/// pods is a required field and indicates the target pods. To select all pods
+/// use the standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUprobeLinksContainersPods {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -627,55 +1053,85 @@ pub struct ClusterBpfApplicationProgramsUprobeLinksContainersPodsMatchExpression
     pub values: Option<Vec<String>>,
 }
 
-/// uretprobeInfo defines the desired state of the application's UretprobePrograms.
+/// uretprobe is an optional field, but required when the type field is set to
+/// URetProbe. uretprobe defines the desired state of the application's
+/// URetProbe programs. URetProbe programs are user-space probes. A target must
+/// be provided, which is the library name or absolute path to a binary or
+/// library where the probe is attached. Optionally, a function name can also be
+/// provided to provide finer granularity on where the probe is attached. They
+/// are attached to the return point of the binary, library or function, but can
+/// be set anywhere using the optional offset field. However, caution must be
+/// taken when using the offset, ensuring the offset is still in the desired
+/// bytecode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUretprobe {
-    /// links in the list of points to which the program should be attached.  The list items
-    /// are optional and may be udated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// UProbe or URetProbe program should be attached. The eBPF program is loaded
+    /// in kernel memory when the BPF Application CRD is created and the selected
+    /// Kubernetes nodes are active. The eBPF program will not be triggered until
+    /// the program has also been attached to an attachment point described in this
+    /// list. Items may be added or removed from the list at any point, causing the
+    /// eBPF program to be attached or detached.
+    /// 
+    /// 
+    /// The attachment point for a UProbe and URetProbe program is a user-space
+    /// binary or function. By default, the eBPF program is triggered at the entry
+    /// of the attachment point, but the attachment point can be adjusted using an
+    /// optional function name and/or offset. Optionally, the eBPF program can be
+    /// installed in a set of containers or limited to a specified PID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsUretprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUretprobeLinks {
-    /// containers identify the set of containers in which to attach the
-    /// uprobe. If Containers is not specified, the uprobe will be attached in
-    /// the bpfman-agent container.
+    /// containers is an optional field that identifies the set of containers in
+    /// which to attach the UProbe or URetProbe program. If containers is not
+    /// specified, the eBPF program will be attached in the bpfman container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<ClusterBpfApplicationProgramsUretprobeLinksContainers>,
-    /// function to attach the uprobe to.
+    /// function is an optional field and specifies the name of a user-space function
+    /// to attach the UProbe or URetProbe program. If not provided, the eBPF program
+    /// will be triggered on the entry of the target. function must not be an empty
+    /// string, must not exceed 64 characters in length, must start with alpha
+    /// characters and must only contain alphanumeric characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub function: Option<String>,
-    /// offset added to the address of the function for uprobe.
+    /// offset is an optional field and the value is added to the address of the
+    /// attachment point function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
-    /// pid only execute uprobe for given process identification number (PID). If PID
-    /// is not provided, uprobe executes for all PIDs.
+    /// pid is an optional field and if provided, limits the execution of the UProbe
+    /// or URetProbe to the provided process identification number (PID). If pid is
+    /// not provided, the UProbe or URetProbe executes for all PIDs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i32>,
-    /// target is the Library name or the absolute path to a binary or library.
+    /// target is a required field and is the user-space library name or the
+    /// absolute path to a binary or library.
     pub target: String,
 }
 
-/// containers identify the set of containers in which to attach the
-/// uprobe. If Containers is not specified, the uprobe will be attached in
-/// the bpfman-agent container.
+/// containers is an optional field that identifies the set of containers in
+/// which to attach the UProbe or URetProbe program. If containers is not
+/// specified, the eBPF program will be attached in the bpfman container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUretprobeLinksContainers {
-    /// containerNames indicate the Name(s) of container(s).  If none are specified, all containers in the
-    /// pod are selected.
+    /// containerNames is an optional field and is a list of container names in a
+    /// pod to attach the eBPF program. If no names are specified, all containers
+    /// in the pod are selected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
-    /// namespaces indicate the target namespaces.
+    /// namespace is an optional field and indicates the target Kubernetes
+    /// namespace. If not provided, all Kubernetes namespaces are included.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// pods indicate the target pods. This field must be specified, to select all pods use
-    /// standard metav1.LabelSelector semantics and make it empty.
+    /// pods is a required field and indicates the target pods. To select all pods
+    /// use the standard metav1.LabelSelector semantics and make it empty.
     pub pods: ClusterBpfApplicationProgramsUretprobeLinksContainersPods,
 }
 
-/// pods indicate the target pods. This field must be specified, to select all pods use
-/// standard metav1.LabelSelector semantics and make it empty.
+/// pods is a required field and indicates the target pods. To select all pods
+/// use the standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsUretprobeLinksContainersPods {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -705,85 +1161,143 @@ pub struct ClusterBpfApplicationProgramsUretprobeLinksContainersPodsMatchExpress
     pub values: Option<Vec<String>>,
 }
 
-/// xdp defines the desired state of the application's XdpPrograms.
+/// xdp is an optional field, but required when the type field is set to XDP.
+/// xdp defines the desired state of the application's XDP programs. XDP program
+/// can be attached to network devices (interfaces) and will be called on every
+/// incoming packet received by the network device. The XDP attachment point is
+/// just after the packet has been received off the wire, but before the Linux
+/// kernel has allocated an sk_buff, which is used to pass the packet through
+/// the kernel networking stack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdp {
-    /// links is the list of points to which the program should be attached.  The list items
-    /// are optional and may be updated after the bpf program has been loaded
+    /// links is an optional field and is the list of attachment points to which the
+    /// XDP program should be attached. The XDP program is loaded in kernel memory
+    /// when the BPF Application CRD is created and the selected Kubernetes nodes
+    /// are active. The XDP program will not be triggered until the program has also
+    /// been attached to an attachment point described in this list. Items may be
+    /// added or removed from the list at any point, causing the XDP program to be
+    /// attached or detached.
+    /// 
+    /// 
+    /// The attachment point for an XDP program is a network interface (or device).
+    /// The interface can be specified by name, by allowing bpfman to discover each
+    /// interface, or by setting the primaryNodeInterface flag, which instructs
+    /// bpfman to use the primary interface of a Kubernetes node. Optionally, the
+    /// XDP program can also be installed into a set of network namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<ClusterBpfApplicationProgramsXdpLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdpLinks {
-    /// interfaceSelector to determine the network interface (or interfaces)
+    /// interfaceSelector is a required field and is used to determine the network
+    /// interface (or interfaces) the XDP program is attached. Interface list is set
+    /// by providing a list of interface names, enabling auto discovery, or setting
+    /// the primaryNodeInterface flag, but only one option is allowed.
     #[serde(rename = "interfaceSelector")]
     pub interface_selector: ClusterBpfApplicationProgramsXdpLinksInterfaceSelector,
     /// networkNamespaces identifies the set of network namespaces in which to
-    /// attach the eBPF program. If networkNamespaces is not specified, the BPF
+    /// attach the eBPF program. If networkNamespaces is not specified, the eBPF
     /// program will be attached in the root network namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkNamespaces")]
     pub network_namespaces: Option<ClusterBpfApplicationProgramsXdpLinksNetworkNamespaces>,
-    /// priority specifies the priority of the bpf program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
+    /// priority is an optional field and determines the execution order of the XDP
+    /// program relative to other XDP programs attached to the same attachment
+    /// point. It must be a value between 0 and 1000, where lower values indicate
+    /// higher precedence. For XDP programs on the same attachment point with the
+    /// same priority, the most recently attached program has a lower precedence. If
+    /// not provided, priority will default to 1000.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    /// proceedOn allows the user to call other xdp programs in chain on this exit code.
-    /// Multiple values are supported by repeating the parameter.
+    /// proceedOn is an optional field and allows the user to call other XDP
+    /// programs in a chain, or not call the next program in a chain based on the
+    /// exit code of an XDP program. Allowed values, which are the possible exit
+    /// codes from an XDP eBPF program, are:
+    ///   Aborted, Drop, Pass, TX, ReDirect, DispatcherReturn
+    /// 
+    /// 
+    /// Multiple values are supported. Default is Pass and DispatcherReturn. So
+    /// using the default values, if an XDP program returns Pass, the next XDP
+    /// program in the chain will be called. If an XDP program returns Drop, the
+    /// next XDP program in the chain will NOT be called.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proceedOn")]
     pub proceed_on: Option<Vec<String>>,
 }
 
-/// interfaceSelector to determine the network interface (or interfaces)
+/// interfaceSelector is a required field and is used to determine the network
+/// interface (or interfaces) the XDP program is attached. Interface list is set
+/// by providing a list of interface names, enabling auto discovery, or setting
+/// the primaryNodeInterface flag, but only one option is allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdpLinksInterfaceSelector {
-    /// interfaces refers to a list of network interfaces to attach the BPF
-    /// program to.
+    /// interfaces is an optional field and is a list of network interface names to
+    /// attach the eBPF program. The interface names in the list are case-sensitive.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interfaces: Option<Vec<String>>,
-    /// discoveryConfig allow configuring interface discovery functionality,
+    /// interfacesDiscoveryConfig is an optional field that is used to control if
+    /// and how to automatically discover interfaces. If the agent should
+    /// automatically discover and attach eBPF programs to interfaces, use the
+    /// fields under interfacesDiscoveryConfig to control what is allow and excluded
+    /// from discovery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfacesDiscoveryConfig")]
     pub interfaces_discovery_config: Option<ClusterBpfApplicationProgramsXdpLinksInterfaceSelectorInterfacesDiscoveryConfig>,
-    /// primaryNodeInterface to attach BPF program to the primary interface on the node. Only 'true' accepted.
+    /// primaryNodeInterface is and optional field and indicates to attach the eBPF
+    /// program to the primary interface on the Kubernetes node. Only 'true' is
+    /// accepted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryNodeInterface")]
     pub primary_node_interface: Option<bool>,
 }
 
-/// discoveryConfig allow configuring interface discovery functionality,
+/// interfacesDiscoveryConfig is an optional field that is used to control if
+/// and how to automatically discover interfaces. If the agent should
+/// automatically discover and attach eBPF programs to interfaces, use the
+/// fields under interfacesDiscoveryConfig to control what is allow and excluded
+/// from discovery.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdpLinksInterfaceSelectorInterfacesDiscoveryConfig {
-    /// allowedInterfaces contains the interface names. If empty, the agent
-    /// fetches all the interfaces in the system, excepting the ones listed in `excludeInterfaces`.
-    /// An entry enclosed by slashes, such as `/br-/`, is matched as a regular expression.
-    /// Otherwise, it is matched as a case-sensitive string.
+    /// allowedInterfaces is an optional field that contains a list of interface
+    /// names that are allowed to be discovered. If empty, the agent will fetch all
+    /// the interfaces in the system, excepting the ones listed in
+    /// excludeInterfaces. if non-empty, only entries in the list will be considered
+    /// for discovery. If an entry enclosed by slashes, such as `/br-/` or
+    /// `/veth*/`, then the entry is considered as a regular expression for
+    /// matching. Otherwise, the interface names in the list are case-sensitive.
+    /// This field is only taken into consideration if interfaceAutoDiscovery is set
+    /// to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedInterfaces")]
     pub allowed_interfaces: Option<Vec<String>>,
-    /// excludeInterfaces contains the interface names that are excluded from interface discovery
-    /// it is matched as a case-sensitive string.
+    /// excludeInterfaces is an optional field that contains a list of interface
+    /// names that are excluded from interface discovery. The interface names in
+    /// the list are case-sensitive. By default, the list contains the loopback
+    /// interface, "lo". This field is only taken into consideration if
+    /// interfaceAutoDiscovery is set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
-    /// interfaceAutoDiscovery when enabled, the agent process monitors the creation and deletion of interfaces,
-    /// automatically attaching eBPF hooks to newly discovered interfaces in both directions.
+    /// interfaceAutoDiscovery is an optional field. When enabled, the agent
+    /// monitors the creation and deletion of interfaces and automatically
+    /// attached eBPF programs to the newly discovered interfaces.
+    /// CAUTION: This has the potential to attach a given eBPF program to a large
+    /// number of interfaces. Use with caution.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceAutoDiscovery")]
     pub interface_auto_discovery: Option<bool>,
 }
 
 /// networkNamespaces identifies the set of network namespaces in which to
-/// attach the eBPF program. If networkNamespaces is not specified, the BPF
+/// attach the eBPF program. If networkNamespaces is not specified, the eBPF
 /// program will be attached in the root network namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdpLinksNetworkNamespaces {
-    /// Target namespace.
+    /// namespace is an optional field and indicates the target network namespace.
+    /// If not provided, the default network namespace is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// Target pods. This field must be specified, to select all pods use
-    /// standard metav1.LabelSelector semantics and make it empty.
+    /// pods is a required field and indicates the target pods. To select all pods
+    /// use the standard metav1.LabelSelector semantics and make it empty.
     pub pods: ClusterBpfApplicationProgramsXdpLinksNetworkNamespacesPods,
 }
 
-/// Target pods. This field must be specified, to select all pods use
-/// standard metav1.LabelSelector semantics and make it empty.
+/// pods is a required field and indicates the target pods. To select all pods
+/// use the standard metav1.LabelSelector semantics and make it empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationProgramsXdpLinksNetworkNamespacesPods {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -813,12 +1327,12 @@ pub struct ClusterBpfApplicationProgramsXdpLinksNetworkNamespacesPodsMatchExpres
     pub values: Option<Vec<String>>,
 }
 
-/// BpfAppStatus reflects the status of a BpfApplication or BpfApplicationState object
+/// status reflects the status of a BPF Application and indicates if all the
+/// eBPF programs for a given instance loaded successfully or not.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterBpfApplicationStatus {
-    /// For a BpfApplication object, Conditions contains the global cluster state
-    /// for the object. For a BpfApplicationState object, Conditions contains the
-    /// state of the BpfApplication object on the given node.
+    /// conditions contains the summary state for all eBPF programs defined in the
+    /// BPF Application instance for all the Kubernetes nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }

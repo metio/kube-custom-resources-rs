@@ -19,37 +19,47 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PersesDashboardSpec {
+    pub config: PersesDashboardConfig,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceSelector")]
+    pub instance_selector: Option<PersesDashboardInstanceSelector>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDashboardConfig {
     /// Datasources is an optional list of datasource definition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub datasources: Option<BTreeMap<String, PersesDashboardDatasources>>,
+    pub datasources: Option<BTreeMap<String, PersesDashboardConfigDatasources>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub display: Option<PersesDashboardDisplay>,
+    pub display: Option<PersesDashboardConfigDisplay>,
     /// Duration is the default time range to use when getting data to fill the dashboard
     pub duration: String,
-    pub layouts: Vec<PersesDashboardLayouts>,
-    pub panels: BTreeMap<String, PersesDashboardPanels>,
+    pub layouts: Vec<PersesDashboardConfigLayouts>,
+    pub panels: BTreeMap<String, PersesDashboardConfigPanels>,
     /// RefreshInterval is the default refresh interval to use when landing on the dashboard
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<Vec<PersesDashboardVariables>>,
+    pub variables: Option<Vec<PersesDashboardConfigVariables>>,
 }
 
 /// Datasources is an optional list of datasource definition.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardDatasources {
+pub struct PersesDashboardConfigDatasources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub display: Option<PersesDashboardDatasourcesDisplay>,
+    pub display: Option<PersesDashboardConfigDatasourcesDisplay>,
     /// Plugin will contain the datasource configuration.
     /// The data typed is available in Cue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub plugin: Option<PersesDashboardDatasourcesPlugin>,
+    pub plugin: Option<PersesDashboardConfigDatasourcesPlugin>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardDatasourcesDisplay {
+pub struct PersesDashboardConfigDatasourcesDisplay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,13 +69,13 @@ pub struct PersesDashboardDatasourcesDisplay {
 /// Plugin will contain the datasource configuration.
 /// The data typed is available in Cue.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardDatasourcesPlugin {
+pub struct PersesDashboardConfigDatasourcesPlugin {
     pub kind: String,
     pub spec: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardDisplay {
+pub struct PersesDashboardConfigDisplay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,38 +83,38 @@ pub struct PersesDashboardDisplay {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardLayouts {
+pub struct PersesDashboardConfigLayouts {
     pub kind: String,
     pub spec: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanels {
+pub struct PersesDashboardConfigPanels {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<PersesDashboardPanelsSpec>,
+    pub spec: Option<PersesDashboardConfigPanelsSpec>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpec {
-    pub display: PersesDashboardPanelsSpecDisplay,
+pub struct PersesDashboardConfigPanelsSpec {
+    pub display: PersesDashboardConfigPanelsSpecDisplay,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub links: Option<Vec<PersesDashboardPanelsSpecLinks>>,
-    pub plugin: PersesDashboardPanelsSpecPlugin,
+    pub links: Option<Vec<PersesDashboardConfigPanelsSpecLinks>>,
+    pub plugin: PersesDashboardConfigPanelsSpecPlugin,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub queries: Option<Vec<PersesDashboardPanelsSpecQueries>>,
+    pub queries: Option<Vec<PersesDashboardConfigPanelsSpecQueries>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecDisplay {
+pub struct PersesDashboardConfigPanelsSpecDisplay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     pub name: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecLinks {
+pub struct PersesDashboardConfigPanelsSpecLinks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renderVariables")]
@@ -117,33 +127,65 @@ pub struct PersesDashboardPanelsSpecLinks {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecPlugin {
+pub struct PersesDashboardConfigPanelsSpecPlugin {
     pub kind: String,
     pub spec: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecQueries {
+pub struct PersesDashboardConfigPanelsSpecQueries {
     pub kind: String,
-    pub spec: PersesDashboardPanelsSpecQueriesSpec,
+    pub spec: PersesDashboardConfigPanelsSpecQueriesSpec,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecQueriesSpec {
-    pub plugin: PersesDashboardPanelsSpecQueriesSpecPlugin,
+pub struct PersesDashboardConfigPanelsSpecQueriesSpec {
+    pub plugin: PersesDashboardConfigPanelsSpecQueriesSpecPlugin,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardPanelsSpecQueriesSpecPlugin {
+pub struct PersesDashboardConfigPanelsSpecQueriesSpecPlugin {
     pub kind: String,
     pub spec: serde_json::Value,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesDashboardVariables {
+pub struct PersesDashboardConfigVariables {
     /// Kind is the type of the variable. Depending on the value of Kind, it will change the content of Spec.
     pub kind: String,
     pub spec: serde_json::Value,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDashboardInstanceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PersesDashboardInstanceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesDashboardInstanceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// PersesDashboardStatus defines the observed state of PersesDashboard

@@ -55,6 +55,12 @@ pub struct DruidSpec {
     /// DisablePVCDeletionFinalizer Whether PVCs shall be deleted on the deletion of the Druid cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePVCDeletionFinalizer")]
     pub disable_pvc_deletion_finalizer: Option<bool>,
+    /// See v1.PodDNSConfig for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<DruidDnsConfig>,
+    /// See v1.DNSPolicy for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
     /// Dynamic Configurations for Druid. Applied through the dynamic configuration API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfig")]
     pub dynamic_config: Option<BTreeMap<String, serde_json::Value>>,
@@ -1388,6 +1394,37 @@ pub struct DruidDeepStorage {
     pub r#type: String,
 }
 
+/// See v1.PodDNSConfig for more details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DruidDnsConfig {
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    /// Duplicated nameservers will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Duplicated entries will be removed. Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<DruidDnsConfigOptions>>,
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    /// Duplicated search paths will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+/// PodDNSConfigOption defines DNS resolver options of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DruidDnsConfigOptions {
+    /// Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidEnv {
@@ -1682,6 +1719,12 @@ pub struct DruidNodes {
     /// ContainerSecurityContext
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<DruidNodesContainerSecurityContext>,
+    /// See v1.PodDNSConfig for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<DruidNodesDnsConfig>,
+    /// See v1.DNSPolicy for more details.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
     /// DruidPort Used by the `Druid` process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "druid.port")]
     pub druid_port: Option<i32>,
@@ -2996,6 +3039,37 @@ pub struct DruidNodesContainerSecurityContextWindowsOptions {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+/// See v1.PodDNSConfig for more details.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DruidNodesDnsConfig {
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    /// Duplicated nameservers will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Duplicated entries will be removed. Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<DruidNodesDnsConfigOptions>>,
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    /// Duplicated search paths will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+/// PodDNSConfigOption defines DNS resolver options of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DruidNodesDnsConfigOptions {
+    /// Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// EnvVar represents an environment variable present in a Container.

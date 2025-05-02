@@ -769,9 +769,90 @@ pub struct PersesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// Perses client configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesClient {
+    /// BasicAuth basic auth config for datasource client
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
+    pub basic_auth: Option<PersesClientBasicAuth>,
+    /// OAuth configuration for datasource client
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth: Option<PersesClientOauth>,
     /// TLS the equivalent to the tls_config for perses client
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<PersesClientTls>,
+}
+
+/// BasicAuth basic auth config for datasource client
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PersesClientBasicAuth {
+    /// Name of basic auth k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Path to password
+    pub password_path: String,
+    /// Type source type of secret
+    #[serde(rename = "type")]
+    pub r#type: PersesClientBasicAuthType,
+    /// Username for basic auth
+    pub username: String,
+}
+
+/// BasicAuth basic auth config for datasource client
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PersesClientBasicAuthType {
+    #[serde(rename = "secret")]
+    Secret,
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "file")]
+    File,
+}
+
+/// OAuth configuration for datasource client
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct PersesClientOauth {
+    /// AuthStyle optionally specifies how the endpoint wants the
+    /// client ID & client secret sent. The zero value means to
+    /// auto-detect.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authStyle")]
+    pub auth_style: Option<i64>,
+    /// Path to client id
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIDPath")]
+    pub client_id_path: Option<String>,
+    /// Path to client secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecretPath")]
+    pub client_secret_path: Option<String>,
+    /// EndpointParams specifies additional parameters for requests to the token endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
+    pub endpoint_params: Option<BTreeMap<String, String>>,
+    /// Name of basic auth k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namsespace of certificate k8s resource (when type is secret or configmap)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// Scope specifies optional requested permissions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scopes: Option<Vec<String>>,
+    /// TokenURL is the resource server's token endpoint
+    /// URL. This is a constant specific to each server.
+    #[serde(rename = "tokenURL")]
+    pub token_url: String,
+    /// Type source type of secret
+    #[serde(rename = "type")]
+    pub r#type: PersesClientOauthType,
+}
+
+/// OAuth configuration for datasource client
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PersesClientOauthType {
+    #[serde(rename = "secret")]
+    Secret,
+    #[serde(rename = "configmap")]
+    Configmap,
+    #[serde(rename = "file")]
+    File,
 }
 
 /// TLS the equivalent to the tls_config for perses client
@@ -796,7 +877,7 @@ pub struct PersesClientTlsCaCert {
     /// Path to Certificate
     #[serde(rename = "certPath")]
     pub cert_path: String,
-    /// Name of certificate k8s resource (when type is secret or configmap)
+    /// Name of basic auth k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namsespace of certificate k8s resource (when type is secret or configmap)
@@ -805,7 +886,7 @@ pub struct PersesClientTlsCaCert {
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
-    /// Type source type of certificate
+    /// Type source type of secret
     #[serde(rename = "type")]
     pub r#type: PersesClientTlsCaCertType,
 }
@@ -827,7 +908,7 @@ pub struct PersesClientTlsUserCert {
     /// Path to Certificate
     #[serde(rename = "certPath")]
     pub cert_path: String,
-    /// Name of certificate k8s resource (when type is secret or configmap)
+    /// Name of basic auth k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namsespace of certificate k8s resource (when type is secret or configmap)
@@ -836,7 +917,7 @@ pub struct PersesClientTlsUserCert {
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
-    /// Type source type of certificate
+    /// Type source type of secret
     #[serde(rename = "type")]
     pub r#type: PersesClientTlsUserCertType,
 }
@@ -1880,7 +1961,7 @@ pub struct PersesTlsCaCert {
     /// Path to Certificate
     #[serde(rename = "certPath")]
     pub cert_path: String,
-    /// Name of certificate k8s resource (when type is secret or configmap)
+    /// Name of basic auth k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namsespace of certificate k8s resource (when type is secret or configmap)
@@ -1889,7 +1970,7 @@ pub struct PersesTlsCaCert {
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
-    /// Type source type of certificate
+    /// Type source type of secret
     #[serde(rename = "type")]
     pub r#type: PersesTlsCaCertType,
 }
@@ -1911,7 +1992,7 @@ pub struct PersesTlsUserCert {
     /// Path to Certificate
     #[serde(rename = "certPath")]
     pub cert_path: String,
-    /// Name of certificate k8s resource (when type is secret or configmap)
+    /// Name of basic auth k8s resource (when type is secret or configmap)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Namsespace of certificate k8s resource (when type is secret or configmap)
@@ -1920,7 +2001,7 @@ pub struct PersesTlsUserCert {
     /// Path to Private key certificate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyPath")]
     pub private_key_path: Option<String>,
-    /// Type source type of certificate
+    /// Type source type of secret
     #[serde(rename = "type")]
     pub r#type: PersesTlsUserCertType,
 }

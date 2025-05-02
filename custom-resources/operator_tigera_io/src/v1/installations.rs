@@ -4231,6 +4231,24 @@ pub enum InstallationCertificateManagementSignatureAlgorithm {
 /// CNI specifies the CNI that will be used by this installation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCni {
+    /// BinDir is the path to the CNI binaries directory.
+    /// If you have changed the installation directory for CNI binaries in the container runtime configuration,
+    /// please ensure that this field points to the same directory as specified in the container runtime settings.
+    /// Default directory depends on the KubernetesProvider.
+    /// * For KubernetesProvider GKE, this field defaults to "/home/kubernetes/bin".
+    /// * For KubernetesProvider OpenShift, this field defaults to "/var/lib/cni/bin".
+    /// * Otherwise, this field defaults to "/opt/cni/bin".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binDir")]
+    pub bin_dir: Option<String>,
+    /// ConfDir is the path to the CNI config directory.
+    /// If you have changed the installation directory for CNI configuration in the container runtime configuration,
+    /// please ensure that this field points to the same directory as specified in the container runtime settings.
+    /// Default directory depends on the KubernetesProvider.
+    /// * For KubernetesProvider GKE, this field defaults to "/etc/cni/net.d".
+    /// * For KubernetesProvider OpenShift, this field defaults to "/var/run/multus/cni/net.d".
+    /// * Otherwise, this field defaults to "/etc/cni/net.d".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "confDir")]
+    pub conf_dir: Option<String>,
     /// IPAM specifies the pod IP address management that will be used in the Calico or
     /// Calico Enterprise installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11011,6 +11029,24 @@ pub enum InstallationStatusComputedCertificateManagementSignatureAlgorithm {
 /// CNI specifies the CNI that will be used by this installation.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCni {
+    /// BinDir is the path to the CNI binaries directory.
+    /// If you have changed the installation directory for CNI binaries in the container runtime configuration,
+    /// please ensure that this field points to the same directory as specified in the container runtime settings.
+    /// Default directory depends on the KubernetesProvider.
+    /// * For KubernetesProvider GKE, this field defaults to "/home/kubernetes/bin".
+    /// * For KubernetesProvider OpenShift, this field defaults to "/var/lib/cni/bin".
+    /// * Otherwise, this field defaults to "/opt/cni/bin".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "binDir")]
+    pub bin_dir: Option<String>,
+    /// ConfDir is the path to the CNI config directory.
+    /// If you have changed the installation directory for CNI configuration in the container runtime configuration,
+    /// please ensure that this field points to the same directory as specified in the container runtime settings.
+    /// Default directory depends on the KubernetesProvider.
+    /// * For KubernetesProvider GKE, this field defaults to "/etc/cni/net.d".
+    /// * For KubernetesProvider OpenShift, this field defaults to "/var/run/multus/cni/net.d".
+    /// * Otherwise, this field defaults to "/etc/cni/net.d".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "confDir")]
+    pub conf_dir: Option<String>,
     /// IPAM specifies the pod IP address management that will be used in the Calico or
     /// Calico Enterprise installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]

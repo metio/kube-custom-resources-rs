@@ -78,7 +78,7 @@ pub struct ArgoCDSpec {
     /// Import is the import/restore options for ArgoCD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub import: Option<ArgoCDImport>,
-    /// InitialRepositories to configure Argo CD with upon creation of the cluster.
+    /// Deprecated: InitialRepositories to configure Argo CD with upon creation of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialRepositories")]
     pub initial_repositories: Option<String>,
     /// InitialSSHKnownHosts defines the SSH known hosts data upon creation of the cluster for connecting Git repositories via SSH.
@@ -117,7 +117,7 @@ pub struct ArgoCDSpec {
     /// Repo defines the repo server options for Argo CD.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repo: Option<ArgoCDRepo>,
-    /// RepositoryCredentials are the Git pull credentials to configure Argo CD with upon creation of the cluster.
+    /// Deprecated: RepositoryCredentials are the Git pull credentials to configure Argo CD with upon creation of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryCredentials")]
     pub repository_credentials: Option<String>,
     /// ResourceActions customizes resource action behavior.

@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -36,6 +37,9 @@ pub struct StreamSpec {
     /// capacity mode for your data streams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamModeDetails")]
     pub stream_mode_details: Option<StreamStreamModeDetails>,
+    /// A set of up to 10 key-value pairs to use to create the tags.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<BTreeMap<String, String>>,
 }
 
 /// Indicates the capacity mode of the data stream. Currently, in Kinesis Data

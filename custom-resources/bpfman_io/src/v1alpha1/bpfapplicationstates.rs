@@ -10,34 +10,68 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// BpfApplicationStateStatus reflects the status of the BpfApplication on the given node
+/// status reflects the status of a BpfApplication instance for the given node.
+/// appLoadStatus and conditions provide an overall status for the given node,
+/// while each item in the programs list provides a per eBPF program status for
+/// the given node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatus {
-    /// appLoadStatus reflects the status of loading the bpf application on the
+    /// appLoadStatus reflects the status of loading the eBPF application on the
     /// given node.
+    /// 
+    /// 
+    /// NotLoaded is a temporary state that is assigned when a
+    /// ClusterBpfApplicationState is created and the initial reconcile is being
+    /// processed.
+    /// 
+    /// 
+    /// LoadSuccess is returned if all the programs have been loaded with no
+    /// errors.
+    /// 
+    /// 
+    /// LoadError is returned if one or more programs encountered an error and
+    /// were not loaded.
+    /// 
+    /// 
+    /// NotSelected is returned if this application did not select to run on this
+    /// Kubernetes node.
+    /// 
+    /// 
+    /// UnloadSuccess is returned when all the programs were successfully
+    /// unloaded.
+    /// 
+    /// 
+    /// UnloadError is returned if one or more programs encountered an error when
+    /// being unloaded.
     #[serde(rename = "appLoadStatus")]
     pub app_load_status: String,
-    /// Conditions contains the overall status of the BpfApplicationState object
-    /// on the given node.
+    /// conditions contains the summary state of the BpfApplication for the given
+    /// Kubernetes node. If one or more programs failed to load or attach to the
+    /// designated attachment point, the condition will report the error. If more
+    /// than one error has occurred, condition will contain the first error
+    /// encountered.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// node is the name of the node for this BpfApplicationStateSpec.
+    /// node is the name of the Kubernets node for this BpfApplicationState.
     pub node: String,
-    /// programs is a list of bpf programs contained in the parent application.
+    /// programs is a list of eBPF programs contained in the parent BpfApplication
+    /// instance. Each entry in the list contains the derived program attributes as
+    /// well as the attach status for each program on the given Kubernetes node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub programs: Option<Vec<BpfApplicationStateStatusPrograms>>,
-    /// updateCount is the number of times the BpfApplicationState has been updated. Set to 1
-    /// when the object is created, then it is incremented prior to each update.
-    /// This allows us to verify that the API server has the updated object prior
-    /// to starting a new Reconcile operation.
+    /// UpdateCount tracks the number of times the BpfApplicationState object has
+    /// been updated. The bpfman agent initializes it to 1 when it creates the
+    /// object, and then increments it before each subsequent update. It serves
+    /// as a lightweight sequence number to verify that the API server is serving
+    /// the most recent version of the object before beginning a new Reconcile
+    /// operation.
     #[serde(rename = "updateCount")]
     pub update_count: i64,
 }
 
-/// BpfApplicationProgramState defines the desired state of BpfApplication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BpfApplicationStateStatusPrograms {
-    /// name is the name of the function that is the entry point for the BPF
+    /// name is the name of the function that is the entry point for the eBPF
     /// program
     pub name: String,
     /// programId is the id of the program in the kernel.  Not set until the
@@ -48,44 +82,68 @@ pub struct BpfApplicationStateStatusPrograms {
     /// are in the correct state.
     #[serde(rename = "programLinkStatus")]
     pub program_link_status: String,
-    /// tc defines the desired state of the application's TcPrograms.
+    /// tc contains the attachment data for a TC program when type is set to TC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tc: Option<BpfApplicationStateStatusProgramsTc>,
-    /// tcx defines the desired state of the application's TcxPrograms.
+    /// tcx contains the attachment data for a TCX program when type is set to TCX.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tcx: Option<BpfApplicationStateStatusProgramsTcx>,
-    /// type specifies the bpf program type
+    /// type specifies the provisioned eBPF program type for this program entry.
+    /// Type will be one of:
+    ///   TC, TCX, UProbe, URetProbe, XDP
+    /// 
+    /// 
+    /// When set to TC, the tc object will be populated with the eBPF program data
+    /// associated with a TC program.
+    /// 
+    /// 
+    /// When set to TCX, the tcx object will be populated with the eBPF program
+    /// data associated with a TCX program.
+    /// 
+    /// 
+    /// When set to UProbe, the uprobe object will be populated with the eBPF
+    /// program data associated with a UProbe program.
+    /// 
+    /// 
+    /// When set to URetProbe, the uretprobe object will be populated with the eBPF
+    /// program data associated with a URetProbe program.
+    /// 
+    /// 
+    /// When set to XDP, the xdp object will be populated with the eBPF program data
+    /// associated with a URetProbe program.
     #[serde(rename = "type")]
     pub r#type: BpfApplicationStateStatusProgramsType,
-    /// uprobe defines the desired state of the application's UprobePrograms.
+    /// uprobe contains the attachment data for a UProbe program when type is set to
+    /// UProbe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uprobe: Option<BpfApplicationStateStatusProgramsUprobe>,
-    /// uretprobe defines the desired state of the application's UretprobePrograms.
+    /// uretprobe contains the attachment data for a URetProbe program when type is
+    /// set to URetProbe.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uretprobe: Option<BpfApplicationStateStatusProgramsUretprobe>,
-    /// xdp defines the desired state of the application's XdpPrograms.
+    /// xdp contains the attachment data for an XDP program when type is set to XDP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub xdp: Option<BpfApplicationStateStatusProgramsXdp>,
 }
 
-/// tc defines the desired state of the application's TcPrograms.
+/// tc contains the attachment data for a TC program when type is set to TC.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsTc {
-    /// links is the List of attach points for the BPF program on the given node. Each entry
-    /// in *AttachInfoState represents a specific, unique attach point that is
-    /// derived from *AttachInfo by fully expanding any selectors.  Each entry
-    /// also contains information about the attach point required by the
-    /// reconciler
+    /// links is a list of attachment points for the TC program. Each entry in the
+    /// list includes a linkStatus, which indicates if the attachment was successful
+    /// or not on this node, a linkId, which is the kernel ID for the link if
+    /// successfully attached, and other attachment specific data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<BpfApplicationStateStatusProgramsTcLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsTcLinks {
-    /// direction specifies the direction of traffic the tc program should
-    /// attach to for a given network device.
+    /// direction is the provisioned direction of traffic, Ingress or Egress, the TC
+    /// program should be attached for a given network device.
     pub direction: BpfApplicationStateStatusProgramsTcLinksDirection,
-    /// interfaceName is the Interface name to attach the tc program to.
+    /// interfaceName is the name of the interface the TC program should be
+    /// attached.
     #[serde(rename = "interfaceName")]
     pub interface_name: String,
     /// linkId is an identifier for the link assigned by bpfman. This field is
@@ -97,15 +155,17 @@ pub struct BpfApplicationStateStatusProgramsTcLinks {
     /// successfully, and if not, why.
     #[serde(rename = "linkStatus")]
     pub link_status: String,
-    /// netnsPath is a path to a Network namespace to attach the tc program in.
+    /// netnsPath is the path to the network namespace inside of which the TC
+    /// program should be attached.
     #[serde(rename = "netnsPath")]
     pub netns_path: String,
-    /// priority specifies the priority of the tc program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
+    /// priority is the provisioned priority of the TC program in relation to other
+    /// programs of the same type with the same attach point. It is a value from 0
+    /// to 1000, where lower values have higher precedence.
     pub priority: i32,
-    /// proceedOn allows the user to call other tc programs in chain on this exit code.
-    /// Multiple values are supported by repeating the parameter.
+    /// proceedOn is the provisioned list of proceedOn values. proceedOn allows the
+    /// user to call other TC programs in a chain, or not call the next program in a
+    /// chain based on the exit code of a TC program .Multiple values are supported.
     #[serde(rename = "proceedOn")]
     pub proceed_on: Vec<String>,
     /// shouldAttach reflects whether the attachment should exist.
@@ -121,27 +181,26 @@ pub enum BpfApplicationStateStatusProgramsTcLinksDirection {
     Egress,
 }
 
-/// tcx defines the desired state of the application's TcxPrograms.
+/// tcx contains the attachment data for a TCX program when type is set to TCX.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsTcx {
-    /// links is the List of attach points for the BPF program on the given node. Each entry
-    /// in *AttachInfoState represents a specific, unique attach point that is
-    /// derived from *AttachInfo by fully expanding any selectors.  Each entry
-    /// also contains information about the attach point required by the
-    /// reconciler
+    /// links is a list of attachment points for the TCX program. Each entry in the
+    /// list includes a linkStatus, which indicates if the attachment was successful
+    /// or not on this node, a linkId, which is the kernel ID for the link if
+    /// successfully attached, and other attachment specific data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<BpfApplicationStateStatusProgramsTcxLinks>>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsTcxLinks {
-    /// direction specifies the direction of traffic the tcx program should
-    /// attach to for a given network device.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub direction: Option<BpfApplicationStateStatusProgramsTcxLinksDirection>,
-    /// interfaceName is the Interface name to attach the tc program to.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceName")]
-    pub interface_name: Option<String>,
+    /// direction is the provisioned direction of traffic, Ingress or Egress, the
+    /// TCX program should be attached for a given network device.
+    pub direction: BpfApplicationStateStatusProgramsTcxLinksDirection,
+    /// interfaceName is the name of the interface the TCX program should be
+    /// attached.
+    #[serde(rename = "interfaceName")]
+    pub interface_name: String,
     /// linkId is an identifier for the link assigned by bpfman. This field is
     /// empty until the program is successfully attached and bpfman returns the
     /// id.
@@ -151,15 +210,14 @@ pub struct BpfApplicationStateStatusProgramsTcxLinks {
     /// successfully, and if not, why.
     #[serde(rename = "linkStatus")]
     pub link_status: String,
-    /// netnsPath is the path to the Network namespace to attach the tcx program
-    /// in.
+    /// netnsPath is the path to the network namespace inside of which the TCX
+    /// program should be attached.
     #[serde(rename = "netnsPath")]
     pub netns_path: String,
-    /// priority specifies the priority of the tcx program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub priority: Option<i32>,
+    /// priority is the provisioned priority of the TCX program in relation to other
+    /// programs of the same type with the same attach point. It is a value from 0
+    /// to 1000, where lower values have higher precedence.
+    pub priority: i32,
     /// shouldAttach reflects whether the attachment should exist.
     #[serde(rename = "shouldAttach")]
     pub should_attach: bool,
@@ -173,7 +231,6 @@ pub enum BpfApplicationStateStatusProgramsTcxLinksDirection {
     Egress,
 }
 
-/// BpfApplicationProgramState defines the desired state of BpfApplication
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum BpfApplicationStateStatusProgramsType {
     #[serde(rename = "XDP")]
@@ -186,24 +243,27 @@ pub enum BpfApplicationStateStatusProgramsType {
     URetProbe,
 }
 
-/// uprobe defines the desired state of the application's UprobePrograms.
+/// uprobe contains the attachment data for a UProbe program when type is set to
+/// UProbe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsUprobe {
-    /// List of attach points for the BPF program on the given node. Each entry
-    /// in *AttachInfoState represents a specific, unique attach point that is
-    /// derived from *AttachInfo by fully expanding any selectors.  Each entry
-    /// also contains information about the attach point required by the
-    /// reconciler
+    /// links is a list of attachment points for the UProbe program. Each entry in
+    /// the list includes a linkStatus, which indicates if the attachment was
+    /// successful or not on this node, a linkId, which is the kernel ID for the
+    /// link if successfully attached, and other attachment specific data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<BpfApplicationStateStatusProgramsUprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsUprobeLinks {
-    /// containerPid is container pid to attach the uprobe program in.
+    /// If containers is provisioned in the BpfApplication instance, containerPid is
+    /// the derived PID of the container the UProbe or URetProbe this attachment
+    /// point is attached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPid")]
     pub container_pid: Option<i32>,
-    /// function to attach the uprobe to.
+    /// function is the provisioned name of the user-space function the UProbe
+    /// program should be attached.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub function: Option<String>,
     /// linkId is an identifier for the link assigned by bpfman. This field is
@@ -215,40 +275,46 @@ pub struct BpfApplicationStateStatusProgramsUprobeLinks {
     /// successfully, and if not, why.
     #[serde(rename = "linkStatus")]
     pub link_status: String,
-    /// offset added to the address of the function for uprobe.
+    /// offset is the provisioned offset, whose value is added to the address of the
+    /// attachment point function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
-    /// pid is Only execute uprobe for given process identification number (PID). If PID
-    /// is not provided, uprobe executes for all PIDs.
+    /// pid is the provisioned pid. If set, pid limits the execution of the UProbe
+    /// or URetProbe to the provided process identification number (PID). If pid is
+    /// not provided, the UProbe or URetProbe executes for all PIDs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i32>,
     /// shouldAttach reflects whether the attachment should exist.
     #[serde(rename = "shouldAttach")]
     pub should_attach: bool,
-    /// target is the library name or the absolute path to a binary or library.
+    /// target is the provisioned user-space library name or the absolute path to a
+    /// binary or library.
     pub target: String,
     /// uuid is an Unique identifier for the attach point assigned by bpfman agent.
     pub uuid: String,
 }
 
-/// uretprobe defines the desired state of the application's UretprobePrograms.
+/// uretprobe contains the attachment data for a URetProbe program when type is
+/// set to URetProbe.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsUretprobe {
-    /// List of attach points for the BPF program on the given node. Each entry
-    /// in *AttachInfoState represents a specific, unique attach point that is
-    /// derived from *AttachInfo by fully expanding any selectors.  Each entry
-    /// also contains information about the attach point required by the
-    /// reconciler
+    /// links is a list of attachment points for the UProbe program. Each entry in
+    /// the list includes a linkStatus, which indicates if the attachment was
+    /// successful or not on this node, a linkId, which is the kernel ID for the
+    /// link if successfully attached, and other attachment specific data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<BpfApplicationStateStatusProgramsUretprobeLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsUretprobeLinks {
-    /// containerPid is container pid to attach the uprobe program in.
+    /// If containers is provisioned in the BpfApplication instance, containerPid is
+    /// the derived PID of the container the UProbe or URetProbe this attachment
+    /// point is attached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerPid")]
     pub container_pid: Option<i32>,
-    /// function to attach the uprobe to.
+    /// function is the provisioned name of the user-space function the UProbe
+    /// program should be attached.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub function: Option<String>,
     /// linkId is an identifier for the link assigned by bpfman. This field is
@@ -260,37 +326,40 @@ pub struct BpfApplicationStateStatusProgramsUretprobeLinks {
     /// successfully, and if not, why.
     #[serde(rename = "linkStatus")]
     pub link_status: String,
-    /// offset added to the address of the function for uprobe.
+    /// offset is the provisioned offset, whose value is added to the address of the
+    /// attachment point function.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
-    /// pid is Only execute uprobe for given process identification number (PID). If PID
-    /// is not provided, uprobe executes for all PIDs.
+    /// pid is the provisioned pid. If set, pid limits the execution of the UProbe
+    /// or URetProbe to the provided process identification number (PID). If pid is
+    /// not provided, the UProbe or URetProbe executes for all PIDs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i32>,
     /// shouldAttach reflects whether the attachment should exist.
     #[serde(rename = "shouldAttach")]
     pub should_attach: bool,
-    /// target is the library name or the absolute path to a binary or library.
+    /// target is the provisioned user-space library name or the absolute path to a
+    /// binary or library.
     pub target: String,
     /// uuid is an Unique identifier for the attach point assigned by bpfman agent.
     pub uuid: String,
 }
 
-/// xdp defines the desired state of the application's XdpPrograms.
+/// xdp contains the attachment data for an XDP program when type is set to XDP.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsXdp {
-    /// links is the list of attach points for the BPF program on the given node. Each entry
-    /// in *AttachInfoState represents a specific, unique attach point that is
-    /// derived from *AttachInfo by fully expanding any selectors.  Each entry
-    /// also contains information about the attach point required by the
-    /// reconciler
+    /// links is a list of attachment points for the XDP program. Each entry in the
+    /// list includes a linkStatus, which indicates if the attachment was successful
+    /// or not on this node, a linkId, which is the kernel ID for the link if
+    /// successfully attached, and other attachment specific data.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub links: Option<Vec<BpfApplicationStateStatusProgramsXdpLinks>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BpfApplicationStateStatusProgramsXdpLinks {
-    /// interfaceName is the interface name to attach the xdp program to.
+    /// interfaceName is the name of the interface the XDP program should be
+    /// attached.
     #[serde(rename = "interfaceName")]
     pub interface_name: String,
     /// linkId is an identifier for the link assigned by bpfman. This field is
@@ -302,16 +371,17 @@ pub struct BpfApplicationStateStatusProgramsXdpLinks {
     /// successfully, and if not, why.
     #[serde(rename = "linkStatus")]
     pub link_status: String,
-    /// netnsPath is the path to the Network namespace to attach the xdp program
-    /// in.
+    /// netnsPath is the path to the network namespace inside of which the XDP
+    /// program should be attached.
     #[serde(rename = "netnsPath")]
     pub netns_path: String,
-    /// priority specifies the priority of the xdp program in relation to
-    /// other programs of the same type with the same attach point. It is a value
-    /// from 0 to 1000 where lower values have higher precedence.
+    /// priority is the provisioned priority of the XDP program in relation to other
+    /// programs of the same type with the same attach point. It is a value from 0
+    /// to 1000, where lower values have higher precedence.
     pub priority: i32,
-    /// proceedOn allows the user to call other xdp programs in chain on this exit code.
-    /// Multiple values are supported by repeating the parameter.
+    /// proceedOn is the provisioned list of proceedOn values. proceedOn allows the
+    /// user to call other TC programs in a chain, or not call the next program in a
+    /// chain based on the exit code of a TC program .Multiple values are supported.
     #[serde(rename = "proceedOn")]
     pub proceed_on: Vec<String>,
     /// shouldAttach reflects whether the attachment should exist.

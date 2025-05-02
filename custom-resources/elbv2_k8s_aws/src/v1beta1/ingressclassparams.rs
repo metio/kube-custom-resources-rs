@@ -60,6 +60,9 @@ pub struct IngressClassParamsSpec {
     /// Tags defines list of Tags on AWS resources provisioned for Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<IngressClassParamsTags>>,
+    /// TargetType defines the target type of target groups for all Ingresses that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
+    pub target_type: Option<IngressClassParamsTargetType>,
 }
 
 /// Group defines the IngressGroup for all Ingresses that belong to IngressClass with this IngressClassParams.
@@ -188,5 +191,14 @@ pub struct IngressClassParamsTags {
     pub key: String,
     /// The value of the tag.
     pub value: String,
+}
+
+/// IngressClassParamsSpec defines the desired state of IngressClassParams
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IngressClassParamsTargetType {
+    #[serde(rename = "instance")]
+    Instance,
+    #[serde(rename = "ip")]
+    Ip,
 }
 

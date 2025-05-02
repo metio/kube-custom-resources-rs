@@ -959,8 +959,6 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterHaproxyLivenessProbes>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -977,8 +975,6 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub readiness_probes: Option<PerconaXtraDBClusterHaproxyReadinessProbes>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasExternalTrafficPolicy")]
     pub replicas_external_traffic_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasLoadBalancerIP")]
-    pub replicas_load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasLoadBalancerSourceRanges")]
     pub replicas_load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasServiceAnnotations")]
@@ -1425,8 +1421,6 @@ pub struct PerconaXtraDBClusterHaproxyExposePrimary {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
@@ -1449,8 +1443,6 @@ pub struct PerconaXtraDBClusterHaproxyExposeReplicas {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlyReaders")]
@@ -3559,6 +3551,8 @@ pub struct PerconaXtraDBClusterLogcollectorResourcesClaims {
 pub struct PerconaXtraDBClusterPmm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaXtraDBClusterPmmContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customClusterName")]
+    pub custom_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3840,8 +3834,6 @@ pub struct PerconaXtraDBClusterProxysql {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterProxysqlLivenessProbes>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -4300,8 +4292,6 @@ pub struct PerconaXtraDBClusterProxysqlExpose {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
@@ -6228,8 +6218,6 @@ pub struct PerconaXtraDBClusterPxc {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterPxcLivenessProbes>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -6690,8 +6678,6 @@ pub struct PerconaXtraDBClusterPxcExpose {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
-    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]

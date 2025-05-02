@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -105,6 +106,9 @@ pub struct MachinePoolPlatform {
     /// IBMCloud is the configuration used when installing on IBM Cloud.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ibmcloud: Option<MachinePoolPlatformIbmcloud>,
+    /// Nutanix is the configuration used when installing on Nutanix prism central.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nutanix: Option<MachinePoolPlatformNutanix>,
     /// OpenStack is the configuration used when installing on OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openstack: Option<MachinePoolPlatformOpenstack>,
@@ -465,6 +469,249 @@ pub struct MachinePoolPlatformIbmcloudDedicatedHosts {
     /// dedicated host will be created for machines.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub profile: Option<String>,
+}
+
+/// Nutanix is the configuration used when installing on Nutanix prism central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformNutanix {
+    /// BootType indicates the boot type (Legacy, UEFI or SecureBoot) the Machine's VM uses to boot.
+    /// If this field is empty or omitted, the VM will use the default boot type "Legacy" to boot.
+    /// "SecureBoot" depends on "UEFI" boot, i.e., enabling "SecureBoot" means that "UEFI" boot is also enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootType")]
+    pub boot_type: Option<MachinePoolPlatformNutanixBootType>,
+    /// Categories optionally adds one or more prism categories (each with key and value) for
+    /// the Machine's VM to associate with. All the category key and value pairs specified must
+    /// already exist in the prism central.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub categories: Option<Vec<MachinePoolPlatformNutanixCategories>>,
+    /// NumCoresPerSocket is the number of cores per socket in a vm. The number
+    /// of vCPUs on the vm will be NumCPUs times NumCoresPerSocket.
+    /// For example: 4 CPUs and 4 Cores per socket will result in 16 VPUs.
+    /// The AHV scheduler treats socket and core allocation exactly the same
+    /// so there is no benefit to configuring cores over CPUs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coresPerSocket")]
+    pub cores_per_socket: Option<i64>,
+    /// NumCPUs is the total number of virtual processor cores to assign a vm.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cpus: Option<i64>,
+    /// DataDisks holds information of the data disks to attach to the Machine's VM
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataDisks")]
+    pub data_disks: Option<Vec<MachinePoolPlatformNutanixDataDisks>>,
+    /// FailureDomains optionally configures a list of failure domain names
+    /// that will be applied to the MachinePool. These names must correspond
+    /// to failure domains configured in `CD.Spec.Platform.Nutanix`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
+    pub failure_domains: Option<Vec<String>>,
+    /// GPUs is a list of GPU devices to attach to the machine's VM.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gpus: Option<Vec<MachinePoolPlatformNutanixGpus>>,
+    /// Memory is the size of a VM's memory in MiB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryMiB")]
+    pub memory_mi_b: Option<i64>,
+    /// OSDisk defines the storage for instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "osDisk")]
+    pub os_disk: Option<MachinePoolPlatformNutanixOsDisk>,
+    /// Project optionally identifies a Prism project for the Machine's VM to associate with.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub project: Option<MachinePoolPlatformNutanixProject>,
+}
+
+/// Nutanix is the configuration used when installing on Nutanix prism central.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixBootType {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Legacy,
+    #[serde(rename = "UEFI")]
+    Uefi,
+    SecureBoot,
+}
+
+/// NutanixCategory identifies a pair of prism category key and value
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformNutanixCategories {
+    /// key is the prism category key name
+    pub key: String,
+    /// value is the prism category value associated with the key
+    pub value: String,
+}
+
+/// NutanixDataDisk specifies the VM data disk configuration parameters.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformNutanixDataDisks {
+    /// dataSource refers to a data source image for the VM disk.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<MachinePoolPlatformNutanixDataDisksDataSource>,
+    /// deviceProperties are the properties of the disk device.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceProperties")]
+    pub device_properties: Option<MachinePoolPlatformNutanixDataDisksDeviceProperties>,
+    /// diskSize is size (in Quantity format) of the disk attached to the VM.
+    /// See https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Format for the Quantity format and example documentation.
+    /// The minimum diskSize is 1GB.
+    #[serde(rename = "diskSize")]
+    pub disk_size: IntOrString,
+    /// storageConfig are the storage configuration parameters of the VM disks.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageConfig")]
+    pub storage_config: Option<MachinePoolPlatformNutanixDataDisksStorageConfig>,
+}
+
+/// dataSource refers to a data source image for the VM disk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachinePoolPlatformNutanixDataDisksDataSource {
+    /// name is the resource name in the PC
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: MachinePoolPlatformNutanixDataDisksDataSourceType,
+    /// uuid is the UUID of the resource in the PC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// dataSource refers to a data source image for the VM disk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixDataDisksDataSourceType {
+    #[serde(rename = "uuid")]
+    Uuid,
+    #[serde(rename = "name")]
+    Name,
+}
+
+/// deviceProperties are the properties of the disk device.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachinePoolPlatformNutanixDataDisksDeviceProperties {
+    /// adapterType is the adapter type of the disk address.
+    /// If the deviceType is "Disk", the valid adapterType can be "SCSI", "IDE", "PCI", "SATA" or "SPAPR".
+    /// If the deviceType is "CDRom", the valid adapterType can be "IDE" or "SATA".
+    #[serde(rename = "adapterType")]
+    pub adapter_type: MachinePoolPlatformNutanixDataDisksDevicePropertiesAdapterType,
+    /// deviceIndex is the index of the disk address. The valid values are non-negative integers, with the default value 0.
+    /// For a Machine VM, the deviceIndex for the disks with the same deviceType.adapterType combination should
+    /// start from 0 and increase consecutively afterwards. Note that for each Machine VM, the Disk.SCSI.0
+    /// and CDRom.IDE.0 are reserved to be used by the VM's system. So for dataDisks of Disk.SCSI and CDRom.IDE,
+    /// the deviceIndex should start from 1.
+    #[serde(rename = "deviceIndex")]
+    pub device_index: i32,
+    /// deviceType specifies the disk device type.
+    /// The valid values are "Disk" and "CDRom", and the default is "Disk".
+    #[serde(rename = "deviceType")]
+    pub device_type: MachinePoolPlatformNutanixDataDisksDevicePropertiesDeviceType,
+}
+
+/// deviceProperties are the properties of the disk device.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixDataDisksDevicePropertiesAdapterType {
+    #[serde(rename = "SCSI")]
+    Scsi,
+    #[serde(rename = "IDE")]
+    Ide,
+    #[serde(rename = "PCI")]
+    Pci,
+    #[serde(rename = "SATA")]
+    Sata,
+    #[serde(rename = "SPAPR")]
+    Spapr,
+}
+
+/// deviceProperties are the properties of the disk device.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixDataDisksDevicePropertiesDeviceType {
+    Disk,
+    #[serde(rename = "CDRom")]
+    CdRom,
+}
+
+/// storageConfig are the storage configuration parameters of the VM disks.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformNutanixDataDisksStorageConfig {
+    /// diskMode specifies the disk mode.
+    /// The valid values are Standard and Flash, and the default is Standard.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskMode")]
+    pub disk_mode: Option<MachinePoolPlatformNutanixDataDisksStorageConfigDiskMode>,
+    /// storageContainer refers to the storage_container used by the VM disk.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageContainer")]
+    pub storage_container: Option<MachinePoolPlatformNutanixDataDisksStorageConfigStorageContainer>,
+}
+
+/// storageConfig are the storage configuration parameters of the VM disks.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixDataDisksStorageConfigDiskMode {
+    Standard,
+    Flash,
+}
+
+/// storageContainer refers to the storage_container used by the VM disk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachinePoolPlatformNutanixDataDisksStorageConfigStorageContainer {
+    /// type is the identifier type to use for this resource.
+    /// The valid value is "uuid".
+    #[serde(rename = "type")]
+    pub r#type: MachinePoolPlatformNutanixDataDisksStorageConfigStorageContainerType,
+    /// uuid is the UUID of the storage resource in the PC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// storageContainer refers to the storage_container used by the VM disk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixDataDisksStorageConfigStorageContainerType {
+    #[serde(rename = "uuid")]
+    Uuid,
+}
+
+/// NutanixGPU holds the identity of a Nutanix GPU resource in the Prism Central
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachinePoolPlatformNutanixGpus {
+    /// deviceID is the GPU device ID with the integer value.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceID")]
+    pub device_id: Option<i32>,
+    /// name is the GPU device name
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the identifier type of the GPU device.
+    /// Valid values are Name and DeviceID.
+    #[serde(rename = "type")]
+    pub r#type: MachinePoolPlatformNutanixGpusType,
+}
+
+/// NutanixGPU holds the identity of a Nutanix GPU resource in the Prism Central
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixGpusType {
+    Name,
+    #[serde(rename = "DeviceID")]
+    DeviceId,
+}
+
+/// OSDisk defines the storage for instance.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachinePoolPlatformNutanixOsDisk {
+    /// DiskSizeGiB defines the size of disk in GiB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskSizeGiB")]
+    pub disk_size_gi_b: Option<i64>,
+}
+
+/// Project optionally identifies a Prism project for the Machine's VM to associate with.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachinePoolPlatformNutanixProject {
+    /// name is the resource name in the PC
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the identifier type to use for this resource.
+    #[serde(rename = "type")]
+    pub r#type: MachinePoolPlatformNutanixProjectType,
+    /// uuid is the UUID of the resource in the PC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
+}
+
+/// Project optionally identifies a Prism project for the Machine's VM to associate with.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachinePoolPlatformNutanixProjectType {
+    #[serde(rename = "uuid")]
+    Uuid,
+    #[serde(rename = "name")]
+    Name,
 }
 
 /// OpenStack is the configuration used when installing on OpenStack.

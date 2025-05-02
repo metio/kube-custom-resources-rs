@@ -123,6 +123,8 @@ pub struct TableSchemaCockroachdb {
     pub json_triggers: Option<Vec<TableSchemaCockroachdbJsonTriggers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -284,6 +286,8 @@ pub struct TableSchemaPostgres {
     pub json_triggers: Option<Vec<TableSchemaPostgresJsonTriggers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

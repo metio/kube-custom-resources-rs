@@ -42,6 +42,11 @@ spec:
                     streamMode:
                       type: "string"
                   type: "object"
+                tags:
+                  additionalProperties:
+                    type: "string"
+                  description: "A set of up to 10 key-value pairs to use to create the tags."
+                  type: "object"
               required:
                 - "name"
               type: "object"

@@ -263,6 +263,23 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                auditAnnotations:
+                  description: "auditAnnotations contains CEL expressions which are used to produce audit\nannotations for the audit event of the API request.\nvalidations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is\nrequired."
+                  items:
+                    description: "AuditAnnotation describes how to produce an audit annotation for an API request."
+                    properties:
+                      key:
+                        description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\nRequired."
+                        type: "string"
+                      valueExpression:
+                        description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\nRequired."
+                        type: "string"
+                    required:
+                      - "key"
+                      - "valueExpression"
+                    type: "object"
+                  type: "array"
+                  x-kubernetes-list-type: "atomic"
                 autogen:
                   description: "AutogenConfiguration defines the configuration for the generation controller."
                   properties:
@@ -329,7 +346,7 @@ spec:
                     - "Fail"
                   type: "string"
                 images:
-                  description: "Images is a list of CEL expression to extract images from the resource"
+                  description: "ImageExtractors is a list of CEL expression to extract images from the resource"
                   items:
                     properties:
                       expression:
@@ -851,6 +868,23 @@ spec:
                                     - "name"
                                   type: "object"
                                 type: "array"
+                              auditAnnotations:
+                                description: "auditAnnotations contains CEL expressions which are used to produce audit\nannotations for the audit event of the API request.\nvalidations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is\nrequired."
+                                items:
+                                  description: "AuditAnnotation describes how to produce an audit annotation for an API request."
+                                  properties:
+                                    key:
+                                      description: "key specifies the audit annotation key. The audit annotation keys of\na ValidatingAdmissionPolicy must be unique. The key must be a qualified\nname ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.\n\nThe key is combined with the resource name of the\nValidatingAdmissionPolicy to construct an audit annotation key:\n\"{ValidatingAdmissionPolicy name}/{key}\".\n\nIf an admission webhook uses the same resource name as this ValidatingAdmissionPolicy\nand the same audit annotation key, the annotation key will be identical.\nIn this case, the first annotation written with the key will be included\nin the audit event and all subsequent annotations with the same key\nwill be discarded.\n\nRequired."
+                                      type: "string"
+                                    valueExpression:
+                                      description: "valueExpression represents the expression which is evaluated by CEL to\nproduce an audit annotation value. The expression must evaluate to either\na string or null value. If the expression evaluates to a string, the\naudit annotation is included with the string value. If the expression\nevaluates to null or empty string the audit annotation will be omitted.\nThe valueExpression may be no longer than 5kb in length.\nIf the result of the valueExpression is more than 10kb in length, it\nwill be truncated to 10kb.\n\nIf multiple ValidatingAdmissionPolicyBinding resources match an\nAPI request, then the valueExpression will be evaluated for\neach binding. All unique values produced by the valueExpressions\nwill be joined together in a comma-separated list.\n\nRequired."
+                                      type: "string"
+                                  required:
+                                    - "key"
+                                    - "valueExpression"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
                               autogen:
                                 description: "AutogenConfiguration defines the configuration for the generation controller."
                                 properties:
@@ -917,7 +951,7 @@ spec:
                                   - "Fail"
                                 type: "string"
                               images:
-                                description: "Images is a list of CEL expression to extract images from the resource"
+                                description: "ImageExtractors is a list of CEL expression to extract images from the resource"
                                 items:
                                   properties:
                                     expression:

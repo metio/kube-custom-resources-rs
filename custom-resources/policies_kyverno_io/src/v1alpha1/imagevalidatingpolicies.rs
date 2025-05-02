@@ -24,6 +24,12 @@ pub struct ImageValidatingPolicySpec {
     pub attestations: Option<Vec<ImageValidatingPolicyAttestations>>,
     /// Attestors provides a list of trusted authorities.
     pub attestors: Vec<ImageValidatingPolicyAttestors>,
+    /// auditAnnotations contains CEL expressions which are used to produce audit
+    /// annotations for the audit event of the API request.
+    /// validations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is
+    /// required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditAnnotations")]
+    pub audit_annotations: Option<Vec<ImageValidatingPolicyAuditAnnotations>>,
     /// AutogenConfiguration defines the configuration for the generation controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autogen: Option<ImageValidatingPolicyAutogen>,
@@ -38,7 +44,7 @@ pub struct ImageValidatingPolicySpec {
     /// or mis-configured policy definitions or bindings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<ImageValidatingPolicyFailurePolicy>,
-    /// Images is a list of CEL expression to extract images from the resource
+    /// ImageExtractors is a list of CEL expression to extract images from the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<ImageValidatingPolicyImages>>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
@@ -342,6 +348,44 @@ pub struct ImageValidatingPolicyAttestorsNotaryTsaCerts {
     /// Value defines the raw string input.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// AuditAnnotation describes how to produce an audit annotation for an API request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyAuditAnnotations {
+    /// key specifies the audit annotation key. The audit annotation keys of
+    /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
+    /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
+    /// 
+    /// The key is combined with the resource name of the
+    /// ValidatingAdmissionPolicy to construct an audit annotation key:
+    /// "{ValidatingAdmissionPolicy name}/{key}".
+    /// 
+    /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
+    /// and the same audit annotation key, the annotation key will be identical.
+    /// In this case, the first annotation written with the key will be included
+    /// in the audit event and all subsequent annotations with the same key
+    /// will be discarded.
+    /// 
+    /// Required.
+    pub key: String,
+    /// valueExpression represents the expression which is evaluated by CEL to
+    /// produce an audit annotation value. The expression must evaluate to either
+    /// a string or null value. If the expression evaluates to a string, the
+    /// audit annotation is included with the string value. If the expression
+    /// evaluates to null or empty string the audit annotation will be omitted.
+    /// The valueExpression may be no longer than 5kb in length.
+    /// If the result of the valueExpression is more than 10kb in length, it
+    /// will be truncated to 10kb.
+    /// 
+    /// If multiple ValidatingAdmissionPolicyBinding resources match an
+    /// API request, then the valueExpression will be evaluated for
+    /// each binding. All unique values produced by the valueExpressions
+    /// will be joined together in a comma-separated list.
+    /// 
+    /// Required.
+    #[serde(rename = "valueExpression")]
+    pub value_expression: String,
 }
 
 /// AutogenConfiguration defines the configuration for the generation controller.
@@ -910,6 +954,12 @@ pub struct ImageValidatingPolicyStatusAutogenConfigsSpec {
     pub attestations: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestations>>,
     /// Attestors provides a list of trusted authorities.
     pub attestors: Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAttestors>,
+    /// auditAnnotations contains CEL expressions which are used to produce audit
+    /// annotations for the audit event of the API request.
+    /// validations and auditAnnotations may not both be empty; a least one of validations or auditAnnotations is
+    /// required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditAnnotations")]
+    pub audit_annotations: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecAuditAnnotations>>,
     /// AutogenConfiguration defines the configuration for the generation controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autogen: Option<ImageValidatingPolicyStatusAutogenConfigsSpecAutogen>,
@@ -924,7 +974,7 @@ pub struct ImageValidatingPolicyStatusAutogenConfigsSpec {
     /// or mis-configured policy definitions or bindings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<ImageValidatingPolicyStatusAutogenConfigsSpecFailurePolicy>,
-    /// Images is a list of CEL expression to extract images from the resource
+    /// ImageExtractors is a list of CEL expression to extract images from the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsSpecImages>>,
     /// MatchConditions is a list of conditions that must be met for a request to be validated.
@@ -1228,6 +1278,44 @@ pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAttestorsNotaryTsaCerts 
     /// Value defines the raw string input.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+}
+
+/// AuditAnnotation describes how to produce an audit annotation for an API request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsSpecAuditAnnotations {
+    /// key specifies the audit annotation key. The audit annotation keys of
+    /// a ValidatingAdmissionPolicy must be unique. The key must be a qualified
+    /// name ([A-Za-z0-9][-A-Za-z0-9_.]*) no more than 63 bytes in length.
+    /// 
+    /// The key is combined with the resource name of the
+    /// ValidatingAdmissionPolicy to construct an audit annotation key:
+    /// "{ValidatingAdmissionPolicy name}/{key}".
+    /// 
+    /// If an admission webhook uses the same resource name as this ValidatingAdmissionPolicy
+    /// and the same audit annotation key, the annotation key will be identical.
+    /// In this case, the first annotation written with the key will be included
+    /// in the audit event and all subsequent annotations with the same key
+    /// will be discarded.
+    /// 
+    /// Required.
+    pub key: String,
+    /// valueExpression represents the expression which is evaluated by CEL to
+    /// produce an audit annotation value. The expression must evaluate to either
+    /// a string or null value. If the expression evaluates to a string, the
+    /// audit annotation is included with the string value. If the expression
+    /// evaluates to null or empty string the audit annotation will be omitted.
+    /// The valueExpression may be no longer than 5kb in length.
+    /// If the result of the valueExpression is more than 10kb in length, it
+    /// will be truncated to 10kb.
+    /// 
+    /// If multiple ValidatingAdmissionPolicyBinding resources match an
+    /// API request, then the valueExpression will be evaluated for
+    /// each binding. All unique values produced by the valueExpressions
+    /// will be joined together in a comma-separated list.
+    /// 
+    /// Required.
+    #[serde(rename = "valueExpression")]
+    pub value_expression: String,
 }
 
 /// AutogenConfiguration defines the configuration for the generation controller.
