@@ -41,7 +41,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 nodeTaints:
-                  description: "nodeTaints are taints that the nodes associated with this ResourceFlavor\nhave.\nWorkloads' podsets must have tolerations for these nodeTaints in order to\nget assigned this ResourceFlavor during admission.\nOnly the 'NoSchedule' and 'NoExecute' taint effects are evaluated,\nwhile 'PreferNoSchedule' is ignored.\n\nAn example of a nodeTaint is\ncloud.provider.com/preemptible=\"true\":NoSchedule\n\nnodeTaints can be up to 8 elements."
+                  description: "nodeTaints are taints that the nodes associated with this ResourceFlavor\nhave.\nWorkloads' podsets must have tolerations for these nodeTaints in order to\nget assigned this ResourceFlavor during admission.\nWhen this ResourceFlavor has also set the matching tolerations (in .spec.tolerations),\nthen the nodeTaints are not considered during admission.\nOnly the 'NoSchedule' and 'NoExecute' taint effects are evaluated,\nwhile 'PreferNoSchedule' is ignored.\n\nAn example of a nodeTaint is\ncloud.provider.com/preemptible=\"true\":NoSchedule\n\nnodeTaints can be up to 8 elements."
                   items:
                     description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
                     properties:

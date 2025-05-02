@@ -273,8 +273,6 @@ pub struct JobSetReplicatedJobsTemplateSpec {
     /// batch.kubernetes.io/job-index-failure-count annotation. It can only
     /// be set when Job's completionMode=Indexed, and the Pod's restart
     /// policy is Never. The field is immutable.
-    /// This field is beta-level. It can be used when the `JobBackoffLimitPerIndex`
-    /// feature gate is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimitPerIndex")]
     pub backoff_limit_per_index: Option<i32>,
     /// completionMode specifies how Pod completions are tracked. It can be
@@ -343,8 +341,6 @@ pub struct JobSetReplicatedJobsTemplateSpec {
     /// It can only be specified when backoffLimitPerIndex is set.
     /// It can be null or up to completions. It is required and must be
     /// less than or equal to 10^4 when is completions greater than 10^5.
-    /// This field is beta-level. It can be used when the `JobBackoffLimitPerIndex`
-    /// feature gate is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFailedIndexes")]
     pub max_failed_indexes: Option<i32>,
     /// Specifies the maximum desired number of pods the job should
@@ -386,9 +382,6 @@ pub struct JobSetReplicatedJobsTemplateSpec {
     /// only when the number of succeeded pods equals to the completions.
     /// When the field is specified, it must be immutable and works only for the Indexed Jobs.
     /// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
-    /// 
-    /// This field is beta-level. To use this field, you must enable the
-    /// `JobSuccessPolicy` feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successPolicy")]
     pub success_policy: Option<JobSetReplicatedJobsTemplateSpecSuccessPolicy>,
     /// suspend specifies whether the Job controller should create Pods or not. If
@@ -443,8 +436,6 @@ pub struct JobSetReplicatedJobsTemplateSpecPodFailurePolicyRules {
     ///   running pods are terminated.
     /// - FailIndex: indicates that the pod's index is marked as Failed and will
     ///   not be restarted.
-    ///   This value is beta-level. It can be used when the
-    ///   `JobBackoffLimitPerIndex` feature gate is enabled (enabled by default).
     /// - Ignore: indicates that the counter towards the .backoffLimit is not
     ///   incremented and a replacement pod is created.
     /// - Count: indicates that the pod is handled in the default way - the
@@ -543,9 +534,6 @@ pub struct JobSetReplicatedJobsTemplateSpecSelectorMatchExpressions {
 /// only when the number of succeeded pods equals to the completions.
 /// When the field is specified, it must be immutable and works only for the Indexed Jobs.
 /// Once the Job meets the SuccessPolicy, the lingering pods are terminated.
-/// 
-/// This field is beta-level. To use this field, you must enable the
-/// `JobSuccessPolicy` feature gate (enabled by default).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecSuccessPolicy {
     /// rules represents the list of alternative rules for the declaring the Jobs
@@ -708,7 +696,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpec {
     /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
     /// The resourceRequirements of an init container are taken into account during scheduling
     /// by finding the highest request/limit for each resource type, and then using the max of
-    /// of that value or the sum of the normal containers. Limits are applied to init containers
+    /// that value or the sum of the normal containers. Limits are applied to init containers
     /// in a similar fashion.
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
@@ -1101,7 +1089,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1112,7 +1099,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityPrefer
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1222,7 +1208,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1233,7 +1218,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAffinityRequir
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1374,7 +1358,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityPr
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1385,7 +1368,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityPr
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1495,7 +1477,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityRe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1506,7 +1487,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecAffinityPodAntiAffinityRe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1863,13 +1843,13 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvValueFromSec
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1928,6 +1908,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -3095,13 +3080,13 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvVal
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -3159,6 +3144,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersLifecy
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecEphemeralContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4321,13 +4311,13 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvValueFro
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4386,6 +4376,11 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -5725,7 +5720,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecTopologySpreadConstraints
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -5735,7 +5729,6 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecTopologySpreadConstraints
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -5922,7 +5915,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesImage>,
@@ -6798,7 +6791,7 @@ pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobSetReplicatedJobsTemplateSpecTemplateSpecVolumesImage {

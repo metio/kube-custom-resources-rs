@@ -333,13 +333,12 @@ pub struct ElasticsearchHttpServiceSpec {
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ElasticsearchHttpServiceSpecSessionAffinityConfig>,
-    /// TrafficDistribution offers a way to express preferences for how traffic is
-    /// distributed to Service endpoints. Implementations can use this field as a
-    /// hint, but are not required to guarantee strict adherence. If the field is
-    /// not set, the implementation will apply its default routing strategy. If set
-    /// to "PreferClose", implementations should prioritize endpoints that are
-    /// topologically close (e.g., same zone).
-    /// This is a beta field and requires enabling ServiceTrafficDistribution feature.
+    /// TrafficDistribution offers a way to express preferences for how traffic
+    /// is distributed to Service endpoints. Implementations can use this field
+    /// as a hint, but are not required to guarantee strict adherence. If the
+    /// field is not set, the implementation will apply its default routing
+    /// strategy. If set to "PreferClose", implementations should prioritize
+    /// endpoints that are in the same zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
     pub traffic_distribution: Option<String>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -902,9 +901,6 @@ pub struct ElasticsearchPodDisruptionBudgetSpec {
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    /// 
-    /// This field is beta-level. The eviction API uses this field when
-    /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
@@ -1270,13 +1266,12 @@ pub struct ElasticsearchTransportServiceSpec {
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ElasticsearchTransportServiceSpecSessionAffinityConfig>,
-    /// TrafficDistribution offers a way to express preferences for how traffic is
-    /// distributed to Service endpoints. Implementations can use this field as a
-    /// hint, but are not required to guarantee strict adherence. If the field is
-    /// not set, the implementation will apply its default routing strategy. If set
-    /// to "PreferClose", implementations should prioritize endpoints that are
-    /// topologically close (e.g., same zone).
-    /// This is a beta field and requires enabling ServiceTrafficDistribution feature.
+    /// TrafficDistribution offers a way to express preferences for how traffic
+    /// is distributed to Service endpoints. Implementations can use this field
+    /// as a hint, but are not required to guarantee strict adherence. If the
+    /// field is not set, the implementation will apply its default routing
+    /// strategy. If set to "PreferClose", implementations should prioritize
+    /// endpoints that are in the same zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
     pub traffic_distribution: Option<String>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid

@@ -146,6 +146,7 @@ pub struct MultiClusterServiceStatusLoadBalancerIngress {
     pub ports: Option<Vec<MultiClusterServiceStatusLoadBalancerIngressPorts>>,
 }
 
+/// PortStatus represents the error condition of a service port
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MultiClusterServiceStatusLoadBalancerIngressPorts {
     /// Error is to record the problem with the service port

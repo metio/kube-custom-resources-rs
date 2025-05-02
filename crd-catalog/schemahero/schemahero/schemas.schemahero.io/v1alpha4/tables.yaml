@@ -229,6 +229,8 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        schema:
+                          type: "string"
                       type: "object"
                     mysql:
                       properties:
@@ -421,6 +423,8 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        schema:
+                          type: "string"
                       type: "object"
                     rqlite:
                       properties:

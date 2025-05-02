@@ -4484,40 +4484,15 @@ pub enum FlowCollectorProcessorDeduperMode {
 /// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorFilters {
-    /// `filters` is a list of matches that must be all satisfied in order to remove a flow.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allOf")]
-    pub all_of: Option<Vec<FlowCollectorProcessorFiltersAllOf>>,
     /// If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
     pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
+    /// A query that selects the network flows to keep. More information about this query language in https://github.com/netobserv/flowlogs-pipeline/blob/main/docs/filtering.md.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub query: Option<String>,
     /// `sampling` is an optional sampling ratio to apply to this filter. For example, a value of `50` means that 1 matching flow in 50 is sampled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sampling: Option<i32>,
-}
-
-/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct FlowCollectorProcessorFiltersAllOf {
-    /// Name of the field to filter on.
-    /// Refer to the documentation for the list of available fields: https://github.com/netobserv/network-observability-operator/blob/main/docs/flows-format.adoc.
-    pub field: String,
-    /// Type of matching to apply.
-    #[serde(rename = "matchType")]
-    pub match_type: FlowCollectorProcessorFiltersAllOfMatchType,
-    /// Value to filter on. When `matchType` is `Equal` or `NotEqual`, you can use field injection with `$(SomeField)` to refer to any other field of the flow.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-/// `FLPSingleFilter` defines the desired configuration for a single FLP-based filter.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum FlowCollectorProcessorFiltersAllOfMatchType {
-    Equal,
-    NotEqual,
-    Presence,
-    Absence,
-    MatchRegex,
-    NotMatchRegex,
 }
 
 /// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions.

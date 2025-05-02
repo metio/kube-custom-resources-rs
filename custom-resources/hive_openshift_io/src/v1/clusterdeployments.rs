@@ -436,6 +436,9 @@ pub struct ClusterDeploymentPlatform {
     /// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub none: Option<ClusterDeploymentPlatformNone>,
+    /// Nutanix is the configuration used when installing on Nutanix Prism Central.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nutanix: Option<ClusterDeploymentPlatformNutanix>,
     /// OpenStack is the configuration used when installing on OpenStack
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openstack: Option<ClusterDeploymentPlatformOpenstack>,
@@ -744,6 +747,139 @@ pub struct ClusterDeploymentPlatformIbmcloudCredentialsSecretRef {
 /// https://docs.openshift.com/container-platform/4.7/installing/installing_platform_agnostic/installing-platform-agnostic.html
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentPlatformNone {
+}
+
+/// Nutanix is the configuration used when installing on Nutanix Prism Central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanix {
+    /// CertificatesSecretRef refers to a secret that contains the Prism Central CA certificates
+    /// necessary for communicating with the Prism Central.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecretRef")]
+    pub certificates_secret_ref: Option<ClusterDeploymentPlatformNutanixCertificatesSecretRef>,
+    /// CredentialsSecretRef refers to a secret that contains the Nutanix account access
+    /// credentials.
+    #[serde(rename = "credentialsSecretRef")]
+    pub credentials_secret_ref: ClusterDeploymentPlatformNutanixCredentialsSecretRef,
+    /// FailureDomains configures failure domains for the Nutanix platform.
+    /// Required for using MachinePools
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
+    pub failure_domains: Option<Vec<ClusterDeploymentPlatformNutanixFailureDomains>>,
+    /// PrismCentral is the endpoint (address and port) to connect to the Prism Central.
+    /// This serves as the default Prism-Central.
+    #[serde(rename = "prismCentral")]
+    pub prism_central: ClusterDeploymentPlatformNutanixPrismCentral,
+}
+
+/// CertificatesSecretRef refers to a secret that contains the Prism Central CA certificates
+/// necessary for communicating with the Prism Central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixCertificatesSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// CredentialsSecretRef refers to a secret that contains the Nutanix account access
+/// credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixCredentialsSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// FailureDomain configures failure domain information for the Nutanix platform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixFailureDomains {
+    /// DataSourceImages identifies the datasource images in the Prism Element.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceImages")]
+    pub data_source_images: Option<Vec<ClusterDeploymentPlatformNutanixFailureDomainsDataSourceImages>>,
+    /// Name defines the unique name of a failure domain.
+    pub name: String,
+    /// PrismElement holds the identification (name, UUID) and the optional endpoint address and
+    /// port of the Nutanix Prism Element. When a cluster-wide proxy is installed, this endpoint will,
+    /// by default, be accessed through the cluster-wide proxy configured for the platform.
+    /// If communication with this endpoint should bypass the proxy, add the endpoint to the install-config
+    /// `spec.noProxy` list in the proxy configuration.
+    #[serde(rename = "prismElement")]
+    pub prism_element: ClusterDeploymentPlatformNutanixFailureDomainsPrismElement,
+    /// StorageContainers identifies the storage containers in the Prism Element.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageContainers")]
+    pub storage_containers: Option<Vec<ClusterDeploymentPlatformNutanixFailureDomainsStorageContainers>>,
+    /// SubnetUUIDs identifies the network subnets of the Prism Element.
+    /// Currently we only support one subnet for a failure domain.
+    #[serde(rename = "subnetUUIDs")]
+    pub subnet_uui_ds: Vec<String>,
+}
+
+/// StorageResourceReference holds reference information of a storage resource (storage container, data source image, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixFailureDomainsDataSourceImages {
+    /// Name is the name of the storage container resource in the Prism Element.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// ReferenceName is the identifier of the storage resource configured in the FailureDomain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceName")]
+    pub reference_name: Option<String>,
+    /// UUID is the UUID of the storage container resource in the Prism Element.
+    pub uuid: String,
+}
+
+/// PrismElement holds the identification (name, UUID) and the optional endpoint address and
+/// port of the Nutanix Prism Element. When a cluster-wide proxy is installed, this endpoint will,
+/// by default, be accessed through the cluster-wide proxy configured for the platform.
+/// If communication with this endpoint should bypass the proxy, add the endpoint to the install-config
+/// `spec.noProxy` list in the proxy configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixFailureDomainsPrismElement {
+    /// Endpoint holds the address and port of the Prism Element
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<ClusterDeploymentPlatformNutanixFailureDomainsPrismElementEndpoint>,
+    /// Name is the Prism Element (cluster) name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// UUID is the UUID of the Prism Element (cluster)
+    pub uuid: String,
+}
+
+/// Endpoint holds the address and port of the Prism Element
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixFailureDomainsPrismElementEndpoint {
+    /// address is the endpoint address (DNS name or IP address) of the Nutanix Prism Central or Element (cluster)
+    pub address: String,
+    /// port is the port number to access the Nutanix Prism Central or Element (cluster)
+    pub port: i32,
+}
+
+/// StorageResourceReference holds reference information of a storage resource (storage container, data source image, etc.)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixFailureDomainsStorageContainers {
+    /// Name is the name of the storage container resource in the Prism Element.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// ReferenceName is the identifier of the storage resource configured in the FailureDomain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "referenceName")]
+    pub reference_name: Option<String>,
+    /// UUID is the UUID of the storage container resource in the Prism Element.
+    pub uuid: String,
+}
+
+/// PrismCentral is the endpoint (address and port) to connect to the Prism Central.
+/// This serves as the default Prism-Central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeploymentPlatformNutanixPrismCentral {
+    /// address is the endpoint address (DNS name or IP address) of the Nutanix Prism Central or Element (cluster)
+    pub address: String,
+    /// port is the port number to access the Nutanix Prism Central or Element (cluster)
+    pub port: i32,
 }
 
 /// OpenStack is the configuration used when installing on OpenStack

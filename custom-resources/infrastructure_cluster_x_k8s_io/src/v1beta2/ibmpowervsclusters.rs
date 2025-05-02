@@ -56,7 +56,7 @@ pub struct IBMPowerVSClusterSpec {
     /// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
     /// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
     /// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
-    /// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service.
+    /// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist system will check DHCP network with given Network.name, if that also not exist, it will create a new DHCP service and name will be DHCPSERVER<Network.Name>_Private.
     /// Network.RegEx is not yet supported and system will ignore the value.
     pub network: IBMPowerVSClusterNetwork,
     /// resourceGroup name under which the resources will be created.
@@ -353,7 +353,7 @@ pub struct IBMPowerVSClusterLoadBalancersSubnets {
 /// 1. in the case of DHCPServer.Name is not set the name will be DHCPSERVER<CLUSTER_NAME>_Private.
 /// 2. if DHCPServer.Name is set the name will be DHCPSERVER<DHCPServer.Name>_Private.
 /// when Network.ID is set, its expected that there exist a network in PowerVS workspace with id or else system will give error.
-/// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist network will be created by DHCP service.
+/// when Network.Name is set, system will first check for network with Name in PowerVS workspace, if not exist system will check DHCP network with given Network.name, if that also not exist, it will create a new DHCP service and name will be DHCPSERVER<Network.Name>_Private.
 /// Network.RegEx is not yet supported and system will ignore the value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IBMPowerVSClusterNetwork {
@@ -716,6 +716,9 @@ pub struct IBMPowerVSClusterStatus {
     /// transitGateway is reference to IBM Cloud TransitGateway.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGateway")]
     pub transit_gateway: Option<IBMPowerVSClusterStatusTransitGateway>,
+    /// v1beta2 groups all the fields that will be added or modified in IBMPowerVSCluster's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<IBMPowerVSClusterStatusV1beta2>,
     /// vpc is reference to IBM Cloud VPC resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub vpc: Option<IBMPowerVSClusterStatusVpc>,
@@ -836,6 +839,14 @@ pub struct IBMPowerVSClusterStatusTransitGatewayVpcConnection {
     /// id represents the id of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+}
+
+/// v1beta2 groups all the fields that will be added or modified in IBMPowerVSCluster's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMPowerVSClusterStatusV1beta2 {
+    /// conditions represents the observations of a DevCluster's current state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 
 /// vpc is reference to IBM Cloud VPC resources.

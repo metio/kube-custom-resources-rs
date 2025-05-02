@@ -1090,6 +1090,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersLifecycl
     pub post_start: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1677,6 +1679,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainer
     pub post_start: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2257,6 +2261,8 @@ pub struct RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersLife
     pub post_start: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigHeadGroupSpecTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4139,6 +4145,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersLifec
     pub post_start: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4726,6 +4734,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContai
     pub post_start: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5306,6 +5316,8 @@ pub struct RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersL
     pub post_start: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<RayServiceRayClusterConfigWorkerGroupSpecsTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

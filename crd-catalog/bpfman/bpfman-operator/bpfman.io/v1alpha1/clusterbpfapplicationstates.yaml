@@ -26,7 +26,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "ClusterBpfApplicationState contains the per-node state of a BpfApplication."
+          description: "ClusterBpfApplicationState contains the state of a ClusterBpfApplication\ninstance for a given Kubernetes node. When a user creates a\nClusterBpfApplication instance, bpfman creates a ClusterBpfApplicationState\ninstance for each node in a Kubernetes cluster."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -37,13 +37,13 @@ spec:
             metadata:
               type: "object"
             status:
-              description: "ClBpfApplicationStateStatus reflects the status of the ClusterBpfApplicationState on the given node"
+              description: "status reflects the status of a ClusterBpfApplication instance for the given\nnode. appLoadStatus and conditions provide an overall status for the given\nnode, while each item in the programs list provides a per eBPF program\nstatus for the given node."
               properties:
                 appLoadStatus:
-                  description: "appLoadStatus reflects the status of loading the bpf application on the\ngiven node."
+                  description: "appLoadStatus reflects the status of loading the eBPF application on the\ngiven node.\n\n\nNotLoaded is a temporary state that is assigned when a\nClusterBpfApplicationState is created and the initial reconcile is being\nprocessed.\n\n\nLoadSuccess is returned if all the programs have been loaded with no errors.\n\n\nLoadError is returned if one or more programs encountered an error and were\nnot loaded.\n\n\nNotSelected is returned if this application did not select to run on this\nKubernetes node.\n\n\nUnloadSuccess is returned when all the programs were successfully unloaded.\n\n\nUnloadError is returned if one or more programs encountered an error when\nbeing unloaded."
                   type: "string"
                 conditions:
-                  description: "Conditions contains the overall status of the ClusterBpfApplicationState\nobject on the given node."
+                  description: "conditions contains the summary state of the ClusterBpfApplication for the\ngiven Kubernetes node. If one or more programs failed to load or attach to\nthe designated attachment point, the condition will report the error. If\nmore than one error has occurred, condition will contain the first error\nencountered."
                   items:
                     description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
                     properties:
@@ -90,23 +90,23 @@ spec:
                     - "type"
                   x-kubernetes-list-type: "map"
                 node:
-                  description: "node is the name of the node for this BpfApplicationStateSpec."
+                  description: "node is the name of the Kubernetes node for this ClusterBpfApplicationState."
                   type: "string"
                 programs:
-                  description: "programs is a list of bpf programs contained in the parent application."
+                  description: "programs is a list of eBPF programs contained in the parent\nClusterBpfApplication instance. Each entry in the list contains the derived\nprogram attributes as well as the attach status for each program on the\ngiven Kubernetes node."
                   items:
-                    description: "ClBpfApplicationProgramState defines the desired state of BpfApplication"
                     properties:
                       fentry:
-                        description: "fentry defines the desired state of the application's FentryPrograms."
+                        description: "fentry contains the attachment data for an FEntry program when type is set\nto FEntry."
                         properties:
                           function:
-                            description: "function is the name of the function to attach the Fentry program to."
+                            description: "function is a required field and specifies the name of the Linux kernel\nfunction to attach the FEntry program. function must not be an empty string,\nmust not exceed 64 characters in length, must start with alpha characters\nand must only contain alphanumeric characters."
                             maxLength: 64
                             minLength: 1
                             pattern: "^[a-zA-Z][a-zA-Z0-9_]+."
                             type: "string"
                           links:
+                            description: "links is a list of attachment points for the FEntry program. Each entry in\nthe list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 linkId:
@@ -133,15 +133,16 @@ spec:
                           - "function"
                         type: "object"
                       fexit:
-                        description: "fexit defines the desired state of the application's FexitPrograms."
+                        description: "fexit contains the attachment data for an FExit program when type is set to\nFExit."
                         properties:
                           function:
-                            description: "function is the name of the function to attach the Fexit program to."
+                            description: "function is a required field and specifies the name of the Linux kernel\nfunction to attach the FExit program. function must not be an empty string,\nmust not exceed 64 characters in length, must start with alpha characters\nand must only contain alphanumeric characters."
                             maxLength: 64
                             minLength: 1
                             pattern: "^[a-zA-Z][a-zA-Z0-9_]+."
                             type: "string"
                           links:
+                            description: "links is a list of attachment points for the FExit program. Each entry in\nthe list includes a linkStatus, which indicates if the attachment was\nsuccessful or not, a linkId, which is the kernel ID for the link if\nsuccessfully attached, and other attachment specific data."
                             items:
                               properties:
                                 linkId:
@@ -168,14 +169,14 @@ spec:
                           - "function"
                         type: "object"
                       kprobe:
-                        description: "kprobe defines the desired state of the application's KprobePrograms."
+                        description: "kprobe contains the attachment data for a KProbe program when type is set to\nKProbe."
                         properties:
                           links:
-                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the KProbe program. Each entry in\nthe list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 function:
-                                  description: "Function to attach the kprobe to."
+                                  description: "function is the provisioned name of the Linux kernel function the KProbe\nprogram should be attached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -185,7 +186,8 @@ spec:
                                   description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
                                   type: "string"
                                 offset:
-                                  description: "Offset added to the address of the function for kprobe."
+                                  default: 0
+                                  description: "offset is the provisioned offset, whose value is added to the address of the\nattachment point function."
                                   format: "int64"
                                   type: "integer"
                                 shouldAttach:
@@ -197,21 +199,20 @@ spec:
                               required:
                                 - "function"
                                 - "linkStatus"
-                                - "offset"
                                 - "shouldAttach"
                                 - "uuid"
                               type: "object"
                             type: "array"
                         type: "object"
                       kretprobe:
-                        description: "kretprobe defines the desired state of the application's KprobePrograms."
+                        description: "kretprobe contains the attachment data for a KRetProbe program when type is\nset to KRetProbe."
                         properties:
                           links:
-                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the KRetProbe program. Each entry\nin the list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 function:
-                                  description: "Function to attach the kprobe to."
+                                  description: "function is the provisioned name of the Linux kernel function the KRetProbe\nprogram should be attached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -235,7 +236,7 @@ spec:
                             type: "array"
                         type: "object"
                       name:
-                        description: "name is the name of the function that is the entry point for the BPF\nprogram"
+                        description: "name is the name of the function that is the entry point for the eBPF\nprogram"
                         type: "string"
                       programId:
                         description: "programId is the id of the program in the kernel.  Not set until the\nprogram is loaded."
@@ -245,20 +246,20 @@ spec:
                         description: "programLinkStatus reflects whether all links requested for the program\nare in the correct state."
                         type: "string"
                       tc:
-                        description: "tc defines the desired state of the application's TcPrograms."
+                        description: "tc contains the attachment data for a TC program when type is set to TC."
                         properties:
                           links:
-                            description: "links is the List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attached point required by the\nreconciler"
+                            description: "links is a list of attachment points for the TC program. Each entry in the\nlist includes a linkStatus, which indicates if the attachment was successful\nor not on this node, a linkId, which is the kernel ID for the link if\nsuccessfully attached, and other attachment specific data."
                             items:
                               properties:
                                 direction:
-                                  description: "direction specifies the direction of traffic the tc program should\nattach to for a given network device."
+                                  description: "direction is the provisioned direction of traffic, Ingress or Egress, the TC\nprogram should be attached for a given network device."
                                   enum:
                                     - "Ingress"
                                     - "Egress"
                                   type: "string"
                                 interfaceName:
-                                  description: "interfaceName is the Interface name to attach the tc program to."
+                                  description: "interfaceName is the name of the interface the TC program should be\nattached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -268,16 +269,16 @@ spec:
                                   description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
                                   type: "string"
                                 netnsPath:
-                                  description: "Optional network namespace to attach the tc program in."
+                                  description: "netnsPath is the optional path to the network namespace inside of which the\nTC program should be attached."
                                   type: "string"
                                 priority:
-                                  description: "priority specifies the priority of the tc program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  description: "priority is the provisioned priority of the TC program in relation to other\nprograms of the same type with the same attach point. It is a value from 0\nto 1000, where lower values have higher precedence."
                                   format: "int32"
                                   maximum: 1000.0
                                   minimum: 0.0
                                   type: "integer"
                                 proceedOn:
-                                  description: "proceedOn allows the user to call other tc programs in chain on this exit code.\nMultiple values are supported by repeating the parameter."
+                                  description: "proceedOn is the provisioned list of proceedOn values. proceedOn allows the\nuser to call other TC programs in a chain, or not call the next program in a\nchain based on the exit code of a TC program .Multiple values are supported."
                                   items:
                                     enum:
                                       - "UnSpec"
@@ -311,20 +312,20 @@ spec:
                             type: "array"
                         type: "object"
                       tcx:
-                        description: "tcx defines the desired state of the application's TcxPrograms."
+                        description: "tcx contains the attachment data for a TCX program when type is set to TCX."
                         properties:
                           links:
-                            description: "List of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the TCX program. Each entry in the\nlist includes a linkStatus, which indicates if the attachment was successful\nor not on this node, a linkId, which is the kernel ID for the link if\nsuccessfully attached, and other attachment specific data."
                             items:
                               properties:
                                 direction:
-                                  description: "direction specifies the direction of traffic the tcx program should\nattach to for a given network device."
+                                  description: "direction is the provisioned direction of traffic, Ingress or Egress, the TC\nprogram should be attached for a given network device."
                                   enum:
                                     - "Ingress"
                                     - "Egress"
                                   type: "string"
                                 interfaceName:
-                                  description: "interfaceName is the Interface name to attach the tc program to."
+                                  description: "interfaceName is the name of the interface the TCX program should be\nattached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -334,10 +335,10 @@ spec:
                                   description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
                                   type: "string"
                                 netnsPath:
-                                  description: "netnsPath is the network namespace to attach the tcx program in."
+                                  description: "netnsPath is the optional path to the network namespace inside of which the\nTCX program should be attached."
                                   type: "string"
                                 priority:
-                                  description: "priority specifies the priority of the tcx program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  description: "priority is the provisioned priority of the TCX program in relation to other\nprograms of the same type with the same attach point. It is a value from 0\nto 1000, where lower values have higher precedence."
                                   format: "int32"
                                   maximum: 1000.0
                                   minimum: 0.0
@@ -359,10 +360,10 @@ spec:
                             type: "array"
                         type: "object"
                       tracepoint:
-                        description: "tracepoint defines the desired state of the application's TracepointPrograms."
+                        description: "tracepoint contains the attachment data for a Tracepoint program when type\nis set to Tracepoint."
                         properties:
                           links:
-                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the Tracepoint program. Each entry\nin the list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 linkId:
@@ -373,7 +374,7 @@ spec:
                                   description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
                                   type: "string"
                                 name:
-                                  description: "The name of a kernel tracepoint to attach the bpf program to."
+                                  description: "The name of a kernel tracepoint to attach the bpf program to.\nname is the provisioned name of the Linux kernel tracepoint function the\nTracepoint program should be attached."
                                   type: "string"
                                 shouldAttach:
                                   description: "shouldAttach reflects whether the attachment should exist."
@@ -390,32 +391,32 @@ spec:
                             type: "array"
                         type: "object"
                       type:
-                        description: "type specifies the bpf program type"
+                        description: "type specifies the provisioned eBPF program type for this program entry.\nType will be one of:\n  FEntry, FExit, KProbe, KRetProbe, TC, TCX, Tracepoint, UProbe,\n  URetProbe, XDP\n\n\nWhen set to FEntry, the fentry object will be populated with the eBPF\nprogram data associated with an FEntry program.\n\n\nWhen set to FExit, the fexit object will be populated with the eBPF program\ndata associated with an FExit program.\n\n\nWhen set to KProbe, the kprobe object will be populated with the eBPF\nprogram data associated with a KProbe program.\n\n\nWhen set to KRetProbe, the kretprobe object will be populated with the\neBPF program data associated with a KRetProbe program.\n\n\nWhen set to TC, the tc object will be populated with the eBPF program data\nassociated with a TC program.\n\n\nWhen set to TCX, the tcx object will be populated with the eBPF program\ndata associated with a TCX program.\n\n\nWhen set to Tracepoint, the tracepoint object will be populated with the\neBPF program data associated with a Tracepoint program.\n\n\nWhen set to UProbe, the uprobe object will be populated with the eBPF\nprogram data associated with a UProbe program.\n\n\nWhen set to URetProbe, the uretprobe object will be populated with the eBPF\nprogram data associated with a URetProbe program.\n\n\nWhen set to XDP, the xdp object will be populated with the eBPF program data\nassociated with a URetProbe program."
                         enum:
-                          - "XDP"
-                          - "TC"
-                          - "TCX"
                           - "FEntry"
                           - "FExit"
                           - "KProbe"
                           - "KRetProbe"
+                          - "TC"
+                          - "TCX"
+                          - "TracePoint"
                           - "UProbe"
                           - "URetProbe"
-                          - "TracePoint"
+                          - "XDP"
                         type: "string"
                       uprobe:
-                        description: "uprobe defines the desired state of the application's UprobePrograms."
+                        description: "uprobe contains the attachment data for a UProbe program when type is set to\nUProbe."
                         properties:
                           links:
-                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the UProbe program. Each entry in\nthe list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 containerPid:
-                                  description: "Optional container pid to attach the uprobe program in."
+                                  description: "If containers is provisioned in the ClusterBpfApplication instance,\ncontainerPid is the derived PID of the container the UProbe or URetProbe this\nattachment point is attached."
                                   format: "int32"
                                   type: "integer"
                                 function:
-                                  description: "function to attach the uprobe to."
+                                  description: "function is the provisioned name of the user-space function the UProbe\nprogram should be attached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -426,18 +427,18 @@ spec:
                                   type: "string"
                                 offset:
                                   default: 0
-                                  description: "offset added to the address of the function for uprobe."
+                                  description: "offset is the provisioned offset, whose value is added to the address of the\nattachment point function."
                                   format: "int64"
                                   type: "integer"
                                 pid:
-                                  description: "pid only execute uprobe for given process identification number (PID). If PID\nis not provided, uprobe executes for all PIDs."
+                                  description: "pid is the provisioned pid. If set, pid limits the execution of the UProbe\nor URetProbe to the provided process identification number (PID). If pid is\nnot provided, the UProbe or URetProbe executes for all PIDs."
                                   format: "int32"
                                   type: "integer"
                                 shouldAttach:
                                   description: "shouldAttach reflects whether the attachment should exist."
                                   type: "boolean"
                                 target:
-                                  description: "target is the library name or the absolute path to a binary or library."
+                                  description: "target is the provisioned user-space library name or the absolute path to a\nbinary or library."
                                   type: "string"
                                 uuid:
                                   description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
@@ -451,18 +452,18 @@ spec:
                             type: "array"
                         type: "object"
                       uretprobe:
-                        description: "uretprobe defines the desired state of the application's UretprobePrograms."
+                        description: "uretprobe contains the attachment data for a URetProbe program when type is\nset to URetProbe."
                         properties:
                           links:
-                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the UProbe program. Each entry in\nthe list includes a linkStatus, which indicates if the attachment was\nsuccessful or not on this node, a linkId, which is the kernel ID for the\nlink if successfully attached, and other attachment specific data."
                             items:
                               properties:
                                 containerPid:
-                                  description: "Optional container pid to attach the uprobe program in."
+                                  description: "If containers is provisioned in the ClusterBpfApplication instance,\ncontainerPid is the derived PID of the container the UProbe or URetProbe this\nattachment point is attached."
                                   format: "int32"
                                   type: "integer"
                                 function:
-                                  description: "function to attach the uprobe to."
+                                  description: "function is the provisioned name of the user-space function the UProbe\nprogram should be attached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -473,18 +474,18 @@ spec:
                                   type: "string"
                                 offset:
                                   default: 0
-                                  description: "offset added to the address of the function for uprobe."
+                                  description: "offset is the provisioned offset, whose value is added to the address of the\nattachment point function."
                                   format: "int64"
                                   type: "integer"
                                 pid:
-                                  description: "pid only execute uprobe for given process identification number (PID). If PID\nis not provided, uprobe executes for all PIDs."
+                                  description: "pid is the provisioned pid. If set, pid limits the execution of the UProbe\nor URetProbe to the provided process identification number (PID). If pid is\nnot provided, the UProbe or URetProbe executes for all PIDs."
                                   format: "int32"
                                   type: "integer"
                                 shouldAttach:
                                   description: "shouldAttach reflects whether the attachment should exist."
                                   type: "boolean"
                                 target:
-                                  description: "target is the library name or the absolute path to a binary or library."
+                                  description: "target is the provisioned user-space library name or the absolute path to a\nbinary or library."
                                   type: "string"
                                 uuid:
                                   description: "uuid is an Unique identifier for the attach point assigned by bpfman agent."
@@ -498,14 +499,14 @@ spec:
                             type: "array"
                         type: "object"
                       xdp:
-                        description: "xdp defines the desired state of the application's XdpPrograms."
+                        description: "xdp contains the attachment data for an XDP program when type is set to XDP."
                         properties:
                           links:
-                            description: "links is the list of attach points for the BPF program on the given node. Each entry\nin *AttachInfoState represents a specific, unique attach point that is\nderived from *AttachInfo by fully expanding any selectors.  Each entry\nalso contains information about the attach point required by the\nreconciler"
+                            description: "links is a list of attachment points for the XDP program. Each entry in the\nlist includes a linkStatus, which indicates if the attachment was successful\nor not on this node, a linkId, which is the kernel ID for the link if\nsuccessfully attached, and other attachment specific data."
                             items:
                               properties:
                                 interfaceName:
-                                  description: "interfaceName is the interface name to attach the xdp program to."
+                                  description: "interfaceName is the name of the interface the XDP program should be\nattached."
                                   type: "string"
                                 linkId:
                                   description: "linkId is an identifier for the link assigned by bpfman. This field is\nempty until the program is successfully attached and bpfman returns the\nid."
@@ -515,16 +516,16 @@ spec:
                                   description: "linkStatus reflects whether the attachment has been reconciled\nsuccessfully, and if not, why."
                                   type: "string"
                                 netnsPath:
-                                  description: "netnsPath is an optional path for a network namespace to attach the xdp\nprogram in."
+                                  description: "netnsPath is the optional path to the network namespace inside of which the\nXDP program should be attached."
                                   type: "string"
                                 priority:
-                                  description: "priority specifies the priority of the xdp program in relation to\nother programs of the same type with the same attach point. It is a value\nfrom 0 to 1000 where lower values have higher precedence."
+                                  description: "priority is the provisioned priority of the XDP program in relation to other\nprograms of the same type with the same attach point. It is a value from 0\nto 1000, where lower values have higher precedence."
                                   format: "int32"
                                   maximum: 1000.0
                                   minimum: 0.0
                                   type: "integer"
                                 proceedOn:
-                                  description: "proceedOn allows the user to call other xdp programs in chain on this exit code.\nMultiple values are supported by repeating the parameter."
+                                  description: "proceedOn is the provisioned list of proceedOn values. proceedOn allows the\nuser to call other TC programs in a chain, or not call the next program in a\nchain based on the exit code of a TC program .Multiple values are supported."
                                   items:
                                     enum:
                                       - "Aborted"
@@ -579,7 +580,7 @@ spec:
                         rule: "has(self.type) && self.type == 'TracePoint' ?  has(self.tracepoint) : !has(self.tracepoint)"
                   type: "array"
                 updateCount:
-                  description: "updateCount is the number of times the BpfApplicationState has been updated. Set to 1\nwhen the object is created, then it is incremented prior to each update.\nThis allows us to verify that the API server has the updated object prior\nto starting a new Reconcile operation."
+                  description: "UpdateCount tracks the number of times the BpfApplicationState object has\nbeen updated. The bpfman agent initializes it to 1 when it creates the\nobject, and then increments it before each subsequent update. It serves\nas a lightweight sequence number to verify that the API server is serving\nthe most recent version of the object before beginning a new Reconcile\noperation."
                   format: "int64"
                   type: "integer"
               required:

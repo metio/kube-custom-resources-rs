@@ -53,6 +53,9 @@ pub struct ClusterDeprovisionPlatform {
     /// IBMCloud contains IBM Cloud specific deprovision settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ibmcloud: Option<ClusterDeprovisionPlatformIbmcloud>,
+    /// Nutanix contains Nutanix-specific deprovision settings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nutanix: Option<ClusterDeprovisionPlatformNutanix>,
     /// OpenStack contains OpenStack-specific deprovision settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub openstack: Option<ClusterDeprovisionPlatformOpenstack>,
@@ -200,6 +203,59 @@ pub struct ClusterDeprovisionPlatformIbmcloudCredentialsSecretRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Nutanix contains Nutanix-specific deprovision settings
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeprovisionPlatformNutanix {
+    /// CertificatesSecretRef refers to a secret that contains the Nutanix CA certificates
+    /// necessary for communicating with the Prism Central.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesSecretRef")]
+    pub certificates_secret_ref: Option<ClusterDeprovisionPlatformNutanixCertificatesSecretRef>,
+    /// CredentialsSecretRef refers to a secret that contains the Nutanix account access
+    /// credentials.
+    #[serde(rename = "credentialsSecretRef")]
+    pub credentials_secret_ref: ClusterDeprovisionPlatformNutanixCredentialsSecretRef,
+    /// PrismCentral is the endpoint (address and port) to connect to the Prism Central.
+    /// This serves as the default Prism-Central.
+    #[serde(rename = "prismCentral")]
+    pub prism_central: ClusterDeprovisionPlatformNutanixPrismCentral,
+}
+
+/// CertificatesSecretRef refers to a secret that contains the Nutanix CA certificates
+/// necessary for communicating with the Prism Central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeprovisionPlatformNutanixCertificatesSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// CredentialsSecretRef refers to a secret that contains the Nutanix account access
+/// credentials.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeprovisionPlatformNutanixCredentialsSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// PrismCentral is the endpoint (address and port) to connect to the Prism Central.
+/// This serves as the default Prism-Central.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDeprovisionPlatformNutanixPrismCentral {
+    /// address is the endpoint address (DNS name or IP address) of the Nutanix Prism Central or Element (cluster)
+    pub address: String,
+    /// port is the port number to access the Nutanix Prism Central or Element (cluster)
+    pub port: i32,
 }
 
 /// OpenStack contains OpenStack-specific deprovision settings

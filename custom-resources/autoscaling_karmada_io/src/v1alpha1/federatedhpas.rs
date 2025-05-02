@@ -161,7 +161,6 @@ pub struct FederatedHPAMetrics {
     /// each pod of the current scale target (e.g. CPU or memory). Such metrics are
     /// built in to Kubernetes, and have special scaling options on top of those
     /// available to normal per-pod metrics using the "pods" source.
-    /// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<FederatedHPAMetricsContainerResource>,
     /// external refers to a global metric that is not associated
@@ -189,8 +188,6 @@ pub struct FederatedHPAMetrics {
     pub resource: Option<FederatedHPAMetricsResource>,
     /// type is the type of metric source.  It should be one of "ContainerResource", "External",
     /// "Object", "Pods" or "Resource", each mapping to a matching field in the object.
-    /// Note: "ContainerResource" type is available on when the feature-gate
-    /// HPAContainerMetrics is enabled
     #[serde(rename = "type")]
     pub r#type: String,
 }
@@ -200,7 +197,6 @@ pub struct FederatedHPAMetrics {
 /// each pod of the current scale target (e.g. CPU or memory). Such metrics are
 /// built in to Kubernetes, and have special scaling options on top of those
 /// available to normal per-pod metrics using the "pods" source.
-/// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPAMetricsContainerResource {
     /// container is the name of the container in the pods of the scaling target
@@ -586,8 +582,6 @@ pub struct FederatedHPAStatusCurrentMetrics {
     pub resource: Option<FederatedHPAStatusCurrentMetricsResource>,
     /// type is the type of metric source.  It will be one of "ContainerResource", "External",
     /// "Object", "Pods" or "Resource", each corresponds to a matching field in the object.
-    /// Note: "ContainerResource" type is available on when the feature-gate
-    /// HPAContainerMetrics is enabled
     #[serde(rename = "type")]
     pub r#type: String,
 }
