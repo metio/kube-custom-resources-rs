@@ -50,6 +50,12 @@ pub struct ProviderSpec {
     /// credentials for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ProviderSecretRef>,
+    /// ServiceAccountName is the name of the service account used to
+    /// authenticate with services from cloud providers. An error is thrown if a
+    /// static credential is also defined inside the Secret referenced by the
+    /// SecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Suspend tells the controller to suspend subsequent
     /// events handling for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]

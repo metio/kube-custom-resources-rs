@@ -66,7 +66,7 @@ pub struct ConfigurationSpec {
     /// RepeatCount indicates how many times the tests should be executed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repeatCount")]
     pub repeat_count: Option<i64>,
-    /// ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION|nil) nil == no report.
+    /// ReportFormat determines test report format (JSON, XML, JUNIT-TEST, JUNIT-STEP, JUNIT-OPERATION, nil) nil == no report.
     /// maps to report.Type, however we don't want generated.deepcopy to have reference to it.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportFormat")]
     pub report_format: Option<ConfigurationReportFormat>,

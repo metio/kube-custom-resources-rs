@@ -65,6 +65,9 @@ pub struct CollectorSpec {
     /// RBACRules represents additional rbac rules which will be applied to the fluent-bit clusterrole.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rbacRules")]
     pub rbac_rules: Option<Vec<CollectorRbacRules>>,
+    /// Replicas is the number of collector replicas to deploy
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
     /// Compute Resources required by container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CollectorResources>,

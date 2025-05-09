@@ -133,7 +133,8 @@ spec:
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
                 retentionPeriod:
-                  description: "RetentionPeriod for the stored metrics\nNote VictoriaMetrics has data/ and indexdb/ folders\nmetrics from data/ removed eventually as soon as partition leaves retention period\nreverse index data at indexdb rotates once at the half of configured\n[retention period](https://docs.victoriametrics.com/Single-server-VictoriaMetrics/#retention)"
+                  description: "RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., \"1d\", \"1w\", \"1m\").\nData with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.\nThe default value is 1 (one month).\nSee [retention](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention) docs for details."
+                  pattern: "^[0-9]+(h|d|y)?$"
                   type: "string"
                 serviceAccountName:
                   description: "ServiceAccountName is the name of the ServiceAccount to use to run the\nVMSelect, VMStorage and VMInsert Pods."
@@ -2649,8 +2650,6 @@ spec:
                         x-kubernetes-preserve-unknown-fields: true
                       type: "array"
                   type: "object"
-              required:
-                - "retentionPeriod"
               type: "object"
             status:
               description: "VMClusterStatus defines the observed state of VMCluster"

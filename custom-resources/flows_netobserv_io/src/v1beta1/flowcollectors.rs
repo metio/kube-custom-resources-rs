@@ -102,17 +102,21 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeInterfaces")]
     pub exclude_interfaces: Option<Vec<String>>,
     /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>
-    /// - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting
-    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
+    /// - `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting
+    /// the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
-    /// - `DNSTracking`: enable the DNS tracking feature.<br>
-    /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
-    /// - `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting
-    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
-    /// - `PacketTranslation`: enable enriching flows with packet's translation information. <br>
-    /// - `EbpfManager`: allow using eBPF manager to manage netobserv ebpf programs. <br>
-    /// - `UDNMapping`, to enable interfaces mapping to udn. <br>
-    /// - `IPSec`, to track flows with IPsec encryption. <br>
+    /// - `DNSTracking`: Enable the DNS tracking feature.<br>
+    /// - `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
+    /// - `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.
+    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
+    /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
+    /// IMPORTANT: This feature is available as a Technology Preview.<br>
+    /// - `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>
+    /// - `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>
+    /// - `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>
+    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
+    /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
+    /// - `IPSec`, to track flows between nodes with IPsec encryption. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering

@@ -69,7 +69,7 @@ spec:
                         - "sops"
                       type: "string"
                     secretRef:
-                      description: "The secret name containing the private OpenPGP keys used for decryption."
+                      description: "The secret name containing the private OpenPGP keys used for decryption.\nA static credential for a cloud provider defined inside the Secret\ntakes priority to secret-less authentication with the ServiceAccountName\nfield."
                       properties:
                         name:
                           description: "Name of the referent."
@@ -77,6 +77,9 @@ spec:
                       required:
                         - "name"
                       type: "object"
+                    serviceAccountName:
+                      description: "ServiceAccountName is the name of the service account used to\nauthenticate with KMS services from cloud providers. If a\nstatic credential for a given cloud provider is defined\ninside the Secret referenced by SecretRef, that static\ncredential takes priority."
+                      type: "string"
                   required:
                     - "provider"
                   type: "object"

@@ -783,7 +783,7 @@ spec:
                   properties:
                     format:
                       default: "JSON"
-                      description: "ReportFormat determines test report format (JSON|XML|JUNIT-TEST|JUNIT-STEP|JUNIT-OPERATION)."
+                      description: "ReportFormat determines test report format (JSON, XML, JUNIT-TEST, JUNIT-STEP, JUNIT-OPERATION)."
                       enum:
                         - "JSON"
                         - "XML"

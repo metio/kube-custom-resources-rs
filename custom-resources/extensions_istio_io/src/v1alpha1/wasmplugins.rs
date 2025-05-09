@@ -23,7 +23,7 @@ use self::prelude::*;
 pub struct WasmPluginSpec {
     /// Specifies the failure behavior for the plugin due to fatal errors.
     /// 
-    /// Valid Options: FAIL_CLOSE, FAIL_OPEN
+    /// Valid Options: FAIL_CLOSE, FAIL_OPEN, FAIL_RELOAD
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failStrategy")]
     pub fail_strategy: Option<WasmPluginFailStrategy>,
     /// The pull behaviour to be applied when fetching Wasm module by either OCI image or `http/https`.
@@ -83,6 +83,8 @@ pub enum WasmPluginFailStrategy {
     FailClose,
     #[serde(rename = "FAIL_OPEN")]
     FailOpen,
+    #[serde(rename = "FAIL_RELOAD")]
+    FailReload,
 }
 
 /// Extend the functionality provided by the Istio proxy through WebAssembly filters. See more details at: https://istio.io/docs/reference/config/proxy_extensions/wasm-plugin.html

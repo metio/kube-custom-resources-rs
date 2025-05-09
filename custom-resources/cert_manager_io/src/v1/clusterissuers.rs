@@ -211,7 +211,7 @@ pub struct ClusterIssuerAcmeSolvers {
     /// Configures cert-manager to attempt to complete authorizations by
     /// performing the HTTP01 challenge flow.
     /// It is not possible to obtain certificates for wildcard domain names
-    /// (e.g. `*.example.com`) using the HTTP01 challenge mechanism.
+    /// (e.g., `*.example.com`) using the HTTP01 challenge mechanism.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http01: Option<ClusterIssuerAcmeSolversHttp01>,
     /// Selector selects a set of DNSNames on the Certificate resource that
@@ -707,7 +707,7 @@ pub struct ClusterIssuerAcmeSolversDns01Webhook {
     /// when challenges are processed.
     /// This can contain arbitrary JSON data.
     /// Secret values should not be specified in this stanza.
-    /// If secret values are needed (e.g. credentials for a DNS service), you
+    /// If secret values are needed (e.g., credentials for a DNS service), you
     /// should use a SecretKeySelector to reference a Secret resource.
     /// For details on the schema of this field, consult the webhook provider
     /// implementation's documentation.
@@ -721,7 +721,7 @@ pub struct ClusterIssuerAcmeSolversDns01Webhook {
     pub group_name: String,
     /// The name of the solver to use, as defined in the webhook provider
     /// implementation.
-    /// This will typically be the name of the provider, e.g. 'cloudflare'.
+    /// This will typically be the name of the provider, e.g., 'cloudflare'.
     #[serde(rename = "solverName")]
     pub solver_name: String,
 }
@@ -729,7 +729,7 @@ pub struct ClusterIssuerAcmeSolversDns01Webhook {
 /// Configures cert-manager to attempt to complete authorizations by
 /// performing the HTTP01 challenge flow.
 /// It is not possible to obtain certificates for wildcard domain names
-/// (e.g. `*.example.com`) using the HTTP01 challenge mechanism.
+/// (e.g., `*.example.com`) using the HTTP01 challenge mechanism.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterIssuerAcmeSolversHttp01 {
     /// The Gateway API is a sig-network community API that models service networking

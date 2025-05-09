@@ -142,8 +142,18 @@ pub struct KustomizationDecryption {
     /// Provider is the name of the decryption engine.
     pub provider: KustomizationDecryptionProvider,
     /// The secret name containing the private OpenPGP keys used for decryption.
+    /// A static credential for a cloud provider defined inside the Secret
+    /// takes priority to secret-less authentication with the ServiceAccountName
+    /// field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<KustomizationDecryptionSecretRef>,
+    /// ServiceAccountName is the name of the service account used to
+    /// authenticate with KMS services from cloud providers. If a
+    /// static credential for a given cloud provider is defined
+    /// inside the Secret referenced by SecretRef, that static
+    /// credential takes priority.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
 }
 
 /// Decrypt Kubernetes secrets before applying them on the cluster.
@@ -154,6 +164,9 @@ pub enum KustomizationDecryptionProvider {
 }
 
 /// The secret name containing the private OpenPGP keys used for decryption.
+/// A static credential for a cloud provider defined inside the Secret
+/// takes priority to secret-less authentication with the ServiceAccountName
+/// field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KustomizationDecryptionSecretRef {
     /// Name of the referent.

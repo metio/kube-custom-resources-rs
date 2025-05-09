@@ -81,8 +81,10 @@ pub enum DeviceConfigCommonConfigUtilsContainerImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigCommonConfigUtilsContainerImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -120,8 +122,10 @@ pub struct DeviceConfigConfigManager {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigConfigManagerConfig {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -168,8 +172,10 @@ pub enum DeviceConfigConfigManagerImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigConfigManagerImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -214,6 +220,12 @@ pub struct DeviceConfigDevicePlugin {
     /// node labeller image registry secret used to pull/push images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistrySecret")]
     pub image_registry_secret: Option<DeviceConfigDevicePluginImageRegistrySecret>,
+    /// node labeller arguments is used to pass supported labels while starting node labeller daemonset
+    /// some flags are enabled by default as they are applicable and bare minimum for all setups and are supported in all versions of node labeller
+    /// default flags: {"vram", "cu-count", "simd-count", "device-id", "family", "product-name", "driver-version"}
+    /// supported flags: {"compute-memory-partition", "compute-partitioning-supported", "memory-partitioning-supported"}
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabellerArguments")]
+    pub node_labeller_arguments: Option<Vec<String>>,
     /// node labeller image
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabellerImage")]
     pub node_labeller_image: Option<String>,
@@ -270,8 +282,10 @@ pub struct DeviceConfigDevicePluginDevicePluginTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigDevicePluginImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -379,8 +393,10 @@ pub struct DeviceConfigDriver {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigDriverImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -415,8 +431,10 @@ pub struct DeviceConfigDriverImageSign {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigDriverImageSignCertSecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -426,8 +444,10 @@ pub struct DeviceConfigDriverImageSignCertSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigDriverImageSignKeySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -464,6 +484,9 @@ pub struct DeviceConfigDriverUpgradePolicyNodeDrainPolicy {
     /// Force indicates if force draining is allowed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
+    /// GracePeriodSeconds indicates the time kubernetes waits for a pod to shut down gracefully after receiving a termination signal
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
+    pub grace_period_seconds: Option<i64>,
     /// TimeoutSecond specifies the length of time in seconds to wait before giving up drain, zero means infinite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
@@ -475,6 +498,9 @@ pub struct DeviceConfigDriverUpgradePolicyPodDeletionPolicy {
     /// Force indicates if force deletion is allowed
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
+    /// GracePeriodSeconds indicates the time kubernetes waits for a pod to shut down gracefully after receiving a termination signal
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
+    pub grace_period_seconds: Option<i64>,
     /// TimeoutSecond specifies the length of time in seconds to wait before giving up on pod deletion, zero means infinite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
@@ -504,6 +530,9 @@ pub struct DeviceConfigMetricsExporter {
     /// Port is the internal port used for in-cluster and node access to pull metrics from the metrics-exporter (default 5000).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
+    /// Prometheus configuration for metrics exporter
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prometheus: Option<DeviceConfigMetricsExporterPrometheus>,
     /// optional kube-rbac-proxy config to provide rbac services
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rbacConfig")]
     pub rbac_config: Option<DeviceConfigMetricsExporterRbacConfig>,
@@ -542,15 +571,467 @@ pub enum DeviceConfigMetricsExporterImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigMetricsExporterImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Prometheus configuration for metrics exporter
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheus {
+    /// ServiceMonitor configuration for Prometheus integration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitor")]
+    pub service_monitor: Option<DeviceConfigMetricsExporterPrometheusServiceMonitor>,
+}
+
+/// ServiceMonitor configuration for Prometheus integration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitor {
+    /// AttachMetadata defines if Prometheus should attach node metadata to the target
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
+    pub attach_metadata: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorAttachMetadata>,
+    /// Optional Prometheus authorization configuration for accessing the endpoint
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorAuthorization>,
+    /// Path to bearer token file to be used by Prometheus (e.g., service account token path)
+    /// Deprecated: Use Authorization instead. This field is kept for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
+    pub bearer_token_file: Option<String>,
+    /// Enable or disable ServiceMonitor creation (default false)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// HonorLabels chooses the metric's labels on collisions with target labels (default true)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
+    pub honor_labels: Option<bool>,
+    /// HonorTimestamps controls whether the scrape endpoints honor timestamps (default false)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
+    pub honor_timestamps: Option<bool>,
+    /// How frequently to scrape metrics. Accepts values with time unit suffix: "30s", "1m", "2h", "500ms"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
+    /// Additional labels to add to the ServiceMonitor (default release: prometheus)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Relabeling rules applied to individual scraped metrics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
+    pub metric_relabelings: Option<Vec<DeviceConfigMetricsExporterPrometheusServiceMonitorMetricRelabelings>>,
+    /// RelabelConfigs to apply to samples before ingestion
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub relabelings: Option<Vec<DeviceConfigMetricsExporterPrometheusServiceMonitorRelabelings>>,
+    /// TLS settings used by Prometheus to connect to the metrics endpoint
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
+    pub tls_config: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfig>,
+}
+
+/// AttachMetadata defines if Prometheus should attach node metadata to the target
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorAttachMetadata {
+    /// When set to true, Prometheus attaches node metadata to the discovered
+    /// targets.
+    /// 
+    /// The Prometheus service account must have the `list` and `watch`
+    /// permissions on the `Nodes` objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node: Option<bool>,
+}
+
+/// Optional Prometheus authorization configuration for accessing the endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorAuthorization {
+    /// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorAuthorizationCredentials>,
+    /// Defines the authentication type. The value is case-insensitive.
+    /// 
+    /// "Basic" is not a supported value.
+    /// 
+    /// Default: "Bearer"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Selects a key of a Secret in the namespace that contains the credentials for authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorAuthorizationCredentials {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorMetricRelabelings {
+    /// Action to perform based on the regex matching.
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorMetricRelabelingsAction>,
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DeviceConfigMetricsExporterPrometheusServiceMonitorMetricRelabelingsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorRelabelings {
+    /// Action to perform based on the regex matching.
+    /// 
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// 
+    /// Default: "Replace"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub action: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorRelabelingsAction>,
+    /// Modulus to take of the hash of the source label values.
+    /// 
+    /// Only applicable when the action is `HashMod`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modulus: Option<i64>,
+    /// Regular expression against which the extracted value is matched.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<String>,
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replacement: Option<String>,
+    /// Separator is the string between concatenated SourceLabels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub separator: Option<String>,
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
+    pub source_labels: Option<Vec<String>>,
+    /// Label to which the resulting string is written in a replacement.
+    /// 
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// 
+    /// Regex capture groups are available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
+    pub target_label: Option<String>,
+}
+
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// 
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DeviceConfigMetricsExporterPrometheusServiceMonitorRelabelingsAction {
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "Replace")]
+    ReplaceX,
+    #[serde(rename = "keep")]
+    Keep,
+    #[serde(rename = "Keep")]
+    KeepX,
+    #[serde(rename = "drop")]
+    Drop,
+    #[serde(rename = "Drop")]
+    DropX,
+    #[serde(rename = "hashmod")]
+    Hashmod,
+    HashMod,
+    #[serde(rename = "labelmap")]
+    Labelmap,
+    LabelMap,
+    #[serde(rename = "labeldrop")]
+    Labeldrop,
+    LabelDrop,
+    #[serde(rename = "labelkeep")]
+    Labelkeep,
+    LabelKeep,
+    #[serde(rename = "lowercase")]
+    Lowercase,
+    #[serde(rename = "Lowercase")]
+    LowercaseX,
+    #[serde(rename = "uppercase")]
+    Uppercase,
+    #[serde(rename = "Uppercase")]
+    UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
+}
+
+/// TLS settings used by Prometheus to connect to the metrics endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfig {
+    /// Certificate authority used when verifying server certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCa>,
+    /// Path to the CA cert in the Prometheus container to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Client certificate to present when doing client-authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCert>,
+    /// Path to the client cert file in the Prometheus container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Path to the client key file in the Prometheus container for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Secret containing the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
+    pub key_secret: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigKeySecret>,
+    /// Maximum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.41.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigMaxVersion>,
+    /// Minimum acceptable TLS version.
+    /// 
+    /// It requires Prometheus >= v2.35.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigMinVersion>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Certificate authority used when verifying server certificates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCa {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCaConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCaSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCaConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCaSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Client certificate to present when doing client-authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCert {
+    /// ConfigMap containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCertConfigMap>,
+    /// Secret containing data to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCertSecret>,
+}
+
+/// ConfigMap containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCertConfigMap {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing data to use for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigCertSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Secret containing the client key file for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigKeySecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// TLS settings used by Prometheus to connect to the metrics endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigMaxVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
+}
+
+/// TLS settings used by Prometheus to connect to the metrics endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DeviceConfigMetricsExporterPrometheusServiceMonitorTlsConfigMinVersion {
+    #[serde(rename = "TLS10")]
+    Tls10,
+    #[serde(rename = "TLS11")]
+    Tls11,
+    #[serde(rename = "TLS12")]
+    Tls12,
+    #[serde(rename = "TLS13")]
+    Tls13,
 }
 
 /// optional kube-rbac-proxy config to provide rbac services
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigMetricsExporterRbacConfig {
+    /// Reference to a configmap containing the client CA (key: ca.crt) for mTLS client validation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCAConfigMap")]
+    pub client_ca_config_map: Option<DeviceConfigMetricsExporterRbacConfigClientCaConfigMap>,
     /// disable https protecting the proxy endpoint
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHttps")]
     pub disable_https: Option<bool>,
@@ -563,16 +1044,44 @@ pub struct DeviceConfigMetricsExporterRbacConfig {
     /// certificate secret to mount in kube-rbac container for TLS, self signed certificates will be generated by default
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<DeviceConfigMetricsExporterRbacConfigSecret>,
+    /// Optional static RBAC rules based on client certificate Common Name (CN)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticAuthorization")]
+    pub static_authorization: Option<DeviceConfigMetricsExporterRbacConfigStaticAuthorization>,
+}
+
+/// Reference to a configmap containing the client CA (key: ca.crt) for mTLS client validation
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterRbacConfigClientCaConfigMap {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// certificate secret to mount in kube-rbac container for TLS, self signed certificates will be generated by default
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigMetricsExporterRbacConfigSecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Optional static RBAC rules based on client certificate Common Name (CN)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigMetricsExporterRbacConfigStaticAuthorization {
+    /// Expected CN (Common Name) from client cert (e.g., Prometheus SA identity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientName")]
+    pub client_name: Option<String>,
+    /// Enables static authorization using client certificate CN
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
 }
 
 /// metrics exporter
@@ -667,8 +1176,10 @@ pub struct DeviceConfigTestRunner {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigTestRunnerConfig {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -685,8 +1196,10 @@ pub enum DeviceConfigTestRunnerImagePullPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigTestRunnerImageRegistrySecret {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -710,8 +1223,10 @@ pub struct DeviceConfigTestRunnerLogsLocation {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigTestRunnerLogsLocationLogsExportSecrets {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

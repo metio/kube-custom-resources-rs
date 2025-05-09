@@ -90,12 +90,6 @@ pub struct CephBucketTopicEndpointHttp {
 /// Spec of Kafka endpoint
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBucketTopicEndpointKafka {
-    /// The kafka password to use for authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "PasswordSecretRef")]
-    pub password_secret_ref: Option<CephBucketTopicEndpointKafkaPasswordSecretRef>,
-    /// The kafka user name to use for authentication
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "UserSecretRef")]
-    pub user_secret_ref: Option<CephBucketTopicEndpointKafkaUserSecretRef>,
     /// The ack level required for this topic (none/broker)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackLevel")]
     pub ack_level: Option<CephBucketTopicEndpointKafkaAckLevel>,
@@ -105,11 +99,41 @@ pub struct CephBucketTopicEndpointKafka {
     /// The authentication mechanism for this topic (PLAIN/SCRAM-SHA-512/SCRAM-SHA-256/GSSAPI/OAUTHBEARER)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mechanism: Option<CephBucketTopicEndpointKafkaMechanism>,
+    /// The kafka password to use for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretRef")]
+    pub password_secret_ref: Option<CephBucketTopicEndpointKafkaPasswordSecretRef>,
     /// The URI of the Kafka endpoint to push notification to
     pub uri: String,
     /// Indicate whether to use SSL when communicating with the broker
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSSL")]
     pub use_ssl: Option<bool>,
+    /// The kafka user name to use for authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSecretRef")]
+    pub user_secret_ref: Option<CephBucketTopicEndpointKafkaUserSecretRef>,
+}
+
+/// Spec of Kafka endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephBucketTopicEndpointKafkaAckLevel {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "broker")]
+    Broker,
+}
+
+/// Spec of Kafka endpoint
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephBucketTopicEndpointKafkaMechanism {
+    #[serde(rename = "PLAIN")]
+    Plain,
+    #[serde(rename = "SCRAM-SHA-512")]
+    ScramSha512,
+    #[serde(rename = "SCRAM-SHA-256")]
+    ScramSha256,
+    #[serde(rename = "GSSAPI")]
+    Gssapi,
+    #[serde(rename = "OAUTHBEARER")]
+    Oauthbearer,
 }
 
 /// The kafka password to use for authentication
@@ -144,30 +168,6 @@ pub struct CephBucketTopicEndpointKafkaUserSecretRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-}
-
-/// Spec of Kafka endpoint
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CephBucketTopicEndpointKafkaAckLevel {
-    #[serde(rename = "none")]
-    None,
-    #[serde(rename = "broker")]
-    Broker,
-}
-
-/// Spec of Kafka endpoint
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CephBucketTopicEndpointKafkaMechanism {
-    #[serde(rename = "PLAIN")]
-    Plain,
-    #[serde(rename = "SCRAM-SHA-512")]
-    ScramSha512,
-    #[serde(rename = "SCRAM-SHA-256")]
-    ScramSha256,
-    #[serde(rename = "GSSAPI")]
-    Gssapi,
-    #[serde(rename = "OAUTHBEARER")]
-    Oauthbearer,
 }
 
 /// BucketTopicStatus represents the Status of a CephBucketTopic

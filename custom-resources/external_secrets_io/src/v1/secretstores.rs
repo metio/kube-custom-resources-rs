@@ -3310,6 +3310,9 @@ pub enum SecretStoreProviderVaultVersion {
 /// Webhook configures this store to sync secrets using a generic templated webhook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderWebhook {
+    /// Auth specifies a authorization protocol. Only one protocol may be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub auth: Option<SecretStoreProviderWebhookAuth>,
     /// Body
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
@@ -3339,6 +3342,61 @@ pub struct SecretStoreProviderWebhook {
     pub timeout: Option<String>,
     /// Webhook url to call
     pub url: String,
+}
+
+/// Auth specifies a authorization protocol. Only one protocol may be set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderWebhookAuth {
+    /// NTLMProtocol configures the store to use NTLM for auth
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ntlm: Option<SecretStoreProviderWebhookAuthNtlm>,
+}
+
+/// NTLMProtocol configures the store to use NTLM for auth
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderWebhookAuthNtlm {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "passwordSecret")]
+    pub password_secret: SecretStoreProviderWebhookAuthNtlmPasswordSecret,
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "usernameSecret")]
+    pub username_secret: SecretStoreProviderWebhookAuthNtlmUsernameSecret,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderWebhookAuthNtlmPasswordSecret {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderWebhookAuthNtlmUsernameSecret {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The provider for the CA bundle to use to validate webhook server certificate.

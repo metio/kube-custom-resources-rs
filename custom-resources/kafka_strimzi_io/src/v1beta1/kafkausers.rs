@@ -127,7 +127,7 @@ pub struct KafkaUserAuthorizationAcls {
     pub operations: Option<Vec<String>>,
     /// Indicates the resource for which given ACL rule applies.
     pub resource: KafkaUserAuthorizationAclsResource,
-    /// The type of the rule. Currently the only supported type is `allow`. ACL rules with type `allow` are used to allow user to execute the specified operations. Default value is `allow`.
+    /// The type of the rule. ACL rules with type `allow` are used to allow user to execute the specified operations. ACL rules with type `deny` are used to deny user to execute the specified operations. Default value is `allow`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<KafkaUserAuthorizationAclsType>,
 }

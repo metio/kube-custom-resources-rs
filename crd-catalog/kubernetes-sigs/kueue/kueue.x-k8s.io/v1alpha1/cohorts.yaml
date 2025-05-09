@@ -132,6 +132,26 @@ spec:
                 fairSharing:
                   description: "fairSharing contains the current state for this Cohort\nwhen participating in Fair Sharing.\nThe is recorded only when Fair Sharing is enabled in the Kueue configuration."
                   properties:
+                    admissionFairSharingStatus:
+                      description: "admissionFairSharingStatus represents information relevant to the Admission Fair Sharing"
+                      properties:
+                        consumedResources:
+                          additionalProperties:
+                            anyOf:
+                              - type: "integer"
+                              - type: "string"
+                            pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                            x-kubernetes-int-or-string: true
+                          description: "ConsumedResources represents the aggregated usage of resources over time,\nwith decaying function applied.\nThe value is populated if usage consumption functionality is enabled in Kueue config."
+                          type: "object"
+                        lastUpdate:
+                          description: "LastUpdate is the time when share and consumed resources were updated."
+                          format: "date-time"
+                          type: "string"
+                      required:
+                        - "consumedResources"
+                        - "lastUpdate"
+                      type: "object"
                     weightedShare:
                       description: "WeightedShare represents the maximum of the ratios of usage\nabove nominal quota to the lendable resources in the\nCohort, among all the resources provided by the Node, and\ndivided by the weight.  If zero, it means that the usage of\nthe Node is below the nominal quota.  If the Node has a\nweight of zero and is borrowing, this will return\n9223372036854775807, the maximum possible share value."
                       format: "int64"

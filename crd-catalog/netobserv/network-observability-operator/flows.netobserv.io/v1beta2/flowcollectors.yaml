@@ -666,9 +666,9 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: Enable the DNS tracking feature.<br>\n- `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Technology Preview.<br>\n- `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>\n- `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>\n- `UDNMapping`: [Unsupported (*)]. Enable interfaces mapping to User Defined Networks (UDN). <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\n- `IPSec`, to track flows with IPsec encryption. <br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: Enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: Enable the DNS tracking feature.<br>\n- `FlowRTT`: Enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: Enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Technology Preview.<br>\n- `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>\n- `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>\n- `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\n- `IPSec`, to track flows between nodes with IPsec encryption. <br>"
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Technology Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information, such as Service NAT.<br>\n- `EbpfManager`, to enable using eBPF Manager to manage NetObserv eBPF programs. [Unsupported (*)].<br>\n- `UDNMapping`, to enable interfaces mapping to UDN. [Unsupported (*)].<br>\n- `IPSec`, to track flows with IPsec encryption. <br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Technology Preview].<br>\n- `PacketTranslation`, to enrich flows with packets translation information, such as Service NAT.<br>\n- `EbpfManager`, to enable using eBPF Manager to manage NetObserv eBPF programs. [Unsupported (*)].<br>\n- `UDNMapping`, to enable interfaces mapping to UDN. <br>\n- `IPSec`, to track flows between nodes with IPsec encryption. <br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
@@ -738,7 +738,7 @@ spec:
                                 - "SCTP"
                               type: "string"
                             rules:
-                              description: "`rules` defines a list of filtering rules on the eBPF Agents.\nWhen filtering is enabled, by default, flows that don't match any rule are rejected.\nTo change the default, you can define a rule that accepts everything: `{ action: \"Accept\", cidr: \"0.0.0.0/0\" }`, and then refine with rejecting rules.\n[Unsupported (*)]."
+                              description: "`rules` defines a list of filtering rules on the eBPF Agents.\nWhen filtering is enabled, by default, flows that don't match any rule are rejected.\nTo change the default, you can define a rule that accepts everything: `{ action: \"Accept\", cidr: \"0.0.0.0/0\" }`, and then refine with rejecting rules."
                               items:
                                 description: "`EBPFFlowFilterRule` defines the desired eBPF agent configuration regarding flow filtering rule."
                                 properties:
@@ -3574,11 +3574,11 @@ spec:
                       description: "`clusterName` is the name of the cluster to appear in the flows data. This is useful in a multi-cluster context. When using OpenShift, leave empty to make it automatically determined."
                       type: "string"
                     deduper:
-                      description: "`deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.\n[Unsupported (*)]."
+                      description: "`deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage."
                       properties:
                         mode:
                           default: "Disabled"
-                          description: "Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>\n- Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially losing some information such as the network interfaces used from peer, or network events.<br>\n- Use `Sample` to randomly keep only one flow on 50, which is the default, among the ones considered as duplicates. This is a compromise between dropping every duplicate or keeping every duplicate. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling values are `50`, the combined sampling is 1:2500.<br>\n- Use `Disabled` to turn off Processor-based de-duplication.<br>"
+                          description: "Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication, since the Agent cannot de-duplicate same flows reported from different nodes.<br>\n- Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially losing some information such as the network interfaces used from peer, or network events.<br>\n- Use `Sample` to randomly keep only one flow on 50, which is the default, among the ones considered as duplicates. This is a compromise between dropping every duplicate or keeping every duplicate. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling values are `50`, the combined sampling is 1:2500.<br>\n- Use `Disabled` to turn off Processor-based de-duplication.<br>"
                           enum:
                             - "Disabled"
                             - "Drop"
@@ -3592,12 +3592,12 @@ spec:
                           type: "integer"
                       type: "object"
                     filters:
-                      description: "`filters` lets you define custom filters to limit the amount of generated flows.\nThese filters provide more flexibility than the eBPF Agent filters (in `spec.agent.ebpf.flowFilter`), such as allowing to filter by Kubernetes namespace,\nbut with a lesser improvement in performance.\n[Unsupported (*)]."
+                      description: "`filters` lets you define custom filters to limit the amount of generated flows.\nThese filters provide more flexibility than the eBPF Agent filters (in `spec.agent.ebpf.flowFilter`), such as allowing to filter by Kubernetes namespace,\nbut with a lesser improvement in performance."
                       items:
                         description: "`FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions."
                         properties:
                           outputTarget:
-                            description: "If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted."
+                            description: "If specified, these filters target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted."
                             enum:
                               - ""
                               - "Loki"

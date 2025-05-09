@@ -13,7 +13,15 @@ spec:
     singular: "privateloadzone"
   scope: "Namespaced"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+        - description: "The status of registration"
+          jsonPath: ".status.conditions[0].status"
+          name: "Registered"
+          type: "string"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           properties:

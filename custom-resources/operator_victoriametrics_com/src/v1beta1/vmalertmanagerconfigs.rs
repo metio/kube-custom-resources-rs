@@ -3094,6 +3094,10 @@ pub struct VMAlertmanagerConfigReceiversWebhookConfigs {
     /// SendResolved controls notify about resolved alerts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send_resolved: Option<bool>,
+    /// Timeout is the maximum time allowed to invoke the webhook
+    /// available since v0.28.0 alertmanager version
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timeout: Option<String>,
     /// URL to send requests to,
     /// one of `urlSecret` and `url` must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]

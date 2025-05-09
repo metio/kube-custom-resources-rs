@@ -304,6 +304,17 @@ spec:
                           description: "EnvoyStripTrailingHostDot defines if trailing dot of the host should be removed from host/authority header\nbefore any processing of request by HTTP filters or routing. This\naffects the upstream host header. Without setting this option to true, incoming\nrequests with host example.com. will not match against route with domains\nmatch set to example.com.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=strip_trailing_host_dot\nfor more information.\nContour's default is false."
                           type: "boolean"
                       type: "object"
+                    omEnforcedHealth:
+                      description: "OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with\nthe envoy overload manager actions, such as global connection limits, enforced.\nThe configured values must be different from the endpoints\nconfigured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]\nThis is disabled by default"
+                      properties:
+                        address:
+                          description: "Defines the health address interface."
+                          minLength: 1
+                          type: "string"
+                        port:
+                          description: "Defines the health port."
+                          type: "integer"
+                      type: "object"
                     service:
                       description: "Service holds Envoy service parameters for setting Ingress status.\nContour's default is { namespace: \"projectcontour\", name: \"envoy\" }."
                       properties:
@@ -342,7 +353,7 @@ spec:
                       type: "object"
                   type: "object"
                 featureFlags:
-                  description: "FeatureFlags defines toggle to enable new contour features.\nAvailable toggles are:\nuseEndpointSlices - Configures contour to fetch endpoint data\nfrom k8s endpoint slices. defaults to true,\nIf false then reads endpoint data from the k8s endpoints."
+                  description: "FeatureFlags defines toggle to enable new contour features."
                   items:
                     type: "string"
                   type: "array"

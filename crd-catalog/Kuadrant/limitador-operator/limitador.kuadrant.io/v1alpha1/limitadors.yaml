@@ -580,6 +580,9 @@ spec:
                       description: "An eviction is allowed if at least \"minAvailable\" limitador pods will\nstill be available after the eviction, i.e. even in the absence of\nthe evicted pod.  So for example you can prevent all voluntary\nevictions by specifying \"100%\"."
                       x-kubernetes-int-or-string: true
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "pdb spec invalid, maxUnavailable and minAvailable are mutually exclusive"
+                      rule: "!(has(self.maxUnavailable) && has(self.minAvailable))"
                 rateLimitHeaders:
                   description: "RateLimitHeadersType defines the valid options for the --rate-limit-headers arg"
                   enum:

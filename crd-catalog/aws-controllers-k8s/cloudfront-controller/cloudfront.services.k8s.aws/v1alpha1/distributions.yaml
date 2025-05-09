@@ -403,7 +403,7 @@ spec:
                       properties:
                         items:
                           items:
-                            description: "An origin.\n\nAn origin is the location where content is stored, and from which CloudFront\ngets content to serve to viewers. To specify an origin:\n\n   * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured\n   with static website hosting.\n\n   * Use CustomOriginConfig to specify all other kinds of origins, including:\n   An Amazon S3 bucket that is configured with static website hosting An\n   Elastic Load Balancing load balancer An Elemental MediaPackage endpoint\n   An Elemental MediaStore container Any other HTTP server, running on an\n   Amazon EC2 instance or any other kind of host\n\nFor the current maximum number of origins that you can specify per distribution,\nsee General Quotas on Web Distributions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions)\nin the Amazon CloudFront Developer Guide (quotas were formerly referred to\nas limits)."
+                            description: "An origin.\n\nAn origin is the location where content is stored, and from which CloudFront\ngets content to serve to viewers. To specify an origin:\n\n   * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured\n   with static website hosting.\n\n   * Use VpcOriginConfig to specify a VPC origin.\n\n   * Use CustomOriginConfig to specify all other kinds of origins, including:\n   An Amazon S3 bucket that is configured with static website hosting An\n   Elastic Load Balancing load balancer An Elemental MediaPackage endpoint\n   An Elemental MediaStore container Any other HTTP server, running on an\n   Amazon EC2 instance or any other kind of host\n\nFor the current maximum number of origins that you can specify per distribution,\nsee General Quotas on Web Distributions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions)\nin the Amazon CloudFront Developer Guide (quotas were formerly referred to\nas limits)."
                             properties:
                               connectionAttempts:
                                 format: "int64"
@@ -471,6 +471,18 @@ spec:
                                 description: "A complex type that contains information about the Amazon S3 origin. If the\norigin is a custom origin or an S3 bucket that is configured as a website\nendpoint, use the CustomOriginConfig element instead."
                                 properties:
                                   originAccessIdentity:
+                                    type: "string"
+                                type: "object"
+                              vpcOriginConfig:
+                                description: "An Amazon CloudFront VPC origin configuration."
+                                properties:
+                                  originKeepaliveTimeout:
+                                    format: "int64"
+                                    type: "integer"
+                                  originReadTimeout:
+                                    format: "int64"
+                                    type: "integer"
+                                  vpcOriginID:
                                     type: "string"
                                 type: "object"
                             type: "object"

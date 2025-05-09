@@ -66,6 +66,9 @@ pub struct OutputOutputs {
     /// out_loki plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loki: Option<OutputOutputsLoki>,
+    /// null plugin
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nullPlugin")]
+    pub null_plugin: Option<OutputOutputsNullPlugin>,
     /// out_opensearch plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opensearch: Option<OutputOutputsOpensearch>,
@@ -2170,6 +2173,14 @@ pub struct OutputOutputsLokiTenantIdValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// null plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputOutputsNullPlugin {
+    /// NeverFlush for testing to simulate the output plugin that never succeeds to flush.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "neverFlush")]
+    pub never_flush: Option<bool>,
 }
 
 /// out_opensearch plugin

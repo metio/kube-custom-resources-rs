@@ -513,6 +513,12 @@ spec:
                 natOutgoingAddress:
                   description: "NATOutgoingAddress specifies an address to use when performing source NAT for traffic in a natOutgoing pool that\nis leaving the network. By default the address used is an address on the interface the traffic is leaving on\n(i.e. it uses the iptables MASQUERADE target)."
                   type: "string"
+                natOutgoingExclusions:
+                  description: "When a IP pool setting `natOutgoing` is true, packets sent from Calico networked containers in this IP pool to destinations will be masqueraded.\nConfigure which type of destinations is excluded from being masqueraded.\n- IPPoolsOnly: destinations outside of this IP pool will be masqueraded.\n- IPPoolsAndHostIPs: destinations outside of this IP pool and all hosts will be masqueraded.\n[Default: IPPoolsOnly]"
+                  enum:
+                    - "IPPoolsOnly"
+                    - "IPPoolsAndHostIPs"
+                  type: "string"
                 natPortRange:
                   anyOf:
                     - type: "integer"
@@ -555,6 +561,12 @@ spec:
                   type: "string"
                 policySyncPathPrefix:
                   description: "PolicySyncPathPrefix is used to by Felix to communicate policy changes to external services,\nlike Application layer policy. [Default: Empty]"
+                  type: "string"
+                programRoutes:
+                  description: "ProgramRoutes specifies whether Felix should program IPIP or unencapsulated routes instead of BIRD.\nFelix always programs VXLAN routes. [Default: Disabled]"
+                  enum:
+                    - "Enabled"
+                    - "Disabled"
                   type: "string"
                 prometheusGoMetricsEnabled:
                   description: "PrometheusGoMetricsEnabled disables Go runtime metrics collection, which the Prometheus client does by default, when\nset to false. This reduces the number of metrics reported, reducing Prometheus load. [Default: true]"

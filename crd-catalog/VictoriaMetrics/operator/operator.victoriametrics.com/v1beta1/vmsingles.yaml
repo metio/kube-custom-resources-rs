@@ -402,7 +402,8 @@ spec:
                       type: "object"
                   type: "object"
                 retentionPeriod:
-                  description: "RetentionPeriod for the stored metrics\nNote VictoriaMetrics has data/ and indexdb/ folders\nmetrics from data/ removed eventually as soon as partition leaves retention period\nreverse index data at indexdb rotates once at the half of configured [retention period](https://docs.victoriametrics.com/Single-server-VictoriaMetrics/#retention)"
+                  description: "RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., \"1d\", \"1w\", \"1m\").\nData with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.\nThe default value is 1 (one month).\nSee [retention](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention) docs for details."
+                  pattern: "^[0-9]+(h|d|y)?$"
                   type: "string"
                 revisionHistoryLimitCount:
                   description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
@@ -1178,8 +1179,6 @@ spec:
                     type: "object"
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
-              required:
-                - "retentionPeriod"
               type: "object"
             status:
               description: "VMSingleStatus defines the observed state of VMSingle"
