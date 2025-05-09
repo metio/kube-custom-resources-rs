@@ -160,6 +160,7 @@ members = [
     "custom-resources/gateway_networking_k8s_io",
     "custom-resources/gateway_networking_x_k8s_io",
     "custom-resources/gateway_nginx_org",
+    "custom-resources/generators_external_secrets_io",
     "custom-resources/getambassador_io",
     "custom-resources/gitops_hybrid_cloud_patterns_io",
     "custom-resources/grafana_integreatly_org",

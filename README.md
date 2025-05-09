@@ -200,6 +200,7 @@ The following groups are available:
 - [gateway.networking.k8s.io](https://crates.io/crates/kcr_gateway_networking_k8s_io)
 - [gateway.networking.x-k8s.io](https://crates.io/crates/kcr_gateway_networking_x_k8s_io)
 - [gateway.nginx.org](https://crates.io/crates/kcr_gateway_nginx_org)
+- [generators.external-secrets.io](https://crates.io/crates/kcr_generators_external_secrets_io)
 - [getambassador.io](https://crates.io/crates/kcr_getambassador_io)
 - [gitops.hybrid-cloud-patterns.io](https://crates.io/crates/kcr_gitops_hybrid_cloud_patterns_io)
 - [grafana.integreatly.org](https://crates.io/crates/kcr_grafana_integreatly_org)
