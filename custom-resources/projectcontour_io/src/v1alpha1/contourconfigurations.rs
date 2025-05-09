@@ -35,10 +35,6 @@ pub struct ContourConfigurationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envoy: Option<ContourConfigurationEnvoy>,
     /// FeatureFlags defines toggle to enable new contour features.
-    /// Available toggles are:
-    /// useEndpointSlices - Configures contour to fetch endpoint data
-    /// from k8s endpoint slices. defaults to true,
-    /// If false then reads endpoint data from the k8s endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<Vec<String>>,
     /// Gateway contains parameters for the gateway-api Gateway that Contour
@@ -139,6 +135,13 @@ pub struct ContourConfigurationEnvoy {
     /// Network holds various configurable Envoy network values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<ContourConfigurationEnvoyNetwork>,
+    /// OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with
+    /// the envoy overload manager actions, such as global connection limits, enforced.
+    /// The configured values must be different from the endpoints
+    /// configured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]
+    /// This is disabled by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omEnforcedHealth")]
+    pub om_enforced_health: Option<ContourConfigurationEnvoyOmEnforcedHealth>,
     /// Service holds Envoy service parameters for setting Ingress status.
     /// Contour's default is { namespace: "projectcontour", name: "envoy" }.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -560,6 +563,21 @@ pub struct ContourConfigurationEnvoyNetwork {
     /// Contour's default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripTrailingHostDot")]
     pub strip_trailing_host_dot: Option<bool>,
+}
+
+/// OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with
+/// the envoy overload manager actions, such as global connection limits, enforced.
+/// The configured values must be different from the endpoints
+/// configured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]
+/// This is disabled by default
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourConfigurationEnvoyOmEnforcedHealth {
+    /// Defines the health address interface.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub address: Option<String>,
+    /// Defines the health port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
 }
 
 /// Service holds Envoy service parameters for setting Ingress status.

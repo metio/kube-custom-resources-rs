@@ -204,6 +204,13 @@ pub struct SecretClassBackendK8sSearch {
     /// Configures the namespace searched for Secret objects.
     #[serde(rename = "searchNamespace")]
     pub search_namespace: SecretClassBackendK8sSearchSearchNamespace,
+    /// Name of a ConfigMap that contains the information required to validate against this SecretClass.
+    /// 
+    /// Resolved relative to `search_namespace`.
+    /// 
+    /// Required to request a TrustStore for this SecretClass.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustStoreConfigMapName")]
+    pub trust_store_config_map_name: Option<String>,
 }
 
 /// Configures the namespace searched for Secret objects.

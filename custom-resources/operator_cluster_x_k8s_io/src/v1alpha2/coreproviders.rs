@@ -1059,7 +1059,7 @@ pub struct CoreProviderAdditionalDeploymentsManager {
     /// which can be run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
-    /// Metrics contains thw controller metrics configuration
+    /// Metrics contains the controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<CoreProviderAdditionalDeploymentsManagerMetrics>,
     /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
@@ -1167,7 +1167,7 @@ pub struct CoreProviderAdditionalDeploymentsManagerLeaderElection {
     pub retry_period: String,
 }
 
-/// Metrics contains thw controller metrics configuration
+/// Metrics contains the controller metrics configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderAdditionalDeploymentsManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to
@@ -2266,7 +2266,7 @@ pub struct CoreProviderManager {
     /// which can be run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
-    /// Metrics contains thw controller metrics configuration
+    /// Metrics contains the controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<CoreProviderManagerMetrics>,
     /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
@@ -2374,7 +2374,7 @@ pub struct CoreProviderManagerLeaderElection {
     pub retry_period: String,
 }
 
-/// Metrics contains thw controller metrics configuration
+/// Metrics contains the controller metrics configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CoreProviderManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to

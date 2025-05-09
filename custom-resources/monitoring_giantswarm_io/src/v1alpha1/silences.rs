@@ -9,6 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// SilenceSpec defines the desired state of Silence.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "monitoring.giantswarm.io", version = "v1alpha1", kind = "Silence", plural = "silences")]
 #[kube(schema = "disabled")]

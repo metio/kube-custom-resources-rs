@@ -795,7 +795,7 @@ spec:
                               - "path"
                             type: "object"
                           image:
-                            description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                            description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
                             properties:
                               pullPolicy:
                                 description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
@@ -1366,6 +1366,10 @@ spec:
                             type: "object"
                           type: "array"
                       type: "object"
+                    overloadMaxDownstreamConnections:
+                      description: "OverloadMaxDownstreamConn defines the envoy global downstream connection limit controlled by the overload manager.\nWhen the value is greater than 0 the overload manager is enabled and listeners\nwill begin rejecting connections when the the connection threshold is hit.\nMetrics and health listeners are not subject to the connection limits, however,\nthey still count against the global limit."
+                      format: "int64"
+                      type: "integer"
                     overloadMaxHeapSize:
                       description: "OverloadMaxHeapSize defines the maximum heap memory of the envoy controlled by the overload manager.\nWhen the value is greater than 0, the overload manager is enabled,\nand when envoy reaches 95% of the maximum heap size, it performs a shrink heap operation,\nWhen it reaches 98% of the maximum heap size, Envoy Will stop accepting requests.\nMore info: https://projectcontour.io/docs/main/config/overload-manager/"
                       format: "int64"
@@ -1704,6 +1708,17 @@ spec:
                               description: "EnvoyStripTrailingHostDot defines if trailing dot of the host should be removed from host/authority header\nbefore any processing of request by HTTP filters or routing. This\naffects the upstream host header. Without setting this option to true, incoming\nrequests with host example.com. will not match against route with domains\nmatch set to example.com.\nSee https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=strip_trailing_host_dot\nfor more information.\nContour's default is false."
                               type: "boolean"
                           type: "object"
+                        omEnforcedHealth:
+                          description: "OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with\nthe envoy overload manager actions, such as global connection limits, enforced.\nThe configured values must be different from the endpoints\nconfigured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]\nThis is disabled by default"
+                          properties:
+                            address:
+                              description: "Defines the health address interface."
+                              minLength: 1
+                              type: "string"
+                            port:
+                              description: "Defines the health port."
+                              type: "integer"
+                          type: "object"
                         service:
                           description: "Service holds Envoy service parameters for setting Ingress status.\nContour's default is { namespace: \"projectcontour\", name: \"envoy\" }."
                           properties:
@@ -1742,7 +1757,7 @@ spec:
                           type: "object"
                       type: "object"
                     featureFlags:
-                      description: "FeatureFlags defines toggle to enable new contour features.\nAvailable toggles are:\nuseEndpointSlices - Configures contour to fetch endpoint data\nfrom k8s endpoint slices. defaults to true,\nIf false then reads endpoint data from the k8s endpoints."
+                      description: "FeatureFlags defines toggle to enable new contour features."
                       items:
                         type: "string"
                       type: "array"

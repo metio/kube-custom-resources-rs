@@ -943,6 +943,8 @@ pub struct DistributionDistributionConfigOrigins {
 ///    * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured
 ///    with static website hosting.
 /// 
+///    * Use VpcOriginConfig to specify a VPC origin.
+/// 
 ///    * Use CustomOriginConfig to specify all other kinds of origins, including:
 ///    An Amazon S3 bucket that is configured with static website hosting An
 ///    Elastic Load Balancing load balancer An Elemental MediaPackage endpoint
@@ -988,6 +990,9 @@ pub struct DistributionDistributionConfigOriginsItems {
     /// endpoint, use the CustomOriginConfig element instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OriginConfig")]
     pub s3_origin_config: Option<DistributionDistributionConfigOriginsItemsS3OriginConfig>,
+    /// An Amazon CloudFront VPC origin configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcOriginConfig")]
+    pub vpc_origin_config: Option<DistributionDistributionConfigOriginsItemsVpcOriginConfig>,
 }
 
 /// A complex type that contains the list of Custom Headers for each origin.
@@ -1057,6 +1062,17 @@ pub struct DistributionDistributionConfigOriginsItemsOriginShield {
 pub struct DistributionDistributionConfigOriginsItemsS3OriginConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "originAccessIdentity")]
     pub origin_access_identity: Option<String>,
+}
+
+/// An Amazon CloudFront VPC origin configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DistributionDistributionConfigOriginsItemsVpcOriginConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originKeepaliveTimeout")]
+    pub origin_keepalive_timeout: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originReadTimeout")]
+    pub origin_read_timeout: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcOriginID")]
+    pub vpc_origin_id: Option<String>,
 }
 
 /// A complex type that identifies ways in which you want to restrict distribution

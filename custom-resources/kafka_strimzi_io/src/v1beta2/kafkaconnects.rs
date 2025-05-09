@@ -271,7 +271,7 @@ pub struct KafkaConnectBuild {
 /// Configures where should the newly built image be stored. Required.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaConnectBuildOutput {
-    /// Configures additional options which will be passed to the Kaniko executor when building the new Connect image. Allowed options are: --customPlatform, --custom-platform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run, --registry-certificate, --registry-client-cert. These options will be used only on Kubernetes where the Kaniko executor is used. They will be ignored on OpenShift. The options are described in the link:https://github.com/GoogleContainerTools/kaniko[Kaniko GitHub repository^]. Changing this field does not trigger new build of the Kafka Connect image.
+    /// Configures additional options which will be passed to the Kaniko executor when building the new Connect image. Allowed options are: --customPlatform, --custom-platform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run, --registry-certificate, --registry-client-cert, --ignore-path. These options will be used only on Kubernetes where the Kaniko executor is used. They will be ignored on OpenShift. The options are described in the link:https://github.com/GoogleContainerTools/kaniko[Kaniko GitHub repository^]. Changing this field does not trigger new build of the Kafka Connect image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalKanikoOptions")]
     pub additional_kaniko_options: Option<Vec<String>>,
     /// The name of the image which will be built. Required.
@@ -361,6 +361,8 @@ pub struct KafkaConnectBuildResources {
 pub struct KafkaConnectBuildResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Pass data from Secrets or ConfigMaps to the Kafka Connect pods and use them to configure connectors.
@@ -669,6 +671,8 @@ pub struct KafkaConnectResources {
 pub struct KafkaConnectResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Template for Kafka Connect and Kafka MirrorMaker 2 resources. The template allows users to specify how the `Pods`, `Service`, and other services are generated.
@@ -937,6 +941,12 @@ pub struct KafkaConnectTemplateBuildPod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaConnectTemplateBuildPodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaConnectTemplateBuildPodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaConnectTemplateBuildPodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -1304,6 +1314,34 @@ pub struct KafkaConnectTemplateBuildPodAffinityPodAntiAffinityRequiredDuringSche
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaConnectTemplateBuildPodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Kafka Connect Build `Pods`. The build pod is used only on Kubernetes.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaConnectTemplateBuildPodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1344,12 +1382,16 @@ pub struct KafkaConnectTemplateBuildPodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaConnectTemplateBuildPodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaConnectTemplateBuildPodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaConnectTemplateBuildPodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2006,6 +2048,12 @@ pub struct KafkaConnectTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaConnectTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaConnectTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaConnectTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -2373,6 +2421,34 @@ pub struct KafkaConnectTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulin
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaConnectTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Kafka Connect `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaConnectTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2413,12 +2489,16 @@ pub struct KafkaConnectTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaConnectTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaConnectTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaConnectTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]

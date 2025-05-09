@@ -349,7 +349,7 @@ pub struct SidecarIngressTls {
     /// A list of alternate names to verify the subject identity in the certificate presented by the client.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
-    /// Only one of `server_certificate`, `private_key`, `ca_certificates` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
+    /// Only one of `server_certificate`, `private_key` or `credential_name` or `credential_names` or `tls_certificates` should be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCertificates")]
     pub tls_certificates: Option<Vec<SidecarIngressTlsTlsCertificates>>,
     /// An optional list of hex-encoded SHA-256 hashes of the authorized client certificates.
@@ -409,7 +409,6 @@ pub enum SidecarIngressTlsMode {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarIngressTlsTlsCertificates {
-    /// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// REQUIRED if mode is `SIMPLE` or `MUTUAL`.

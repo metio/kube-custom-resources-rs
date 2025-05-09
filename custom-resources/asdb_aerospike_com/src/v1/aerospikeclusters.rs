@@ -37,6 +37,10 @@ pub struct AerospikeClusterSpec {
     /// In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
     pub enable_dynamic_config_update: Option<bool>,
+    /// HeadlessService defines additional configuration parameters for the headless service created to discover
+    /// Aerospike Cluster nodes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headlessService")]
+    pub headless_service: Option<AerospikeClusterHeadlessService>,
     /// Aerospike server image
     pub image: String,
     /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on
@@ -58,6 +62,12 @@ pub struct AerospikeClusterSpec {
     /// Paused flag is used to pause the reconciliation for the AerospikeCluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
+    /// PodService defines additional configuration parameters for the pod service created to expose the
+    /// Aerospike Cluster nodes outside the Kubernetes cluster. This service is created only created when
+    /// `multiPodPerHost` is set to `true` and `aerospikeNetworkPolicy` has one of the network types:
+    /// 'hostInternal', 'hostExternal', 'configuredIP'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
+    pub pod_service: Option<AerospikeClusterPodService>,
     /// Specify additional configuration for the Aerospike pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<AerospikeClusterPodSpec>,
@@ -286,6 +296,24 @@ pub enum AerospikeClusterAerospikeNetworkPolicyTlsFabric {
     CustomInterface,
 }
 
+/// HeadlessService defines additional configuration parameters for the headless service created to discover
+/// Aerospike Cluster nodes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterHeadlessService {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<AerospikeClusterHeadlessServiceMetadata>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterHeadlessServiceMetadata {
+    /// Key - Value pair that may be set by external tools to store and retrieve arbitrary metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Key - Value pairs that can be used to organize and categorize scope and select objects
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AerospikeClusterOperations {
     /// ID is the unique identifier for the operation. It is used by the operator to track the operation.
@@ -353,6 +381,26 @@ pub struct AerospikeClusterOperatorClientCertSecretCertSourceCaCertsSource {
     pub secret_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
+}
+
+/// PodService defines additional configuration parameters for the pod service created to expose the
+/// Aerospike Cluster nodes outside the Kubernetes cluster. This service is created only created when
+/// `multiPodPerHost` is set to `true` and `aerospikeNetworkPolicy` has one of the network types:
+/// 'hostInternal', 'hostExternal', 'configuredIP'
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodService {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<AerospikeClusterPodServiceMetadata>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterPodServiceMetadata {
+    /// Key - Value pair that may be set by external tools to store and retrieve arbitrary metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Key - Value pairs that can be used to organize and categorize scope and select objects
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Specify additional configuration for the Aerospike pods
@@ -7786,6 +7834,10 @@ pub struct AerospikeClusterStatus {
     /// In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
     pub enable_dynamic_config_update: Option<bool>,
+    /// HeadlessService defines additional configuration parameters for the headless service created to discover
+    /// Aerospike Cluster nodes
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headlessService")]
+    pub headless_service: Option<AerospikeClusterStatusHeadlessService>,
     /// Aerospike server image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -7823,6 +7875,12 @@ pub struct AerospikeClusterStatus {
     /// Phase denotes the current phase of Aerospike cluster operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<AerospikeClusterStatusPhase>,
+    /// PodService defines additional configuration parameters for the pod service created to expose the
+    /// Aerospike Cluster nodes outside the Kubernetes cluster. This service is created only created when
+    /// `multiPodPerHost` is set to `true` and `aerospikeNetworkPolicy` has one of the network types:
+    /// 'hostInternal', 'hostExternal', 'configuredIP'
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podService")]
+    pub pod_service: Option<AerospikeClusterStatusPodService>,
     /// Additional configuration for create Aerospike pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpec")]
     pub pod_spec: Option<AerospikeClusterStatusPodSpec>,
@@ -8066,6 +8124,24 @@ pub enum AerospikeClusterStatusAerospikeNetworkPolicyTlsFabric {
     CustomInterface,
 }
 
+/// HeadlessService defines additional configuration parameters for the headless service created to discover
+/// Aerospike Cluster nodes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusHeadlessService {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<AerospikeClusterStatusHeadlessServiceMetadata>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusHeadlessServiceMetadata {
+    /// Key - Value pair that may be set by external tools to store and retrieve arbitrary metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Key - Value pairs that can be used to organize and categorize scope and select objects
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct AerospikeClusterStatusOperations {
     /// ID is the unique identifier for the operation. It is used by the operator to track the operation.
@@ -8141,6 +8217,26 @@ pub enum AerospikeClusterStatusPhase {
     InProgress,
     Completed,
     Error,
+}
+
+/// PodService defines additional configuration parameters for the pod service created to expose the
+/// Aerospike Cluster nodes outside the Kubernetes cluster. This service is created only created when
+/// `multiPodPerHost` is set to `true` and `aerospikeNetworkPolicy` has one of the network types:
+/// 'hostInternal', 'hostExternal', 'configuredIP'
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodService {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<AerospikeClusterStatusPodServiceMetadata>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AerospikeClusterStatusPodServiceMetadata {
+    /// Key - Value pair that may be set by external tools to store and retrieve arbitrary metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Key - Value pairs that can be used to organize and categorize scope and select objects
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// Additional configuration for create Aerospike pods.

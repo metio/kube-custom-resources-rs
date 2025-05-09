@@ -21,9 +21,9 @@ pub struct ChallengeSpec {
     /// challenge is a part of.
     #[serde(rename = "authorizationURL")]
     pub authorization_url: String,
-    /// dnsName is the identifier that this challenge is for, e.g. example.com.
+    /// dnsName is the identifier that this challenge is for, e.g., example.com.
     /// If the requested DNSName is a 'wildcard', this field MUST be set to the
-    /// non-wildcard domain, e.g. for `*.example.com`, it must be `example.com`.
+    /// non-wildcard domain, e.g., for `*.example.com`, it must be `example.com`.
     #[serde(rename = "dnsName")]
     pub dns_name: String,
     /// References a properly configured ACME-type Issuer which should
@@ -88,7 +88,7 @@ pub struct ChallengeSolver {
     /// Configures cert-manager to attempt to complete authorizations by
     /// performing the HTTP01 challenge flow.
     /// It is not possible to obtain certificates for wildcard domain names
-    /// (e.g. `*.example.com`) using the HTTP01 challenge mechanism.
+    /// (e.g., `*.example.com`) using the HTTP01 challenge mechanism.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http01: Option<ChallengeSolverHttp01>,
     /// Selector selects a set of DNSNames on the Certificate resource that
@@ -584,7 +584,7 @@ pub struct ChallengeSolverDns01Webhook {
     /// when challenges are processed.
     /// This can contain arbitrary JSON data.
     /// Secret values should not be specified in this stanza.
-    /// If secret values are needed (e.g. credentials for a DNS service), you
+    /// If secret values are needed (e.g., credentials for a DNS service), you
     /// should use a SecretKeySelector to reference a Secret resource.
     /// For details on the schema of this field, consult the webhook provider
     /// implementation's documentation.
@@ -598,7 +598,7 @@ pub struct ChallengeSolverDns01Webhook {
     pub group_name: String,
     /// The name of the solver to use, as defined in the webhook provider
     /// implementation.
-    /// This will typically be the name of the provider, e.g. 'cloudflare'.
+    /// This will typically be the name of the provider, e.g., 'cloudflare'.
     #[serde(rename = "solverName")]
     pub solver_name: String,
 }
@@ -606,7 +606,7 @@ pub struct ChallengeSolverDns01Webhook {
 /// Configures cert-manager to attempt to complete authorizations by
 /// performing the HTTP01 challenge flow.
 /// It is not possible to obtain certificates for wildcard domain names
-/// (e.g. `*.example.com`) using the HTTP01 challenge mechanism.
+/// (e.g., `*.example.com`) using the HTTP01 challenge mechanism.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ChallengeSolverHttp01 {
     /// The Gateway API is a sig-network community API that models service networking

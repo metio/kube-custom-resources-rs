@@ -272,6 +272,13 @@ pub struct ContourDeploymentEnvoy {
     /// NodePlacement describes node scheduling configuration of Envoy pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ContourDeploymentEnvoyNodePlacement>,
+    /// OverloadMaxDownstreamConn defines the envoy global downstream connection limit controlled by the overload manager.
+    /// When the value is greater than 0 the overload manager is enabled and listeners
+    /// will begin rejecting connections when the the connection threshold is hit.
+    /// Metrics and health listeners are not subject to the connection limits, however,
+    /// they still count against the global limit.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overloadMaxDownstreamConnections")]
+    pub overload_max_downstream_connections: Option<i64>,
     /// OverloadMaxHeapSize defines the maximum heap memory of the envoy controlled by the overload manager.
     /// When the value is greater than 0, the overload manager is enabled,
     /// and when envoy reaches 95% of the maximum heap size, it performs a shrink heap operation,
@@ -577,7 +584,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<ContourDeploymentEnvoyExtraVolumesImage>,
@@ -1431,7 +1438,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesImage {
@@ -2271,10 +2278,6 @@ pub struct ContourDeploymentRuntimeSettings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envoy: Option<ContourDeploymentRuntimeSettingsEnvoy>,
     /// FeatureFlags defines toggle to enable new contour features.
-    /// Available toggles are:
-    /// useEndpointSlices - Configures contour to fetch endpoint data
-    /// from k8s endpoint slices. defaults to true,
-    /// If false then reads endpoint data from the k8s endpoints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<Vec<String>>,
     /// Gateway contains parameters for the gateway-api Gateway that Contour
@@ -2375,6 +2378,13 @@ pub struct ContourDeploymentRuntimeSettingsEnvoy {
     /// Network holds various configurable Envoy network values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<ContourDeploymentRuntimeSettingsEnvoyNetwork>,
+    /// OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with
+    /// the envoy overload manager actions, such as global connection limits, enforced.
+    /// The configured values must be different from the endpoints
+    /// configured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]
+    /// This is disabled by default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "omEnforcedHealth")]
+    pub om_enforced_health: Option<ContourDeploymentRuntimeSettingsEnvoyOmEnforcedHealth>,
     /// Service holds Envoy service parameters for setting Ingress status.
     /// Contour's default is { namespace: "projectcontour", name: "envoy" }.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2796,6 +2806,21 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyNetwork {
     /// Contour's default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stripTrailingHostDot")]
     pub strip_trailing_host_dot: Option<bool>,
+}
+
+/// OMEnforcedHealth defines the endpoint Envoy uses to serve health checks with
+/// the envoy overload manager actions, such as global connection limits, enforced.
+/// The configured values must be different from the endpoints
+/// configured by [EnvoyConfig.Metrics] and [EnvoyConfig.Health]
+/// This is disabled by default
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ContourDeploymentRuntimeSettingsEnvoyOmEnforcedHealth {
+    /// Defines the health address interface.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub address: Option<String>,
+    /// Defines the health port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
 }
 
 /// Service holds Envoy service parameters for setting Ingress status.

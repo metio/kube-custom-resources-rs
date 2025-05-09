@@ -114,10 +114,10 @@ pub struct FlowCollectorAgentEbpf {
     /// IMPORTANT: This feature is available as a Technology Preview.<br>
     /// - `PacketTranslation`: Enable enriching flows with packet translation information, such as Service NAT.<br>
     /// - `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>
-    /// - `UDNMapping`: [Unsupported (*)]. Enable interfaces mapping to User Defined Networks (UDN). <br>
+    /// - `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>
     /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
     /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
-    /// - `IPSec`, to track flows with IPsec encryption. <br>
+    /// - `IPSec`, to track flows between nodes with IPsec encryption. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
@@ -975,7 +975,6 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// `rules` defines a list of filtering rules on the eBPF Agents.
     /// When filtering is enabled, by default, flows that don't match any rule are rejected.
     /// To change the default, you can define a rule that accepts everything: `{ action: "Accept", cidr: "0.0.0.0/0" }`, and then refine with rejecting rules.
-    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<FlowCollectorAgentEbpfFlowFilterRules>>,
     /// `sampling` is the sampling ratio for the matched packets, overriding the global sampling defined at `spec.agent.ebpf.sampling`.
@@ -3596,13 +3595,11 @@ pub struct FlowCollectorProcessor {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
-    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deduper: Option<FlowCollectorProcessorDeduper>,
     /// `filters` lets you define custom filters to limit the amount of generated flows.
     /// These filters provide more flexibility than the eBPF Agent filters (in `spec.agent.ebpf.flowFilter`), such as allowing to filter by Kubernetes namespace,
     /// but with a lesser improvement in performance.
-    /// [Unsupported (*)].
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<FlowCollectorProcessorFilters>>,
     /// `imagePullPolicy` is the Kubernetes pull policy for the image defined above
@@ -4458,10 +4455,9 @@ pub struct FlowCollectorProcessorAdvancedSecondaryNetworks {
 }
 
 /// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
-/// [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorDeduper {
-    /// Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication because the Agent cannot de-duplicate same flows reported from different nodes.<br>
+    /// Set the Processor de-duplication mode. It comes in addition to the Agent-based deduplication, since the Agent cannot de-duplicate same flows reported from different nodes.<br>
     /// - Use `Drop` to drop every flow considered as duplicates, allowing saving more on resource usage but potentially losing some information such as the network interfaces used from peer, or network events.<br>
     /// - Use `Sample` to randomly keep only one flow on 50, which is the default, among the ones considered as duplicates. This is a compromise between dropping every duplicate or keeping every duplicate. This sampling action comes in addition to the Agent-based sampling. If both Agent and Processor sampling values are `50`, the combined sampling is 1:2500.<br>
     /// - Use `Disabled` to turn off Processor-based de-duplication.<br>
@@ -4473,7 +4469,6 @@ pub struct FlowCollectorProcessorDeduper {
 }
 
 /// `deduper` allows you to sample or drop flows identified as duplicates, in order to save on resource usage.
-/// [Unsupported (*)].
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorProcessorDeduperMode {
     Disabled,
@@ -4484,7 +4479,7 @@ pub enum FlowCollectorProcessorDeduperMode {
 /// `FLPFilterSet` defines the desired configuration for FLP-based filtering satisfying all conditions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorFilters {
-    /// If specified, these filters only target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
+    /// If specified, these filters target a single output: `Loki`, `Metrics` or `Exporters`. By default, all outputs are targeted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputTarget")]
     pub output_target: Option<FlowCollectorProcessorFiltersOutputTarget>,
     /// A query that selects the network flows to keep. More information about this query language in https://github.com/netobserv/flowlogs-pipeline/blob/main/docs/filtering.md.

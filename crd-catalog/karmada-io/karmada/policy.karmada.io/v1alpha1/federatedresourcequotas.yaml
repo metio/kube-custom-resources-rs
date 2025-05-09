@@ -41,7 +41,7 @@ spec:
                   description: "Overall is the set of desired hard limits for each named resource."
                   type: "object"
                 staticAssignments:
-                  description: "StaticAssignments represents the subset of desired hard limits for each cluster.\nNote: for clusters not present in this list, Karmada will set an empty ResourceQuota to them, which means these\nclusters will have no quotas in the referencing namespace."
+                  description: "StaticAssignments specifies ResourceQuota settings for specific clusters.\nIf non-empty, Karmada will create ResourceQuotas in the corresponding clusters.\nClusters not listed here or when StaticAssignments is empty will have no ResourceQuotas created.\n\nThis field addresses multi-cluster configuration management challenges by allowing centralized\ncontrol over ResourceQuotas across clusters.\n\nNote: The Karmada scheduler currently does NOT use this configuration for scheduling decisions.\nFuture updates may integrate it into the scheduling logic."
                   items:
                     description: "StaticClusterAssignment represents the set of desired hard limits for a specific cluster."
                     properties:

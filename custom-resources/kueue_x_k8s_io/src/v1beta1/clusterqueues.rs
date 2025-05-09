@@ -28,6 +28,9 @@ pub struct ClusterQueueSpec {
     /// This property cannot be used in conjunction with the 'admissionChecks' property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecksStrategy")]
     pub admission_checks_strategy: Option<ClusterQueueAdmissionChecksStrategy>,
+    /// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionScope")]
+    pub admission_scope: Option<ClusterQueueAdmissionScope>,
     /// cohort that this ClusterQueue belongs to. CQs that belong to the
     /// same cohort can borrow unused resources from each other.
     /// 
@@ -129,6 +132,17 @@ pub struct ClusterQueueAdmissionChecksStrategyAdmissionChecks {
     /// If empty, the AdmissionCheck will run for all workloads submitted to the ClusterQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFlavors")]
     pub on_flavors: Option<Vec<String>>,
+}
+
+/// admissionScope indicates whether ClusterQueue uses the Admission Fair Sharing
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterQueueAdmissionScope {
+    /// AdmissionMode indicates which mode for AdmissionFairSharing should be used
+    /// in the AdmissionScope. Possible values are:
+    /// - UsageBasedAdmissionFairSharing
+    /// - NoAdmissionFairSharing
+    #[serde(rename = "admissionMode")]
+    pub admission_mode: String,
 }
 
 /// fairSharing defines the properties of the ClusterQueue when
@@ -501,6 +515,9 @@ pub struct ClusterQueueStatus {
 /// This is recorded only when Fair Sharing is enabled in the Kueue configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterQueueStatusFairSharing {
+    /// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionFairSharingStatus")]
+    pub admission_fair_sharing_status: Option<ClusterQueueStatusFairSharingAdmissionFairSharingStatus>,
     /// WeightedShare represents the maximum of the ratios of usage
     /// above nominal quota to the lendable resources in the
     /// Cohort, among all the resources provided by the Node, and
@@ -510,6 +527,19 @@ pub struct ClusterQueueStatusFairSharing {
     /// 9223372036854775807, the maximum possible share value.
     #[serde(rename = "weightedShare")]
     pub weighted_share: i64,
+}
+
+/// admissionFairSharingStatus represents information relevant to the Admission Fair Sharing
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterQueueStatusFairSharingAdmissionFairSharingStatus {
+    /// ConsumedResources represents the aggregated usage of resources over time,
+    /// with decaying function applied.
+    /// The value is populated if usage consumption functionality is enabled in Kueue config.
+    #[serde(rename = "consumedResources")]
+    pub consumed_resources: BTreeMap<String, IntOrString>,
+    /// LastUpdate is the time when share and consumed resources were updated.
+    #[serde(rename = "lastUpdate")]
+    pub last_update: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

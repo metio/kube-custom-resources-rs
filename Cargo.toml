@@ -425,7 +425,7 @@ schemars = { version = "~0" }
 serde = { version = "~1" }
 serde_json = { version = "~1" }
 k8s-openapi = { version = "~0" }
-kube = { version = "~0", default-features = false, features = ["derive"] }
+kube = { version = "~0", features = ["derive"] }
 
 [profile.dev]
 # Disable settings to speeds up builds

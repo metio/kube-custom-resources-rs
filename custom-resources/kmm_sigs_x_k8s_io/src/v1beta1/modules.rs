@@ -30,8 +30,8 @@ pub struct ModuleSpec {
     pub image_repo_secret: Option<ModuleImageRepoSecret>,
     /// ModuleLoader allows overriding some properties of the container that loads the kernel module on the node.
     /// Name and image are ignored and are set automatically by the KMM Operator.
-    #[serde(rename = "moduleLoader")]
-    pub module_loader: ModuleModuleLoader,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleLoader")]
+    pub module_loader: Option<ModuleModuleLoader>,
     /// Selector describes on which nodes the Module should be loaded and optionally built.
     pub selector: BTreeMap<String, String>,
     /// If specified, the pod's tolerations.
@@ -2457,8 +2457,8 @@ pub struct ModuleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "devicePlugin")]
     pub device_plugin: Option<ModuleStatusDevicePlugin>,
     /// ModuleLoader contains the status of the ModuleLoader daemonset
-    #[serde(rename = "moduleLoader")]
-    pub module_loader: ModuleStatusModuleLoader,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleLoader")]
+    pub module_loader: Option<ModuleStatusModuleLoader>,
 }
 
 /// DevicePlugin contains the status of the Device Plugin daemonset

@@ -203,6 +203,13 @@ pub struct EC2NodeClassBlockDeviceMappingsEbs {
     /// Valid Range: Minimum value of 125. Maximum value of 1000.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub throughput: Option<i64>,
+    /// VolumeInitializationRate specifies the Amazon EBS Provisioned Rate for Volume Initialization,
+    /// in MiB/s, at which to download the snapshot blocks from Amazon S3 to the volume. This is also known as volume
+    /// initialization. Specifying a volume initialization rate ensures that the volume is initialized at a
+    /// predictable and consistent rate after creation. Only allowed if SnapshotID is set.
+    /// Valid Range: Minimum value of 100. Maximum value of 300.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeInitializationRate")]
+    pub volume_initialization_rate: Option<i32>,
     /// VolumeSize in `Gi`, `G`, `Ti`, or `T`. You must specify either a snapshot ID or
     /// a volume size. The following are the supported volumes sizes for each volume
     /// type:

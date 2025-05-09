@@ -12,7 +12,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// The specification of the Kafka and ZooKeeper clusters, and Topic Operator.
+/// The specification of the Kafka cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kafka.strimzi.io", version = "v1beta2", kind = "Kafka", plural = "kafkas")]
 #[kube(namespaced)]
@@ -44,7 +44,7 @@ pub struct KafkaSpec {
     /// A list of time windows for maintenance tasks (that is, certificates renewal). Each time window is defined by a cron expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maintenanceTimeWindows")]
     pub maintenance_time_windows: Option<Vec<String>>,
-    /// Configuration of the ZooKeeper cluster. This section is required when running a ZooKeeper-based Apache Kafka cluster.
+    /// As of Strimzi 0.46.0, ZooKeeper-based Apache Kafka clusters are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zookeeper: Option<KafkaZookeeper>,
 }
@@ -415,6 +415,8 @@ pub struct KafkaCruiseControlResources {
 pub struct KafkaCruiseControlResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Template to specify how Cruise Control resources, `Deployments` and `Pods`, are generated.
@@ -666,6 +668,12 @@ pub struct KafkaCruiseControlTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaCruiseControlTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaCruiseControlTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaCruiseControlTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -1033,6 +1041,34 @@ pub struct KafkaCruiseControlTemplatePodAffinityPodAntiAffinityRequiredDuringSch
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaCruiseControlTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Cruise Control `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaCruiseControlTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaCruiseControlTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1073,12 +1109,16 @@ pub struct KafkaCruiseControlTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaCruiseControlTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaCruiseControlTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaCruiseControlTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -1592,6 +1632,8 @@ pub struct KafkaCruiseControlTlsSidecarResources {
 pub struct KafkaCruiseControlTlsSidecarResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Configuration of the Entity Operator.
@@ -1697,6 +1739,12 @@ pub struct KafkaEntityOperatorTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaEntityOperatorTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaEntityOperatorTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaEntityOperatorTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -2064,6 +2112,34 @@ pub struct KafkaEntityOperatorTemplatePodAffinityPodAntiAffinityRequiredDuringSc
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaEntityOperatorTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Entity Operator `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaEntityOperatorTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaEntityOperatorTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2104,12 +2180,16 @@ pub struct KafkaEntityOperatorTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaEntityOperatorTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaEntityOperatorTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaEntityOperatorTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2949,6 +3029,8 @@ pub struct KafkaEntityOperatorTlsSidecarResources {
 pub struct KafkaEntityOperatorTlsSidecarResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Configuration of the Topic Operator.
@@ -3119,6 +3201,8 @@ pub struct KafkaEntityOperatorTopicOperatorResources {
 pub struct KafkaEntityOperatorTopicOperatorResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Pod startup checking.
@@ -3306,6 +3390,8 @@ pub struct KafkaEntityOperatorUserOperatorResources {
 pub struct KafkaEntityOperatorUserOperatorResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// As of Strimzi 0.35.0, JMXTrans is not supported anymore and this option is ignored.
@@ -3378,6 +3464,8 @@ pub struct KafkaJmxTransResources {
 pub struct KafkaJmxTransResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Template for JmxTrans resources.
@@ -3587,6 +3675,12 @@ pub struct KafkaJmxTransTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaJmxTransTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaJmxTransTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaJmxTransTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -3954,6 +4048,34 @@ pub struct KafkaJmxTransTemplatePodAffinityPodAntiAffinityRequiredDuringScheduli
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaJmxTransTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for JmxTrans `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaJmxTransTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaJmxTransTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3994,12 +4116,16 @@ pub struct KafkaJmxTransTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaJmxTransTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaJmxTransTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaJmxTransTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -4284,13 +4410,13 @@ pub struct KafkaKafka {
     /// Pod readiness checking.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<KafkaKafkaReadinessProbe>,
-    /// The number of pods in the cluster. This property is required when node pools are not used.
+    /// Replicas are now configured in `KafkaNodePool` resources and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// CPU and memory resources to reserve.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KafkaKafkaResources>,
-    /// Storage configuration (disk). Cannot be updated. This property is required when node pools are not used.
+    /// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<KafkaKafkaStorage>,
     /// Template for Kafka cluster resources. The template allows users to specify how the Kubernetes resources are generated.
@@ -4373,7 +4499,7 @@ pub struct KafkaKafkaAuthorization {
     /// Authorization server token endpoint URI.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpointUri")]
     pub token_endpoint_uri: Option<String>,
-    /// Authorization type. Currently, the supported types are `simple`, `keycloak`, `opa` and `custom`. `simple` authorization type uses Kafka's built-in authorizer for authorization. `keycloak` authorization type uses Keycloak Authorization Services for authorization. `opa` authorization type uses Open Policy Agent based authorization.`custom` authorization type uses user-provided implementation for authorization.
+    /// Authorization type. Currently, the supported types are `simple`, `keycloak`, `opa` and `custom`. `simple` authorization type uses Kafka's built-in authorizer for authorization. `keycloak` authorization type uses Keycloak Authorization Services for authorization. `opa` authorization type uses Open Policy Agent based authorization. `custom` authorization type uses user-provided implementation for authorization. As of Strimzi 0.46.0, `opa` type is deprecated and will be removed in the future. Please use `custom` type instead.
     #[serde(rename = "type")]
     pub r#type: KafkaKafkaAuthorizationType,
     /// The URL used to connect to the Open Policy Agent server. The URL has to include the policy which will be queried by the authorizer. This option is required.
@@ -5106,9 +5232,11 @@ pub struct KafkaKafkaResources {
 pub struct KafkaKafkaResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
-/// Storage configuration (disk). Cannot be updated. This property is required when node pools are not used.
+/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaKafkaStorage {
     /// The storage class to use for dynamic volume allocation.
@@ -5123,7 +5251,7 @@ pub struct KafkaKafkaStorage {
     /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaKafkaStorageKraftMetadata>,
-    /// Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers.
+    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageOverrides>>,
     /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
@@ -5143,7 +5271,7 @@ pub struct KafkaKafkaStorage {
     pub volumes: Option<Vec<KafkaKafkaStorageVolumes>>,
 }
 
-/// Storage configuration (disk). Cannot be updated. This property is required when node pools are not used.
+/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaStorageKraftMetadata {
     #[serde(rename = "shared")]
@@ -5160,7 +5288,7 @@ pub struct KafkaKafkaStorageOverrides {
     pub class: Option<String>,
 }
 
-/// Storage configuration (disk). Cannot be updated. This property is required when node pools are not used.
+/// Storage is now configured in the `KafkaNodePool` resources and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaKafkaStorageType {
     #[serde(rename = "ephemeral")]
@@ -5185,7 +5313,7 @@ pub struct KafkaKafkaStorageVolumes {
     /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaKafkaStorageVolumesKraftMetadata>,
-    /// Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers.
+    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaKafkaStorageVolumesOverrides>>,
     /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
@@ -5860,6 +5988,12 @@ pub struct KafkaKafkaTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaKafkaTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaKafkaTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaKafkaTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -6227,6 +6361,34 @@ pub struct KafkaKafkaTemplatePodAffinityPodAntiAffinityRequiredDuringSchedulingI
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaKafkaTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Kafka `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6267,12 +6429,16 @@ pub struct KafkaKafkaTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaKafkaTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaKafkaTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaKafkaTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -6711,6 +6877,8 @@ pub struct KafkaKafkaExporterResources {
 pub struct KafkaKafkaExporterResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Customization of deployment templates and pods.
@@ -6923,6 +7091,12 @@ pub struct KafkaKafkaExporterTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaKafkaExporterTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaKafkaExporterTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaKafkaExporterTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -7290,6 +7464,34 @@ pub struct KafkaKafkaExporterTemplatePodAffinityPodAntiAffinityRequiredDuringSch
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaKafkaExporterTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Kafka Exporter `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaKafkaExporterTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaExporterTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7330,12 +7532,16 @@ pub struct KafkaKafkaExporterTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaKafkaExporterTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaKafkaExporterTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaKafkaExporterTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -7595,7 +7801,7 @@ pub struct KafkaKafkaExporterTemplateServiceAccountMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Configuration of the ZooKeeper cluster. This section is required when running a ZooKeeper-based Apache Kafka cluster.
+/// As of Strimzi 0.46.0, ZooKeeper-based Apache Kafka clusters are not supported anymore and this option is ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaZookeeper {
     /// The ZooKeeper broker config. Properties with the following prefixes cannot be set: server., dataDir, dataLogDir, clientPort, authProvider, quorum.auth, requireClientAuthScheme, snapshot.trust.empty, standaloneEnabled, reconfigEnabled, 4lw.commands.whitelist, secureClientPort, ssl., serverCnxnFactory, sslQuorum (with the exception of: ssl.protocol, ssl.quorum.protocol, ssl.enabledProtocols, ssl.quorum.enabledProtocols, ssl.ciphersuites, ssl.quorum.ciphersuites, ssl.hostnameVerification, ssl.quorum.hostnameVerification).
@@ -7821,6 +8027,8 @@ pub struct KafkaZookeeperResources {
 pub struct KafkaZookeeperResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Storage configuration (disk). Cannot be updated.
@@ -7838,7 +8046,7 @@ pub struct KafkaZookeeperStorage {
     /// Specifies whether this volume should be used for storing KRaft metadata. This property is optional. When set, the only currently supported value is `shared`. At most one volume can have this property set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kraftMetadata")]
     pub kraft_metadata: Option<KafkaZookeeperStorageKraftMetadata>,
-    /// Overrides for individual brokers. The `overrides` field allows you to specify a different configuration for different brokers.
+    /// As of Strimzi 0.46.0, the storage overrides for individual brokers are not supported anymore and this option is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<KafkaZookeeperStorageOverrides>>,
     /// Specifies a specific persistent volume to use. It contains key:value pairs representing labels for selecting such a volume.
@@ -8026,6 +8234,12 @@ pub struct KafkaZookeeperTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaZookeeperTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaZookeeperTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaZookeeperTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -8393,6 +8607,34 @@ pub struct KafkaZookeeperTemplatePodAffinityPodAntiAffinityRequiredDuringSchedul
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaZookeeperTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for ZooKeeper `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaZookeeperTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaZookeeperTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8433,12 +8675,16 @@ pub struct KafkaZookeeperTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaZookeeperTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaZookeeperTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaZookeeperTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -8904,7 +9150,7 @@ pub struct KafkaZookeeperTemplateZookeeperContainerVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// The status of the Kafka and ZooKeeper clusters, and Topic Operator.
+/// The status of the Kafka cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatus {
     /// The status of an auto-rebalancing triggered by a cluster scaling request.
@@ -8916,7 +9162,7 @@ pub struct KafkaStatus {
     /// List of status conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Defines where cluster metadata are stored. Possible values are: ZooKeeper if the metadata are stored in ZooKeeper; KRaftMigration if the controllers are connected to ZooKeeper, brokers are being rolled with Zookeeper migration enabled and connection information to controllers, and the metadata migration process is running; KRaftDualWriting if the metadata migration process finished and the cluster is in dual-write mode; KRaftPostMigration if the brokers are fully KRaft-based but controllers being rolled to disconnect from ZooKeeper; PreKRaft if brokers and controller are fully KRaft-based, metadata are stored in KRaft, but ZooKeeper must be deleted; KRaft if the metadata are stored in KRaft.
+    /// Defines where cluster metadata are stored. Since Kafka KRaft has been fully adopted, the only applicable value is `KRaft`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafkaMetadataState")]
     pub kafka_metadata_state: Option<KafkaStatusKafkaMetadataState>,
     /// The KRaft metadata.version currently used by the Kafka cluster.
@@ -8995,7 +9241,7 @@ pub enum KafkaStatusAutoRebalanceState {
     RebalanceOnScaleUp,
 }
 
-/// The status of the Kafka and ZooKeeper clusters, and Topic Operator.
+/// The status of the Kafka cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaStatusKafkaMetadataState {
     ZooKeeper,

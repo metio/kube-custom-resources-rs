@@ -31,18 +31,8 @@ spec:
                     type: "string"
                   type: "array"
                 clusterConfig:
-                  default:
-                    listenerClass: "external-unstable"
-                  description: "Global Spark Connect server configuration that applies to all roles."
-                  properties:
-                    listenerClass:
-                      default: "external-unstable"
-                      description: "This field controls which type of Service the Operator creates for this ConnectServer:\n\n* cluster-internal: Use a ClusterIP service\n\n* external-unstable: Use a NodePort service\n\n* external-stable: Use a LoadBalancer service\n\nThis is a temporary solution with the goal to keep yaml manifests forward compatible. In the future, this setting will control which ListenerClass <https://docs.stackable.tech/home/stable/listener-operator/listenerclass.html> will be used to expose the service, and ListenerClass names will stay the same, allowing for a non-breaking change."
-                      enum:
-                        - "cluster-internal"
-                        - "external-unstable"
-                        - "external-stable"
-                      type: "string"
+                  default: {}
+                  description: "Global Spark Connect server configuration that applies to all roles.\n\nThis was previously used to hold the listener configuration, which has since moved to the server configuration."
                   type: "object"
                 clusterOperation:
                   default:
@@ -331,6 +321,10 @@ spec:
                     config:
                       default: {}
                       properties:
+                        listenerClass:
+                          description: "This field controls which [ListenerClass](https://docs.stackable.tech/home/nightly/listener-operator/listenerclass.html) is used to expose the Spark services."
+                          nullable: true
+                          type: "string"
                         logging:
                           default:
                             containers: {}

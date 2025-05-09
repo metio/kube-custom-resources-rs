@@ -1835,6 +1835,16 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    structuredMetadata:
+                      additionalProperties:
+                        type: "string"
+                      description: "Stream structured metadata for API request. It can be multiple comma separated key=value pairs.\nThis is used for high cardinality data that isn't suited for using labels.\nOnly supported in Loki 3.0+ with schema v13 and TSDB storage."
+                      type: "object"
+                    structuredMetadataKeys:
+                      description: "Optional list of record keys that will be placed as structured metadata.\nThis allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys."
+                      items:
+                        type: "string"
+                      type: "array"
                     tenantID:
                       description: "Tenant ID used by default to push logs to Loki.\nIf omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent."
                       properties:
@@ -2108,7 +2118,7 @@ spec:
                       minimum: 1.0
                       type: "integer"
                     replaceDots:
-                      description: "When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3."
+                      description: "When enabled, replace field name dots with underscore, required by Opensearch 2.0-2.3."
                       type: "boolean"
                     suppressTypeName:
                       description: "When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later."
@@ -2186,10 +2196,10 @@ spec:
                       description: "Limit the maximum number of Chunks in the filesystem for the current output logical destination."
                       type: "string"
                     traceError:
-                      description: "When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error"
+                      description: "When enabled print the Opensearch API calls to stdout when Opensearch returns an error"
                       type: "boolean"
                     traceOutput:
-                      description: "When enabled print the elasticsearch API calls to stdout (for diag only)"
+                      description: "When enabled print the Opensearch API calls to stdout (for diag only)"
                       type: "boolean"
                     type:
                       description: "Type name"

@@ -443,6 +443,8 @@ pub struct KafkaBridgeResources {
 pub struct KafkaBridgeResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// Template for Kafka Bridge resources. The template allows users to specify how a `Deployment` and `Pod` is generated.
@@ -871,6 +873,12 @@ pub struct KafkaBridgeTemplatePod {
     /// The pod's affinity rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<KafkaBridgeTemplatePodAffinity>,
+    /// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<KafkaBridgeTemplatePodDnsConfig>,
+    /// The pod's DNSPolicy. Defaults to `ClusterFirst`. Valid values are `ClusterFirstWithHostNet`, `ClusterFirst`, `Default` or `None`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<KafkaBridgeTemplatePodDnsPolicy>,
     /// Indicates whether information about services should be injected into Pod's environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -1238,6 +1246,34 @@ pub struct KafkaBridgeTemplatePodAffinityPodAntiAffinityRequiredDuringScheduling
     pub values: Option<Vec<String>>,
 }
 
+/// The pod's DNSConfig. If specified, it will be merged to the generated DNS configuration based on the DNSPolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodDnsConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<KafkaBridgeTemplatePodDnsConfigOptions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodDnsConfigOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Template for Kafka Bridge `Pods`.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaBridgeTemplatePodDnsPolicy {
+    ClusterFirst,
+    ClusterFirstWithHostNet,
+    Default,
+    None,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodHostAliases {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1278,12 +1314,16 @@ pub struct KafkaBridgeTemplatePodSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KafkaBridgeTemplatePodSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KafkaBridgeTemplatePodSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KafkaBridgeTemplatePodSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]

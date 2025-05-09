@@ -13,3 +13,4 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### secrets.stackable.tech/v1alpha1
 - `SecretClass`
+- `TrustStore`

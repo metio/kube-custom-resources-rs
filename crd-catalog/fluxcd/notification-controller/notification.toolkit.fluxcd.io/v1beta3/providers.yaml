@@ -71,6 +71,9 @@ spec:
                   required:
                     - "name"
                   type: "object"
+                serviceAccountName:
+                  description: "ServiceAccountName is the name of the service account used to\nauthenticate with services from cloud providers. An error is thrown if a\nstatic credential is also defined inside the Secret referenced by the\nSecretRef."
+                  type: "string"
                 suspend:
                   description: "Suspend tells the controller to suspend subsequent\nevents handling for this Provider."
                   type: "boolean"

@@ -24,6 +24,9 @@ pub struct NodeGroupSpec {
     /// Nodes contains names of all the nodes in the nodegroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
+    /// topologyEnabled indicates whether the topology is enabled for this NodeGroup.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyEnabled")]
+    pub topology_enabled: Option<bool>,
 }
 
 /// Status represents the status of member nodegroup.

@@ -884,7 +884,7 @@ spec:
                             minimum: 1.0
                             type: "integer"
                           metrics:
-                            description: "Metrics contains thw controller metrics configuration"
+                            description: "Metrics contains the controller metrics configuration"
                             properties:
                               bindAddress:
                                 description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving."
@@ -1830,7 +1830,7 @@ spec:
                       minimum: 1.0
                       type: "integer"
                     metrics:
-                      description: "Metrics contains thw controller metrics configuration"
+                      description: "Metrics contains the controller metrics configuration"
                       properties:
                         bindAddress:
                           description: "BindAddress is the TCP address that the controller should bind to\nfor serving prometheus metrics.\nIt can be set to \"0\" to disable the metrics serving."
