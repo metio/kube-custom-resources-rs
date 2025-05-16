@@ -761,6 +761,13 @@ pub struct LokiStackTemplate {
     /// Ruler defines the ruler component spec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ruler: Option<LokiStackTemplateRuler>,
+    /// When UseRequestsAsLimits is true, the operand Pods are configured to have resource limits equal to the resource
+    /// requests. This imposes a hard limit on resource usage of the LokiStack, but limits its ability to react to load
+    /// spikes, whether on the ingestion or query side.
+    /// 
+    /// Note: This is currently a tech-preview feature.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useRequestsAsLimits")]
+    pub use_requests_as_limits: Option<bool>,
 }
 
 /// Compactor defines the compaction component spec.

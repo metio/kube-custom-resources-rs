@@ -103,7 +103,7 @@ pub struct MaxScaleSpec {
     /// RequeueInterval is used to perform requeue reconciliations. If not defined, it defaults to 10s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MaxScaleResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
@@ -965,7 +965,7 @@ pub struct MaxScaleMetricsExporter {
     /// PriorityClassName to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MaxScaleMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
@@ -1264,7 +1264,7 @@ pub struct MaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleMetricsExporterResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -1371,7 +1371,7 @@ pub struct MaxScaleMonitor {
     /// Params defines extra parameters to pass to the monitor.
     /// Any parameter supported by MaxScale may be specified here. See reference:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.
-    /// Monitor specific parameter are also suported:
+    /// Monitor specific parameter are also supported:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1549,7 +1549,7 @@ pub struct MaxScaleReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MaxScaleResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -1624,7 +1624,7 @@ pub struct MaxScaleServices {
     /// Params defines extra parameters to pass to the service.
     /// Any parameter supported by MaxScale may be specified here. See reference:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.
-    /// Router specific parameter are also suported:
+    /// Router specific parameter are also supported:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -450,11 +450,28 @@ pub struct TempoStackStorage {
 /// Name of a secret in the same namespace as the TempoStack custom resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TempoStackStorageSecret {
+    /// CredentialMode can be used to set the desired credential mode for authenticating with the object storage.
+    /// If this is not set, then the operator tries to infer the credential mode from the provided secret and its
+    /// own configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialMode")]
+    pub credential_mode: Option<TempoStackStorageSecretCredentialMode>,
     /// Name of a secret in the namespace configured for object storage secrets.
     pub name: String,
     /// Type of object storage that should be used
     #[serde(rename = "type")]
     pub r#type: TempoStackStorageSecretType,
+}
+
+/// Secret for object storage authentication.
+/// Name of a secret in the same namespace as the TempoStack custom resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoStackStorageSecretCredentialMode {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "token")]
+    Token,
+    #[serde(rename = "token-cco")]
+    TokenCco,
 }
 
 /// Secret for object storage authentication.

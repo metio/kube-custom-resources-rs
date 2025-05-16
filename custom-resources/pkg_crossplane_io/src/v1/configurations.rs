@@ -75,6 +75,10 @@ pub struct ConfigurationPackagePullSecrets {
 /// ConfigurationStatus represents the observed state of a Configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ConfigurationStatus {
+    /// AppliedImageConfigRefs records any image configs that were applied in
+    /// reconciling this package, and what they were used for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedImageConfigRefs")]
+    pub applied_image_config_refs: Option<Vec<ConfigurationStatusAppliedImageConfigRefs>>,
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
@@ -91,5 +95,20 @@ pub struct ConfigurationStatus {
     /// not.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRevision")]
     pub current_revision: Option<String>,
+    /// ResolvedPackage is the name of the package that was used for version
+    /// resolution. It may be different from spec.package if the package path was
+    /// rewritten using an image config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedPackage")]
+    pub resolved_package: Option<String>,
+}
+
+/// ImageConfigRef is a reference to an image config that indicates how the
+/// referenced image config was used by the package manager.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ConfigurationStatusAppliedImageConfigRefs {
+    /// Name is the name of the image config.
+    pub name: String,
+    /// Reason indicates what the image config was used for.
+    pub reason: String,
 }
 

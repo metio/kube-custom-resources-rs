@@ -100,6 +100,8 @@ pub struct RayJobRayClusterSpecAutoscalerOptions {
     pub security_context: Option<RayJobRayClusterSpecAutoscalerOptionsSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upscalingMode")]
     pub upscaling_mode: Option<RayJobRayClusterSpecAutoscalerOptionsUpscalingMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub version: Option<RayJobRayClusterSpecAutoscalerOptionsVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<RayJobRayClusterSpecAutoscalerOptionsVolumeMounts>>,
 }
@@ -286,6 +288,14 @@ pub enum RayJobRayClusterSpecAutoscalerOptionsUpscalingMode {
     Conservative,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RayJobRayClusterSpecAutoscalerOptionsVersion {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "v2")]
+    V2,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RayJobRayClusterSpecAutoscalerOptionsVolumeMounts {
     #[serde(rename = "mountPath")]
@@ -431,8 +441,8 @@ pub struct RayJobRayClusterSpecHeadGroupSpec {
     pub enable_ingress: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headService")]
     pub head_service: Option<RayJobRayClusterSpecHeadGroupSpecHeadService>,
-    #[serde(rename = "rayStartParams")]
-    pub ray_start_params: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayStartParams")]
+    pub ray_start_params: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     pub template: RayJobRayClusterSpecHeadGroupSpecTemplate,
@@ -3608,8 +3618,8 @@ pub struct RayJobRayClusterSpecWorkerGroupSpecs {
     pub min_replicas: i32,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numOfHosts")]
     pub num_of_hosts: Option<i32>,
-    #[serde(rename = "rayStartParams")]
-    pub ray_start_params: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayStartParams")]
+    pub ray_start_params: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleStrategy")]

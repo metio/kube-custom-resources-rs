@@ -908,6 +908,9 @@ pub struct ClusterComponentSpecsInstances {
     /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterComponentSpecsInstancesSchedulingPolicy>,
+    /// Specifies an override for the storage requirements of the instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<ClusterComponentSpecsInstancesVolumeClaimTemplates>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -1976,6 +1979,225 @@ pub struct ClusterComponentSpecsInstancesSchedulingPolicyTopologySpreadConstrain
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Refers to the name of a volumeMount defined in either:
+    /// 
+    /// 
+    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
+    /// 
+    /// 
+    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
+    pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
+    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+    /// with the mount name specified in the `name` field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec>,
+}
+
+/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+/// with the mount name specified in the `name` field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3290,58 +3512,169 @@ pub struct ClusterComponentSpecsVolumeClaimTemplates {
     /// 
     /// 
     /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
-    /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
     /// 
     /// 
     /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
     pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
     /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
     /// with the mount name specified in the `name` field.
-    /// 
-    /// 
-    /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-    /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ClusterComponentSpecsVolumeClaimTemplatesSpec>,
 }
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
 /// with the mount name specified in the `name` field.
-/// 
-/// 
-/// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-/// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplatesSpec {
-    /// Contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// Represents the minimum resources the volume should have.
-    /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-    /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterComponentSpecsVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterComponentSpecsVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterComponentSpecsVolumeClaimTemplatesSpecResources>,
-    /// The name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterComponentSpecsVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// 
-    /// 
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
-    /// Defines what type of volume is required by the claim, either Block or Filesystem.
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
 }
 
-/// Represents the minimum resources the volume should have.
-/// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-/// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
@@ -3354,6 +3687,36 @@ pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecResources {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterComponentSpecsVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsVolumeClaimTemplatesSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
@@ -7035,6 +7398,9 @@ pub struct ClusterShardingsTemplateInstances {
     /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterShardingsTemplateInstancesSchedulingPolicy>,
+    /// Specifies an override for the storage requirements of the instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<ClusterShardingsTemplateInstancesVolumeClaimTemplates>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -8103,6 +8469,225 @@ pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstr
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Refers to the name of a volumeMount defined in either:
+    /// 
+    /// 
+    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
+    /// 
+    /// 
+    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
+    pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
+    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+    /// with the mount name specified in the `name` field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec>,
+}
+
+/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+/// with the mount name specified in the `name` field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9427,58 +10012,169 @@ pub struct ClusterShardingsTemplateVolumeClaimTemplates {
     /// 
     /// 
     /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
-    /// - `clusterDefinition.spec.componentDefs[*].podSpec.containers[*].volumeMounts` (deprecated)
     /// 
     /// 
     /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
     pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
     /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
     /// with the mount name specified in the `name` field.
-    /// 
-    /// 
-    /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-    /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpec>,
 }
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
 /// with the mount name specified in the `name` field.
-/// 
-/// 
-/// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
-/// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpec {
-    /// Contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// Represents the minimum resources the volume should have.
-    /// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-    /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpecResources>,
-    /// The name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// 
-    /// 
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
-    /// Defines what type of volume is required by the claim, either Block or Filesystem.
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
 }
 
-/// Represents the minimum resources the volume should have.
-/// If the RecoverVolumeExpansionFailure feature is enabled, users are allowed to specify resource requirements that
-/// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
@@ -9491,6 +10187,36 @@ pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecResources {
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.

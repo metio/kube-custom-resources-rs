@@ -32,16 +32,10 @@ pub struct ClusterClassSpec {
     /// for provisioning the Control Plane for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterClassControlPlane>,
-    /// infrastructure is a reference to a provider-specific template that holds
-    /// the details for provisioning infrastructure specific cluster
-    /// for the underlying provider.
-    /// The underlying provider is responsible for the implementation
-    /// of the template to an infrastructure cluster.
+    /// infrastructure is a reference to a local struct that holds the details
+    /// for provisioning the infrastructure cluster for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub infrastructure: Option<ClusterClassInfrastructure>,
-    /// infrastructureNamingStrategy allows changing the naming pattern used when creating the infrastructure object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureNamingStrategy")]
-    pub infrastructure_naming_strategy: Option<ClusterClassInfrastructureNamingStrategy>,
     /// patches defines the patches which are applied to customize
     /// referenced templates of a ClusterClass.
     /// Note: Patches will be applied in the order of the array.
@@ -401,17 +395,31 @@ pub struct ClusterClassControlPlaneRef {
     pub uid: Option<String>,
 }
 
-/// infrastructure is a reference to a provider-specific template that holds
-/// the details for provisioning infrastructure specific cluster
-/// for the underlying provider.
-/// The underlying provider is responsible for the implementation
-/// of the template to an infrastructure cluster.
+/// infrastructure is a reference to a local struct that holds the details
+/// for provisioning the infrastructure cluster for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructure {
+    /// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
+    pub naming_strategy: Option<ClusterClassInfrastructureNamingStrategy>,
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
+}
+
+/// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassInfrastructureNamingStrategy {
+    /// template defines the template to use for generating the name of the Infrastructure object.
+    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.
+    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// The templating mechanism provides the following arguments:
+    /// * `.cluster.name`: The name of the cluster object.
+    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 
 /// ref is a required reference to a custom resource
@@ -450,20 +458,6 @@ pub struct ClusterClassInfrastructureRef {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
-}
-
-/// infrastructureNamingStrategy allows changing the naming pattern used when creating the infrastructure object.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassInfrastructureNamingStrategy {
-    /// template defines the template to use for generating the name of the Infrastructure object.
-    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.
-    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
-    /// get concatenated with a random suffix of length 5.
-    /// The templating mechanism provides the following arguments:
-    /// * `.cluster.name`: The name of the cluster object.
-    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<String>,
 }
 
 /// ClusterClassPatch defines a patch which is applied to customize the referenced templates.

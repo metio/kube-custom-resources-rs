@@ -510,8 +510,13 @@ spec:
                               description: "Labels to be added to children resources."
                               type: "object"
                           type: "object"
+                        nodeSelector:
+                          additionalProperties:
+                            type: "string"
+                          description: "NodeSelector to be used in the Pod."
+                          type: "object"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -532,6 +537,29 @@ spec:
                               description: "ResourceList is a set of (resource name, quantity) pairs."
                               type: "object"
                           type: "object"
+                        tolerations:
+                          description: "Tolerations to be used in the Pod."
+                          items:
+                            description: "The pod this Toleration is attached to tolerates any taint that matches\nthe triple <key,value,effect> using the matching operator <operator>."
+                            properties:
+                              effect:
+                                description: "Effect indicates the taint effect to match. Empty means match all taint effects.\nWhen specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute."
+                                type: "string"
+                              key:
+                                description: "Key is the taint key that the toleration applies to. Empty means match all taint keys.\nIf the key is empty, operator must be Exists; this combination means to match all values and all keys."
+                                type: "string"
+                              operator:
+                                description: "Operator represents a key's relationship to the value.\nValid operators are Exists and Equal. Defaults to Equal.\nExists is equivalent to wildcard for value, so that a pod can\ntolerate all taints of a particular category."
+                                type: "string"
+                              tolerationSeconds:
+                                description: "TolerationSeconds represents the period of time the toleration (which must be\nof effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,\nit is not set, which means tolerate the taint forever (do not evict). Zero and\nnegative values will be treated as 0 (evict immediately) by the system."
+                                format: "int64"
+                                type: "integer"
+                              value:
+                                description: "Value is the taint value the toleration matches to.\nIf the operator is Exists, the value should be empty, otherwise just a regular string."
+                                type: "string"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     s3:
                       description: "S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume."
@@ -1248,7 +1276,7 @@ spec:
                               type: "integer"
                           type: "object"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -1698,7 +1726,7 @@ spec:
                               type: "integer"
                           type: "object"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -1854,7 +1882,7 @@ spec:
                               type: "object"
                           type: "object"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -1936,7 +1964,7 @@ spec:
                               description: "PodAffinity indicates whether the recovery Jobs should run in the same Node as the MariaDB Pods. It defaults to true."
                               type: "boolean"
                             resources:
-                              description: "Resouces describes the compute resource requirements."
+                              description: "Resources describes the compute resource requirements."
                               properties:
                                 limits:
                                   additionalProperties:
@@ -2098,7 +2126,7 @@ spec:
                         description: "Name to be given to the container."
                         type: "string"
                       resources:
-                        description: "Resouces describes the compute resource requirements."
+                        description: "Resources describes the compute resource requirements."
                         properties:
                           limits:
                             additionalProperties:
@@ -2962,7 +2990,7 @@ spec:
                               description: "PriorityClassName to be used in the Pod."
                               type: "string"
                             resources:
-                              description: "Resouces describes the compute resource requirements."
+                              description: "Resources describes the compute resource requirements."
                               properties:
                                 limits:
                                   additionalProperties:
@@ -3081,7 +3109,7 @@ spec:
                         params:
                           additionalProperties:
                             type: "string"
-                          description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.\nMonitor specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
+                          description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.\nMonitor specific parameter are also supported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
                           type: "object"
                         suspend:
                           default: false
@@ -3147,7 +3175,7 @@ spec:
                           params:
                             additionalProperties:
                               type: "string"
-                            description: "Params defines extra parameters to pass to the service.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
+                            description: "Params defines extra parameters to pass to the service.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also supported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
                             type: "object"
                           router:
                             description: "Router is the type of router to use."
@@ -3621,7 +3649,7 @@ spec:
                           description: "PriorityClassName to be used in the Pod."
                           type: "string"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -4160,7 +4188,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 resources:
-                  description: "Resouces describes the compute resource requirements."
+                  description: "Resources describes the compute resource requirements."
                   properties:
                     limits:
                       additionalProperties:
@@ -4490,7 +4518,7 @@ spec:
                         description: "Name to be given to the container."
                         type: "string"
                       resources:
-                        description: "Resouces describes the compute resource requirements."
+                        description: "Resources describes the compute resource requirements."
                         properties:
                           limits:
                             additionalProperties:

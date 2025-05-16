@@ -1193,7 +1193,7 @@ spec:
                           description: "PriorityClassName to be used in the Pod."
                           type: "string"
                         resources:
-                          description: "Resouces describes the compute resource requirements."
+                          description: "Resources describes the compute resource requirements."
                           properties:
                             limits:
                               additionalProperties:
@@ -1312,7 +1312,7 @@ spec:
                     params:
                       additionalProperties:
                         type: "string"
-                      description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.\nMonitor specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
+                      description: "Params defines extra parameters to pass to the monitor.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.\nMonitor specific parameter are also supported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration."
                       type: "object"
                     suspend:
                       default: false
@@ -1489,7 +1489,7 @@ spec:
                   description: "RequeueInterval is used to perform requeue reconciliations. If not defined, it defaults to 10s."
                   type: "string"
                 resources:
-                  description: "Resouces describes the compute resource requirements."
+                  description: "Resources describes the compute resource requirements."
                   properties:
                     limits:
                       additionalProperties:
@@ -1616,7 +1616,7 @@ spec:
                       params:
                         additionalProperties:
                           type: "string"
-                        description: "Params defines extra parameters to pass to the service.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also suported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
+                        description: "Params defines extra parameters to pass to the service.\nAny parameter supported by MaxScale may be specified here. See reference:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.\nRouter specific parameter are also supported:\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.\nhttps://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration."
                         type: "object"
                       router:
                         description: "Router is the type of router to use."

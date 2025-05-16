@@ -1408,12 +1408,28 @@ pub struct TempoMonolithicStorageTracesGcs {
 /// S3 defines the configuration for Amazon S3.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TempoMonolithicStorageTracesS3 {
+    /// CredentialMode can be used to set the desired credential mode for authenticating with the object storage.
+    /// If this is not set, then the operator tries to infer the credential mode from the provided secret and its
+    /// own configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialMode")]
+    pub credential_mode: Option<TempoMonolithicStorageTracesS3CredentialMode>,
     /// Secret is the name of a Secret containing credentials for accessing object storage.
     /// It needs to be in the same namespace as the TempoMonolithic custom resource.
     pub secret: String,
     /// TLS defines the TLS configuration for Amazon S3.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TempoMonolithicStorageTracesS3Tls>,
+}
+
+/// S3 defines the configuration for Amazon S3.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoMonolithicStorageTracesS3CredentialMode {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "token")]
+    Token,
+    #[serde(rename = "token-cco")]
+    TokenCco,
 }
 
 /// TLS defines the TLS configuration for Amazon S3.

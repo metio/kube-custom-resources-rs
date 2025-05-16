@@ -4944,6 +4944,9 @@ spec:
                             format: "int32"
                             minimum: 0.0
                             type: "integer"
+                          delayedTopologyRequest:
+                            description: "delayedTopologyRequest indicates the topology assignment is delayed.\nTopology assignment might be delayed in case there is ProvisioningRequest\nAdmissionCheck used.\nKueue schedules the second pass of scheduling for each workload with at\nleast one PodSet which has delayedTopologyRequest=true and without\ntopologyAssignment."
+                            type: "string"
                           flavors:
                             additionalProperties:
                               description: "ResourceFlavorReference is the name of the ResourceFlavor."

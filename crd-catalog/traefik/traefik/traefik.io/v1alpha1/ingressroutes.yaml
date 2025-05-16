@@ -63,7 +63,7 @@ spec:
                           type: "object"
                         type: "array"
                       observability:
-                        description: "Observability defines the observability configuration for a router.\nMore info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability"
+                        description: "Observability defines the observability configuration for a router.\nMore info: https://doc.traefik.io/traefik/v3.4/routing/routers/#observability"
                         properties:
                           accessLogs:
                             type: "boolean"

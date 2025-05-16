@@ -487,6 +487,9 @@ pub struct MiniClusterPod {
     /// Automatically mount the service account name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
+    /// Pod DNS policy (defaults to ClusterFirst)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
     /// Labels for each pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
