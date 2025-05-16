@@ -92,6 +92,8 @@ pub struct PediaClusterAuthenticationFromToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PediaClusterSyncResources {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventsInvolvedResources")]
+    pub events_involved_resources: Option<Vec<String>>,
     pub group: String,
     pub resources: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

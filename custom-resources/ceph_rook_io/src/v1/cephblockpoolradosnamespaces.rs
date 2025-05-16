@@ -154,15 +154,76 @@ pub struct CephBlockPoolRadosNamespaceStatusMirroringStatusSummary {
     /// DaemonHealth is the health of the mirroring daemon
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daemon_health: Option<String>,
+    /// GroupHealth is the health of the mirrored image group
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group_health: Option<String>,
+    /// GroupStates is the various state for all mirrored image groups
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group_states: Option<CephBlockPoolRadosNamespaceStatusMirroringStatusSummaryGroupStates>,
     /// Health is the mirroring health
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<String>,
     /// ImageHealth is the health of the mirrored image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image_health: Option<String>,
+    /// ImageStates is the various state for all mirrored images
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image_states: Option<CephBlockPoolRadosNamespaceStatusMirroringStatusSummaryImageStates>,
     /// States is the various state for all mirrored images
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub states: Option<CephBlockPoolRadosNamespaceStatusMirroringStatusSummaryStates>,
+}
+
+/// GroupStates is the various state for all mirrored image groups
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBlockPoolRadosNamespaceStatusMirroringStatusSummaryGroupStates {
+    /// Error is when the mirroring state is errored
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<i64>,
+    /// Replaying is when the replay of the mirroring journal is on-going
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replaying: Option<i64>,
+    /// StartingReplay is when the replay of the mirroring journal starts
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub starting_replay: Option<i64>,
+    /// Stopped is when the mirroring state is stopped
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopped: Option<i64>,
+    /// StopReplaying is when the replay of the mirroring journal stops
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopping_replay: Option<i64>,
+    /// Syncing is when the image is syncing
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub syncing: Option<i64>,
+    /// Unknown is when the mirroring state is unknown
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub unknown: Option<i64>,
+}
+
+/// ImageStates is the various state for all mirrored images
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBlockPoolRadosNamespaceStatusMirroringStatusSummaryImageStates {
+    /// Error is when the mirroring state is errored
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error: Option<i64>,
+    /// Replaying is when the replay of the mirroring journal is on-going
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replaying: Option<i64>,
+    /// StartingReplay is when the replay of the mirroring journal starts
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub starting_replay: Option<i64>,
+    /// Stopped is when the mirroring state is stopped
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopped: Option<i64>,
+    /// StopReplaying is when the replay of the mirroring journal stops
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stopping_replay: Option<i64>,
+    /// Syncing is when the image is syncing
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub syncing: Option<i64>,
+    /// Unknown is when the mirroring state is unknown
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub unknown: Option<i64>,
 }
 
 /// States is the various state for all mirrored images

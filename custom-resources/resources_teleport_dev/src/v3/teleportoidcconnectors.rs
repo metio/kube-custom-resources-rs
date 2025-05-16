@@ -58,6 +58,9 @@ pub struct TeleportOIDCConnectorSpec {
     /// MFASettings contains settings to enable SSO MFA checks through this auth connector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mfa: Option<TeleportOIDCConnectorMfa>,
+    /// PKCEMode represents the configuration state for PKCE (Proof Key for Code Exchange). It can be "enabled" or "disabled"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pkce_mode: Option<String>,
     /// Prompt is an optional OIDC prompt. An empty string omits prompt. If not specified, it defaults to select_account for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prompt: Option<String>,

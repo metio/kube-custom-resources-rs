@@ -197,6 +197,7 @@ pub enum VerticalPodAutoscalerUpdatePolicyUpdateMode {
     Off,
     Initial,
     Recreate,
+    InPlaceOrRecreate,
     Auto,
 }
 

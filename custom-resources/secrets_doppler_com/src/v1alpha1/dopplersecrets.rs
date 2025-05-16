@@ -73,6 +73,12 @@ pub enum DopplerSecretFormat {
 /// The Kubernetes secret where the operator will store and sync the fetched secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DopplerSecretManagedSecret {
+    /// Annotations to add or update on the managed secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels to add or update on the managed secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// The name of the Secret resource
     pub name: String,
     /// Namespace of the resource being referred to. Ignored if not cluster scoped

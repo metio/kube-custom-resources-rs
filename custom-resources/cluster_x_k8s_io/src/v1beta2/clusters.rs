@@ -453,11 +453,6 @@ pub struct ClusterTopologyControlPlaneVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariablesOverrides {
-    /// definitionFrom specifies where the definition of this Variable is from.
-    /// 
-    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
-    pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
     /// value of the variable.
@@ -474,11 +469,6 @@ pub struct ClusterTopologyControlPlaneVariablesOverrides {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyVariables {
-    /// definitionFrom specifies where the definition of this Variable is from.
-    /// 
-    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
-    pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
     /// value of the variable.
@@ -840,11 +830,6 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
-    /// definitionFrom specifies where the definition of this Variable is from.
-    /// 
-    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
-    pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
     /// value of the variable.
@@ -939,11 +924,6 @@ pub struct ClusterTopologyWorkersMachinePoolsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
-    /// definitionFrom specifies where the definition of this Variable is from.
-    /// 
-    /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
-    pub definition_from: Option<String>,
     /// name of the variable.
     pub name: String,
     /// value of the variable.

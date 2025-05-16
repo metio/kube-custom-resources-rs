@@ -58,7 +58,7 @@ spec:
               description: "Specification of the desired state of the Certificate resource.\nhttps://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
               properties:
                 additionalOutputFormats:
-                  description: "Defines extra output formats of the private key and signed certificate chain\nto be written to this Certificate's target Secret.\n\nThis is a Beta Feature enabled by default. It can be disabled with the\n`--feature-gates=AdditionalCertificateOutputFormats=false` option set on both\nthe controller and webhook components."
+                  description: "Defines extra output formats of the private key and signed certificate chain\nto be written to this Certificate's target Secret."
                   items:
                     description: "CertificateAdditionalOutputFormat defines an additional output format of a\nCertificate resource. These contain supplementary data formats of the signed\ncertificate chain and paired private key."
                     properties:

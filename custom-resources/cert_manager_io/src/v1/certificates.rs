@@ -23,10 +23,6 @@ use self::prelude::*;
 pub struct CertificateSpec {
     /// Defines extra output formats of the private key and signed certificate chain
     /// to be written to this Certificate's target Secret.
-    /// 
-    /// This is a Beta Feature enabled by default. It can be disabled with the
-    /// `--feature-gates=AdditionalCertificateOutputFormats=false` option set on both
-    /// the controller and webhook components.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalOutputFormats")]
     pub additional_output_formats: Option<Vec<CertificateAdditionalOutputFormats>>,
     /// Requested common name X509 certificate subject attribute.
