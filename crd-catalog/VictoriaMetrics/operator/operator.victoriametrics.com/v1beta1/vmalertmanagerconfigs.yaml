@@ -1287,7 +1287,7 @@ spec:
                           properties:
                             actions:
                               items:
-                                description: "RocketchatAttachmentAction defines message attachements\nhttps://github.com/RocketChat/Rocket.Chat.Go.SDK/blob/master/models/message.go"
+                                description: "RocketchatAttachmentAction defines message attachments\nhttps://github.com/RocketChat/Rocket.Chat.Go.SDK/blob/master/models/message.go"
                                 properties:
                                   msg:
                                     type: "string"

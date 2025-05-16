@@ -111,6 +111,8 @@ pub struct OutputAwsElasticsearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data_stream_template_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data_stream_template_use_index_patterns_wildcard: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_elasticsearch_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deflector_alias: Option<String>,
@@ -1616,6 +1618,8 @@ pub struct OutputElasticsearch {
     pub data_stream_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data_stream_template_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub data_stream_template_use_index_patterns_wildcard: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default_elasticsearch_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

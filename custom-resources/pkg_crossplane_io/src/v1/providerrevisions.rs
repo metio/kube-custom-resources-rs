@@ -113,6 +113,10 @@ pub struct ProviderRevisionRuntimeConfigRef {
 /// PackageRevisionStatus represents the observed state of a PackageRevision.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProviderRevisionStatus {
+    /// AppliedImageConfigRefs records any image configs that were applied in
+    /// reconciling this revision, and what they were used for.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedImageConfigRefs")]
+    pub applied_image_config_refs: Option<Vec<ProviderRevisionStatusAppliedImageConfigRefs>>,
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
@@ -131,6 +135,21 @@ pub struct ProviderRevisionStatus {
     /// responsible for granting them.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "permissionRequests")]
     pub permission_requests: Option<Vec<ProviderRevisionStatusPermissionRequests>>,
+    /// ResolvedPackage is the name of the package that was installed. It may be
+    /// different from spec.image if the package path was rewritten using an
+    /// image config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedImage")]
+    pub resolved_image: Option<String>,
+}
+
+/// ImageConfigRef is a reference to an image config that indicates how the
+/// referenced image config was used by the package manager.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProviderRevisionStatusAppliedImageConfigRefs {
+    /// Name is the name of the image config.
+    pub name: String,
+    /// Reason indicates what the image config was used for.
+    pub reason: String,
 }
 
 /// A TypedReference refers to an object by Name, Kind, and APIVersion. It is

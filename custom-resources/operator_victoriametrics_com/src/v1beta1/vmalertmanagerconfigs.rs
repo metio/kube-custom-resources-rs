@@ -1591,7 +1591,7 @@ pub struct VMAlertmanagerConfigReceiversRocketchatConfigs {
     pub token_id: Option<VMAlertmanagerConfigReceiversRocketchatConfigsTokenId>,
 }
 
-/// RocketchatAttachmentAction defines message attachements
+/// RocketchatAttachmentAction defines message attachments
 /// https://github.com/RocketChat/Rocket.Chat.Go.SDK/blob/master/models/message.go
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMAlertmanagerConfigReceiversRocketchatConfigsActions {

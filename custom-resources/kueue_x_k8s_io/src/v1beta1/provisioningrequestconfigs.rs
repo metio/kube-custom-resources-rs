@@ -31,6 +31,10 @@ pub struct ProvisioningRequestConfigSpec {
     /// Parameters contains all other parameters classes may require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
+    /// podSetUpdates specifies the update of the workload's PodSetUpdates which
+    /// are used to target the provisioned nodes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
+    pub pod_set_updates: Option<ProvisioningRequestConfigPodSetUpdates>,
     /// ProvisioningClassName describes the different modes of provisioning the resources.
     /// Check autoscaling.x-k8s.io ProvisioningRequestSpec.ProvisioningClassName for details.
     #[serde(rename = "provisioningClassName")]
@@ -45,6 +49,26 @@ pub struct ProvisioningRequestConfigSpec {
     /// set retryStrategy.backoffLimitCount to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<ProvisioningRequestConfigRetryStrategy>,
+}
+
+/// podSetUpdates specifies the update of the workload's PodSetUpdates which
+/// are used to target the provisioned nodes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProvisioningRequestConfigPodSetUpdates {
+    /// nodeSelector specifies the list of updates for the NodeSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<Vec<ProvisioningRequestConfigPodSetUpdatesNodeSelector>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProvisioningRequestConfigPodSetUpdatesNodeSelector {
+    /// key specifies the key for the NodeSelector.
+    pub key: String,
+    /// valueFromProvisioningClassDetail specifies the key of the
+    /// ProvisioningRequest.status.provisioningClassDetails from which the value
+    /// is used for the update.
+    #[serde(rename = "valueFromProvisioningClassDetail")]
+    pub value_from_provisioning_class_detail: String,
 }
 
 /// retryStrategy defines strategy for retrying ProvisioningRequest.

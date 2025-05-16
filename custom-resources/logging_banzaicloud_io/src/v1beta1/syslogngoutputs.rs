@@ -1019,6 +1019,8 @@ pub struct SyslogNGOutputLoggly {
     pub flush_lines: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
+    pub ip_protocol: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1056,6 +1058,14 @@ pub struct SyslogNGOutputLogglyDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qout_size: Option<i64>,
     pub reliable: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGOutputLogglyIpProtocol {
+    #[serde(rename = "4")]
+    r#_4,
+    #[serde(rename = "6")]
+    r#_6,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3430,6 +3440,8 @@ pub struct SyslogNGOutputSyslog {
     pub flush_lines: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
+    pub ip_protocol: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3464,6 +3476,14 @@ pub struct SyslogNGOutputSyslogDiskBuffer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qout_size: Option<i64>,
     pub reliable: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum SyslogNGOutputSyslogIpProtocol {
+    #[serde(rename = "4")]
+    r#_4,
+    #[serde(rename = "6")]
+    r#_6,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

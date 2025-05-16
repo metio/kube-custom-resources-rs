@@ -116,6 +116,9 @@ pub struct FunctionSpec {
     /// ARN, including the version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub layers: Option<Vec<String>>,
+    /// The function's Amazon CloudWatch Logs configuration settings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingConfig")]
+    pub logging_config: Option<FunctionLoggingConfig>,
     /// The amount of memory available to the function (https://docs.aws.amazon.com/lambda/latest/dg/configuration-function-common.html#configuration-memory-console)
     /// at runtime. Increasing the function memory also increases its CPU allocation.
     /// The default value is 128 MB. The value can be any multiple of 1 MB.
@@ -369,6 +372,19 @@ pub struct FunctionKmsKeyRefFrom {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// The function's Amazon CloudWatch Logs configuration settings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FunctionLoggingConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationLogLevel")]
+    pub application_log_level: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFormat")]
+    pub log_format: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroup")]
+    pub log_group: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemLogLevel")]
+    pub system_log_level: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

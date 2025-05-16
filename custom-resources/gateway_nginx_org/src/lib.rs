@@ -9,6 +9,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `NginxProxy`
 - `ObservabilityPolicy`
 ## gateway.nginx.org/v1alpha2
+- `NginxProxy`
 - `ObservabilityPolicy`
 */
 #[cfg(feature = "v1alpha1")]

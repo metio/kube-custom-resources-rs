@@ -63,7 +63,7 @@ pub struct SqlJobSpec {
     /// PriorityClassName to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<SqlJobResources>,
     /// RestartPolicy to be added to the SqlJob Pod.
@@ -424,7 +424,7 @@ pub struct SqlJobPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SqlJobResources {
     /// ResourceList is a set of (resource name, quantity) pairs.

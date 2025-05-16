@@ -36,6 +36,24 @@ pub struct PlanSpec {
     /// Deprecated: this field will be deprecated in 2.8.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskBus")]
     pub disk_bus: Option<String>,
+    /// InstallLegacyDrivers determines whether to install legacy windows drivers in the VM.
+    /// The following Vm's are lack of SHA-2 support and need legacy drivers:
+    /// Windows XP (all)
+    /// Windows Server 2003
+    /// Windows Vista (all)
+    /// Windows Server 2008
+    /// Windows 7 (pre-SP1)
+    /// Windows Server 2008 R2
+    /// Behavior:
+    /// - If set to nil (unset), the system will automatically detect whether the VM requires legacy drivers
+    ///   based on its guest OS type (using IsLegacyWindows).
+    /// - If set to true, legacy drivers will be installed unconditionally by setting the VIRTIO_WIN environment variable.
+    /// - If set to false, legacy drivers will be skipped, and the system will fall back to using the standard (SHA-2 signed) drivers.
+    /// 
+    /// When enabled, legacy drivers are exposed to the virt-v2v conversion process via the VIRTIO_WIN environment variable,
+    /// which points to the legacy ISO at /usr/local/virtio-win.iso.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installLegacyDrivers")]
+    pub install_legacy_drivers: Option<bool>,
     /// Resource mapping.
     pub map: PlanMap,
     /// Determines if the plan should migrate shared disks.
@@ -88,6 +106,9 @@ pub struct PlanSpec {
     /// **DANGER** When set to false, the generated PVC name may not be unique and may cause conflicts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcNameTemplateUseGenerateName")]
     pub pvc_name_template_use_generate_name: Option<bool>,
+    /// Determines if the plan should skip the guest conversion.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipGuestConversion")]
+    pub skip_guest_conversion: Option<bool>,
     /// Target namespace.
     #[serde(rename = "targetNamespace")]
     pub target_namespace: String,
@@ -135,7 +156,6 @@ pub struct PlanMapNetwork {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -173,7 +193,6 @@ pub struct PlanMapStorage {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -220,7 +239,6 @@ pub struct PlanProviderDestination {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -258,7 +276,6 @@ pub struct PlanProviderSource {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -296,7 +313,6 @@ pub struct PlanTransferNetwork {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -424,7 +440,6 @@ pub struct PlanVmsHooksHook {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -462,7 +477,6 @@ pub struct PlanVmsLuks {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -765,7 +779,6 @@ pub struct PlanStatusMigrationVmsHooksHook {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.
@@ -803,7 +816,6 @@ pub struct PlanStatusMigrationVmsLuks {
     /// the event) or if no container name is specified "spec.containers[2]" (container with
     /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
     /// referencing a part of an object.
-    /// TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
     pub field_path: Option<String>,
     /// Kind of the referent.

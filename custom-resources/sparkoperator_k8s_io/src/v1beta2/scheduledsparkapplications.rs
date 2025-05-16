@@ -4467,6 +4467,12 @@ pub struct ScheduledSparkApplicationTemplateDynamicAllocation {
     /// MinExecutors is the lower bound for the number of executors if dynamic allocation is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minExecutors")]
     pub min_executors: Option<i32>,
+    /// ShuffleTrackingEnabled enables shuffle file tracking for executors, which allows dynamic allocation without
+    /// the need for an external shuffle service. This option will try to keep alive executors that are storing
+    /// shuffle data for active jobs. If external shuffle service is enabled, set ShuffleTrackingEnabled to false.
+    /// ShuffleTrackingEnabled is true by default if dynamicAllocation.enabled is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleTrackingEnabled")]
+    pub shuffle_tracking_enabled: Option<bool>,
     /// ShuffleTrackingTimeout controls the timeout in milliseconds for executors that are holding
     /// shuffle data if shuffle tracking is enabled (true by default if dynamic allocation is enabled).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleTrackingTimeout")]

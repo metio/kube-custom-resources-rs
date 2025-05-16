@@ -7128,6 +7128,14 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// in that case spec.podSets[*].count value will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i32>,
+    /// delayedTopologyRequest indicates the topology assignment is delayed.
+    /// Topology assignment might be delayed in case there is ProvisioningRequest
+    /// AdmissionCheck used.
+    /// Kueue schedules the second pass of scheduling for each workload with at
+    /// least one PodSet which has delayedTopologyRequest=true and without
+    /// topologyAssignment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedTopologyRequest")]
+    pub delayed_topology_request: Option<String>,
     /// Flavors are the flavors assigned to the workload for each resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flavors: Option<BTreeMap<String, String>>,

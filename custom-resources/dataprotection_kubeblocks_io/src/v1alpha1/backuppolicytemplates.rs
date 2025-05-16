@@ -223,6 +223,11 @@ pub struct BackupPolicyTemplateBackupMethodsTarget {
     /// - All: Selects all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateBackupMethodsTargetStrategy>,
+    /// UseParentSelectedPods indicates whether to use the pods selected by the parent for backup.
+    /// If set to true, the backup will use the same pods selected by the parent.
+    /// And only takes effect when the 'strategy' is set to 'Any'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useParentSelectedPods")]
+    pub use_parent_selected_pods: Option<bool>,
 }
 
 /// Specifies the container port in the target pod.
@@ -384,6 +389,11 @@ pub struct BackupPolicyTemplateTarget {
     /// - All: Selects all pods that match the labelsSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<BackupPolicyTemplateTargetStrategy>,
+    /// UseParentSelectedPods indicates whether to use the pods selected by the parent for backup.
+    /// If set to true, the backup will use the same pods selected by the parent.
+    /// And only takes effect when the 'strategy' is set to 'Any'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useParentSelectedPods")]
+    pub use_parent_selected_pods: Option<bool>,
 }
 
 /// Specifies the container port in the target pod.

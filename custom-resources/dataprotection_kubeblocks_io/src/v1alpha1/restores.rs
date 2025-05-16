@@ -1840,6 +1840,11 @@ pub struct RestoreReadyConfigJobActionTargetPodSelector {
     /// will be stored in a subdirectory named after the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<RestoreReadyConfigJobActionTargetPodSelectorStrategy>,
+    /// UseParentSelectedPods indicates whether to use the pods selected by the parent for backup.
+    /// If set to true, the backup will use the same pods selected by the parent.
+    /// And only takes effect when the 'strategy' is set to 'Any'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useParentSelectedPods")]
+    pub use_parent_selected_pods: Option<bool>,
 }
 
 /// fallbackLabelSelector is used to filter available pods when the labelSelector fails.
