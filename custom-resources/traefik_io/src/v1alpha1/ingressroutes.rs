@@ -50,7 +50,7 @@ pub struct IngressRouteRoutes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub middlewares: Option<Vec<IngressRouteRoutesMiddlewares>>,
     /// Observability defines the observability configuration for a router.
-    /// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability
+    /// More info: https://doc.traefik.io/traefik/v3.4/routing/routers/#observability
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<IngressRouteRoutesObservability>,
     /// Priority defines the router's priority.
@@ -85,7 +85,7 @@ pub struct IngressRouteRoutesMiddlewares {
 }
 
 /// Observability defines the observability configuration for a router.
-/// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#observability
+/// More info: https://doc.traefik.io/traefik/v3.4/routing/routers/#observability
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesObservability {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogs")]

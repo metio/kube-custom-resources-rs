@@ -329,6 +329,13 @@ spec:
                     secret:
                       description: "Secret for object storage authentication.\nName of a secret in the same namespace as the TempoStack custom resource."
                       properties:
+                        credentialMode:
+                          description: "CredentialMode can be used to set the desired credential mode for authenticating with the object storage.\nIf this is not set, then the operator tries to infer the credential mode from the provided secret and its\nown configuration."
+                          enum:
+                            - "static"
+                            - "token"
+                            - "token-cco"
+                          type: "string"
                         name:
                           description: "Name of a secret in the namespace configured for object storage secrets."
                           minLength: 1

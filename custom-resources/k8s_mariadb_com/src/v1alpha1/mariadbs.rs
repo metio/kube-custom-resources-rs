@@ -139,7 +139,7 @@ pub struct MariaDBSpec {
     /// Replication configures high availability via replication. This feature is still in alpha, use Galera if you are looking for a more production-ready HA.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<MariaDBReplication>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBResources>,
     /// RootEmptyPassword indicates if the root password should be empty. Don't use this feature in production, it is only intended for development and test environments.
@@ -432,9 +432,15 @@ pub struct MariaDBBootstrapFromRestoreJob {
     /// Metadata defines additional metadata for the bootstrap Jobs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBBootstrapFromRestoreJobMetadata>,
-    /// Resouces describes the compute resource requirements.
+    /// NodeSelector to be used in the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBBootstrapFromRestoreJobResources>,
+    /// Tolerations to be used in the Pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<MariaDBBootstrapFromRestoreJobTolerations>>,
 }
 
 /// Affinity to be used in the Pod.
@@ -626,7 +632,7 @@ pub struct MariaDBBootstrapFromRestoreJobMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromRestoreJobResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -635,6 +641,36 @@ pub struct MariaDBBootstrapFromRestoreJobResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromRestoreJobTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
@@ -1183,7 +1219,7 @@ pub struct MariaDBGaleraAgent {
     /// ReadinessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBGaleraAgentReadinessProbe>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraAgentResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
@@ -1424,7 +1460,7 @@ pub struct MariaDBGaleraAgentReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraAgentResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -1647,7 +1683,7 @@ pub struct MariaDBGaleraInitContainer {
     /// ReadinessProbe to be used in the Container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<MariaDBGaleraInitContainerReadinessProbe>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraInitContainerResources>,
     /// SecurityContext holds security configuration that will be applied to a container.
@@ -1851,7 +1887,7 @@ pub struct MariaDBGaleraInitContainerReadinessProbeTcpSocket {
     pub port: IntOrString,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitContainerResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -1964,7 +2000,7 @@ pub struct MariaDBGaleraInitJob {
     /// Metadata defines additional metadata for the Galera init Job.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<MariaDBGaleraInitJobMetadata>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraInitJobResources>,
 }
@@ -1980,7 +2016,7 @@ pub struct MariaDBGaleraInitJobMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraInitJobResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -2057,7 +2093,7 @@ pub struct MariaDBGaleraRecoveryJob {
     /// PodAffinity indicates whether the recovery Jobs should run in the same Node as the MariaDB Pods. It defaults to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<bool>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBGaleraRecoveryJobResources>,
 }
@@ -2073,7 +2109,7 @@ pub struct MariaDBGaleraRecoveryJobMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBGaleraRecoveryJobResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -2141,7 +2177,7 @@ pub struct MariaDBInitContainers {
     /// Name to be given to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBInitContainersResources>,
     /// VolumeMounts to be used in the Container.
@@ -2208,7 +2244,7 @@ pub enum MariaDBInitContainersImagePullPolicy {
     IfNotPresent,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBInitContainersResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -2828,7 +2864,7 @@ pub struct MariaDBMaxScaleMetricsExporter {
     /// PriorityClassName to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMaxScaleMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
@@ -3127,7 +3163,7 @@ pub struct MariaDBMaxScaleMetricsExporterPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMaxScaleMetricsExporterResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -3234,7 +3270,7 @@ pub struct MariaDBMaxScaleMonitor {
     /// Params defines extra parameters to pass to the monitor.
     /// Any parameter supported by MaxScale may be specified here. See reference:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-common-monitor-parameters/.
-    /// Monitor specific parameter are also suported:
+    /// Monitor specific parameter are also supported:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-galera-monitor/#galera-monitor-optional-parameters.
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-monitor/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3275,7 +3311,7 @@ pub struct MariaDBMaxScaleServices {
     /// Params defines extra parameters to pass to the service.
     /// Any parameter supported by MaxScale may be specified here. See reference:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-mariadb-maxscale-configuration-guide/#service_1.
-    /// Router specific parameter are also suported:
+    /// Router specific parameter are also supported:
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-readwritesplit/#configuration.
     /// https://mariadb.com/kb/en/mariadb-maxscale-2308-readconnroute/#configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3560,7 +3596,7 @@ pub struct MariaDBMetricsExporter {
     /// PriorityClassName to be used in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBMetricsExporterResources>,
     /// SecurityContext holds container-level security attributes.
@@ -3859,7 +3895,7 @@ pub struct MariaDBMetricsExporterPodSecurityContextSeccompProfile {
     pub r#type: String,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBMetricsExporterResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -4389,7 +4425,7 @@ pub enum MariaDBReplicationReplicaWaitPoint {
     AfterCommit,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBResources {
     /// ResourceList is a set of (resource name, quantity) pairs.
@@ -4641,7 +4677,7 @@ pub struct MariaDBSidecarContainers {
     /// Name to be given to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Resouces describes the compute resource requirements.
+    /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MariaDBSidecarContainersResources>,
     /// VolumeMounts to be used in the Container.
@@ -4708,7 +4744,7 @@ pub enum MariaDBSidecarContainersImagePullPolicy {
     IfNotPresent,
 }
 
-/// Resouces describes the compute resource requirements.
+/// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBSidecarContainersResources {
     /// ResourceList is a set of (resource name, quantity) pairs.

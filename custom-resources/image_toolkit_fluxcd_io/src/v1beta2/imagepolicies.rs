@@ -20,6 +20,19 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ImagePolicySpec {
+    /// DigestReflectionPolicy governs the setting of the `.status.latestRef.digest` field.
+    /// 
+    /// Never: The digest field will always be set to the empty string.
+    /// 
+    /// IfNotPresent: The digest field will be set to the digest of the elected
+    /// latest image if the field is empty and the image did not change.
+    /// 
+    /// Always: The digest field will always be set to the digest of the elected
+    /// latest image.
+    /// 
+    /// Default: Never.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digestReflectionPolicy")]
+    pub digest_reflection_policy: Option<ImagePolicyDigestReflectionPolicy>,
     /// FilterTags enables filtering for only a subset of tags based on a set of
     /// rules. If no rules are provided, all the tags from the repository will be
     /// ordered and compared.
@@ -29,9 +42,25 @@ pub struct ImagePolicySpec {
     /// being scanned
     #[serde(rename = "imageRepositoryRef")]
     pub image_repository_ref: ImagePolicyImageRepositoryRef,
+    /// Interval is the length of time to wait between
+    /// refreshing the digest of the latest tag when the
+    /// reflection policy is set to "Always".
+    /// 
+    /// Defaults to 10m.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interval: Option<String>,
     /// Policy gives the particulars of the policy to be followed in
     /// selecting the most recent image
     pub policy: ImagePolicyPolicy,
+}
+
+/// ImagePolicySpec defines the parameters for calculating the
+/// ImagePolicy.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ImagePolicyDigestReflectionPolicy {
+    Always,
+    IfNotPresent,
+    Never,
 }
 
 /// FilterTags enables filtering for only a subset of tags based on a set of
@@ -131,13 +160,53 @@ pub struct ImagePolicyStatus {
     /// LatestImage gives the first in the list of images scanned by
     /// the image repository, when filtered and ordered according to
     /// the policy.
+    /// 
+    /// Deprecated: Replaced by the composite "latestRef" field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestImage")]
     pub latest_image: Option<String>,
+    /// LatestRef gives the first in the list of images scanned by
+    /// the image repository, when filtered and ordered according
+    /// to the policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRef")]
+    pub latest_ref: Option<ImagePolicyStatusLatestRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedPreviousImage is the observed previous LatestImage. It is used
     /// to keep track of the previous and current images.
+    /// 
+    /// Deprecated: Replaced by the composite "observedPreviousRef" field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedPreviousImage")]
     pub observed_previous_image: Option<String>,
+    /// ObservedPreviousRef is the observed previous LatestRef. It is used
+    /// to keep track of the previous and current images.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedPreviousRef")]
+    pub observed_previous_ref: Option<ImagePolicyStatusObservedPreviousRef>,
+}
+
+/// LatestRef gives the first in the list of images scanned by
+/// the image repository, when filtered and ordered according
+/// to the policy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImagePolicyStatusLatestRef {
+    /// Digest is the image's digest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub digest: Option<String>,
+    /// Name is the bare image's name.
+    pub name: String,
+    /// Tag is the image's tag.
+    pub tag: String,
+}
+
+/// ObservedPreviousRef is the observed previous LatestRef. It is used
+/// to keep track of the previous and current images.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImagePolicyStatusObservedPreviousRef {
+    /// Digest is the image's digest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub digest: Option<String>,
+    /// Name is the bare image's name.
+    pub name: String,
+    /// Tag is the image's tag.
+    pub tag: String,
 }
 

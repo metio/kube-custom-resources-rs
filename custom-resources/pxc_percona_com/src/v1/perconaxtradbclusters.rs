@@ -939,8 +939,6 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub expose_replicas: Option<PerconaXtraDBClusterHaproxyExposeReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
-    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -3814,8 +3812,6 @@ pub struct PerconaXtraDBClusterProxysql {
     pub expose: Option<PerconaXtraDBClusterProxysqlExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
-    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -6198,8 +6194,6 @@ pub struct PerconaXtraDBClusterPxc {
     pub expose: Option<PerconaXtraDBClusterPxcExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
-    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]

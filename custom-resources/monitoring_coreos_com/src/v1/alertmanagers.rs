@@ -522,7 +522,6 @@ pub struct AlertmanagerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -533,7 +532,6 @@ pub struct AlertmanagerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -643,7 +641,6 @@ pub struct AlertmanagerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -654,7 +651,6 @@ pub struct AlertmanagerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -795,7 +791,6 @@ pub struct AlertmanagerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -806,7 +801,6 @@ pub struct AlertmanagerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -916,7 +910,6 @@ pub struct AlertmanagerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -927,7 +920,6 @@ pub struct AlertmanagerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2747,13 +2739,13 @@ pub struct AlertmanagerContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AlertmanagerContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2812,6 +2804,11 @@ pub struct AlertmanagerContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<AlertmanagerContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4037,13 +4034,13 @@ pub struct AlertmanagerInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AlertmanagerInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4102,6 +4099,11 @@ pub struct AlertmanagerInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<AlertmanagerInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -6106,7 +6108,6 @@ pub struct AlertmanagerTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -6116,7 +6117,6 @@ pub struct AlertmanagerTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -6354,7 +6354,7 @@ pub struct AlertmanagerVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<AlertmanagerVolumesImage>,
@@ -7220,7 +7220,7 @@ pub struct AlertmanagerVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerVolumesImage {
