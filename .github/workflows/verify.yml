@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
 
-name: Verify code-generator
+name: Verify Commits
 on:
   pull_request:
     branches: [ main ]

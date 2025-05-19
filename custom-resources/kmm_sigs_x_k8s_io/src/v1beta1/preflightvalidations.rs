@@ -63,16 +63,14 @@ pub struct PreflightValidationStatusCrStatuses {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PreflightValidationStatusCrStatusesVerificationStage {
     Image,
-    Build,
-    Sign,
-    Requeued,
     Done,
 }
 
 /// CRStatuses contain observations about each Module's preflight upgradability validation
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PreflightValidationStatusCrStatusesVerificationStatus {
-    True,
-    False,
+    Success,
+    Failure,
+    InProgress,
 }
 

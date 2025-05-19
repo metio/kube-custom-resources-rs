@@ -39,6 +39,9 @@ pub struct DatabaseClusterSpec {
     /// Paused is a flag to stop the cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
+    /// PodSchedulingPolicyName is the name of the PodSchedulingPolicy CR that defines rules for DB cluster pods allocation across the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSchedulingPolicyName")]
+    pub pod_scheduling_policy_name: Option<String>,
     /// Proxy is the proxy specification. If not set, an appropriate
     /// proxy specification will be applied for the given engine. A
     /// common use case for setting this field is to control the

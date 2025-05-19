@@ -64,15 +64,13 @@ pub struct PreflightValidationStatusModules {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PreflightValidationStatusModulesVerificationStage {
     Image,
-    Build,
-    Sign,
-    Requeued,
     Done,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PreflightValidationStatusModulesVerificationStatus {
-    True,
-    False,
+    Success,
+    Failure,
+    InProgress,
 }
 

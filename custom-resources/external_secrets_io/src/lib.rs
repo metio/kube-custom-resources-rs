@@ -12,6 +12,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `ClusterPushSecret`
 - `ClusterSecretStore`
 - `ExternalSecret`
+- `PushSecret`
 - `SecretStore`
 ## external-secrets.io/v1beta1
 - `ClusterExternalSecret`

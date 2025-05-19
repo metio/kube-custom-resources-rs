@@ -48,6 +48,12 @@ pub struct ComponentDefinitionSpec {
     /// It serves as a quick reference for users to understand the Component's role and characteristics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// Specifies whether to create the default headless service.
+    /// 
+    /// 
+    /// This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultHeadlessService")]
+    pub disable_default_headless_service: Option<bool>,
     /// Defines the built-in metrics exporter container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exporter: Option<ComponentDefinitionExporter>,

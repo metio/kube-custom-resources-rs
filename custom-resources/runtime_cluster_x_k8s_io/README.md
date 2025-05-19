@@ -13,3 +13,5 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ### runtime.cluster.x-k8s.io/v1alpha1
 - `ExtensionConfig`
+### runtime.cluster.x-k8s.io/v1beta2
+- `ExtensionConfig`

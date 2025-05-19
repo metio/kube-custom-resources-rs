@@ -251,6 +251,9 @@ spec:
                 paused:
                   description: "Paused is a flag to stop the cluster"
                   type: "boolean"
+                podSchedulingPolicyName:
+                  description: "PodSchedulingPolicyName is the name of the PodSchedulingPolicy CR that defines rules for DB cluster pods allocation across the cluster."
+                  type: "string"
                 proxy:
                   description: "Proxy is the proxy specification. If not set, an appropriate\nproxy specification will be applied for the given engine. A\ncommon use case for setting this field is to control the\nexternal access to the database cluster."
                   properties:

@@ -33,6 +33,9 @@ pub struct InstanceSetSpec {
     /// $(cluster.name)-$(component.name)-0、$(cluster.name)-$(component.name)-1 and $(cluster.name)-$(component.name)-7
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTemplateOrdinals")]
     pub default_template_ordinals: Option<InstanceSetDefaultTemplateOrdinals>,
+    /// Specifies whether to create the default headless service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultHeadlessService")]
+    pub disable_default_headless_service: Option<bool>,
     /// Provides fine-grained control over the spec update process of all instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
     pub instance_update_strategy: Option<InstanceSetInstanceUpdateStrategy>,

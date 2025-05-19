@@ -20,6 +20,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `ClusterPushSecret`
 - `ClusterSecretStore`
 - `ExternalSecret`
+- `PushSecret`
 - `SecretStore`
 ### external-secrets.io/v1beta1
 - `ClusterExternalSecret`
