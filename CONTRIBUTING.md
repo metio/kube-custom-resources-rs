@@ -54,6 +54,8 @@ $ ./code-generator/fix-cargo-warnings.sh <feature_name>
 
 ### 4. Adjust Output
 
+In some cases, kopium is not able to generate all required code to compile a custom resource. In those cases, add a `.rs` file next to the downloaded `.yaml` file in the catalog and write the missing code into that file. The code inside that file will be appended at the end of the generated code. The file name must match the name of the CRD, e.g. `prometheus-operator-prometheus.yaml` would require a file called `prometheus-operator-prometheus.rs`.
+
 Some CRDs cannot be converted to Rust code at all. In those cases, add an `.ignore` file next to the downloaded `.yaml` file in the catalog and write the reason why this CRD was ignored into the file, e.g.:
 
 ```
