@@ -5,6 +5,8 @@ use code_generator::{group_name, kind_name, last_path_segment, path_contains};
 use glob::glob;
 use std::process::{Command, Stdio};
 use std::{env, fs};
+use std::fs::OpenOptions;
+use std::io::Write;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -69,6 +71,18 @@ fn main() {
 
                         fs::write(&resource_target, output.stdout)
                             .expect("should be able to write custom resource");
+
+                        let code_file = path.with_extension("rs");
+                        if code_file.exists() {
+                            let additional_code = fs::read(code_file).expect("reading file with additional code failed");
+                            let mut generated_file = OpenOptions::new()
+                                .append(true)
+                                .open(resource_target)
+                                .expect("cannot target resource file");
+                            generated_file
+                                .write(&additional_code)
+                                .expect("writing to target resource file failed");
+                        }
                     }
                 }
             }
