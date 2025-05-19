@@ -10,13 +10,8 @@ updates:
     assignees:
       - sebhoss
   - package-ecosystem: cargo
-    directory: /
+    directory: /code-generator
     schedule:
       interval: weekly
-    groups:
-      kube:
-        patterns:
-          - kube
-          - k8s-openapi
     assignees:
       - sebhoss

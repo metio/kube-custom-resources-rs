@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
-use code_generator::last_path_segment;
+use code_generator::{k8s_openapi_kubernetes_version, kube_rs_major_version, last_path_segment};
 use handlebars::{to_json, Handlebars};
 use serde_json::Map;
 use std::fs;
@@ -44,7 +44,11 @@ fn main() -> Result<()> {
             data.insert("group_name_snake_case".to_string(), to_json(group_name));
             data.insert(
                 "k8s_openapi_kubernetes_version".to_string(),
-                to_json("v1_31"),
+                to_json(k8s_openapi_kubernetes_version()),
+            );
+            data.insert(
+                "kube_rs_major_version".to_string(),
+                to_json(kube_rs_major_version()),
             );
             data.insert("versions".to_string(), to_json(&versions));
 

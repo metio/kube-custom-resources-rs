@@ -7,6 +7,7 @@ use std::fs;
 use std::fs::OpenOptions;
 use std::hash::{DefaultHasher, Hash, Hasher};
 use std::io::Result;
+use code_generator::kube_rs_major_version;
 
 fn main() -> Result<()> {
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
@@ -48,8 +49,8 @@ fn main() -> Result<()> {
                 to_json(format!("kcr_{group_name}")),
             );
             data.insert(
-                "k8s_openapi_kubernetes_version".to_string(),
-                to_json("1.31"),
+                "kube_rs_major_version".to_string(),
+                to_json(kube_rs_major_version()),
             );
             data.insert("cron_minute".to_string(), to_json(hash.rem_euclid(60)));
             data.insert("cron_hour".to_string(), to_json(hash.rem_euclid(22) + 1));

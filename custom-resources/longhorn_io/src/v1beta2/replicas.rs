@@ -137,5 +137,7 @@ pub struct ReplicaStatus {
     pub storage_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
     pub ublk_id: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
 }
 

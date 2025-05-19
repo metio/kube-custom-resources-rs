@@ -4386,6 +4386,10 @@ pub enum PrometheusAgentNameValidationScheme {
 /// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentOtlp {
+    /// Configures optional translation of OTLP explicit bucket histograms into native histograms with custom buckets.
+    /// It requires Prometheus >= v3.4.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertHistogramsToNHCB")]
+    pub convert_histograms_to_nhcb: Option<bool>,
     /// Enables adding `service.name`, `service.namespace` and `service.instance.id`
     /// resource attributes to the `target_info` metric, on top of converting them into the `instance` and `job` labels.
     /// 
@@ -4409,6 +4413,7 @@ pub enum PrometheusAgentOtlpTranslationStrategy {
     #[serde(rename = "NoUTF8EscapingWithSuffixes")]
     NoUtf8EscapingWithSuffixes,
     UnderscoreEscapingWithSuffixes,
+    NoTranslation,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.

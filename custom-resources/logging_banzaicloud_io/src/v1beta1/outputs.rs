@@ -2258,6 +2258,8 @@ pub struct OutputForward {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffer: Option<OutputForwardBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connect_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dns_round_robin: Option<bool>,

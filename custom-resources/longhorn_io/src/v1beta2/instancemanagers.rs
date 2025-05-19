@@ -158,6 +158,8 @@ pub struct InstanceManagerStatusInstanceEnginesStatus {
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
     pub ublk_id: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -202,6 +204,8 @@ pub struct InstanceManagerStatusInstanceReplicasStatus {
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
     pub ublk_id: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
 }
 
 /// Deprecated: Replaced by InstanceEngines and InstanceReplicas
@@ -247,5 +251,7 @@ pub struct InstanceManagerStatusInstancesStatus {
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
     pub ublk_id: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uuid: Option<String>,
 }
 

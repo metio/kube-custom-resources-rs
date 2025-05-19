@@ -4,3 +4,4 @@
 target/
 crd-catalog/**/*.fixed
 Cargo.lock
+.bash_history

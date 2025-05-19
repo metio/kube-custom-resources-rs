@@ -2008,6 +2008,10 @@ spec:
                   description: "Provides a brief and concise explanation of the Component's purpose, functionality, and any relevant details.\nIt serves as a quick reference for users to understand the Component's role and characteristics."
                   maxLength: 256
                   type: "string"
+                disableDefaultHeadlessService:
+                  default: false
+                  description: "Specifies whether to create the default headless service.\n\n\nThis field is immutable."
+                  type: "boolean"
                 exporter:
                   description: "Defines the built-in metrics exporter container."
                   properties:
