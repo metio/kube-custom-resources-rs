@@ -171,11 +171,11 @@ pub struct ClusterClassControlPlaneMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -228,11 +228,11 @@ pub struct ClusterClassControlPlaneMachineHealthCheckRemediationTemplate {
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions {
+pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,
@@ -1066,11 +1066,11 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -1123,11 +1123,11 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTem
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,

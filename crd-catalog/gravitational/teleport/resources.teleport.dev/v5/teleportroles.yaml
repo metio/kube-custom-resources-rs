@@ -300,6 +300,9 @@ spec:
                           description: "kubernetes_resources can optionally enforce a requester to request only certain kinds of kube resources. Eg: Users can make request to either a resource kind \"kube_cluster\" or any of its subresources like \"namespaces\". This field can be defined such that it prevents a user from requesting \"kube_cluster\" and enforce requesting any of its subresources."
                           items:
                             properties:
+                              api_group:
+                                description: "APIGroup specifies the Kubernetes Resource API group."
+                                type: "string"
                               kind:
                                 description: "kind specifies the Kubernetes Resource type."
                                 type: "string"
@@ -771,6 +774,9 @@ spec:
                           description: "kubernetes_resources can optionally enforce a requester to request only certain kinds of kube resources. Eg: Users can make request to either a resource kind \"kube_cluster\" or any of its subresources like \"namespaces\". This field can be defined such that it prevents a user from requesting \"kube_cluster\" and enforce requesting any of its subresources."
                           items:
                             properties:
+                              api_group:
+                                description: "APIGroup specifies the Kubernetes Resource API group."
+                                type: "string"
                               kind:
                                 description: "kind specifies the Kubernetes Resource type."
                                 type: "string"

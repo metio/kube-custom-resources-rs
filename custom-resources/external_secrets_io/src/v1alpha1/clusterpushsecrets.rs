@@ -243,6 +243,8 @@ pub enum ClusterPushSecretPushSecretSpecSelectorGeneratorRefKind {
     VaultDynamicSecret,
     Webhook,
     Grafana,
+    #[serde(rename = "MFA")]
+    Mfa,
 }
 
 /// Select a Secret to Push.

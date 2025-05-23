@@ -47,6 +47,10 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     /// SPOD instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableBpfRecorder")]
     pub enable_bpf_recorder: Option<bool>,
+    /// tells the operator whether or not to enable audit JSON enrichment support for this
+    /// SPOD instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableJsonEnricher")]
+    pub enable_json_enricher: Option<bool>,
     /// tells the operator whether or not to enable log enrichment support for this
     /// SPOD instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogEnricher")]
@@ -75,6 +79,11 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     /// namespace to use for pulling the images from SPOD pod from a private registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<SecurityProfilesOperatorDaemonImagePullSecrets>>,
+    /// Defines options specific to the JsonEnricher
+    /// functionality of the SecurityProfilesOperator
+    /// Its optional to provide this configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonEnricherOptions")]
+    pub json_enricher_options: Option<SecurityProfilesOperatorDaemonJsonEnricherOptions>,
     /// PriorityClassName if defined, indicates the spod pod priority class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
@@ -845,6 +854,19 @@ pub struct SecurityProfilesOperatorDaemonImagePullSecrets {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// Defines options specific to the JsonEnricher
+/// functionality of the SecurityProfilesOperator
+/// Its optional to provide this configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecurityProfilesOperatorDaemonJsonEnricherOptions {
+    /// Specifies the interval, in seconds, at which the accumulated audit log
+    /// data is output in JSON format. For each process, syscalls occurring
+    /// within this interval are grouped together. The default is 60 seconds.
+    /// Increasing this interval will reduce the rate at which logs are written.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogIntervalSeconds")]
+    pub audit_log_interval_seconds: Option<i32>,
 }
 
 /// Defines options specific to the SELinux

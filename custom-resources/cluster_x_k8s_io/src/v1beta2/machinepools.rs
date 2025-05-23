@@ -27,12 +27,6 @@ pub struct MachinePoolSpec {
     /// failureDomains is the list of failure domains this MachinePool should be attached to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
-    /// minReadySeconds is the minimum number of seconds for which a newly created machine instances should
-    /// be ready.
-    /// Defaults to 0 (machine instance will be considered available as soon as it
-    /// is ready)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
-    pub min_ready_seconds: Option<i32>,
     /// providerIDList are the identification IDs of machine instances provided by the provider.
     /// This field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerIDList")]
@@ -94,6 +88,10 @@ pub struct MachinePoolTemplateSpec {
     /// offered by an infrastructure provider.
     #[serde(rename = "infrastructureRef")]
     pub infrastructure_ref: ObjectReference,
+    /// minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.
+    /// Defaults to 0 (Machine will be considered available as soon as the Machine is ready)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.

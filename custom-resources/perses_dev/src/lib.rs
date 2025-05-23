@@ -7,6 +7,12 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `Perses`
 - `PersesDashboard`
 - `PersesDatasource`
+## perses.dev/v1alpha2
+- `Perses`
+- `PersesDashboard`
+- `PersesDatasource`
 */
 #[cfg(feature = "v1alpha1")]
 pub mod v1alpha1;
+#[cfg(feature = "v1alpha2")]
+pub mod v1alpha2;

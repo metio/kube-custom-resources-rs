@@ -509,6 +509,9 @@ pub struct InstanceSetInstances {
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<InstanceSetInstancesEnv>>,
+    /// Images for the containers of the instance template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<BTreeMap<String, String>>,
     /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels.
     /// Values for existing keys will be overwritten, and new keys will be added.
     #[serde(default, skip_serializing_if = "Option::is_none")]

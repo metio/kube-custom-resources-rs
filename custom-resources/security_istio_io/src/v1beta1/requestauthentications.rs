@@ -52,7 +52,8 @@ pub struct RequestAuthenticationJwtRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromParams")]
     pub from_params: Option<Vec<String>>,
     /// Identifies the issuer that issued the JWT.
-    pub issuer: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub issuer: Option<String>,
     /// JSON Web Key Set of public keys to validate signature of the JWT.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwks: Option<String>,

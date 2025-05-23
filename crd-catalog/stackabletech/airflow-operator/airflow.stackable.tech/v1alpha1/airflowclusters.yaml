@@ -446,7 +446,7 @@ spec:
                       items:
                         properties:
                           authenticationClass:
-                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication) used to authenticate users."
+                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication) used to authenticate users"
                             type: "string"
                           oidc:
                             description: "This field contains OIDC-specific configuration. It is only required in case OIDC is used."
@@ -457,7 +457,7 @@ spec:
                                 type: "string"
                               extraScopes:
                                 default: []
-                                description: "An optional list of extra scopes which get merged with the scopes defined in the [`AuthenticationClass`]."
+                                description: "An optional list of extra scopes which get merged with the scopes defined in the `AuthenticationClass`."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -529,34 +529,35 @@ spec:
                         properties:
                           branch:
                             default: "main"
-                            description: "The branch to clone. Defaults to `main`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--ref`."
+                            description: "The branch to clone; defaults to `main`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--ref`."
                             type: "string"
                           credentialsSecret:
-                            description: "The name of the Secret used to access the repository if it is not public. This should include two fields: `user` and `password`. The `password` field can either be an actual password (not recommended) or a GitHub token, as described [here](https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual)."
+                            description: "The name of the Secret used to access the repository if it is not public.\n\nThe referenced Secret must include two fields: `user` and `password`. The `password` field can either be an actual password (not recommended) or a GitHub token, as described in the git-sync [documentation].\n\n[documentation]: https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual"
                             nullable: true
                             type: "string"
                           depth:
                             default: 1
-                            description: "The depth of syncing i.e. the number of commits to clone; defaults to 1."
+                            description: "The depth of syncing, i.e. the number of commits to clone; defaults to 1."
                             format: "uint32"
                             minimum: 0.0
                             type: "integer"
                           gitFolder:
                             default: "/"
-                            description: "The location of the DAG folder, relative to the synced repository root.\n\nIt can optionally start with `/`, however, no trailing slash is recommended. An empty string (``) or slash (`/`) corresponds to the root folder in Git."
+                            description: "Location in the Git repository containing the resource; defaults to the root folder.\n\nIt can optionally start with `/`, however, no trailing slash is recommended. An empty string (``) or slash (`/`) corresponds to the root folder in Git."
                             type: "string"
                           gitSyncConf:
                             additionalProperties:
                               type: "string"
                             default: {}
-                            description: "A map of optional configuration settings that are listed in the [git-sync documentation](https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual). Read the [git sync example](https://docs.stackable.tech/home/nightly/airflow/usage-guide/mounting-dags#_example)."
+                            description: "A map of optional configuration settings that are listed in the git-sync [documentation].\n\nAlso read the git-sync [example] in our documentation. These settings are not verified.\n\n[documentation]: https://github.com/kubernetes/git-sync/tree/v4.2.4?tab=readme-ov-file#manual [example]: https://docs.stackable.tech/home/nightly/airflow/usage-guide/mounting-dags#_example"
                             type: "object"
                           repo:
                             description: "The git repository URL that will be cloned, for example: `https://github.com/stackabletech/airflow-operator`."
+                            format: "uri"
                             type: "string"
                           wait:
                             default: "20s"
-                            description: "The synchronization interval, e.g. `20s` or `5m`, defaults to `20s`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--period`."
+                            description: "The synchronization interval, e.g. `20s` or `5m`; defaults to `20s`.\n\nSince git-sync v4.x.x this field is mapped to the flag `--period`."
                             type: "string"
                         required:
                           - "repo"

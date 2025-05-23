@@ -57,8 +57,10 @@ pub struct AgentSpec {
     /// unless `mode` is set to `fleet`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kibanaRef")]
     pub kibana_ref: Option<AgentKibanaRef>,
-    /// Mode specifies the source of configuration for the Agent. The configuration can be specified locally through
-    /// `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode).
+    /// Mode specifies the runtime mode for the Agent. The configuration can be specified locally through
+    /// `config` or `configRef` (`standalone` mode), or come from Fleet during runtime (`fleet` mode). Starting with
+    /// version 8.13.0 Fleet-managed agents support advanced configuration via a local configuration file.
+    /// See https://www.elastic.co/docs/reference/fleet/advanced-kubernetes-managed-by-fleet
     /// Defaults to `standalone` mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<AgentMode>,

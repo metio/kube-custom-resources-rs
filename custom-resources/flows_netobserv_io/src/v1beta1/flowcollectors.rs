@@ -141,7 +141,7 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
     /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets
-    /// granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container.
+    /// granular capabilities (BPF, PERFMON, NET_ADMIN) to the container.
     /// If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF
     /// is in use, then you can turn on this mode for more global privileges.
     /// Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
@@ -161,6 +161,9 @@ pub struct FlowCollectorAgentEbpf {
 /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfDebug {
+    /// Linux capabilities override, when not running as privileged. Default capabilities are BPF, PERFMON and NET_ADMIN.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capOverride")]
+    pub cap_override: Option<Vec<String>>,
     /// `env` allows passing custom environment variables to underlying components. Useful for passing
     /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
     /// publicly exposed as part of the FlowCollector descriptor, as they are only useful
@@ -1741,6 +1744,9 @@ pub struct FlowCollectorProcessor {
 /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorDebug {
+    /// Linux capabilities override, when not running as privileged. Default capabilities are BPF, PERFMON and NET_ADMIN.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capOverride")]
+    pub cap_override: Option<Vec<String>>,
     /// `env` allows passing custom environment variables to underlying components. Useful for passing
     /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
     /// publicly exposed as part of the FlowCollector descriptor, as they are only useful

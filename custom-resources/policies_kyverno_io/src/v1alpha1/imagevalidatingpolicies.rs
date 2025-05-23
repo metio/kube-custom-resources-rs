@@ -944,6 +944,8 @@ pub struct ImageValidatingPolicyStatusAutogenConfigs {
     /// ImageValidatingPolicySpec is the specification of the desired behavior of the ImageValidatingPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ImageValidatingPolicyStatusAutogenConfigsSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<ImageValidatingPolicyStatusAutogenConfigsTargets>>,
 }
 
 /// ImageValidatingPolicySpec is the specification of the desired behavior of the ImageValidatingPolicy.
@@ -1851,6 +1853,15 @@ pub struct ImageValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration {
     /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ImageValidatingPolicyStatusAutogenConfigsTargets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    pub kind: String,
+    pub resource: String,
+    pub version: String,
 }
 
 /// ConditionStatus is the shared status across all policy types

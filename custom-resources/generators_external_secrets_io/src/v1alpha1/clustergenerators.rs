@@ -41,6 +41,9 @@ pub struct ClusterGeneratorGenerator {
     /// GrafanaSpec controls the behavior of the grafana generator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grafanaSpec")]
     pub grafana_spec: Option<ClusterGeneratorGeneratorGrafanaSpec>,
+    /// MFASpec controls the behavior of the mfa generator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mfaSpec")]
+    pub mfa_spec: Option<ClusterGeneratorGeneratorMfaSpec>,
     /// PasswordSpec controls the behavior of the password generator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSpec")]
     pub password_spec: Option<ClusterGeneratorGeneratorPasswordSpec>,
@@ -535,6 +538,41 @@ pub struct ClusterGeneratorGeneratorGrafanaSpecServiceAccount {
     /// See here for the documentation on basic roles offered by Grafana:
     /// https://grafana.com/docs/grafana/latest/administration/roles-and-permissions/access-control/rbac-fixed-basic-role-definitions/
     pub role: String,
+}
+
+/// MFASpec controls the behavior of the mfa generator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorMfaSpec {
+    /// Algorithm to use for encoding. Defaults to SHA1 as per the RFC.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub algorithm: Option<String>,
+    /// Length defines the token length. Defaults to 6 characters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub length: Option<i64>,
+    /// Secret is a secret selector to a secret containing the seed secret to generate the TOTP value from.
+    pub secret: ClusterGeneratorGeneratorMfaSpecSecret,
+    /// TimePeriod defines how long the token can be active. Defaults to 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timePeriod")]
+    pub time_period: Option<i64>,
+    /// When defines a time parameter that can be used to pin the origin time of the generated token.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<String>,
+}
+
+/// Secret is a secret selector to a secret containing the seed secret to generate the TOTP value from.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorMfaSpecSecret {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PasswordSpec controls the behavior of the password generator.

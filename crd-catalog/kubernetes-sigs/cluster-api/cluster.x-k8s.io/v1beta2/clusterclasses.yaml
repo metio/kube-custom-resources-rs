@@ -25,7 +25,7 @@ spec:
       name: "v1beta2"
       schema:
         openAPIV3Schema:
-          description: "ClusterClass is a template which can be used to create managed topologies."
+          description: "ClusterClass is a template which can be used to create managed topologies.\nNOTE: This CRD can only be used if the ClusterTopology feature gate is enabled."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -104,10 +104,10 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
-                        unhealthyConditions:
-                          description: "unhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
+                        unhealthyNodeConditions:
+                          description: "unhealthyNodeConditions contains a list of conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
                           items:
-                            description: "UnhealthyCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
+                            description: "UnhealthyNodeCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
                             properties:
                               status:
                                 description: "status of the condition, one of True, False, Unknown."
@@ -714,10 +714,10 @@ spec:
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
-                              unhealthyConditions:
-                                description: "unhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
+                              unhealthyNodeConditions:
+                                description: "unhealthyNodeConditions contains a list of conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
                                 items:
-                                  description: "UnhealthyCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
+                                  description: "UnhealthyNodeCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
                                   properties:
                                     status:
                                       description: "status of the condition, one of True, False, Unknown."

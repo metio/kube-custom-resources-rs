@@ -21,8 +21,16 @@ pub struct CiliumEgressGatewayPolicySpec {
     #[serde(rename = "destinationCIDRs")]
     pub destination_cid_rs: Vec<String>,
     /// EgressGateway is the gateway node responsible for SNATing traffic.
+    /// In case multiple nodes are a match for the given set of labels, the first node
+    /// in lexical ordering based on their name will be selected.
     #[serde(rename = "egressGateway")]
     pub egress_gateway: CiliumEgressGatewayPolicyEgressGateway,
+    /// Optional list of gateway nodes responsible for SNATing traffic.
+    /// If this field has any entries the contents of the egressGateway field will be ignored.
+    /// In case multiple nodes are a match for the given set of labels in each entry,
+    /// the first node in lexical ordering based on their name will be selected for each entry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressGateways")]
+    pub egress_gateways: Option<Vec<CiliumEgressGatewayPolicyEgressGateways>>,
     /// ExcludedCIDRs is a list of destination CIDRs that will be excluded
     /// from the egress gateway redirection and SNAT logic.
     /// Should be a subset of destinationCIDRs otherwise it will not have any
@@ -35,6 +43,8 @@ pub struct CiliumEgressGatewayPolicySpec {
 }
 
 /// EgressGateway is the gateway node responsible for SNATing traffic.
+/// In case multiple nodes are a match for the given set of labels, the first node
+/// in lexical ordering based on their name will be selected.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumEgressGatewayPolicyEgressGateway {
     /// EgressIP is the source IP address that the egress traffic is SNATed
@@ -110,6 +120,91 @@ pub struct CiliumEgressGatewayPolicyEgressGatewayNodeSelectorMatchExpressions {
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum CiliumEgressGatewayPolicyEgressGatewayNodeSelectorMatchExpressionsOperator {
+    In,
+    NotIn,
+    Exists,
+    DoesNotExist,
+}
+
+/// EgressGateway identifies the node that should act as egress gateway for a
+/// given egress Gateway policy. In addition to that it also specifies the
+/// configuration of said node (which egress IP or network interface should be
+/// used to SNAT traffic).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumEgressGatewayPolicyEgressGateways {
+    /// EgressIP is the source IP address that the egress traffic is SNATed
+    /// with.
+    /// 
+    /// Example:
+    /// When set to "192.168.1.100", matching egress traffic will be
+    /// redirected to the node matching the NodeSelector field and SNATed
+    /// with IP address 192.168.1.100.
+    /// 
+    /// When none of the Interface or EgressIP fields is specified, the
+    /// policy will use the first IPv4 assigned to the interface with the
+    /// default route.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressIP")]
+    pub egress_ip: Option<String>,
+    /// Interface is the network interface to which the egress IP address
+    /// that the traffic is SNATed with is assigned.
+    /// 
+    /// Example:
+    /// When set to "eth1", matching egress traffic will be redirected to the
+    /// node matching the NodeSelector field and SNATed with the first IPv4
+    /// address assigned to the eth1 interface.
+    /// 
+    /// When none of the Interface or EgressIP fields is specified, the
+    /// policy will use the first IPv4 assigned to the interface with the
+    /// default route.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub interface: Option<String>,
+    /// This is a label selector which selects the node that should act as
+    /// egress gateway for the given policy.
+    /// In case multiple nodes are selected, only the first one in the
+    /// lexical ordering over the node names will be used.
+    /// This field follows standard label selector semantics.
+    #[serde(rename = "nodeSelector")]
+    pub node_selector: CiliumEgressGatewayPolicyEgressGatewaysNodeSelector,
+}
+
+/// This is a label selector which selects the node that should act as
+/// egress gateway for the given policy.
+/// In case multiple nodes are selected, only the first one in the
+/// lexical ordering over the node names will be used.
+/// This field follows standard label selector semantics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumEgressGatewayPolicyEgressGatewaysNodeSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumEgressGatewayPolicyEgressGatewaysNodeSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumEgressGatewayPolicyEgressGatewaysNodeSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: CiliumEgressGatewayPolicyEgressGatewaysNodeSelectorMatchExpressionsOperator,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumEgressGatewayPolicyEgressGatewaysNodeSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,

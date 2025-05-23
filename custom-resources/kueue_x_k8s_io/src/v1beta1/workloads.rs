@@ -7105,6 +7105,9 @@ pub struct WorkloadStatus {
     /// admission.resourceUsage contains the detailed information.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequests")]
     pub resource_requests: Option<Vec<WorkloadStatusResourceRequests>>,
+    /// schedulingStats tracks scheduling statistics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingStats")]
+    pub scheduling_stats: Option<WorkloadStatusSchedulingStats>,
 }
 
 /// admission holds the parameters of the admission of the workload by a
@@ -7370,5 +7373,25 @@ pub struct WorkloadStatusResourceRequests {
     /// and the application of resource.excludeResourcePrefixes and resource.transformations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// schedulingStats tracks scheduling statistics
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusSchedulingStats {
+    /// evictions tracks eviction statistics by reason and underlyingCause.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub evictions: Option<Vec<WorkloadStatusSchedulingStatsEvictions>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusSchedulingStatsEvictions {
+    /// count tracks the number of evictions for this reason and detailed reason.
+    pub count: i32,
+    /// reason specifies the programmatic identifier for the eviction cause.
+    pub reason: String,
+    /// underlyingCause specifies a finer-grained explanation that complements the eviction reason.
+    /// This may be an empty string.
+    #[serde(rename = "underlyingCause")]
+    pub underlying_cause: String,
 }
 
