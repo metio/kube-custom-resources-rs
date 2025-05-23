@@ -100,6 +100,15 @@ pub struct ManagedResourceTemplateData {
 /// Defines the reference to the resource that should be imported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ManagedResourceTemplateDataRef {
+    /// ApiVersion of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Group of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// Kind of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
     /// Name of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

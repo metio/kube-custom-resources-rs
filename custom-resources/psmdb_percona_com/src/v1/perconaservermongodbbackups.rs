@@ -71,6 +71,8 @@ pub struct PerconaServerMongoDBBackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaServerMongoDBBackupStatusS3>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,

@@ -10,6 +10,8 @@ spec:
     kind: "ManagedResource"
     listKind: "ManagedResourceList"
     plural: "managedresources"
+    shortNames:
+      - "mr"
     singular: "managedresource"
   scope: "Cluster"
   versions:
@@ -86,6 +88,15 @@ spec:
                           ref:
                             description: "Defines the reference to the resource that should be imported."
                             properties:
+                              apiVersion:
+                                description: "ApiVersion of the resource."
+                                type: "string"
+                              group:
+                                description: "Group of the resource."
+                                type: "string"
+                              kind:
+                                description: "Kind of the resource."
+                                type: "string"
                               name:
                                 description: "Name of the resource."
                                 type: "string"

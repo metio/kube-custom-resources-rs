@@ -34,9 +34,6 @@ pub struct RecordSetSpec {
     ///    in the Amazon Route 53 Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aliasTarget")]
     pub alias_target: Option<RecordSetAliasTarget>,
-    /// A complex type that contains an optional comment and the Changes element.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "changeBatch")]
-    pub change_batch: Option<RecordSetChangeBatch>,
     /// The object that is specified in resource record set object when you are linking
     /// a resource record set to a CIDR location.
     /// 
@@ -462,123 +459,6 @@ pub struct RecordSetAliasTarget {
     pub evaluate_target_health: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneID")]
     pub hosted_zone_id: Option<String>,
-}
-
-/// A complex type that contains an optional comment and the Changes element.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatch {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub changes: Option<Vec<RecordSetChangeBatchChanges>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub comment: Option<String>,
-}
-
-/// The information for each resource record set that you want to change.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChanges {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub action: Option<String>,
-    /// Information about the resource record set to create or delete.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRecordSet")]
-    pub resource_record_set: Option<RecordSetChangeBatchChangesResourceRecordSet>,
-}
-
-/// Information about the resource record set to create or delete.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChangesResourceRecordSet {
-    /// Alias resource record sets only: Information about the Amazon Web Services
-    /// resource, such as a CloudFront distribution or an Amazon S3 bucket, that
-    /// you want to route traffic to.
-    /// 
-    /// When creating resource record sets for a private hosted zone, note the following:
-    /// 
-    ///    * For information about creating failover resource record sets in a private
-    ///    hosted zone, see Configuring Failover in a Private Hosted Zone (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-private-hosted-zones.html).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aliasTarget")]
-    pub alias_target: Option<RecordSetChangeBatchChangesResourceRecordSetAliasTarget>,
-    /// The object that is specified in resource record set object when you are linking
-    /// a resource record set to a CIDR location.
-    /// 
-    /// A LocationName with an asterisk “*” can be used to create a default CIDR
-    /// record. CollectionId is still required for default record.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrRoutingConfig")]
-    pub cidr_routing_config: Option<RecordSetChangeBatchChangesResourceRecordSetCidrRoutingConfig>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failover: Option<String>,
-    /// A complex type that contains information about a geographic location.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "geoLocation")]
-    pub geo_location: Option<RecordSetChangeBatchChangesResourceRecordSetGeoLocation>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckID")]
-    pub health_check_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiValueAnswer")]
-    pub multi_value_answer: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub region: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRecords")]
-    pub resource_records: Option<Vec<RecordSetChangeBatchChangesResourceRecordSetResourceRecords>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setIdentifier")]
-    pub set_identifier: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicyInstanceID")]
-    pub traffic_policy_instance_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ttl: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
-    pub r#type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub weight: Option<i64>,
-}
-
-/// Alias resource record sets only: Information about the Amazon Web Services
-/// resource, such as a CloudFront distribution or an Amazon S3 bucket, that
-/// you want to route traffic to.
-/// 
-/// When creating resource record sets for a private hosted zone, note the following:
-/// 
-///    * For information about creating failover resource record sets in a private
-///    hosted zone, see Configuring Failover in a Private Hosted Zone (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-private-hosted-zones.html).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChangesResourceRecordSetAliasTarget {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsName")]
-    pub dns_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluateTargetHealth")]
-    pub evaluate_target_health: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneID")]
-    pub hosted_zone_id: Option<String>,
-}
-
-/// The object that is specified in resource record set object when you are linking
-/// a resource record set to a CIDR location.
-/// 
-/// A LocationName with an asterisk “*” can be used to create a default CIDR
-/// record. CollectionId is still required for default record.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChangesResourceRecordSetCidrRoutingConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collectionID")]
-    pub collection_id: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "locationName")]
-    pub location_name: Option<String>,
-}
-
-/// A complex type that contains information about a geographic location.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChangesResourceRecordSetGeoLocation {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "continentCode")]
-    pub continent_code: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "countryCode")]
-    pub country_code: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subdivisionCode")]
-    pub subdivision_code: Option<String>,
-}
-
-/// Information specific to the resource record.
-/// 
-/// If you're creating an alias resource record set, omit ResourceRecord.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct RecordSetChangeBatchChangesResourceRecordSetResourceRecords {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
 }
 
 /// The object that is specified in resource record set object when you are linking

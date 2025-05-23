@@ -103,6 +103,44 @@ spec:
                 forceTenantPrefix:
                   description: "Use this if you want to disable/enable the Tenant name prefix to specific Tenants, overriding global forceTenantPrefix in CapsuleConfiguration.\nWhen set to 'true', it enforces Namespaces created for this Tenant to be named with the Tenant name prefix,\nseparated by a dash (i.e. for Tenant 'foo', namespace names must be prefixed with 'foo-'),\nthis is useful to avoid Namespace name collision.\nWhen set to 'false', it allows Namespaces created for this Tenant to be named anything.\nOverrides CapsuleConfiguration global forceTenantPrefix for the Tenant only.\nIf unset, Tenant uses CapsuleConfiguration's forceTenantPrefix\nOptional"
                   type: "boolean"
+                gatewayOptions:
+                  description: "Specifies options for the GatewayClass resources."
+                  properties:
+                    allowedClasses:
+                      properties:
+                        default:
+                          type: "string"
+                        matchExpressions:
+                          description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
+                          items:
+                            description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                            properties:
+                              key:
+                                description: "key is the label key that the selector applies to."
+                                type: "string"
+                              operator:
+                                description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                type: "string"
+                              values:
+                                description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
+                                items:
+                                  type: "string"
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                            required:
+                              - "key"
+                              - "operator"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
+                        matchLabels:
+                          additionalProperties:
+                            type: "string"
+                          description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
+                          type: "object"
+                      type: "object"
+                      x-kubernetes-map-type: "atomic"
+                  type: "object"
                 imagePullPolicies:
                   description: "Specify the allowed values for the imagePullPolicies option in Pod resources. Capsule assures that all Pod resources created in the Tenant can use only one of the allowed policy. Optional."
                   items:

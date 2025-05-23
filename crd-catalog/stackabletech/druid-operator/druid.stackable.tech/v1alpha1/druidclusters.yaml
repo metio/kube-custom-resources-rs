@@ -500,7 +500,7 @@ spec:
                   properties:
                     additionalExtensions:
                       default: []
-                      description: "Additional extensions to load in Druid. The operator will automatically load all extensions needed based on the cluster configuration, but for extra functionality which the operator cannot anticipate, it can sometimes be necessary to load additional extensions. Add configuration for additional extensions using [configuration override for Druid](https://docs.stackable.tech/home/stable/druid/usage-guide/overrides)."
+                      description: "Additional extensions to load in Druid. The operator will automatically load all extensions needed based on the cluster configuration, but for extra functionality which the operator cannot anticipate, it can sometimes be necessary to load additional extensions. Add configuration for additional extensions using [configuration override for Druid](https://docs.stackable.tech/home/nightly/druid/usage-guide/overrides)."
                       items:
                         type: "string"
                       type: "array"
@@ -510,10 +510,10 @@ spec:
                       items:
                         properties:
                           authenticationClass:
-                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication) used to authenticate users."
+                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication) used to authenticate users.\n\nTo get the concrete [`AuthenticationClass`], we must resolve it. This resolution can be achieved by using [`ClientAuthenticationDetails::resolve_class`]."
                             type: "string"
                           oidc:
-                            description: "This field contains OIDC-specific configuration. It is only required in case OIDC is used."
+                            description: "This field contains OIDC-specific configuration. It is only required in case OIDC is used.\n\nUse [`ClientAuthenticationDetails::oidc_or_error`] to get the value or report an error to the user."
                             nullable: true
                             properties:
                               clientCredentialsSecret:
@@ -521,7 +521,7 @@ spec:
                                 type: "string"
                               extraScopes:
                                 default: []
-                                description: "An optional list of extra scopes which get merged with the scopes defined in the [`AuthenticationClass`]."
+                                description: "An optional list of extra scopes which get merged with the scopes defined in the [`AuthenticationClass`][1].\n\n[1]: crate::crd::authentication::core::v1alpha1::AuthenticationClass"
                                 items:
                                   type: "string"
                                 type: "array"

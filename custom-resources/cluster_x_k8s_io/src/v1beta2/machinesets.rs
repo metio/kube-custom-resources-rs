@@ -32,10 +32,6 @@ pub struct MachineSetSpec {
     /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
     pub machine_naming_strategy: Option<MachineSetMachineNamingStrategy>,
-    /// minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.
-    /// Defaults to 0 (machine will be considered available as soon as the Node is ready)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
-    pub min_ready_seconds: Option<i32>,
     /// replicas is the number of desired replicas.
     /// This is a pointer to distinguish between explicit zero and unspecified.
     /// 
@@ -183,6 +179,10 @@ pub struct MachineSetTemplateSpec {
     /// offered by an infrastructure provider.
     #[serde(rename = "infrastructureRef")]
     pub infrastructure_ref: ObjectReference,
+    /// minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.
+    /// Defaults to 0 (Machine will be considered available as soon as the Machine is ready)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
