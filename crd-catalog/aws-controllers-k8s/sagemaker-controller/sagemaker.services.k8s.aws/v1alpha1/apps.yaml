@@ -34,13 +34,13 @@ spec:
               description: "AppSpec defines the desired state of App."
               properties:
                 appName:
-                  description: "The name of the app."
+                  description: "The name of the app.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 appType:
                   description: "The type of app."
                   type: "string"
                 domainID:
-                  description: "The domain ID."
+                  description: "The domain ID.\n\nRegex Pattern: `^d-(-*[a-z0-9]){1,61}$`"
                   type: "string"
                 resourceSpec:
                   description: "The instance type and the Amazon Resource Name (ARN) of the SageMaker image\ncreated on the instance.\n\nThe value of InstanceType passed as part of the ResourceSpec in the CreateApp\ncall overrides the value passed as part of the ResourceSpec configured for\nthe user profile or the domain. If InstanceType is not specified in any of\nthose three ResourceSpec values for a KernelGateway app, the CreateApp call\nfails with a request validation error."
@@ -68,7 +68,7 @@ spec:
                     type: "object"
                   type: "array"
                 userProfileName:
-                  description: "The user profile name. If this value is not set, then SpaceName must be set."
+                  description: "The user profile name. If this value is not set, then SpaceName must be set.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
               required:
                 - "appName"

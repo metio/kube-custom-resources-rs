@@ -21,6 +21,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ModelQualityJobDefinitionSpec {
     /// The name of the monitoring job definition.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "jobDefinitionName")]
     pub job_definition_name: String,
     /// Identifies the resources to deploy for a monitoring job.
@@ -43,6 +45,8 @@ pub struct ModelQualityJobDefinitionSpec {
     pub network_config: Option<ModelQualityJobDefinitionNetworkConfig>,
     /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
     /// to perform tasks on your behalf.
+    /// 
+    /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// A time limit for how long the monitoring job is allowed to run before stopping.

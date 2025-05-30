@@ -42,6 +42,8 @@ pub struct NotebookInstanceSpec {
     /// in any other Git repository. When you open a notebook instance, it opens
     /// in the directory that contains this repository. For more information, see
     /// Associating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html).
+    /// 
+    /// Regex Pattern: `^https://([^/]+)/?(.*)$|^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultCodeRepository")]
     pub default_code_repository: Option<String>,
     /// Sets whether SageMaker provides internet access to the notebook instance.
@@ -63,17 +65,25 @@ pub struct NotebookInstanceSpec {
     /// your notebook instance. The KMS key you provide must be enabled. For information,
     /// see Enabling and Disabling Keys (https://docs.aws.amazon.com/kms/latest/developerguide/enabling-keys.html)
     /// in the Amazon Web Services Key Management Service Developer Guide.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// The name of a lifecycle configuration to associate with the notebook instance.
     /// For information about lifestyle configurations, see Step 2.1: (Optional)
     /// Customize a Notebook Instance (https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html).
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigName")]
     pub lifecycle_config_name: Option<String>,
     /// The name of the new notebook instance.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`
     #[serde(rename = "notebookInstanceName")]
     pub notebook_instance_name: String,
     /// The platform identifier of the notebook instance runtime environment.
+    /// 
+    /// Regex Pattern: `^(notebook-al1-v1|notebook-al2-v1|notebook-al2-v2|notebook-al2-v3)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformIdentifier")]
     pub platform_identifier: Option<String>,
     /// When you send any requests to Amazon Web Services resources from the notebook
@@ -85,6 +95,8 @@ pub struct NotebookInstanceSpec {
     /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
+    /// 
+    /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// Whether root access is enabled or disabled for users of the notebook instance.
@@ -102,6 +114,8 @@ pub struct NotebookInstanceSpec {
     pub security_group_i_ds: Option<Vec<String>>,
     /// The ID of the subnet in a VPC to which you would like to have a connectivity
     /// from your ML compute instance.
+    /// 
+    /// Regex Pattern: `^[-0-9a-zA-Z]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
     /// An array of key-value pairs. You can use tags to categorize your Amazon Web

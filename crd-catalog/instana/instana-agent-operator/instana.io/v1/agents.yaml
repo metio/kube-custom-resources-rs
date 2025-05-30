@@ -3975,6 +3975,17 @@ spec:
                       - "uid"
                     type: "object"
                   type: "object"
+                namespacesconfigmap:
+                  description: "ResourceInfo holds Name and UID to given object"
+                  properties:
+                    name:
+                      type: "string"
+                    uid:
+                      type: "string"
+                  required:
+                    - "name"
+                    - "uid"
+                  type: "object"
                 observedGeneration:
                   format: "int64"
                   minimum: 0.0

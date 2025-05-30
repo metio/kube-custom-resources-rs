@@ -30,7 +30,7 @@ spec:
               description: "FirewallPolicySpec defines the desired state of FirewallPolicy.\n\nThe firewall policy defines the behavior of a firewall using a collection\nof stateless and stateful rule groups and other settings. You can use one\nfirewall policy for multiple firewalls.\n\nThis, along with FirewallPolicyResponse, define the policy. You can retrieve\nall objects for a firewall policy by calling DescribeFirewallPolicy."
               properties:
                 description:
-                  description: "A description of the firewall policy."
+                  description: "A description of the firewall policy.\n\nRegex Pattern: `^.*$`"
                   type: "string"
                 encryptionConfiguration:
                   description: "A complex type that contains settings for encryption of your firewall policy\nresources."
@@ -133,7 +133,7 @@ spec:
                       type: "string"
                   type: "object"
                 firewallPolicyName:
-                  description: "The descriptive name of the firewall policy. You can't change the name of\na firewall policy after you create it."
+                  description: "The descriptive name of the firewall policy. You can't change the name of\na firewall policy after you create it.\n\nRegex Pattern: `^[a-zA-Z0-9-]+$`"
                   type: "string"
                 tags:
                   description: "The key:value pairs to associate with the resource."
@@ -240,7 +240,7 @@ spec:
                       type: "array"
                   type: "object"
                 updateToken:
-                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the firewall policy. The token marks the state\nof the policy resource at the time of the request.\n\nTo make changes to the policy, you provide the token in your request. Network\nFirewall uses the token to ensure that the policy hasn't changed since you\nlast retrieved it. If it has changed, the operation fails with an InvalidTokenException.\nIf this happens, retrieve the firewall policy again to get a current copy\nof it with current token. Reapply your changes as needed, then try the operation\nagain using the new token."
+                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the firewall policy. The token marks the state\nof the policy resource at the time of the request.\n\nTo make changes to the policy, you provide the token in your request. Network\nFirewall uses the token to ensure that the policy hasn't changed since you\nlast retrieved it. If it has changed, the operation fails with an InvalidTokenException.\nIf this happens, retrieve the firewall policy again to get a current copy\nof it with current token. Reapply your changes as needed, then try the operation\nagain using the new token.\n\nRegex Pattern: `^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$`"
                   type: "string"
               type: "object"
           type: "object"

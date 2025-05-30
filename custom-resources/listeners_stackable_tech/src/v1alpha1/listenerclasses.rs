@@ -16,6 +16,16 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ListenerClassSpec {
+    /// Configures whether a LoadBalancer service should also allocate node ports (like NodePort).
+    /// 
+    /// Ignored unless serviceType is LoadBalancer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerAllocateNodePorts")]
+    pub load_balancer_allocate_node_ports: Option<bool>,
+    /// Configures a custom Service loadBalancerClass, which can be used to access secondary load balancer controllers that are installed in the cluster, or to provision custom addresses manually.
+    /// 
+    /// Ignored unless serviceType is LoadBalancer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`). Can also be set to `HostnameConservative`, which will use `IP` for `NodePort` service types, but `Hostname` for everything else.
     /// 
     /// The other type will be used if the preferred type is not available.

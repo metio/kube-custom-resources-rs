@@ -24,8 +24,6 @@ pub struct PerconaServerMongoDBBackupSpec {
     pub compression_level: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "psmdbCluster")]
-    pub psmdb_cluster: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -70,6 +68,8 @@ pub struct PerconaServerMongoDBBackupStatus {
     pub replset_names: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaServerMongoDBBackupStatusS3>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

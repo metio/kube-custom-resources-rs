@@ -30,7 +30,7 @@ spec:
               description: "StreamSpec defines the desired state of Stream."
               properties:
                 name:
-                  description: "A name to identify the stream. The stream name is scoped to the Amazon Web\nServices account used by the application that creates the stream. It is also\nscoped by Amazon Web Services Region. That is, two streams in two different\nAmazon Web Services accounts can have the same name. Two streams in the same\nAmazon Web Services account but in two different Regions can also have the\nsame name."
+                  description: "A name to identify the stream. The stream name is scoped to the Amazon Web\nServices account used by the application that creates the stream. It is also\nscoped by Amazon Web Services Region. That is, two streams in two different\nAmazon Web Services accounts can have the same name. Two streams in the same\nAmazon Web Services account but in two different Regions can also have the\nsame name.\n\nRegex Pattern: `^[a-zA-Z0-9_.-]+$`"
                   type: "string"
                 shardCount:
                   description: "The number of shards that the stream will use. The throughput of the stream\nis a function of the number of shards; more shards are required for greater\nprovisioned throughput."

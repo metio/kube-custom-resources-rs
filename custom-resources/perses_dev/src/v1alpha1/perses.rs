@@ -55,6 +55,9 @@ pub struct PersesSpec {
     /// service specifies the service configuration for the perses instance
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<PersesService>,
+    /// ServiceAccountName is the name of the service account to use for the perses deployment or statefulset.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Storage configuration used by the StatefulSet
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<PersesStorage>,
@@ -761,10 +764,13 @@ pub struct PersesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// Perses client configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesClient {
-    /// BasicAuth basic auth config for datasource client
+    /// BasicAuth basic auth config for perses client
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PersesClientBasicAuth>,
-    /// OAuth configuration for datasource client
+    /// KubernetesAuth configuration for perses client
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuth")]
+    pub kubernetes_auth: Option<PersesClientKubernetesAuth>,
+    /// OAuth configuration for perses client
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth: Option<PersesClientOauth>,
     /// TLS the equivalent to the tls_config for perses client
@@ -772,7 +778,7 @@ pub struct PersesClient {
     pub tls: Option<PersesClientTls>,
 }
 
-/// BasicAuth basic auth config for datasource client
+/// BasicAuth basic auth config for perses client
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PersesClientBasicAuth {
     /// Name of basic auth k8s resource (when type is secret or configmap)
@@ -790,7 +796,7 @@ pub struct PersesClientBasicAuth {
     pub username: String,
 }
 
-/// BasicAuth basic auth config for datasource client
+/// BasicAuth basic auth config for perses client
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PersesClientBasicAuthType {
     #[serde(rename = "secret")]
@@ -801,7 +807,14 @@ pub enum PersesClientBasicAuthType {
     File,
 }
 
-/// OAuth configuration for datasource client
+/// KubernetesAuth configuration for perses client
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesClientKubernetesAuth {
+    /// Enable kubernetes auth for perses client
+    pub enable: bool,
+}
+
+/// OAuth configuration for perses client
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct PersesClientOauth {
     /// AuthStyle optionally specifies how the endpoint wants the
@@ -836,7 +849,7 @@ pub struct PersesClientOauth {
     pub r#type: PersesClientOauthType,
 }
 
-/// OAuth configuration for datasource client
+/// OAuth configuration for perses client
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PersesClientOauthType {
     #[serde(rename = "secret")]

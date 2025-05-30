@@ -56,7 +56,7 @@ spec:
                   description: "The description of the version."
                   type: "string"
                 layerName:
-                  description: "The name or Amazon Resource Name (ARN) of the layer."
+                  description: "The name or Amazon Resource Name (ARN) of the layer.\n\nRegex Pattern: `^(arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+$`"
                   type: "string"
                 licenseInfo:
                   description: "The layer's software license. It can be any of the following:\n\n   * An SPDX license identifier (https://spdx.org/licenses/). For example,\n   MIT.\n\n   * The URL of a license hosted on the internet. For example, https://opensource.org/licenses/MIT.\n\n   * The full text of the license."
@@ -114,7 +114,7 @@ spec:
                   description: "The date that the layer version was created, in ISO-8601 format (https://www.w3.org/TR/NOTE-datetime)\n(YYYY-MM-DDThh:mm:ss.sTZD)."
                   type: "string"
                 layerARN:
-                  description: "The ARN of the layer."
+                  description: "The ARN of the layer.\n\nRegex Pattern: `^arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\\d{12}:layer:[a-zA-Z0-9-_]+$`"
                   type: "string"
                 versionNumber:
                   description: "The version number."

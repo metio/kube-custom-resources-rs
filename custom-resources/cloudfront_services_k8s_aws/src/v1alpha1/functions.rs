@@ -29,6 +29,8 @@ pub struct FunctionSpec {
     #[serde(rename = "functionConfig")]
     pub function_config: FunctionFunctionConfig,
     /// A name to identify the function.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9-_]{1,64}$`
     pub name: String,
 }
 

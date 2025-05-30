@@ -27,6 +27,8 @@ pub struct FileSystemSpec {
     /// 
     /// One Zone file systems are not available in all Availability Zones in Amazon
     /// Web Services Regions where Amazon EFS is available.
+    /// 
+    /// Regex Pattern: `^.+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneName")]
     pub availability_zone_name: Option<String>,
     /// Specifies whether automatic backups are enabled on the file system that you
@@ -73,6 +75,8 @@ pub struct FileSystemSpec {
     /// 
     /// EFS accepts only symmetric KMS keys. You cannot use asymmetric KMS keys with
     /// Amazon EFS file systems.
+    /// 
+    /// Regex Pattern: `^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|mrk-[0-9a-f]{32}|alias/[a-zA-Z0-9/_-]+|(arn:aws[-a-z]*:kms:[a-z0-9-]+:\d{12}:((key/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})|(key/mrk-[0-9a-f]{32})|(alias/[a-zA-Z0-9/_-]+))))$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -128,6 +132,8 @@ pub struct FileSystemSpec {
     /// definition. EFS file system policies have a 20,000 character limit. To find
     /// out more about the elements that make up a file system policy, see Resource-based
     /// policies within Amazon EFS (https://docs.aws.amazon.com/efs/latest/ug/security_iam_service-with-iam.html#security_iam_service-with-iam-resource-based-policies).
+    /// 
+    /// Regex Pattern: `^[\s\S]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
     /// The throughput, measured in mebibytes per second (MiBps), that you want to
@@ -252,6 +258,8 @@ pub struct FileSystemStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// The ID of the file system, assigned by Amazon EFS.
+    /// 
+    /// Regex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:file-system/fs-[0-9a-f]{8,40}|fs-[0-9a-f]{8,40})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     /// The lifecycle phase of the file system.
@@ -260,6 +268,8 @@ pub struct FileSystemStatus {
     /// You can add tags to a file system, including a Name tag. For more information,
     /// see CreateFileSystem. If the file system has a Name tag, Amazon EFS returns
     /// the value in this field.
+    /// 
+    /// Regex Pattern: `^([\p{L}\p{Z}\p{N}_.:/=+\-@]*)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The current number of mount targets that the file system has. For more information,
@@ -267,6 +277,8 @@ pub struct FileSystemStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numberOfMountTargets")]
     pub number_of_mount_targets: Option<i64>,
     /// The Amazon Web Services account that created the file system.
+    /// 
+    /// Regex Pattern: `^(\d{12})|(\d{4}-\d{4}-\d{4})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// The latest known metered size (in bytes) of data stored in the file system,

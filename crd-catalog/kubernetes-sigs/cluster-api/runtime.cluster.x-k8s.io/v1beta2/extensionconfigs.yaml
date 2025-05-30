@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "extensionconfigs.runtime.cluster.x-k8s.io"
 spec:
   group: "runtime.cluster.x-k8s.io"
@@ -25,7 +25,7 @@ spec:
       name: "v1beta2"
       schema:
         openAPIV3Schema:
-          description: "ExtensionConfig is the Schema for the ExtensionConfig API."
+          description: "ExtensionConfig is the Schema for the ExtensionConfig API.\nNOTE: This CRD can only be used if the RuntimeSDK feature gate is enabled."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

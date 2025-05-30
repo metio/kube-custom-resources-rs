@@ -44,6 +44,8 @@ pub struct RepositorySpec {
     /// 
     /// The repository name must start with a letter and can only contain lowercase
     /// letters, numbers, hyphens, underscores, and forward slashes.
+    /// 
+    /// Regex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`
     pub name: String,
     /// The JSON repository policy text to apply to the repository. For more information,
     /// see Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)
@@ -53,6 +55,8 @@ pub struct RepositorySpec {
     /// The Amazon Web Services account ID associated with the registry to create
     /// the repository. If you do not specify a registry, the default registry is
     /// assumed.
+    /// 
+    /// Regex Pattern: `^[0-9]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The metadata that you apply to the repository to help you categorize and

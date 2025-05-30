@@ -119,10 +119,10 @@ spec:
                       type: "object"
                   type: "object"
                 endpointConfigName:
-                  description: "The name of an endpoint configuration. For more information, see CreateEndpointConfig\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html)."
+                  description: "The name of an endpoint configuration. For more information, see CreateEndpointConfig\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpointConfig.html).\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 endpointName:
-                  description: "The name of the endpoint.The name must be unique within an Amazon Web Services\nRegion in your Amazon Web Services account. The name is case-insensitive\nin CreateEndpoint, but the case is preserved and must be matched in InvokeEndpoint\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html)."
+                  description: "The name of the endpoint.The name must be unique within an Amazon Web Services\nRegion in your Amazon Web Services account. The name is case-insensitive\nin CreateEndpoint, but the case is preserved and must be matched in InvokeEndpoint\n(https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html).\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 tags:
                   description: "An array of key-value pairs. You can use tags to categorize your Amazon Web\nServices resources in different ways, for example, by purpose, owner, or\nenvironment. For more information, see Tagging Amazon Web Services Resources\n(https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)."

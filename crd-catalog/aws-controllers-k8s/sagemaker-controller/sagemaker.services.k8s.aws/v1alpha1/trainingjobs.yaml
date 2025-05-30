@@ -305,7 +305,7 @@ spec:
                       type: "integer"
                   type: "object"
                 roleARN:
-                  description: "The Amazon Resource Name (ARN) of an IAM role that SageMaker can assume to\nperform tasks on your behalf.\n\nDuring model training, SageMaker needs your permission to read input data\nfrom an S3 bucket, download a Docker image that contains training code, write\nmodel artifacts to an S3 bucket, write logs to Amazon CloudWatch Logs, and\npublish metrics to Amazon CloudWatch. You grant permissions for all of these\ntasks to an IAM role. For more information, see SageMaker Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to SageMaker, the caller of this API must have\nthe iam:PassRole permission."
+                  description: "The Amazon Resource Name (ARN) of an IAM role that SageMaker can assume to\nperform tasks on your behalf.\n\nDuring model training, SageMaker needs your permission to read input data\nfrom an S3 bucket, download a Docker image that contains training code, write\nmodel artifacts to an S3 bucket, write logs to Amazon CloudWatch Logs, and\npublish metrics to Amazon CloudWatch. You grant permissions for all of these\ntasks to an IAM role. For more information, see SageMaker Roles (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html).\n\nTo be able to pass this role to SageMaker, the caller of this API must have\nthe iam:PassRole permission.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 stoppingCondition:
                   description: "Specifies a limit to how long a model training job can run. It also specifies\nhow long a managed Spot training job has to complete. When the job reaches\nthe time limit, SageMaker ends the training job. Use this API to cap model\ntraining costs.\n\nTo stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays\njob termination for 120 seconds. Algorithms can use this 120-second window\nto save the model artifacts, so the results of training are not lost."
@@ -341,7 +341,7 @@ spec:
                       type: "string"
                   type: "object"
                 trainingJobName:
-                  description: "The name of the training job. The name must be unique within an Amazon Web\nServices Region in an Amazon Web Services account."
+                  description: "The name of the training job. The name must be unique within an Amazon Web\nServices Region in an Amazon Web Services account.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 vpcConfig:
                   description: "A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)\nobject that specifies the VPC that you want your training job to connect\nto. Control access to and from your training container by configuring the\nVPC. For more information, see Protect Training Jobs by Using an Amazon Virtual\nPrivate Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)."

@@ -24,6 +24,9 @@ pub struct NutanixMachineConfigSpec {
     /// Categories must be created in Prism Central before they can be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalCategories")]
     pub additional_categories: Option<Vec<NutanixMachineConfigAdditionalCategories>>,
+    /// BootType defines the boot type of the VM. Allowed values: legacy, uefi
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootType")]
+    pub boot_type: Option<NutanixMachineConfigBootType>,
     /// cluster is to identify the cluster (the Prism Element under management
     /// of the Prism Central), in which the Machine's VM will be created.
     /// The cluster identifier (uuid or name) can be obtained from the Prism Central console
@@ -74,6 +77,15 @@ pub struct NutanixMachineConfigAdditionalCategories {
     pub key: String,
     /// value is the category value linked to the key in the Prism Central.
     pub value: String,
+}
+
+/// NutanixMachineConfigSpec defines the desired state of NutanixMachineConfig.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NutanixMachineConfigBootType {
+    #[serde(rename = "legacy")]
+    Legacy,
+    #[serde(rename = "uefi")]
+    Uefi,
 }
 
 /// cluster is to identify the cluster (the Prism Element under management

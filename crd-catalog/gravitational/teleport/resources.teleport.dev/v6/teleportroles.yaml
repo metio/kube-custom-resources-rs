@@ -260,6 +260,17 @@ spec:
                         type: "string"
                       nullable: true
                       type: "array"
+                    mcp:
+                      description: "MCPPermissions defines MCP servers related permissions."
+                      nullable: true
+                      properties:
+                        tools:
+                          description: "Tools defines the list of tools allowed or denied for this role. Each entry can be a literal string, a glob pattern (e.g. \"prefix_*\"), or a regular expression (must start with '^' and end with '$'). If the list is empty, no tools are allowed."
+                          items:
+                            type: "string"
+                          nullable: true
+                          type: "array"
+                      type: "object"
                     node_labels:
                       additionalProperties:
                         x-kubernetes-preserve-unknown-fields: true
@@ -300,6 +311,9 @@ spec:
                           description: "kubernetes_resources can optionally enforce a requester to request only certain kinds of kube resources. Eg: Users can make request to either a resource kind \"kube_cluster\" or any of its subresources like \"namespaces\". This field can be defined such that it prevents a user from requesting \"kube_cluster\" and enforce requesting any of its subresources."
                           items:
                             properties:
+                              api_group:
+                                description: "APIGroup specifies the Kubernetes Resource API group."
+                                type: "string"
                               kind:
                                 description: "kind specifies the Kubernetes Resource type."
                                 type: "string"
@@ -731,6 +745,17 @@ spec:
                         type: "string"
                       nullable: true
                       type: "array"
+                    mcp:
+                      description: "MCPPermissions defines MCP servers related permissions."
+                      nullable: true
+                      properties:
+                        tools:
+                          description: "Tools defines the list of tools allowed or denied for this role. Each entry can be a literal string, a glob pattern (e.g. \"prefix_*\"), or a regular expression (must start with '^' and end with '$'). If the list is empty, no tools are allowed."
+                          items:
+                            type: "string"
+                          nullable: true
+                          type: "array"
+                      type: "object"
                     node_labels:
                       additionalProperties:
                         x-kubernetes-preserve-unknown-fields: true
@@ -771,6 +796,9 @@ spec:
                           description: "kubernetes_resources can optionally enforce a requester to request only certain kinds of kube resources. Eg: Users can make request to either a resource kind \"kube_cluster\" or any of its subresources like \"namespaces\". This field can be defined such that it prevents a user from requesting \"kube_cluster\" and enforce requesting any of its subresources."
                           items:
                             properties:
+                              api_group:
+                                description: "APIGroup specifies the Kubernetes Resource API group."
+                                type: "string"
                               kind:
                                 description: "kind specifies the Kubernetes Resource type."
                                 type: "string"

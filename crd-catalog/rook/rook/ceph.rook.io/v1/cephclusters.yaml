@@ -10,6 +10,8 @@ spec:
     kind: "CephCluster"
     listKind: "CephClusterList"
     plural: "cephclusters"
+    shortNames:
+      - "ceph"
     singular: "cephcluster"
   scope: "Namespaced"
   versions:

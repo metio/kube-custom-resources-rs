@@ -223,7 +223,7 @@ spec:
                     - message: "Value is immutable once set"
                       rule: "self == oldSelf"
                 certificateAuthorityARN:
-                  description: "The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).\nThis must be of the form:\n\narn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012"
+                  description: "The Amazon Resource Name (ARN) that was returned when you called CreateCertificateAuthority\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_CreateCertificateAuthority.html).\nThis must be of the form:\n\narn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012\n\nRegex Pattern: `^arn:[\\w+=/,.@-]+:acm-pca:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -283,7 +283,7 @@ spec:
                     - message: "Value is immutable once set"
                       rule: "self == oldSelf"
                 templateARN:
-                  description: "Specifies a custom configuration template to use when issuing a certificate.\nIf this parameter is not provided, Amazon Web Services Private CA defaults\nto the EndEntityCertificate/V1 template. For CA certificates, you should\nchoose the shortest path length that meets your needs. The path length is\nindicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).\n\nNote: The CA depth configured on a subordinate CA certificate must not exceed\nthe limit set by its parents in the CA hierarchy.\n\nFor a list of TemplateArn values supported by Amazon Web Services Private\nCA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html)."
+                  description: "Specifies a custom configuration template to use when issuing a certificate.\nIf this parameter is not provided, Amazon Web Services Private CA defaults\nto the EndEntityCertificate/V1 template. For CA certificates, you should\nchoose the shortest path length that meets your needs. The path length is\nindicated by the PathLenN portion of the ARN, where N is the CA depth (https://docs.aws.amazon.com/privateca/latest/userguide/PcaTerms.html#terms-cadepth).\n\nNote: The CA depth configured on a subordinate CA certificate must not exceed\nthe limit set by its parents in the CA hierarchy.\n\nFor a list of TemplateArn values supported by Amazon Web Services Private\nCA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).\n\nRegex Pattern: `^arn:[\\w+=/,.@-]+:acm-pca:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"

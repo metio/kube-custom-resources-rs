@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct AccessPointSpec {
     /// The ID of the EFS file system that the access point provides access to.
+    /// 
+    /// Regex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:file-system/fs-[0-9a-f]{8,40}|fs-[0-9a-f]{8,40})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -165,6 +167,8 @@ pub struct AccessPointTags {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AccessPointStatus {
     /// The ID of the access point, assigned by Amazon EFS.
+    /// 
+    /// Regex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}|fsap-[0-9a-f]{8,40})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointID")]
     pub access_point_id: Option<String>,
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
@@ -185,6 +189,8 @@ pub struct AccessPointStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Identifies the Amazon Web Services account that owns the access point resource.
+    /// 
+    /// Regex Pattern: `^(\d{12})|(\d{4}-\d{4}-\d{4})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
 }

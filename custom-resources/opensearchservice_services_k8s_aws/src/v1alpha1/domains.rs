@@ -22,6 +22,8 @@ use self::prelude::*;
 pub struct DomainSpec {
     /// Identity and Access Management (IAM) policy document specifying the access
     /// policies for the new domain.
+    /// 
+    /// Regex Pattern: `.*`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPolicies")]
     pub access_policies: Option<String>,
     /// Key-value pairs to specify advanced configuration options. The following
@@ -82,6 +84,8 @@ pub struct DomainSpec {
     /// version for the OpenSearch Service domain. For example, OpenSearch_1.0 or
     /// Elasticsearch_7.9. For more information, see Creating and managing Amazon
     /// OpenSearch Service domains (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains).
+    /// 
+    /// Regex Pattern: `^Elasticsearch_[0-9]{1}\.[0-9]{1,2}$|^OpenSearch_[0-9]{1,2}\.[0-9]{1,2}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
     /// Specify either dual stack or IPv4 as your IP address type. Dual stack allows
@@ -95,6 +99,8 @@ pub struct DomainSpec {
     pub log_publishing_options: Option<BTreeMap<String, DomainLogPublishingOptions>>,
     /// Name of the OpenSearch Service domain to create. Domain names are unique
     /// across the domains owned by an account within an Amazon Web Services Region.
+    /// 
+    /// Regex Pattern: `^[a-z][a-z0-9\-]+$`
     pub name: String,
     /// Enables node-to-node encryption.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeToNodeEncryptionOptions")]

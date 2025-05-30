@@ -55,7 +55,7 @@ spec:
               description: "AccessPointSpec defines the desired state of AccessPoint."
               properties:
                 fileSystemID:
-                  description: "The ID of the EFS file system that the access point provides access to."
+                  description: "The ID of the EFS file system that the access point provides access to.\n\nRegex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:file-system/fs-[0-9a-f]{8,40}|fs-[0-9a-f]{8,40})$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -127,7 +127,7 @@ spec:
               description: "AccessPointStatus defines the observed state of AccessPoint"
               properties:
                 accessPointID:
-                  description: "The ID of the access point, assigned by Amazon EFS."
+                  description: "The ID of the access point, assigned by Amazon EFS.\n\nRegex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:access-point/fsap-[0-9a-f]{8,40}|fsap-[0-9a-f]{8,40})$`"
                   type: "string"
                 ackResourceMetadata:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
@@ -178,7 +178,7 @@ spec:
                   description: "The name of the access point. This is the value of the Name tag."
                   type: "string"
                 ownerID:
-                  description: "Identifies the Amazon Web Services account that owns the access point resource."
+                  description: "Identifies the Amazon Web Services account that owns the access point resource.\n\nRegex Pattern: `^(\\d{12})|(\\d{4}-\\d{4}-\\d{4})$`"
                   type: "string"
               type: "object"
           type: "object"

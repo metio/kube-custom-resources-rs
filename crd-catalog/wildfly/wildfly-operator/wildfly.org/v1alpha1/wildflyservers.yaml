@@ -190,7 +190,7 @@ spec:
                           type: "array"
                       type: "object"
                     failureThreshold:
-                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 36 seconds for startup probe. Minimum value is 1."
+                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 11 for startup probe. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
@@ -232,22 +232,22 @@ spec:
                         - "port"
                       type: "object"
                     initialDelaySeconds:
-                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 0. Minimum value is 0."
+                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and 10 seconds for readiness and startup probes. Minimum value is 0. Minimum value is 0."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
                     periodSeconds:
-                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 1."
+                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     successThreshold:
-                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Minimum value is 1."
+                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1 for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     timeoutSeconds:
-                      description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                      description: "Number of seconds after which the probe times out. Defaults to 1 second for liveness, readiness and startup probes. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
@@ -265,7 +265,7 @@ spec:
                           type: "array"
                       type: "object"
                     failureThreshold:
-                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 36 seconds for startup probe. Minimum value is 1."
+                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 11 for startup probe. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
@@ -307,22 +307,22 @@ spec:
                         - "port"
                       type: "object"
                     initialDelaySeconds:
-                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 0. Minimum value is 0."
+                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and 10 seconds for readiness and startup probes. Minimum value is 0. Minimum value is 0."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
                     periodSeconds:
-                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 1."
+                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     successThreshold:
-                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Minimum value is 1."
+                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1 for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     timeoutSeconds:
-                      description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                      description: "Number of seconds after which the probe times out. Defaults to 1 second for liveness, readiness and startup probes. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
@@ -492,7 +492,7 @@ spec:
                           type: "array"
                       type: "object"
                     failureThreshold:
-                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 36 seconds for startup probe. Minimum value is 1."
+                      description: "Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3 for liveness and readiness probes and 11 for startup probe. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
@@ -534,22 +534,22 @@ spec:
                         - "port"
                       type: "object"
                     initialDelaySeconds:
-                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 0. Minimum value is 0."
+                      description: "Number of seconds after the container has started before probes are initiated. It defaults to 0 seconds for liveness and 10 seconds for readiness and startup probes. Minimum value is 0. Minimum value is 0."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
                     periodSeconds:
-                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness and readiness probes and 5 seconds for startup probe. Minimum value is 1."
+                      description: "How often (in seconds) to perform the probe. Default to 10 seconds for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     successThreshold:
-                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Minimum value is 1."
+                      description: "Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1 for liveness, readiness and startup probes. Minimum value is 1."
                       format: "int32"
                       minimum: 1.0
                       type: "integer"
                     timeoutSeconds:
-                      description: "Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
+                      description: "Number of seconds after which the probe times out. Defaults to 1 second for liveness, readiness and startup probes. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                       format: "int32"
                       minimum: 1.0
                       type: "integer"

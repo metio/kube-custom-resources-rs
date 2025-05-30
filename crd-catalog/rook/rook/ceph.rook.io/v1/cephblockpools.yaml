@@ -10,6 +10,8 @@ spec:
     kind: "CephBlockPool"
     listKind: "CephBlockPoolList"
     plural: "cephblockpools"
+    shortNames:
+      - "cephbp"
     singular: "cephblockpool"
   scope: "Namespaced"
   versions:

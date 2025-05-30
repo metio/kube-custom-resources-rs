@@ -21,6 +21,8 @@ use self::prelude::*;
 pub struct AlertManagerDefinitionSpec {
     pub configuration: String,
     /// The ID of the workspace to add the alert manager definition to.
+    /// 
+    /// Regex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

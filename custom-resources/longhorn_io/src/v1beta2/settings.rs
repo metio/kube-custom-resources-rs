@@ -14,5 +14,8 @@ use self::prelude::*;
 pub struct SettingStatus {
     /// The setting is applied.
     pub applied: bool,
+    /// Last time the setting is applied at.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedAt")]
+    pub last_applied_at: Option<String>,
 }
 

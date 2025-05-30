@@ -30,7 +30,7 @@ spec:
               description: "UserSpec defines the desired state of User.\n\nYou create users and assign them specific permissions by using an access\nstring. You assign the users to Access Control Lists aligned with a specific\nrole (administrators, human resources) that are then deployed to one or more\nMemoryDB clusters."
               properties:
                 accessString:
-                  description: "Access permissions string used for this user."
+                  description: "Access permissions string used for this user.\n\nRegex Pattern: `\\S`"
                   type: "string"
                 authenticationMode:
                   description: "Denotes the user's authentication properties, such as whether it requires\na password to authenticate."
@@ -57,7 +57,7 @@ spec:
                       type: "string"
                   type: "object"
                 name:
-                  description: "The name of the user. This value must be unique as it also serves as the\nuser identifier."
+                  description: "The name of the user. This value must be unique as it also serves as the\nuser identifier.\n\nRegex Pattern: `^[a-zA-Z][a-zA-Z0-9\\-]*$`"
                   type: "string"
                 tags:
                   description: "A list of tags to be added to this resource. A tag is a key-value pair. A\ntag key must be accompanied by a tag value, although null is accepted."

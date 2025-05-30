@@ -75,6 +75,8 @@ pub struct EventSourceMappingSpec {
     ///    * Amazon MQ – The ARN of the broker.
     /// 
     ///    * Amazon DocumentDB – The ARN of the DocumentDB change stream.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-])+:([a-z]{2}(-gov)?-[a-z]+-\d{1})?:(\d{12})?:(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourceARN")]
     pub event_source_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -105,6 +107,8 @@ pub struct EventSourceMappingSpec {
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it's limited to 64 characters in length.
+    /// 
+    /// Regex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -373,6 +377,8 @@ pub struct EventSourceMappingStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The ARN of the Lambda function.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
     /// The date that the event source mapping was last updated or that its state

@@ -28,8 +28,7 @@ pub struct ClusterExternalSecretSpec {
     /// The spec for the ExternalSecrets to be created
     #[serde(rename = "externalSecretSpec")]
     pub external_secret_spec: ClusterExternalSecretExternalSecretSpec,
-    /// The labels to select by to find the Namespaces to create the ExternalSecrets in.
-    /// Deprecated: Use NamespaceSelectors instead.
+    /// The labels to select by to find the Namespaces to create the ExternalSecrets in
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterExternalSecretNamespaceSelector>,
     /// A list of labels to select by to find the Namespaces to create the ExternalSecrets in. The selectors are ORed.
@@ -627,8 +626,7 @@ pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromTarget
     Labels,
 }
 
-/// The labels to select by to find the Namespaces to create the ExternalSecrets in.
-/// Deprecated: Use NamespaceSelectors instead.
+/// The labels to select by to find the Namespaces to create the ExternalSecrets in
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

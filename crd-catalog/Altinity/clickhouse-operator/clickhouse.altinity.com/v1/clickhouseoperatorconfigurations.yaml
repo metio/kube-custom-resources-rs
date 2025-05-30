@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   labels:
-    clickhouse.altinity.com/chop: "0.24.5"
+    clickhouse.altinity.com/chop: "0.25.0"
   name: "clickhouseoperatorconfigurations.clickhouse.altinity.com"
 spec:
   group: "clickhouse.altinity.com"
@@ -91,6 +91,47 @@ spec:
                         username:
                           description: "ClickHouse username to be used by operator to connect to ClickHouse instances, deprecated, use chCredentialsSecretName"
                           type: "string"
+                      type: "object"
+                    addons:
+                      description: "Configuration addons specifies additional settings"
+                      properties:
+                        rules:
+                          description: "Array of set of rules per specified ClickHouse versions"
+                          items:
+                            properties:
+                              spec:
+                                description: "spec"
+                                properties:
+                                  configuration:
+                                    description: "allows configure multiple aspects and behavior for `clickhouse-server` instance and also allows describe multiple `clickhouse-server` clusters inside one `chi` resource"
+                                    properties:
+                                      files:
+                                        description: "see same section from CR spec"
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      profiles:
+                                        description: "see same section from CR spec"
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      quotas:
+                                        description: "see same section from CR spec"
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      settings:
+                                        description: "see same section from CR spec"
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                      users:
+                                        description: "see same section from CR spec"
+                                        type: "object"
+                                        x-kubernetes-preserve-unknown-fields: true
+                                    type: "object"
+                                type: "object"
+                              version:
+                                description: "ClickHouse version expression"
+                                type: "string"
+                            type: "object"
+                          type: "array"
                       type: "object"
                     configuration:
                       properties:
@@ -344,6 +385,67 @@ spec:
                                 - "Enabled"
                                 - "enabled"
                               type: "string"
+                            replicas:
+                              description: "Whether the operator during reconcile procedure should wait for replicas to catch-up"
+                              properties:
+                                all:
+                                  description: "Whether the operator during reconcile procedure should wait for all replicas to catch-up"
+                                  enum:
+                                    - ""
+                                    - "0"
+                                    - "1"
+                                    - "False"
+                                    - "false"
+                                    - "True"
+                                    - "true"
+                                    - "No"
+                                    - "no"
+                                    - "Yes"
+                                    - "yes"
+                                    - "Off"
+                                    - "off"
+                                    - "On"
+                                    - "on"
+                                    - "Disable"
+                                    - "disable"
+                                    - "Enable"
+                                    - "enable"
+                                    - "Disabled"
+                                    - "disabled"
+                                    - "Enabled"
+                                    - "enabled"
+                                  type: "string"
+                                delay:
+                                  description: "replication max absolute delay to consider replica is not delayed"
+                                  type: "integer"
+                                new:
+                                  description: "Whether the operator during reconcile procedure should wait for new replicas to catch-up"
+                                  enum:
+                                    - ""
+                                    - "0"
+                                    - "1"
+                                    - "False"
+                                    - "false"
+                                    - "True"
+                                    - "true"
+                                    - "No"
+                                    - "no"
+                                    - "Yes"
+                                    - "yes"
+                                    - "Off"
+                                    - "off"
+                                    - "On"
+                                    - "on"
+                                    - "Disable"
+                                    - "disable"
+                                    - "Enable"
+                                    - "enable"
+                                    - "Disabled"
+                                    - "disabled"
+                                    - "Enabled"
+                                    - "enabled"
+                                  type: "string"
+                              type: "object"
                           type: "object"
                       type: "object"
                     runtime:

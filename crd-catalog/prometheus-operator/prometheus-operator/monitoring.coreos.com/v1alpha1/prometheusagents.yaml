@@ -1766,6 +1766,9 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                convertClassicHistogramsToNHCB:
+                  description: "Whether to convert all scraped classic histograms into a native\nhistogram with custom buckets.\n\nIt requires Prometheus >= v3.4.0."
+                  type: "boolean"
                 dnsConfig:
                   description: "Defines the DNS configuration for the pods."
                   properties:
@@ -2891,8 +2894,16 @@ spec:
                     - "StatefulSet"
                     - "DaemonSet"
                   type: "string"
+                nameEscapingScheme:
+                  description: "Specifies the character escaping scheme that will be requested when scraping\nfor metric and label names that do not conform to the legacy Prometheus\ncharacter set.\n\nIt requires Prometheus >= v3.4.0."
+                  enum:
+                    - "AllowUTF8"
+                    - "Underscores"
+                    - "Dots"
+                    - "Values"
+                  type: "string"
                 nameValidationScheme:
-                  description: "Specifies the validation scheme for metric and label names."
+                  description: "Specifies the validation scheme for metric and label names.\n\nIt requires Prometheus >= v2.55.0."
                   enum:
                     - "UTF8"
                     - "Legacy"

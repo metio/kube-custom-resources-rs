@@ -94,6 +94,8 @@ pub struct DBClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
     /// The cluster identifier of the new global cluster.
+    /// 
+    /// Regex Pattern: `^[A-Za-z][0-9A-Za-z-:._]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalClusterIdentifier")]
     pub global_cluster_identifier: Option<String>,
     /// The KMS key identifier for an encrypted cluster.

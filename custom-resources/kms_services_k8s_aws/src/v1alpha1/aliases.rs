@@ -29,6 +29,8 @@ pub struct AliasSpec {
     /// alphanumeric characters, forward slashes (/), underscores (_), and dashes
     /// (-). The alias name cannot begin with alias/aws/. The alias/aws/ prefix is
     /// reserved for Amazon Web Services managed keys (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]+$`
     pub name: String,
     /// Associates the alias with the specified customer managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk).
     /// The KMS key must be in the same Amazon Web Services Region.

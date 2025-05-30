@@ -16,6 +16,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `GitRepository`
 - `HelmChart`
 - `HelmRepository`
+- `OCIRepository`
 ### source.toolkit.fluxcd.io/v1beta1
 - `Bucket`
 - `GitRepository`

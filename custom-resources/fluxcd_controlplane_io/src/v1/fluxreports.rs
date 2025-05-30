@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct FluxReportSpec {
+    /// Cluster is the version information of the Kubernetes cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cluster: Option<FluxReportCluster>,
     /// ComponentsStatus is the status of the Flux controller deployments.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<FluxReportComponents>>,
@@ -32,6 +35,20 @@ pub struct FluxReportSpec {
     /// Source and Kustomization resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sync: Option<FluxReportSync>,
+}
+
+/// Cluster is the version information of the Kubernetes cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluxReportCluster {
+    /// Nodes is the number of nodes in the Kubernetes cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nodes: Option<i64>,
+    /// Platform is the os/arch of the Kubernetes control plane.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub platform: Option<String>,
+    /// ServerVersion is the version of the Kubernetes API server.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverVersion")]
+    pub server_version: Option<String>,
 }
 
 /// FluxComponentStatus defines the observed state of a Flux component.

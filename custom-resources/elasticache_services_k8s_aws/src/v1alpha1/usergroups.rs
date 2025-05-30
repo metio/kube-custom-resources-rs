@@ -19,6 +19,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct UserGroupSpec {
     /// The current supported value is Redis user.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z]*$`
     pub engine: String,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted. Available

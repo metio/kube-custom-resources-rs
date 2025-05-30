@@ -94,6 +94,8 @@ pub struct TransformJobSpec {
     /// The name of the model that you want to use for the transform job. ModelName
     /// must be the name of an existing Amazon SageMaker model within an Amazon Web
     /// Services Region in an Amazon Web Services account.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9]([\-a-zA-Z0-9]*[a-zA-Z0-9])?$`
     #[serde(rename = "modelName")]
     pub model_name: String,
     /// (Optional) An array of key-value pairs. For more information, see Using Cost
@@ -106,6 +108,8 @@ pub struct TransformJobSpec {
     pub transform_input: TransformJobTransformInput,
     /// The name of the transform job. The name must be unique within an Amazon Web
     /// Services Region in an Amazon Web Services account.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "transformJobName")]
     pub transform_job_name: String,
     /// Describes the results of the transform job.

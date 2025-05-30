@@ -206,6 +206,8 @@ pub enum ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRefKind {
     VaultDynamicSecret,
     Webhook,
     Grafana,
+    #[serde(rename = "MFA")]
+    Mfa,
 }
 
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
@@ -429,6 +431,8 @@ pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRefKin
     VaultDynamicSecret,
     Webhook,
     Grafana,
+    #[serde(rename = "MFA")]
+    Mfa,
 }
 
 /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.

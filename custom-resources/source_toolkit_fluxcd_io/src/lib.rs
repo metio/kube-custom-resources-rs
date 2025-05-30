@@ -8,6 +8,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `GitRepository`
 - `HelmChart`
 - `HelmRepository`
+- `OCIRepository`
 ## source.toolkit.fluxcd.io/v1beta1
 - `Bucket`
 - `GitRepository`

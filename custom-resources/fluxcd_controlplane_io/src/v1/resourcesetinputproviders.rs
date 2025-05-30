@@ -51,7 +51,8 @@ pub struct ResourceSetInputProviderSpec {
     pub r#type: ResourceSetInputProviderType,
     /// URL specifies the HTTP/S address of the input provider API.
     /// When connecting to a Git provider, the URL should point to the repository address.
-    pub url: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// CertSecretRef specifies the Kubernetes Secret containing either or both of
@@ -110,6 +111,7 @@ pub struct ResourceSetInputProviderSkip {
 /// ResourceSetInputProviderSpec defines the desired state of ResourceSetInputProvider
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ResourceSetInputProviderType {
+    Static,
     GitHubBranch,
     GitHubPullRequest,
     GitLabBranch,

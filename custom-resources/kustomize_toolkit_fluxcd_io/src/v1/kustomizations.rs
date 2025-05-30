@@ -33,8 +33,8 @@ pub struct KustomizationSpec {
     pub decryption: Option<KustomizationDecryption>,
     /// DeletionPolicy can be used to control garbage collection when this
     /// Kustomization is deleted. Valid values are ('MirrorPrune', 'Delete',
-    /// 'Orphan'). 'MirrorPrune' mirrors the Prune field (orphan if false,
-    /// delete if true). Defaults to 'MirrorPrune'.
+    /// 'WaitForTermination', 'Orphan'). 'MirrorPrune' mirrors the Prune field
+    /// (orphan if false, delete if true). Defaults to 'MirrorPrune'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<KustomizationDeletionPolicy>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice
@@ -179,6 +179,7 @@ pub struct KustomizationDecryptionSecretRef {
 pub enum KustomizationDeletionPolicy {
     MirrorPrune,
     Delete,
+    WaitForTermination,
     Orphan,
 }
 

@@ -58,7 +58,7 @@ spec:
                       type: "integer"
                   type: "object"
                 functionName:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -73,7 +73,7 @@ spec:
                       type: "object"
                   type: "object"
                 qualifier:
-                  description: "The alias name."
+                  description: "The alias name.\n\nRegex Pattern: `^(^\\$LATEST$)|((?!^[0-9]+$)([a-zA-Z0-9-_]+))$`"
                   type: "string"
               required:
                 - "authType"
@@ -127,7 +127,7 @@ spec:
                   description: "When the function URL was created, in ISO-8601 format (https://www.w3.org/TR/NOTE-datetime)\n(YYYY-MM-DDThh:mm:ss.sTZD)."
                   type: "string"
                 functionARN:
-                  description: "The Amazon Resource Name (ARN) of your function."
+                  description: "The Amazon Resource Name (ARN) of your function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionURL:
                   description: "The HTTP URL endpoint for your function."

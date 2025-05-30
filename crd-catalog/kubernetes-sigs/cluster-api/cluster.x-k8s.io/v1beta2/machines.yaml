@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "machines.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -129,6 +129,10 @@ spec:
                       type: "string"
                   type: "object"
                   x-kubernetes-map-type: "atomic"
+                minReadySeconds:
+                  description: "minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.\nDefaults to 0 (Machine will be considered available as soon as the Machine is ready)"
+                  format: "int32"
+                  type: "integer"
                 nodeDeletionTimeout:
                   description: "nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds."
                   type: "string"
@@ -366,6 +370,14 @@ spec:
                     osImage:
                       description: "OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy))."
                       type: "string"
+                    swap:
+                      description: "Swap Info reported by the node."
+                      properties:
+                        capacity:
+                          description: "Total amount of swap memory in bytes."
+                          format: "int64"
+                          type: "integer"
+                      type: "object"
                     systemUUID:
                       description: "SystemUUID reported by the node. For unique machine identification\nMachineID is preferred. This field is specific to Red Hat hosts\nhttps://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid"
                       type: "string"

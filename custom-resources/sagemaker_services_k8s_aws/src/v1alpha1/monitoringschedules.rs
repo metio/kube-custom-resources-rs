@@ -29,6 +29,8 @@ pub struct MonitoringScheduleSpec {
     pub monitoring_schedule_config: MonitoringScheduleMonitoringScheduleConfig,
     /// The name of the monitoring schedule. The name must be unique within an Amazon
     /// Web Services Region within an Amazon Web Services account.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "monitoringScheduleName")]
     pub monitoring_schedule_name: String,
     /// (Optional) An array of key-value pairs. For more information, see Using Cost

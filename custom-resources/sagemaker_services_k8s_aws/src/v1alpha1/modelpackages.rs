@@ -29,6 +29,8 @@ pub struct ModelPackageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalInferenceSpecifications")]
     pub additional_inference_specifications: Option<Vec<ModelPackageAdditionalInferenceSpecifications>>,
     /// A description for the approval status of the model.
+    /// 
+    /// Regex Pattern: `.*`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvalDescription")]
     pub approval_description: Option<String>,
     /// Whether to certify the model package for listing on Amazon Web Services Marketplace.
@@ -38,6 +40,8 @@ pub struct ModelPackageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certifyForMarketplace")]
     pub certify_for_marketplace: Option<bool>,
     /// A unique token that guarantees that the call to this API is idempotent.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9-]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientToken")]
     pub client_token: Option<String>,
     /// The metadata properties associated with the model package versions.
@@ -82,6 +86,8 @@ pub struct ModelPackageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelMetrics")]
     pub model_metrics: Option<ModelPackageModelMetrics>,
     /// A description of the model package.
+    /// 
+    /// Regex Pattern: `^[\p{L}\p{M}\p{Z}\p{S}\p{N}\p{P}]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageDescription")]
     pub model_package_description: Option<String>,
     /// The name or Amazon Resource Name (ARN) of the model package group that this
@@ -89,6 +95,8 @@ pub struct ModelPackageSpec {
     /// 
     /// This parameter is required for versioned models, and does not apply to unversioned
     /// models.
+    /// 
+    /// Regex Pattern: `^(arn:aws[a-z\-]*:sagemaker:[a-z0-9\-]*:[0-9]{12}:[a-z\-]*\/)?([a-zA-Z0-9]([a-zA-Z0-9-]){0,62})(?<!-)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupName")]
     pub model_package_group_name: Option<String>,
     /// The name of the model package. The name must have 1 to 63 characters. Valid
@@ -96,6 +104,8 @@ pub struct ModelPackageSpec {
     /// 
     /// This parameter is required for unversioned models. It is not applicable to
     /// versioned models.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageName")]
     pub model_package_name: Option<String>,
     /// The Amazon Simple Storage Service (Amazon S3) path where the sample payload
@@ -104,6 +114,8 @@ pub struct ModelPackageSpec {
     /// the load test. Each file in the archive must satisfy the size constraints
     /// of the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)
     /// call.
+    /// 
+    /// Regex Pattern: `^(https|s3)://([^/]+)/?(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplePayloadURL")]
     pub sample_payload_url: Option<String>,
     /// Indicates if you want to skip model validation.

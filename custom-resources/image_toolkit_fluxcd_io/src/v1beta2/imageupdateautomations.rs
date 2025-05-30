@@ -293,6 +293,9 @@ pub struct ImageUpdateAutomationStatus {
 /// considered by the ImageUpdateAutomation update process.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageUpdateAutomationStatusObservedPolicies {
+    /// Digest is the image's digest.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub digest: Option<String>,
     /// Name is the bare image's name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

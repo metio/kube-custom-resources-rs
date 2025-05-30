@@ -82,6 +82,8 @@ pub struct RuleGroupSpec {
     /// individual rules that you expect to have in the rule group.
     pub capacity: i64,
     /// A description of the rule group.
+    /// 
+    /// Regex Pattern: `^.*$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Indicates whether you want Network Firewall to just check the validity of
@@ -108,6 +110,8 @@ pub struct RuleGroupSpec {
     pub rule_group: Option<RuleGroupRuleGroup>,
     /// The descriptive name of the rule group. You can't change the name of a rule
     /// group after you create it.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9-]+$`
     #[serde(rename = "ruleGroupName")]
     pub rule_group_name: String,
     /// A string containing stateful rule group rules specifications in Suricata
@@ -531,6 +535,8 @@ pub struct RuleGroupStatus {
     /// an InvalidTokenException. If this happens, retrieve the rule group again
     /// to get a current copy of it with a current token. Reapply your changes as
     /// needed, then try the operation again using the new token.
+    /// 
+    /// Regex Pattern: `^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateToken")]
     pub update_token: Option<String>,
 }

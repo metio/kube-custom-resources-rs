@@ -62,7 +62,7 @@ spec:
                   description: "When true, the event source mapping is active. When false, Lambda pauses\npolling and invocation.\n\nDefault: True"
                   type: "boolean"
                 eventSourceARN:
-                  description: "The Amazon Resource Name (ARN) of the event source.\n\n   * Amazon Kinesis – The ARN of the data stream or a stream consumer.\n\n   * Amazon DynamoDB Streams – The ARN of the stream.\n\n   * Amazon Simple Queue Service – The ARN of the queue.\n\n   * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster\n   or the ARN of the VPC connection (for cross-account event source mappings\n   (https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#msk-multi-vpc)).\n\n   * Amazon MQ – The ARN of the broker.\n\n   * Amazon DocumentDB – The ARN of the DocumentDB change stream."
+                  description: "The Amazon Resource Name (ARN) of the event source.\n\n   * Amazon Kinesis – The ARN of the data stream or a stream consumer.\n\n   * Amazon DynamoDB Streams – The ARN of the stream.\n\n   * Amazon Simple Queue Service – The ARN of the queue.\n\n   * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster\n   or the ARN of the VPC connection (for cross-account event source mappings\n   (https://docs.aws.amazon.com/lambda/latest/dg/with-msk.html#msk-multi-vpc)).\n\n   * Amazon MQ – The ARN of the broker.\n\n   * Amazon DocumentDB – The ARN of the DocumentDB change stream.\n\nRegex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$`"
                   type: "string"
                 eventSourceRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -89,7 +89,7 @@ spec:
                       type: "array"
                   type: "object"
                 functionName:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – MyFunction.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.\n\n   * Partial ARN – 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it's limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – MyFunction.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.\n\n   * Partial ARN – 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it's limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -240,7 +240,7 @@ spec:
                     type: "object"
                   type: "array"
                 functionARN:
-                  description: "The ARN of the Lambda function."
+                  description: "The ARN of the Lambda function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 lastModified:
                   description: "The date that the event source mapping was last updated or that its state\nchanged."

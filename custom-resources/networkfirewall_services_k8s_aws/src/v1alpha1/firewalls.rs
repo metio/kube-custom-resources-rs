@@ -36,6 +36,8 @@ pub struct FirewallSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteProtection")]
     pub delete_protection: Option<bool>,
     /// A description of the firewall.
+    /// 
+    /// Regex Pattern: `^.*$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// A complex type that contains settings for encryption of your firewall resources.
@@ -43,10 +45,14 @@ pub struct FirewallSpec {
     pub encryption_configuration: Option<FirewallEncryptionConfiguration>,
     /// The descriptive name of the firewall. You can't change the name of a firewall
     /// after you create it.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9-]+$`
     #[serde(rename = "firewallName")]
     pub firewall_name: String,
     /// The Amazon Resource Name (ARN) of the FirewallPolicy that you want to use
     /// for the firewall.
+    /// 
+    /// Regex Pattern: `^arn:aws`
     #[serde(rename = "firewallPolicyARN")]
     pub firewall_policy_arn: String,
     /// A setting indicating whether the firewall is protected against a change to
@@ -77,6 +83,8 @@ pub struct FirewallSpec {
     /// firewall.
     /// 
     /// You can't change this setting after you create the firewall.
+    /// 
+    /// Regex Pattern: `^vpc-[0-9a-f]+$`
     #[serde(rename = "vpcID")]
     pub vpc_id: String,
 }

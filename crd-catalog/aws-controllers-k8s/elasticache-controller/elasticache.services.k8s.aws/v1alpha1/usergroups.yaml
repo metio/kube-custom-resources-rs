@@ -29,7 +29,7 @@ spec:
             spec:
               properties:
                 engine:
-                  description: "The current supported value is Redis user."
+                  description: "The current supported value is Redis user.\n\nRegex Pattern: `^[a-zA-Z]*$`"
                   type: "string"
                 tags:
                   description: "A list of tags to be added to this resource. A tag is a key-value pair. A\ntag key must be accompanied by a tag value, although null is accepted. Available\nfor Valkey and Redis OSS only."

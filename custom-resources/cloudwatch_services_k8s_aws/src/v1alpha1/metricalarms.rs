@@ -218,6 +218,8 @@ pub struct MetricAlarmSpec {
     /// characters
     pub name: String,
     /// The namespace for the metric associated specified in MetricName.
+    /// 
+    /// Regex Pattern: `^[^:]`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// The actions to execute when this alarm transitions to an OK state from any

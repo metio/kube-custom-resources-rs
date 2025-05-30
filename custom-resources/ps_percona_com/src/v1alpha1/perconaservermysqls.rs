@@ -3556,6 +3556,8 @@ pub struct PerconaServerMySQLMysqlSidecarsLifecycle {
     pub post_start: Option<PerconaServerMySQLMysqlSidecarsLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaServerMySQLMysqlSidecarsLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

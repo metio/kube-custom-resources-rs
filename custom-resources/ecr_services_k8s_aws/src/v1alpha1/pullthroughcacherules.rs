@@ -22,11 +22,15 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct PullThroughCacheRuleSpec {
     /// The repository name prefix to use when caching images from the source registry.
+    /// 
+    /// Regex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`
     #[serde(rename = "ecrRepositoryPrefix")]
     pub ecr_repository_prefix: String,
     /// The Amazon Web Services account ID associated with the registry to create
     /// the pull through cache rule for. If you do not specify a registry, the default
     /// registry is assumed.
+    /// 
+    /// Regex Pattern: `^[0-9]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The registry URL of the upstream public registry to use as the source for

@@ -37,10 +37,10 @@ spec:
               description: "LoggingConfigurationSpec defines the desired state of LoggingConfiguration."
               properties:
                 logGroupARN:
-                  description: "The ARN of the CloudWatch log group to which the vended log data will be\npublished. This log group must exist prior to calling this operation."
+                  description: "The ARN of the CloudWatch log group to which the vended log data will be\npublished. This log group must exist prior to calling this operation.\n\nRegex Pattern: `^arn:aws[a-z0-9-]*:logs:[a-z0-9-]+:\\d{12}:log-group:[A-Za-z0-9\\.\\-\\_\\#/]{1,512}\\:\\*$`"
                   type: "string"
                 workspaceID:
-                  description: "The ID of the workspace to create the logging configuration for."
+                  description: "The ID of the workspace to create the logging configuration for.\n\nRegex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"

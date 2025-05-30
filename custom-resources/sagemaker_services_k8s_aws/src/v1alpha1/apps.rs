@@ -20,12 +20,16 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct AppSpec {
     /// The name of the app.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "appName")]
     pub app_name: String,
     /// The type of app.
     #[serde(rename = "appType")]
     pub app_type: String,
     /// The domain ID.
+    /// 
+    /// Regex Pattern: `^d-(-*[a-z0-9]){1,61}$`
     #[serde(rename = "domainID")]
     pub domain_id: String,
     /// The instance type and the Amazon Resource Name (ARN) of the SageMaker image
@@ -43,6 +47,8 @@ pub struct AppSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<AppTags>>,
     /// The user profile name. If this value is not set, then SpaceName must be set.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userProfileName")]
     pub user_profile_name: Option<String>,
 }

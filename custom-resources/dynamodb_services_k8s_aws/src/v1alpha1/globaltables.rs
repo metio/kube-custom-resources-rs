@@ -22,6 +22,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct GlobalTableSpec {
     /// The global table name.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9_.-]+$`
     #[serde(rename = "globalTableName")]
     pub global_table_name: String,
     /// The Regions where the global table needs to be created.

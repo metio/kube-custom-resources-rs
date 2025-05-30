@@ -197,6 +197,8 @@ pub struct KeySpec {
     /// For help writing and formatting a JSON policy document, see the IAM JSON
     /// Policy Reference (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html)
     /// in the Identity and Access Management User Guide .
+    /// 
+    /// Regex Pattern: `^[\u0009\u000A\u000D\u0020-\u00FF]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
     /// Assigns one or more tags to the KMS key. Use this parameter to tag the KMS
@@ -260,6 +262,8 @@ pub struct KeyStatus {
     /// KMS creates the key material for the KMS key in the associated CloudHSM cluster.
     /// This field is present only when the KMS key is created in an CloudHSM key
     /// store.
+    /// 
+    /// Regex Pattern: `^cluster-[2-7a-zA-Z]{11,16}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudHsmClusterID")]
     pub cloud_hsm_cluster_id: Option<String>,
     /// All CRs managed by ACK have a common `Status.Conditions` member that

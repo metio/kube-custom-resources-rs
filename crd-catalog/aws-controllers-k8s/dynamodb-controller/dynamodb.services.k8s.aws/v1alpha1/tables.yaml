@@ -458,7 +458,7 @@ spec:
                       type: "string"
                   type: "object"
                 tableID:
-                  description: "Unique identifier for the table for which the backup was created."
+                  description: "Unique identifier for the table for which the backup was created.\n\nRegex Pattern: `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`"
                   type: "string"
                 tableSizeBytes:
                   description: "The total size of the specified table, in bytes. DynamoDB updates this value\napproximately every six hours. Recent changes might not be reflected in this\nvalue."

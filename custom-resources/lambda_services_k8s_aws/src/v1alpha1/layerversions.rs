@@ -35,6 +35,8 @@ pub struct LayerVersionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The name or Amazon Resource Name (ARN) of the layer.
+    /// 
+    /// Regex Pattern: `^(arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\d{12}:layer:[a-zA-Z0-9-_]+)|[a-zA-Z0-9-_]+$`
     #[serde(rename = "layerName")]
     pub layer_name: String,
     /// The layer's software license. It can be any of the following:
@@ -81,6 +83,8 @@ pub struct LayerVersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
     /// The ARN of the layer.
+    /// 
+    /// Regex Pattern: `^arn:[a-zA-Z0-9-]+:lambda:[a-zA-Z0-9-]+:\d{12}:layer:[a-zA-Z0-9-_]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "layerARN")]
     pub layer_arn: Option<String>,
     /// The version number.

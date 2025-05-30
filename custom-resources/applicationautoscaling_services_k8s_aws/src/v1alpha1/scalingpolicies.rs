@@ -31,6 +31,8 @@ pub struct ScalingPolicySpec {
     /// You cannot change the name of a scaling policy, but you can delete the original
     /// scaling policy and create a new scaling policy with the same settings and
     /// a different name.
+    /// 
+    /// Regex Pattern: `^\p{Print}+$`
     #[serde(rename = "policyName")]
     pub policy_name: String,
     /// The scaling policy type. This parameter is required if you are creating a
@@ -111,6 +113,8 @@ pub struct ScalingPolicySpec {
     /// 
     ///    * Pool of WorkSpaces - The resource type is workspacespool and the unique
     ///    identifier is the pool ID. Example: workspacespool/wspool-123456.
+    /// 
+    /// Regex Pattern: `^[\u0020-\uD7FF\uE000-\uFFFD\uD800\uDC00-\uDBFF\uDFFF\r\n\t]*$`
     #[serde(rename = "resourceID")]
     pub resource_id: String,
     /// The scalable dimension. This string consists of the service namespace, resource

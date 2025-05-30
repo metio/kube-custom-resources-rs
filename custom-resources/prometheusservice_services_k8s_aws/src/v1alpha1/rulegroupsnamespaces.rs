@@ -22,11 +22,15 @@ use self::prelude::*;
 pub struct RuleGroupsNamespaceSpec {
     pub configuration: String,
     /// The name for the new rule groups namespace.
+    /// 
+    /// Regex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`
     pub name: String,
     /// The list of tag keys and values to associate with the rule groups namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     /// The ID of the workspace to add the rule groups namespace.
+    /// 
+    /// Regex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

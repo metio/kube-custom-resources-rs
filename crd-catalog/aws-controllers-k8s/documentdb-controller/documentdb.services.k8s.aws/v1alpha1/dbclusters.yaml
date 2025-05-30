@@ -77,7 +77,7 @@ spec:
                   description: "The version number of the database engine to use. The --engine-version will\ndefault to the latest major engine version. For production workloads, we\nrecommend explicitly declaring this parameter with the intended major engine\nversion."
                   type: "string"
                 globalClusterIdentifier:
-                  description: "The cluster identifier of the new global cluster."
+                  description: "The cluster identifier of the new global cluster.\n\nRegex Pattern: `^[A-Za-z][0-9A-Za-z-:._]*$`"
                   type: "string"
                 kmsKeyID:
                   description: "The KMS key identifier for an encrypted cluster.\n\nThe KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption\nkey. If you are creating a cluster using the same Amazon Web Services account\nthat owns the KMS encryption key that is used to encrypt the new cluster,\nyou can use the KMS key alias instead of the ARN for the KMS encryption key.\n\nIf an encryption key is not specified in KmsKeyId:\n\n   * If the StorageEncrypted parameter is true, Amazon DocumentDB uses your\n   default encryption key.\n\nKMS creates the default encryption key for your Amazon Web Services account.\nYour Amazon Web Services account has a different default encryption key for\neach Amazon Web Services Regions."

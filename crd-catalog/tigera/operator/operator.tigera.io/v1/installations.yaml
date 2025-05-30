@@ -4045,6 +4045,30 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                tlsCipherSuites:
+                  description: "TLSCipherSuites defines the cipher suite list that the TLS protocol should use during secure communication."
+                  items:
+                    properties:
+                      name:
+                        description: "This should be a valid TLS cipher suite name."
+                        enum:
+                          - "TLS_AES_256_GCM_SHA384"
+                          - "TLS_CHACHA20_POLY1305_SHA256"
+                          - "TLS_AES_128_GCM_SHA256"
+                          - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+                          - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+                          - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"
+                          - "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+                          - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+                          - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+                          - "TLS_RSA_WITH_AES_256_GCM_SHA384"
+                          - "TLS_RSA_WITH_AES_128_GCM_SHA256"
+                          - "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"
+                          - "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+                          - "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+                        type: "string"
+                    type: "object"
+                  type: "array"
                 typhaAffinity:
                   description: "Deprecated. Please use Installation.Spec.TyphaDeployment instead.\nTyphaAffinity allows configuration of node affinity characteristics for Typha pods."
                   properties:
@@ -9069,6 +9093,30 @@ spec:
                       description: "Kubernetes Service CIDRs. Specifying this is required when using Calico for Windows."
                       items:
                         type: "string"
+                      type: "array"
+                    tlsCipherSuites:
+                      description: "TLSCipherSuites defines the cipher suite list that the TLS protocol should use during secure communication."
+                      items:
+                        properties:
+                          name:
+                            description: "This should be a valid TLS cipher suite name."
+                            enum:
+                              - "TLS_AES_256_GCM_SHA384"
+                              - "TLS_CHACHA20_POLY1305_SHA256"
+                              - "TLS_AES_128_GCM_SHA256"
+                              - "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+                              - "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384"
+                              - "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256"
+                              - "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256"
+                              - "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+                              - "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+                              - "TLS_RSA_WITH_AES_256_GCM_SHA384"
+                              - "TLS_RSA_WITH_AES_128_GCM_SHA256"
+                              - "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA"
+                              - "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA"
+                              - "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+                            type: "string"
+                        type: "object"
                       type: "array"
                     typhaAffinity:
                       description: "Deprecated. Please use Installation.Spec.TyphaDeployment instead.\nTyphaAffinity allows configuration of node affinity characteristics for Typha pods."

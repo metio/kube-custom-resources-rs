@@ -21,9 +21,8 @@ pub struct ClusterResourceSetBindingSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ClusterResourceSetBindingBindings>>,
     /// clusterName is the name of the Cluster this binding applies to.
-    /// Note: this field mandatory in v1beta2.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
-    pub cluster_name: Option<String>,
+    #[serde(rename = "clusterName")]
+    pub cluster_name: String,
 }
 
 /// ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.

@@ -42,6 +42,8 @@ pub struct PolicySpec {
     /// IAM user, group, role, and policy names must be unique within the account.
     /// Names are not distinguished by case. For example, you cannot create resources
     /// named both "MyResource" and "myresource".
+    /// 
+    /// Regex Pattern: `^[\w+=,.@-]+$`
     pub name: String,
     /// The path for the policy.
     /// 
@@ -59,6 +61,8 @@ pub struct PolicySpec {
     /// letters.
     /// 
     /// You cannot use an asterisk (*) in the path name.
+    /// 
+    /// Regex Pattern: `^((/[A-Za-z0-9\.,\+@=_-]+)*)/$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// The JSON policy document that you want to use as the content for the new
@@ -89,6 +93,8 @@ pub struct PolicySpec {
     /// 
     ///    * The special characters tab (\u0009), line feed (\u000A), and carriage
     ///    return (\u000D)
+    /// 
+    /// Regex Pattern: `^[\u0009\u000A\u000D\u0020-\u00FF]+$`
     #[serde(rename = "policyDocument")]
     pub policy_document: String,
     /// A list of tags that you want to attach to the new IAM customer managed policy.
@@ -137,6 +143,8 @@ pub struct PolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDate")]
     pub create_date: Option<String>,
     /// The identifier for the version of the policy that is set as the default version.
+    /// 
+    /// Regex Pattern: `^v[1-9][0-9]*(\.[A-Za-z0-9-]*)?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultVersionID")]
     pub default_version_id: Option<String>,
     /// Specifies whether the policy can be attached to an IAM user, group, or role.
@@ -154,6 +162,8 @@ pub struct PolicyStatus {
     /// 
     /// For more information about IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
+    /// 
+    /// Regex Pattern: `^[\w]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyID")]
     pub policy_id: Option<String>,
     /// The date and time, in ISO 8601 date-time format (http://www.iso.org/iso/iso8601),

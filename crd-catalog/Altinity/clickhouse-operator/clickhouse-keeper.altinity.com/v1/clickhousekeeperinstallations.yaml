@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   labels:
-    clickhouse-keeper.altinity.com/chop: "0.24.5"
+    clickhouse-keeper.altinity.com/chop: "0.25.0"
   name: "clickhousekeeperinstallations.clickhouse-keeper.altinity.com"
 spec:
   group: "clickhouse-keeper.altinity.com"
@@ -176,8 +176,14 @@ spec:
                                                 description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each replica inside each shard inside each clickhouse cluster described in `chi.spec.configuration.clusters`"
                                                 type: "string"
                                               serviceTemplate:
-                                                description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                                description: "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
                                                 type: "string"
+                                              serviceTemplates:
+                                                description: "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                                items:
+                                                  type: "string"
+                                                nullable: true
+                                                type: "array"
                                               shardServiceTemplate:
                                                 description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each shard inside clickhouse cluster described in `chi.spec.configuration.clusters`"
                                                 type: "string"
@@ -217,8 +223,14 @@ spec:
                                           description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each replica inside each shard inside each clickhouse cluster described in `chi.spec.configuration.clusters`"
                                           type: "string"
                                         serviceTemplate:
-                                          description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                          description: "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
                                           type: "string"
+                                        serviceTemplates:
+                                          description: "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                          items:
+                                            type: "string"
+                                          nullable: true
+                                          type: "array"
                                         shardServiceTemplate:
                                           description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each shard inside clickhouse cluster described in `chi.spec.configuration.clusters`"
                                           type: "string"
@@ -264,8 +276,14 @@ spec:
                                 description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each replica inside each shard inside each clickhouse cluster described in `chi.spec.configuration.clusters`"
                                 type: "string"
                               serviceTemplate:
-                                description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                description: "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
                                 type: "string"
+                              serviceTemplates:
+                                description: "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                items:
+                                  type: "string"
+                                nullable: true
+                                type: "array"
                               shardServiceTemplate:
                                 description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each shard inside clickhouse cluster described in `chi.spec.configuration.clusters`"
                                 type: "string"
@@ -295,7 +313,7 @@ spec:
                           type: "string"
                       type: "object"
                     replicasUseFQDN:
-                      description: "define should replicas be specified by FQDN in `<host></host>`.\nIn case of \"no\" will use short hostname and clickhouse-server will use kubernetes default suffixes for DNS lookup\n\"yes\" by default\n"
+                      description: "define should replicas be specified by FQDN in `<host></host>`.\nIn case of \"no\" will use short hostname and clickhouse-server will use kubernetes default suffixes for DNS lookup\n\"no\" by default\n"
                       enum:
                         - ""
                         - "0"
@@ -361,8 +379,14 @@ spec:
                           description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each replica inside each shard inside each clickhouse cluster described in `chi.spec.configuration.clusters`"
                           type: "string"
                         serviceTemplate:
-                          description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                          description: "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
                           type: "string"
+                        serviceTemplates:
+                          description: "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                          items:
+                            type: "string"
+                          nullable: true
+                          type: "array"
                         shardServiceTemplate:
                           description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each shard inside clickhouse cluster described in `chi.spec.configuration.clusters`"
                           type: "string"
@@ -486,7 +510,7 @@ spec:
                     - "enabled"
                   type: "string"
                 suspend:
-                  description: "Suspend reconciliation of resources managed by a ClickHouse Keeper.\nWorks as the following:\n - When `suspend` is `true` operator stops reconciling all keeper resources.\n - When `suspend` is `false` or not set, operator reconciles all keeper resources.\n"
+                  description: "Suspend reconciliation of resources managed by a ClickHouse Keeper.\nWorks as the following:\n - When `suspend` is `true` operator stops reconciling all resources.\n - When `suspend` is `false` or not set, operator reconciles all resources.\n"
                   enum:
                     - ""
                     - "0"
@@ -580,8 +604,14 @@ spec:
                                     description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each replica inside each shard inside each clickhouse cluster described in `chi.spec.configuration.clusters`"
                                     type: "string"
                                   serviceTemplate:
-                                    description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for one `Service` resource which will created by `clickhouse-operator` which cover all clusters in whole `chi` resource"
+                                    description: "optional, template name from chi.spec.templates.serviceTemplates. used for customization of the `Service` resource, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
                                     type: "string"
+                                  serviceTemplates:
+                                    description: "optional, template names from chi.spec.templates.serviceTemplates. used for customization of the `Service` resources, created by `clickhouse-operator` to cover all clusters in whole `chi` resource"
+                                    items:
+                                      type: "string"
+                                    nullable: true
+                                    type: "array"
                                   shardServiceTemplate:
                                     description: "optional, template name from chi.spec.templates.serviceTemplates, allows customization for each `Service` resource which will created by `clickhouse-operator` which cover each shard inside clickhouse cluster described in `chi.spec.configuration.clusters`"
                                     type: "string"
@@ -764,6 +794,12 @@ spec:
                 endpoint:
                   description: "Endpoint"
                   type: "string"
+                endpoints:
+                  description: "All endpoints"
+                  items:
+                    type: "string"
+                  nullable: true
+                  type: "array"
                 error:
                   description: "Last error"
                   type: "string"
@@ -811,6 +847,12 @@ spec:
                   description: "Updated Hosts count"
                   minimum: 0.0
                   type: "integer"
+                hostsWithReplicaCaughtUp:
+                  description: "List of hosts with replica caught up"
+                  items:
+                    type: "string"
+                  nullable: true
+                  type: "array"
                 hostsWithTablesCreated:
                   description: "List of hosts with tables created by the operator"
                   items:

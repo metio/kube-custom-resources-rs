@@ -32,6 +32,8 @@ pub struct AddonSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
     pub client_request_token: Option<String>,
     /// The name of your cluster.
+    /// 
+    /// Regex Pattern: `^[0-9A-Za-z][A-Za-z0-9\-_]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

@@ -45,6 +45,8 @@ pub struct ResolverEndpointSpec {
     pub ip_addresses: Vec<ResolverEndpointIpAddresses>,
     /// A friendly name that lets you easily find a configuration in the Resolver
     /// dashboard in the Route 53 console.
+    /// 
+    /// Regex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9\-_' ']+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// For the endpoint type you can choose either IPv4, IPv6, or dual-stack. A

@@ -48,6 +48,8 @@ pub struct EventDataStoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiRegionEnabled")]
     pub multi_region_enabled: Option<bool>,
     /// The name of the event data store.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9._\-]+$`
     pub name: String,
     /// Specifies whether an event data store collects events logged for an organization
     /// in Organizations.

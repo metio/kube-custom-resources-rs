@@ -34,10 +34,10 @@ spec:
               description: "UserProfileSpec defines the desired state of UserProfile."
               properties:
                 domainID:
-                  description: "The ID of the associated Domain."
+                  description: "The ID of the associated Domain.\n\nRegex Pattern: `^d-(-*[a-z0-9]){1,61}$`"
                   type: "string"
                 singleSignOnUserIdentifier:
-                  description: "A specifier for the type of value specified in SingleSignOnUserValue. Currently,\nthe only supported value is \"UserName\". If the Domain's AuthMode is IAM Identity\nCenter, this field is required. If the Domain's AuthMode is not IAM Identity\nCenter, this field cannot be specified."
+                  description: "A specifier for the type of value specified in SingleSignOnUserValue. Currently,\nthe only supported value is \"UserName\". If the Domain's AuthMode is IAM Identity\nCenter, this field is required. If the Domain's AuthMode is not IAM Identity\nCenter, this field cannot be specified.\n\nRegex Pattern: `^UserName$`"
                   type: "string"
                 singleSignOnUserValue:
                   description: "The username of the associated Amazon Web Services Single Sign-On User for\nthis UserProfile. If the Domain's AuthMode is IAM Identity Center, this field\nis required, and must match a valid username of a user in your directory.\nIf the Domain's AuthMode is not IAM Identity Center, this field cannot be\nspecified."
@@ -54,7 +54,7 @@ spec:
                     type: "object"
                   type: "array"
                 userProfileName:
-                  description: "A name for the UserProfile. This value is not case sensitive."
+                  description: "A name for the UserProfile. This value is not case sensitive.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 userSettings:
                   description: "A collection of settings."

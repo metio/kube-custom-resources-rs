@@ -103,13 +103,13 @@ spec:
                     type: "object"
                   type: "array"
                 approvalDescription:
-                  description: "A description for the approval status of the model."
+                  description: "A description for the approval status of the model.\n\nRegex Pattern: `.*`"
                   type: "string"
                 certifyForMarketplace:
                   description: "Whether to certify the model package for listing on Amazon Web Services Marketplace.\n\nThis parameter is optional for unversioned models, and does not apply to\nversioned models."
                   type: "boolean"
                 clientToken:
-                  description: "A unique token that guarantees that the call to this API is idempotent."
+                  description: "A unique token that guarantees that the call to this API is idempotent.\n\nRegex Pattern: `^[a-zA-Z0-9-]+$`"
                   type: "string"
                 customerMetadataProperties:
                   additionalProperties:
@@ -407,16 +407,16 @@ spec:
                       type: "object"
                   type: "object"
                 modelPackageDescription:
-                  description: "A description of the model package."
+                  description: "A description of the model package.\n\nRegex Pattern: `^[\\p{L}\\p{M}\\p{Z}\\p{S}\\p{N}\\p{P}]*$`"
                   type: "string"
                 modelPackageGroupName:
-                  description: "The name or Amazon Resource Name (ARN) of the model package group that this\nmodel version belongs to.\n\nThis parameter is required for versioned models, and does not apply to unversioned\nmodels."
+                  description: "The name or Amazon Resource Name (ARN) of the model package group that this\nmodel version belongs to.\n\nThis parameter is required for versioned models, and does not apply to unversioned\nmodels.\n\nRegex Pattern: `^(arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:[a-z\\-]*\\/)?([a-zA-Z0-9]([a-zA-Z0-9-]){0,62})(?<!-)$`"
                   type: "string"
                 modelPackageName:
-                  description: "The name of the model package. The name must have 1 to 63 characters. Valid\ncharacters are a-z, A-Z, 0-9, and - (hyphen).\n\nThis parameter is required for unversioned models. It is not applicable to\nversioned models."
+                  description: "The name of the model package. The name must have 1 to 63 characters. Valid\ncharacters are a-z, A-Z, 0-9, and - (hyphen).\n\nThis parameter is required for unversioned models. It is not applicable to\nversioned models.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 samplePayloadURL:
-                  description: "The Amazon Simple Storage Service (Amazon S3) path where the sample payload\nis stored. This path must point to a single gzip compressed tar archive (.tar.gz\nsuffix). This archive can hold multiple files that are all equally used in\nthe load test. Each file in the archive must satisfy the size constraints\nof the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)\ncall."
+                  description: "The Amazon Simple Storage Service (Amazon S3) path where the sample payload\nis stored. This path must point to a single gzip compressed tar archive (.tar.gz\nsuffix). This archive can hold multiple files that are all equally used in\nthe load test. Each file in the archive must satisfy the size constraints\nof the InvokeEndpoint (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_runtime_InvokeEndpoint.html#API_runtime_InvokeEndpoint_RequestSyntax)\ncall.\n\nRegex Pattern: `^(https|s3)://([^/]+)/?(.*)$`"
                   type: "string"
                 skipModelValidation:
                   description: "Indicates if you want to skip model validation."

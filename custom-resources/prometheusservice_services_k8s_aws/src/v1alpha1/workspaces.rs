@@ -51,6 +51,8 @@ pub struct WorkspaceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<WorkspaceStatusStatus>,
     /// The unique ID for the new workspace.
+    /// 
+    /// Regex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
 }

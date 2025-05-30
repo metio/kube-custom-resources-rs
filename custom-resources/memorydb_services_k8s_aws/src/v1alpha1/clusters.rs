@@ -22,6 +22,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// The name of the Access Control List to associate with the cluster.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z][a-zA-Z0-9\-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "aclName")]
     pub acl_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

@@ -67,6 +67,8 @@ pub struct GrantSpec {
     /// accounts, IAM users, IAM roles, federated users, and assumed role users.
     /// For help with the ARN syntax for a principal, see IAM ARNs (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns)
     /// in the Identity and Access Management User Guide .
+    /// 
+    /// Regex Pattern: `^[\w+=,.@:/-]+$`
     #[serde(rename = "granteePrincipal")]
     pub grantee_principal: String,
     /// Identifies the KMS key for the grant. The grant gives principals permission
@@ -108,6 +110,8 @@ pub struct GrantSpec {
     /// without creating a new grant. Note that the returned grant token is unique
     /// with every CreateGrant request, even when a duplicate GrantId is returned.
     /// All grant tokens for the same grant ID can be used interchangeably.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// A list of operations that the grant permits.
@@ -133,6 +137,8 @@ pub struct GrantSpec {
     /// permission to retire the grant or revoke the grant. For details, see RevokeGrant
     /// and Retiring and revoking grants (https://docs.aws.amazon.com/kms/latest/developerguide/grant-manage.html#grant-delete)
     /// in the Key Management Service Developer Guide.
+    /// 
+    /// Regex Pattern: `^[\w+=,.@:/-]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retiringPrincipal")]
     pub retiring_principal: Option<String>,
 }

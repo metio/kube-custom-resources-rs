@@ -64,7 +64,7 @@ spec:
                       type: "string"
                   type: "object"
                 codeSigningConfigARN:
-                  description: "To enable code signing for this function, specify the ARN of a code-signing\nconfiguration. A code-signing configurationincludes a set of signing profiles,\nwhich define the trusted publishers for this function."
+                  description: "To enable code signing for this function, specify the ARN of a code-signing\nconfiguration. A code-signing configurationincludes a set of signing profiles,\nwhich define the trusted publishers for this function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:code-signing-config:csc-[a-z0-9]{17}$`"
                   type: "string"
                 deadLetterConfig:
                   description: "A dead-letter queue configuration that specifies the queue or topic where\nLambda sends asynchronous events when they fail processing. For more information,\nsee Dead-letter queues (https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-dlq)."
@@ -132,7 +132,7 @@ spec:
                       type: "string"
                   type: "object"
                 handler:
-                  description: "The name of the method within your code that Lambda calls to run your function.\nHandler is required if the deployment package is a .zip file archive. The\nformat includes the file name. It can also include namespaces and other qualifiers,\ndepending on the runtime. For more information, see Lambda programming model\n(https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html)."
+                  description: "The name of the method within your code that Lambda calls to run your function.\nHandler is required if the deployment package is a .zip file archive. The\nformat includes the file name. It can also include namespaces and other qualifiers,\ndepending on the runtime. For more information, see Lambda programming model\n(https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html).\n\nRegex Pattern: `^[^\\s]+$`"
                   type: "string"
                 imageConfig:
                   description: "Container image configuration values (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms)\nthat override the values in the container image Dockerfile."
@@ -149,7 +149,7 @@ spec:
                       type: "string"
                   type: "object"
                 kmsKeyARN:
-                  description: "The ARN of the Key Management Service (KMS) customer managed key that's used\nto encrypt the following resources:\n\n   * The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).\n\n   * The function's Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)\n   snapshots.\n\n   * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment\n   package that's used for function invocations. For more information, see\n   Specifying a customer managed key for Lambda (https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).\n\n   * The optimized version of the container image that's used for function\n   invocations. Note that this is not the same key that's used to protect\n   your container image in the Amazon Elastic Container Registry (Amazon\n   ECR). For more information, see Function lifecycle (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).\n\nIf you don't provide a customer managed key, Lambda uses an Amazon Web Services\nowned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)\nor an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk)."
+                  description: "The ARN of the Key Management Service (KMS) customer managed key that's used\nto encrypt the following resources:\n\n   * The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).\n\n   * The function's Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)\n   snapshots.\n\n   * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment\n   package that's used for function invocations. For more information, see\n   Specifying a customer managed key for Lambda (https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).\n\n   * The optimized version of the container image that's used for function\n   invocations. Note that this is not the same key that's used to protect\n   your container image in the Amazon Elastic Container Registry (Amazon\n   ECR). For more information, see Function lifecycle (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).\n\nIf you don't provide a customer managed key, Lambda uses an Amazon Web Services\nowned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)\nor an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`"
                   type: "string"
                 kmsKeyRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -185,7 +185,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 name:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name – my-function.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.\n\n   * Partial ARN – 123456789012:function:my-function.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 packageType:
                   description: "The type of deployment package. Set to Image for container image and set\nto Zip for .zip file archive."
@@ -198,7 +198,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 role:
-                  description: "The Amazon Resource Name (ARN) of the function's execution role."
+                  description: "The Amazon Resource Name (ARN) of the function's execution role.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 roleRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -389,16 +389,16 @@ spec:
                     type: "object"
                   type: "array"
                 masterARN:
-                  description: "For Lambda@Edge functions, the ARN of the main function."
+                  description: "For Lambda@Edge functions, the ARN of the main function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 revisionID:
                   description: "The latest updated revision of the function or alias."
                   type: "string"
                 signingJobARN:
-                  description: "The ARN of the signing job."
+                  description: "The ARN of the signing job.\n\nRegex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$`"
                   type: "string"
                 signingProfileVersionARN:
-                  description: "The ARN of the signing profile version."
+                  description: "The ARN of the signing profile version.\n\nRegex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$`"
                   type: "string"
                 state:
                   description: "The current state of the function. When the state is Inactive, you can reactivate\nthe function by invoking it."
@@ -410,7 +410,7 @@ spec:
                   description: "The reason code for the function's current state. When the code is Creating,\nyou can't invoke or modify the function."
                   type: "string"
                 version:
-                  description: "The version of the Lambda function."
+                  description: "The version of the Lambda function.\n\nRegex Pattern: `^(\\$LATEST|[0-9]+)$`"
                   type: "string"
               type: "object"
           type: "object"

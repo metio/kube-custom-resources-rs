@@ -25,23 +25,33 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct PipeSpec {
     /// A description of the pipe.
+    /// 
+    /// Regex Pattern: `^.*$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// The state the pipe should be in.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredState")]
     pub desired_state: Option<String>,
     /// The ARN of the enrichment resource.
+    /// 
+    /// Regex Pattern: `^$|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\d{1})?)?:(\d{12})?:(.+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enrichment: Option<String>,
     /// The parameters required to set up enrichment on your pipe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enrichmentParameters")]
     pub enrichment_parameters: Option<PipeEnrichmentParameters>,
     /// The name of the pipe.
+    /// 
+    /// Regex Pattern: `^[\.\-_A-Za-z0-9]+$`
     pub name: String,
     /// The ARN of the role that allows the pipe to send data to the target.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:iam::\d{12}:role/?[a-zA-Z0-9+=,.@\-_/]+$`
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// The ARN of the source resource.
+    /// 
+    /// Regex Pattern: `^smk://(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]):[0-9]{1,5}|arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\d{1})?)?:(\d{12})?:(.+)$`
     pub source: String,
     /// The parameters required to set up a source for your pipe.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceParameters")]
@@ -50,6 +60,8 @@ pub struct PipeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     /// The ARN of the target resource.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-]+):([a-z]{2,4}((-gov)|(-de)|(-iso([a-z]?)))?-[a-z]+(-\d{1})?)?:(\d{12})?:(.+)$`
     pub target: String,
     /// The parameters required to set up a target for your pipe.
     /// 
@@ -871,6 +883,8 @@ pub struct PipeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModifiedTime")]
     pub last_modified_time: Option<String>,
     /// The reason the pipe is in its current state.
+    /// 
+    /// Regex Pattern: `^.*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReason")]
     pub state_reason: Option<String>,
 }

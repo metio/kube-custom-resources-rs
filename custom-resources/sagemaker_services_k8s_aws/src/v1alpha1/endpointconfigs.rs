@@ -35,6 +35,8 @@ pub struct EndpointConfigSpec {
     /// The name of the endpoint configuration. You specify this name in a CreateEndpoint
     /// (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateEndpoint.html)
     /// request.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "endpointConfigName")]
     pub endpoint_config_name: String,
     /// The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume
@@ -43,6 +45,8 @@ pub struct EndpointConfigSpec {
     /// 
     /// To be able to pass this role to Amazon SageMaker, the caller of this action
     /// must have the iam:PassRole permission.
+    /// 
+    /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
     pub execution_role_arn: Option<String>,
     /// The Amazon Resource Name (ARN) of a Amazon Web Services Key Management Service
@@ -78,6 +82,8 @@ pub struct EndpointConfigSpec {
     /// 
     /// For more information about local instance storage encryption, see SSD Instance
     /// Store Volumes (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ssd-instance-store.html).
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// An array of ProductionVariant objects, one for each model that you want to

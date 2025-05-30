@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "machinepools.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -46,7 +46,7 @@ spec:
       name: "v1beta2"
       schema:
         openAPIV3Schema:
-          description: "MachinePool is the Schema for the machinepools API."
+          description: "MachinePool is the Schema for the machinepools API.\nNOTE: This CRD can only be used if the MachinePool feature gate is enabled."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -72,10 +72,6 @@ spec:
                     type: "string"
                   maxItems: 100
                   type: "array"
-                minReadySeconds:
-                  description: "minReadySeconds is the minimum number of seconds for which a newly created machine instances should\nbe ready.\nDefaults to 0 (machine instance will be considered available as soon as it\nis ready)"
-                  format: "int32"
-                  type: "integer"
                 providerIDList:
                   description: "providerIDList are the identification IDs of machine instances provided by the provider.\nThis field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances."
                   items:
@@ -179,6 +175,10 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                        minReadySeconds:
+                          description: "minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.\nDefaults to 0 (Machine will be considered available as soon as the Machine is ready)"
+                          format: "int32"
+                          type: "integer"
                         nodeDeletionTimeout:
                           description: "nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds."
                           type: "string"

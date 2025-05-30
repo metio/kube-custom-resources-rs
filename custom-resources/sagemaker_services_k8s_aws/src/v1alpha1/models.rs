@@ -37,12 +37,16 @@ pub struct ModelSpec {
     /// 
     /// To be able to pass this role to SageMaker, the caller of this API must have
     /// the iam:PassRole permission.
+    /// 
+    /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
     pub execution_role_arn: Option<String>,
     /// Specifies details of how containers in a multi-container endpoint are called.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inferenceExecutionConfig")]
     pub inference_execution_config: Option<ModelInferenceExecutionConfig>,
     /// The name of the new model.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9]([\-a-zA-Z0-9]*[a-zA-Z0-9])?$`
     #[serde(rename = "modelName")]
     pub model_name: String,
     /// The location of the primary docker image containing inference code, associated

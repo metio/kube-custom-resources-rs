@@ -57,6 +57,8 @@ pub struct CodeSigningConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CodeSigningConfigStatusAckResourceMetadata>,
     /// Unique identifer for the Code signing configuration.
+    /// 
+    /// Regex Pattern: `^csc-[a-zA-Z0-9-_\.]{17}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSigningConfigID")]
     pub code_signing_config_id: Option<String>,
     /// All CRs managed by ACK have a common `Status.Conditions` member that

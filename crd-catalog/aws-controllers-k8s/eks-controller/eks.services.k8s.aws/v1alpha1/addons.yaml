@@ -60,7 +60,7 @@ spec:
                   description: "A unique, case-sensitive identifier that you provide to ensurethe idempotency\nof the request."
                   type: "string"
                 clusterName:
-                  description: "The name of your cluster."
+                  description: "The name of your cluster.\n\nRegex Pattern: `^[0-9A-Za-z][A-Za-z0-9\\-_]*$`"
                   type: "string"
                 clusterRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"

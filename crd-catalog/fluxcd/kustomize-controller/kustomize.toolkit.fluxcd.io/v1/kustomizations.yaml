@@ -84,10 +84,11 @@ spec:
                     - "provider"
                   type: "object"
                 deletionPolicy:
-                  description: "DeletionPolicy can be used to control garbage collection when this\nKustomization is deleted. Valid values are ('MirrorPrune', 'Delete',\n'Orphan'). 'MirrorPrune' mirrors the Prune field (orphan if false,\ndelete if true). Defaults to 'MirrorPrune'."
+                  description: "DeletionPolicy can be used to control garbage collection when this\nKustomization is deleted. Valid values are ('MirrorPrune', 'Delete',\n'WaitForTermination', 'Orphan'). 'MirrorPrune' mirrors the Prune field\n(orphan if false, delete if true). Defaults to 'MirrorPrune'."
                   enum:
                     - "MirrorPrune"
                     - "Delete"
+                    - "WaitForTermination"
                     - "Orphan"
                   type: "string"
                 dependsOn:
