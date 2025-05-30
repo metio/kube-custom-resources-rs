@@ -8,6 +8,7 @@ on:
     paths:
       - code-generator/**
       - custom-resources/**
+      - .github/workflows/release-*
 jobs:
   check:
     runs-on: ubuntu-latest
