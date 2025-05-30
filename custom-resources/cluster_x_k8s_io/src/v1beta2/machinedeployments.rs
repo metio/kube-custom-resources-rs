@@ -29,22 +29,9 @@ pub struct MachineDeploymentSpec {
     /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
     pub machine_naming_strategy: Option<MachineDeploymentMachineNamingStrategy>,
-    /// minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.
-    /// Defaults to 0 (machine will be considered available as soon as the Node is ready)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
-    pub min_ready_seconds: Option<i32>,
     /// paused indicates that the deployment is paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// progressDeadlineSeconds is the maximum time in seconds for a deployment to make progress before it
-    /// is considered to be failed. The deployment controller will continue to
-    /// process failed deployments and a condition with a ProgressDeadlineExceeded
-    /// reason will be surfaced in the deployment status. Note that progress will
-    /// not be estimated during the time a deployment is paused. Defaults to 600s.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/11470 for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDeadlineSeconds")]
-    pub progress_deadline_seconds: Option<i32>,
     /// replicas is the number of desired machines.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// 
@@ -64,13 +51,6 @@ pub struct MachineDeploymentSpec {
     ///   should be later controlled by the autoscaler
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// revisionHistoryLimit is the number of old MachineSets to retain to allow rollback.
-    /// This is a pointer to distinguish between explicit zero and not specified.
-    /// Defaults to 1.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
-    pub revision_history_limit: Option<i32>,
     /// rolloutAfter is a field to indicate a rollout should be performed
     /// after the specified time even if no changes have been made to the
     /// MachineDeployment.
@@ -293,6 +273,10 @@ pub struct MachineDeploymentTemplateSpec {
     /// offered by an infrastructure provider.
     #[serde(rename = "infrastructureRef")]
     pub infrastructure_ref: ObjectReference,
+    /// minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.
+    /// Defaults to 0 (Machine will be considered available as soon as the Machine is ready)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
+    pub min_ready_seconds: Option<i32>,
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.

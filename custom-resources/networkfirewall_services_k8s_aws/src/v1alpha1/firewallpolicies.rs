@@ -28,6 +28,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct FirewallPolicySpec {
     /// A description of the firewall policy.
+    /// 
+    /// Regex Pattern: `^.*$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// A complex type that contains settings for encryption of your firewall policy
@@ -39,6 +41,8 @@ pub struct FirewallPolicySpec {
     pub firewall_policy: FirewallPolicyFirewallPolicy,
     /// The descriptive name of the firewall policy. You can't change the name of
     /// a firewall policy after you create it.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9-]+$`
     #[serde(rename = "firewallPolicyName")]
     pub firewall_policy_name: String,
     /// The key:value pairs to associate with the resource.
@@ -245,6 +249,8 @@ pub struct FirewallPolicyStatus {
     /// If this happens, retrieve the firewall policy again to get a current copy
     /// of it with current token. Reapply your changes as needed, then try the operation
     /// again using the new token.
+    /// 
+    /// Regex Pattern: `^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateToken")]
     pub update_token: Option<String>,
 }

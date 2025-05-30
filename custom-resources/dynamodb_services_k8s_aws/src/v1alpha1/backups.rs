@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct BackupSpec {
     /// Specified name for the backup.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9_.-]+$`
     #[serde(rename = "backupName")]
     pub backup_name: String,
     /// The name of the table. You can also provide the Amazon Resource Name (ARN)

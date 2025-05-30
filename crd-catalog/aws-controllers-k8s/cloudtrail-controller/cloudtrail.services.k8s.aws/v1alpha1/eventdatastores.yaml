@@ -74,7 +74,7 @@ spec:
                   description: "Specifies whether the event data store includes events from all Regions,\nor only from the Region in which the event data store is created."
                   type: "boolean"
                 name:
-                  description: "The name of the event data store."
+                  description: "The name of the event data store.\n\nRegex Pattern: `^[a-zA-Z0-9._\\-]+$`"
                   type: "string"
                 organizationEnabled:
                   description: "Specifies whether an event data store collects events logged for an organization\nin Organizations."

@@ -190,11 +190,11 @@ pub struct KlusterletRegistrationConfiguration {
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<KlusterletRegistrationConfigurationFeatureGates>>,
-    /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver of hub cluster from the spoke cluster.
+    /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver on the spoke cluster.
     /// If it is set empty, use the default value: 100
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIBurst")]
     pub kube_api_burst: Option<i32>,
-    /// KubeAPIQPS indicates the maximum QPS while talking with apiserver of hub cluster from the spoke cluster.
+    /// KubeAPIQPS indicates the maximum QPS while talking with apiserver on the spoke cluster.
     /// If it is set empty, use the default value: 50
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
@@ -395,14 +395,27 @@ pub struct KlusterletWorkConfiguration {
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<KlusterletWorkConfigurationFeatureGates>>,
-    /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver of hub cluster from the spoke cluster.
+    /// HubKubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver on the hub cluster.
+    /// If it is set empty, use the default value: 100
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubKubeAPIBurst")]
+    pub hub_kube_api_burst: Option<i32>,
+    /// HubKubeAPIQPS indicates the maximum QPS while talking with apiserver on the hub cluster.
+    /// If it is set empty, use the default value: 50
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hubKubeAPIQPS")]
+    pub hub_kube_apiqps: Option<i32>,
+    /// KubeAPIBurst indicates the maximum burst of the throttle while talking with apiserver on the spoke cluster.
     /// If it is set empty, use the default value: 100
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIBurst")]
     pub kube_api_burst: Option<i32>,
-    /// KubeAPIQPS indicates the maximum QPS while talking with apiserver of hub cluster from the spoke cluster.
+    /// KubeAPIQPS indicates the maximum QPS while talking with apiserver on the spoke cluster.
     /// If it is set empty, use the default value: 50
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeAPIQPS")]
     pub kube_apiqps: Option<i32>,
+    /// StatusSyncInterval is the interval for the work agent to check the status of ManifestWorks.
+    /// Larger value means less frequent status sync and less api calls to the managed cluster, vice versa.
+    /// The value(x) should be: 5s <= x <= 1h.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusSyncInterval")]
+    pub status_sync_interval: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

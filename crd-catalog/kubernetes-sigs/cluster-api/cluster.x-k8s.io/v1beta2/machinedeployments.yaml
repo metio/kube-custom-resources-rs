@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "machinedeployments.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -85,23 +85,11 @@ spec:
                       minLength: 1
                       type: "string"
                   type: "object"
-                minReadySeconds:
-                  description: "minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.\nDefaults to 0 (machine will be considered available as soon as the Node is ready)"
-                  format: "int32"
-                  type: "integer"
                 paused:
                   description: "paused indicates that the deployment is paused."
                   type: "boolean"
-                progressDeadlineSeconds:
-                  description: "progressDeadlineSeconds is the maximum time in seconds for a deployment to make progress before it\nis considered to be failed. The deployment controller will continue to\nprocess failed deployments and a condition with a ProgressDeadlineExceeded\nreason will be surfaced in the deployment status. Note that progress will\nnot be estimated during the time a deployment is paused. Defaults to 600s.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/11470 for more details."
-                  format: "int32"
-                  type: "integer"
                 replicas:
                   description: "replicas is the number of desired machines.\nThis is a pointer to distinguish between explicit zero and not specified.\n\nDefaults to:\n* if the Kubernetes autoscaler min size and max size annotations are set:\n  - if it's a new MachineDeployment, use min size\n  - if the replicas field of the old MachineDeployment is < min size, use min size\n  - if the replicas field of the old MachineDeployment is > max size, use max size\n  - if the replicas field of the old MachineDeployment is in the (min size, max size) range, keep the value from the oldMD\n* otherwise use 1\nNote: Defaulting will be run whenever the replicas field is not set:\n* A new MachineDeployment is created with replicas not set.\n* On an existing MachineDeployment the replicas field was first set and is now unset.\nThose cases are especially relevant for the following Kubernetes autoscaler use cases:\n* A new MachineDeployment is created and replicas should be managed by the autoscaler\n* An existing MachineDeployment which initially wasn't controlled by the autoscaler\n  should be later controlled by the autoscaler"
-                  format: "int32"
-                  type: "integer"
-                revisionHistoryLimit:
-                  description: "revisionHistoryLimit is the number of old MachineSets to retain to allow rollback.\nThis is a pointer to distinguish between explicit zero and not specified.\nDefaults to 1.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details."
                   format: "int32"
                   type: "integer"
                 rolloutAfter:
@@ -275,6 +263,10 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                        minReadySeconds:
+                          description: "minReadySeconds is the minimum number of seconds for which a Machine should be ready before considering it available.\nDefaults to 0 (Machine will be considered available as soon as the Machine is ready)"
+                          format: "int32"
+                          type: "integer"
                         nodeDeletionTimeout:
                           description: "nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds."
                           type: "string"

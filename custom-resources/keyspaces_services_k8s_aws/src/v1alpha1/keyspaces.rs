@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct KeyspaceSpec {
     /// The name of the keyspace to be created.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$`
     #[serde(rename = "keyspaceName")]
     pub keyspace_name: String,
     /// The replication specification of the keyspace includes:
@@ -93,6 +95,8 @@ pub struct KeyspaceStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The unique identifier of the keyspace in the format of an Amazon Resource
     /// Name (ARN).
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):cassandra:.+`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceARN")]
     pub resource_arn: Option<String>,
 }

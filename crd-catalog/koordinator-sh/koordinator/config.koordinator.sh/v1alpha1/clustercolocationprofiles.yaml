@@ -40,7 +40,7 @@ spec:
                   description: "Annotations describes the k/v pair that needs to inject into Pod.Annotations"
                   type: "object"
                 koordinatorPriority:
-                  description: "KoordinatorPriority defines the Pod sub-priority in Koordinator.\nThe priority value will be injected into Pod as label koordinator.sh/priority.\nVarious Koordinator components determine the priority of the Pod\nin the Koordinator through KoordinatorPriority and the priority value in PriorityClassName.\nThe higher the value, the higher the priority."
+                  description: "KoordinatorPriority defines the Pod sub-priority in Koordinator.\nThe priority value will be injected into Pod as label koordinator.sh/priority.\nVarious Koordinator components determine the priority of the Pod\nin the Koordinator through KoordinatorPriority and the priority value in PriorityClassName.\nThe higher the value, the higher the priority.\nTODO: remove this field, use Labels instead."
                   format: "int32"
                   type: "integer"
                 labelKeysMapping:

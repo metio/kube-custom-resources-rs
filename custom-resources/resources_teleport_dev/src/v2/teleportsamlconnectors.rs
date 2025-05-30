@@ -59,6 +59,9 @@ pub struct TeleportSAMLConnectorSpec {
     /// MFASettings contains settings to enable SSO MFA checks through this auth connector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mfa: Option<TeleportSAMLConnectorMfa>,
+    /// PreferredRequestBinding is a preferred SAML request binding method. Value must be either "http-post" or "http-redirect". In general, the SAML identity provider lists request binding methods it supports. And the SAML service provider uses one of the IdP supported request binding method that it prefers. But we never honored request binding value provided by the IdP and always used http-redirect binding as a default. Setting up PreferredRequestBinding value lets us preserve existing auth connector behavior and only use http-post binding if it is explicitly configured.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preferred_request_binding: Option<String>,
     /// Provider is the external identity provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provider: Option<String>,

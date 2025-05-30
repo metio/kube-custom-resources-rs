@@ -30,7 +30,7 @@ spec:
               description: "ModelBiasJobDefinitionSpec defines the desired state of ModelBiasJobDefinition."
               properties:
                 jobDefinitionName:
-                  description: "The name of the bias job definition. The name must be unique within an Amazon\nWeb Services Region in the Amazon Web Services account."
+                  description: "The name of the bias job definition. The name must be unique within an Amazon\nWeb Services Region in the Amazon Web Services account.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 jobResources:
                   description: "Identifies the resources to deploy for a monitoring job."
@@ -153,7 +153,7 @@ spec:
                       type: "object"
                   type: "object"
                 roleARN:
-                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume\nto perform tasks on your behalf."
+                  description: "The Amazon Resource Name (ARN) of an IAM role that Amazon SageMaker can assume\nto perform tasks on your behalf.\n\nRegex Pattern: `^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 stoppingCondition:
                   description: "A time limit for how long the monitoring job is allowed to run before stopping."

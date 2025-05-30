@@ -132,6 +132,16 @@ pub struct ScrapeConfigSpec {
     /// MetricsPath HTTP path to scrape for metrics. If empty, Prometheus uses the default value (e.g. /metrics).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPath")]
     pub metrics_path: Option<String>,
+    /// Metric name escaping mode to request through content negotiation.
+    /// 
+    /// It requires Prometheus >= v3.4.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameEscapingScheme")]
+    pub name_escaping_scheme: Option<ScrapeConfigNameEscapingScheme>,
+    /// Specifies the validation scheme for metric and label names.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
+    pub name_validation_scheme: Option<ScrapeConfigNameValidationScheme>,
     /// If there are more than this many buckets in a native histogram,
     /// buckets will be merged to stay within the limit.
     /// It requires Prometheus >= v2.45.0.
@@ -8946,6 +8956,24 @@ pub enum ScrapeConfigMetricRelabelingsAction {
     #[serde(rename = "dropequal")]
     Dropequal,
     DropEqual,
+}
+
+/// ScrapeConfigSpec is a specification of the desired configuration for a scrape configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNameEscapingScheme {
+    #[serde(rename = "AllowUTF8")]
+    AllowUtf8,
+    Underscores,
+    Dots,
+    Values,
+}
+
+/// ScrapeConfigSpec is a specification of the desired configuration for a scrape configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ScrapeConfigNameValidationScheme {
+    #[serde(rename = "UTF8")]
+    Utf8,
+    Legacy,
 }
 
 /// NomadSDConfig configurations allow retrieving scrape targets from Nomad's Service API.

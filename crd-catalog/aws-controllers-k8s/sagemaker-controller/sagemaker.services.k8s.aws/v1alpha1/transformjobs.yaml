@@ -84,7 +84,7 @@ spec:
                       type: "integer"
                   type: "object"
                 modelName:
-                  description: "The name of the model that you want to use for the transform job. ModelName\nmust be the name of an existing Amazon SageMaker model within an Amazon Web\nServices Region in an Amazon Web Services account."
+                  description: "The name of the model that you want to use for the transform job. ModelName\nmust be the name of an existing Amazon SageMaker model within an Amazon Web\nServices Region in an Amazon Web Services account.\n\nRegex Pattern: `^[a-zA-Z0-9]([\\-a-zA-Z0-9]*[a-zA-Z0-9])?$`"
                   type: "string"
                 tags:
                   description: "(Optional) An array of key-value pairs. For more information, see Using Cost\nAllocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-what)\nin the Amazon Web Services Billing and Cost Management User Guide."
@@ -120,7 +120,7 @@ spec:
                       type: "string"
                   type: "object"
                 transformJobName:
-                  description: "The name of the transform job. The name must be unique within an Amazon Web\nServices Region in an Amazon Web Services account."
+                  description: "The name of the transform job. The name must be unique within an Amazon Web\nServices Region in an Amazon Web Services account.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 transformOutput:
                   description: "Describes the results of the transform job."

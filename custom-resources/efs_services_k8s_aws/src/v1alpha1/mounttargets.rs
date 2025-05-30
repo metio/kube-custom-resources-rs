@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct MountTargetSpec {
     /// The ID of the file system for which to create the mount target.
+    /// 
+    /// Regex Pattern: `^(arn:aws[-a-z]*:elasticfilesystem:[0-9a-z-:]+:file-system/fs-[0-9a-f]{8,40}|fs-[0-9a-f]{8,40})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -32,6 +34,8 @@ pub struct MountTargetSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemRef")]
     pub file_system_ref: Option<MountTargetFileSystemRef>,
     /// Valid IPv4 address within the address range of the specified subnet.
+    /// 
+    /// Regex Pattern: `^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddress")]
     pub ip_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupRefs")]
@@ -42,6 +46,8 @@ pub struct MountTargetSpec {
     pub security_groups: Option<Vec<String>>,
     /// The ID of the subnet to add the mount target in. For One Zone file systems,
     /// use the subnet that is associated with the file system's Availability Zone.
+    /// 
+    /// Regex Pattern: `^subnet-[0-9a-f]{8,40}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -148,6 +154,8 @@ pub struct MountTargetStatus {
     /// For example, the Availability Zone us-east-1a for your Amazon Web Services
     /// account might not be the same location as us-east-1a for another Amazon Web
     /// Services account.
+    /// 
+    /// Regex Pattern: `^.+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneName")]
     pub availability_zone_name: Option<String>,
     /// All CRs managed by ACK have a common `Status.Conditions` member that
@@ -160,6 +168,8 @@ pub struct MountTargetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifeCycleState")]
     pub life_cycle_state: Option<String>,
     /// System-assigned mount target ID.
+    /// 
+    /// Regex Pattern: `^fsmt-[0-9a-f]{8,40}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountTargetID")]
     pub mount_target_id: Option<String>,
     /// The ID of the network interface that Amazon EFS created when it created the
@@ -167,6 +177,8 @@ pub struct MountTargetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaceID")]
     pub network_interface_id: Option<String>,
     /// Amazon Web Services account ID that owns the resource.
+    /// 
+    /// Regex Pattern: `^(\d{12})|(\d{4}-\d{4}-\d{4})$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// The virtual private cloud (VPC) ID that the mount target is configured in.

@@ -27,21 +27,29 @@ pub struct JobRunSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationOverrides")]
     pub configuration_overrides: Option<String>,
     /// The execution role ARN for the job run.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):iam::(\d{12})?:(role((\u002F)|(\u002F[\u0021-\u007F]+\u002F))[\w+=,.@-]+)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRoleARN")]
     pub execution_role_arn: Option<String>,
     /// The job driver for the job run.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobDriver")]
     pub job_driver: Option<JobRunJobDriver>,
     /// The name of the job run.
+    /// 
+    /// Regex Pattern: `^[\.\-_/#A-Za-z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The Amazon EMR release version to use for the job run.
+    /// 
+    /// Regex Pattern: `^[\.\-_/A-Za-z0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseLabel")]
     pub release_label: Option<String>,
     /// The tags assigned to job runs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     /// The virtual cluster ID for which the job run request is submitted.
+    /// 
+    /// Regex Pattern: `^[0-9a-z]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualClusterID")]
     pub virtual_cluster_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -114,6 +122,8 @@ pub struct JobRunStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// This output displays the started job run ID.
+    /// 
+    /// Regex Pattern: `^[0-9a-z]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The state of the job run.

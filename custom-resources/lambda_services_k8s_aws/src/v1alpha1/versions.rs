@@ -43,6 +43,8 @@ pub struct VersionSpec {
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it is limited to 64 characters in length.
+    /// 
+    /// Regex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
     pub function_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -186,9 +188,13 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemConfigs")]
     pub file_system_configs: Option<Vec<VersionStatusFileSystemConfigs>>,
     /// The function's Amazon Resource Name (ARN).
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_\.]+(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionARN")]
     pub function_arn: Option<String>,
     /// The function that Lambda calls to begin running your function.
+    /// 
+    /// Regex Pattern: `^[^\s]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub handler: Option<String>,
     /// The function's image configuration values.
@@ -214,6 +220,8 @@ pub struct VersionStatus {
     /// If you don't provide a customer managed key, Lambda uses an Amazon Web Services
     /// owned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)
     /// or an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
+    /// 
+    /// Regex Pattern: `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyARN")]
     pub kms_key_arn: Option<String>,
     /// The date and time that the function was last updated, in ISO-8601 format
@@ -234,6 +242,8 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub layers: Option<Vec<VersionStatusLayers>>,
     /// For Lambda@Edge functions, the ARN of the main function.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterARN")]
     pub master_arn: Option<String>,
     /// The amount of memory available to the function at runtime.
@@ -244,9 +254,13 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "packageType")]
     pub package_type: Option<String>,
     /// The version of the Lambda function.
+    /// 
+    /// Regex Pattern: `^(\$LATEST|[0-9]+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qualifier: Option<String>,
     /// The function's execution role.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
     /// The identifier of the function's runtime (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).
@@ -262,9 +276,13 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtime: Option<String>,
     /// The ARN of the signing job.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-])+:([a-z]{2}(-gov)?-[a-z]+-\d{1})?:(\d{12})?:(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingJobARN")]
     pub signing_job_arn: Option<String>,
     /// The ARN of the signing profile version.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-])+:([a-z]{2}(-gov)?-[a-z]+-\d{1})?:(\d{12})?:(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingProfileVersionARN")]
     pub signing_profile_version_arn: Option<String>,
     /// Set ApplyOn to PublishedVersions to create a snapshot of the initialized
@@ -291,6 +309,8 @@ pub struct VersionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<VersionStatusTracingConfig>,
     /// The version of the Lambda function.
+    /// 
+    /// Regex Pattern: `^(\$LATEST|[0-9]+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// The function's networking configuration.

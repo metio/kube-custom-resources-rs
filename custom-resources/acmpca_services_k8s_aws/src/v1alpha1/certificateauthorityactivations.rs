@@ -27,6 +27,8 @@ pub struct CertificateAuthorityActivationSpec {
     /// This must be of the form:
     /// 
     /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
+    /// 
+    /// Regex Pattern: `^arn:[\w+=/,.@-]+:acm-pca:[\w+=/,.@-]*:[0-9]*:[\w+=,.@-]+(/[\w+=,.@-]+)*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

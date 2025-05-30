@@ -142,11 +142,8 @@ pub struct STSSessionTokenRequestParameters {
     /// (such as arn:aws:iam::123456789012:mfa/user)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serialNumber")]
     pub serial_number: Option<String>,
-    /// SessionDuration The duration, in seconds, that the credentials should remain valid. Acceptable durations for
-    /// IAM user sessions range from 900 seconds (15 minutes) to 129,600 seconds (36 hours), with 43,200 seconds
-    /// (12 hours) as the default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionDuration")]
-    pub session_duration: Option<i64>,
+    pub session_duration: Option<i32>,
     /// TokenCode is the value provided by the MFA device, if MFA is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenCode")]
     pub token_code: Option<String>,

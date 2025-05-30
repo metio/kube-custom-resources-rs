@@ -30,7 +30,7 @@ spec:
               description: "GlobalTableSpec defines the desired state of GlobalTable.\n\nRepresents the properties of a global table."
               properties:
                 globalTableName:
-                  description: "The global table name."
+                  description: "The global table name.\n\nRegex Pattern: `^[a-zA-Z0-9_.-]+$`"
                   type: "string"
                 replicationGroup:
                   description: "The Regions where the global table needs to be created."

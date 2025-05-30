@@ -62,7 +62,7 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -77,10 +77,10 @@ spec:
                       type: "object"
                   type: "object"
                 functionVersion:
-                  description: "The function version that the alias invokes."
+                  description: "The function version that the alias invokes.\n\nRegex Pattern: `^(\\$LATEST|[0-9]+)$`"
                   type: "string"
                 name:
-                  description: "The name of the alias."
+                  description: "The name of the alias.\n\nRegex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9-_]+)$`"
                   type: "string"
                 permissions:
                   description: "Permissions configures a set of Lambda permissions to grant to an alias."

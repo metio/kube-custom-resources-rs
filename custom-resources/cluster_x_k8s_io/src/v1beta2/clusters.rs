@@ -202,22 +202,12 @@ pub struct ClusterInfrastructureRef {
 /// this feature is highly experimental, and parts of it might still be not implemented.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopology {
-    /// class is the name of the ClusterClass object to create the topology.
-    pub class: String,
-    /// classNamespace is the namespace of the ClusterClass object to create the topology.
-    /// If the namespace is empty or not set, it is defaulted to the namespace of the cluster object.
-    /// Value must follow the DNS1123Subdomain syntax.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classNamespace")]
-    pub class_namespace: Option<String>,
+    /// classRef is the ref to the ClusterClass that should be used for the topology.
+    #[serde(rename = "classRef")]
+    pub class_ref: ClusterTopologyClassRef,
     /// controlPlane describes the cluster control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
-    /// rolloutAfter performs a rollout of the entire cluster one component at a time,
-    /// control plane first and then machine deployments.
-    /// 
-    /// Deprecated: This field has no function and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
-    pub rollout_after: Option<String>,
     /// variables can be used to customize the Cluster through
     /// patches. They must comply to the corresponding
     /// VariableClasses defined in the ClusterClass.
@@ -229,6 +219,23 @@ pub struct ClusterTopology {
     /// for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<ClusterTopologyWorkers>,
+}
+
+/// classRef is the ref to the ClusterClass that should be used for the topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyClassRef {
+    /// name is the name of the ClusterClass that should be used for the topology.
+    /// name must be a valid ClusterClass name and because of that be at most 253 characters in length
+    /// and it must consist only of lower case alphanumeric characters, hyphens (-) and periods (.), and must start
+    /// and end with an alphanumeric character.
+    pub name: String,
+    /// namespace is the namespace of the ClusterClass that should be used for the topology.
+    /// If namespace is empty or not set, it is defaulted to the namespace of the Cluster object.
+    /// namespace must be a valid namespace name and because of that be at most 63 characters in length
+    /// and it must consist only of lower case alphanumeric characters or hyphens (-), and must start
+    /// and end with an alphanumeric character.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// controlPlane describes the cluster control plane.
@@ -323,11 +330,11 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -380,11 +387,11 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions {
+pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,
@@ -605,11 +612,11 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -662,11 +669,11 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediation
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,

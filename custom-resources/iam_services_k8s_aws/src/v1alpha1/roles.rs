@@ -44,9 +44,13 @@ pub struct RoleSpec {
     ///    return (\u000D)
     /// 
     /// Upon success, the response includes the same trust policy in JSON format.
+    /// 
+    /// Regex Pattern: `^[\u0009\u000A\u000D\u0020-\u00FF]+$`
     #[serde(rename = "assumeRolePolicyDocument")]
     pub assume_role_policy_document: String,
     /// A description of the role.
+    /// 
+    /// Regex Pattern: `^[\u0009\u000A\u000D\u0020-\u007E\u00A1-\u00FF]*$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inlinePolicies")]
@@ -76,6 +80,8 @@ pub struct RoleSpec {
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of upper and lowercase alphanumeric characters
     /// with no spaces. You can also include any of the following characters: _+=,.@-
+    /// 
+    /// Regex Pattern: `^[\w+=,.@-]+$`
     pub name: String,
     /// The path to the role. For more information about paths, see IAM Identifiers
     /// (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
@@ -90,6 +96,8 @@ pub struct RoleSpec {
     /// can contain any ASCII character from the ! (\u0021) through the DEL character
     /// (\u007F), including most punctuation characters, digits, and upper and lowercased
     /// letters.
+    /// 
+    /// Regex Pattern: `^(\u002F)|(\u002F[\u0021-\u007E]+\u002F)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// The ARN of the managed policy that is used to set the permissions boundary
@@ -213,6 +221,8 @@ pub struct RoleStatus {
     /// The stable and unique string identifying the role. For more information about
     /// IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
+    /// 
+    /// Regex Pattern: `^[\w]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleID")]
     pub role_id: Option<String>,
     /// Contains information about the last time that an IAM role was used. This

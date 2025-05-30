@@ -37,6 +37,9 @@ pub struct PodGroupSpec {
     /// will not start anyone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTaskMember")]
     pub min_task_member: Option<BTreeMap<String, i32>>,
+    /// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkTopology")]
+    pub network_topology: Option<PodGroupNetworkTopology>,
     /// If specified, indicates the PodGroup's priority. "system-node-critical" and
     /// "system-cluster-critical" are two special keywords which indicate the
     /// highest priorities with the former being the highest priority. Any other
@@ -49,6 +52,26 @@ pub struct PodGroupSpec {
     /// the PodGroup will not be scheduled. Defaults to `default` Queue with the lowest weight.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<String>,
+}
+
+/// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodGroupNetworkTopology {
+    /// HighestTierAllowed specifies the highest tier that a job allowed to cross when scheduling.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
+    pub highest_tier_allowed: Option<i64>,
+    /// Mode specifies the mode of the network topology constrain.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<PodGroupNetworkTopologyMode>,
+}
+
+/// NetworkTopology defines the NetworkTopology config, this field works in conjunction with network topology feature and hyperNode CRD.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodGroupNetworkTopologyMode {
+    #[serde(rename = "hard")]
+    Hard,
+    #[serde(rename = "soft")]
+    Soft,
 }
 
 /// Status represents the current information about a pod group.

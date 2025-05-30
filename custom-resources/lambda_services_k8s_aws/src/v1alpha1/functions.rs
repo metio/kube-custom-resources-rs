@@ -30,6 +30,8 @@ pub struct FunctionSpec {
     /// To enable code signing for this function, specify the ARN of a code-signing
     /// configuration. A code-signing configurationincludes a set of signing profiles,
     /// which define the trusted publishers for this function.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:code-signing-config:csc-[a-z0-9]{17}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeSigningConfigARN")]
     pub code_signing_config_arn: Option<String>,
     /// A dead-letter queue configuration that specifies the queue or topic where
@@ -74,6 +76,8 @@ pub struct FunctionSpec {
     /// format includes the file name. It can also include namespaces and other qualifiers,
     /// depending on the runtime. For more information, see Lambda programming model
     /// (https://docs.aws.amazon.com/lambda/latest/dg/foundation-progmodel.html).
+    /// 
+    /// Regex Pattern: `^[^\s]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub handler: Option<String>,
     /// Container image configuration values (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-parms)
@@ -100,6 +104,8 @@ pub struct FunctionSpec {
     /// If you don't provide a customer managed key, Lambda uses an Amazon Web Services
     /// owned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)
     /// or an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).
+    /// 
+    /// Regex Pattern: `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyARN")]
     pub kms_key_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -136,6 +142,8 @@ pub struct FunctionSpec {
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it is limited to 64 characters in length.
+    /// 
+    /// Regex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\d{1}:)?(\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     pub name: String,
     /// The type of deployment package. Set to Image for container image and set
     /// to Zip for .zip file archive.
@@ -148,6 +156,8 @@ pub struct FunctionSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservedConcurrentExecutions")]
     pub reserved_concurrent_executions: Option<i64>,
     /// The Amazon Resource Name (ARN) of the function's execution role.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -538,15 +548,21 @@ pub struct FunctionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "layerStatuses")]
     pub layer_statuses: Option<Vec<FunctionStatusLayerStatuses>>,
     /// For Lambda@Edge functions, the ARN of the main function.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\d{1}:\d{12}:function:[a-zA-Z0-9-_]+(:(\$LATEST|[a-zA-Z0-9-_]+))?$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterARN")]
     pub master_arn: Option<String>,
     /// The latest updated revision of the function or alias.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionID")]
     pub revision_id: Option<String>,
     /// The ARN of the signing job.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-])+:([a-z]{2}(-gov)?-[a-z]+-\d{1})?:(\d{12})?:(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingJobARN")]
     pub signing_job_arn: Option<String>,
     /// The ARN of the signing profile version.
+    /// 
+    /// Regex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\-])+:([a-z]{2}(-gov)?-[a-z]+-\d{1})?:(\d{12})?:(.*)$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingProfileVersionARN")]
     pub signing_profile_version_arn: Option<String>,
     /// The current state of the function. When the state is Inactive, you can reactivate
@@ -561,6 +577,8 @@ pub struct FunctionStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stateReasonCode")]
     pub state_reason_code: Option<String>,
     /// The version of the Lambda function.
+    /// 
+    /// Regex Pattern: `^(\$LATEST|[0-9]+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

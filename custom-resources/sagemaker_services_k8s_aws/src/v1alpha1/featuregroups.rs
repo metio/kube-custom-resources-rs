@@ -42,6 +42,8 @@ pub struct FeatureGroupSpec {
     ///    where yyyy, MM, and dd represent the year, month, and day respectively
     ///    and HH, mm, ss, and if applicable, SSS represent the hour, month, second
     ///    and milliseconds respsectively. 'T' and Z are constants.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63}$`
     #[serde(rename = "eventTimeFeatureName")]
     pub event_time_feature_name: String,
     /// A list of Feature names and types. Name and Type is compulsory per Feature.
@@ -62,6 +64,8 @@ pub struct FeatureGroupSpec {
     /// 
     ///    * Can only include alphanumeric characters, underscores, and hyphens.
     ///    Spaces are not allowed.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9]([_-]*[a-zA-Z0-9]){0,63}$`
     #[serde(rename = "featureGroupName")]
     pub feature_group_name: String,
     /// Use this to configure an OfflineFeatureStore. This parameter allows you to
@@ -107,10 +111,14 @@ pub struct FeatureGroupSpec {
     /// 
     ///    * Can only contains alphanumeric characters, hyphens, underscores. Spaces
     ///    are not allowed.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9]([-_]*[a-zA-Z0-9]){0,63}$`
     #[serde(rename = "recordIdentifierFeatureName")]
     pub record_identifier_feature_name: String,
     /// The Amazon Resource Name (ARN) of the IAM execution role used to persist
     /// data into the OfflineStore if an OfflineStoreConfig is provided.
+    /// 
+    /// Regex Pattern: `^arn:aws[a-z\-]*:iam::\d{12}:role/?[a-zA-Z_0-9+=,.@\-_/]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
     /// Tags used to identify Features in each FeatureGroup.

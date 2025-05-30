@@ -67,6 +67,8 @@ pub struct TableSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionSpecification")]
     pub encryption_specification: Option<TableEncryptionSpecification>,
     /// The name of the keyspace that the table is going to be created in.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$`
     #[serde(rename = "keyspaceName")]
     pub keyspace_name: String,
     /// Specifies if pointInTimeRecovery is enabled or disabled for the table. The
@@ -116,6 +118,8 @@ pub struct TableSpec {
     #[serde(rename = "schemaDefinition")]
     pub schema_definition: TableSchemaDefinition,
     /// The name of the table.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$`
     #[serde(rename = "tableName")]
     pub table_name: String,
     /// A list of key-value pair tags to be attached to the resource.

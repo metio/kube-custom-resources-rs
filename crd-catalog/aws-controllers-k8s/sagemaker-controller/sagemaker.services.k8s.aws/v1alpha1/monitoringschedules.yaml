@@ -201,7 +201,7 @@ spec:
                       type: "object"
                   type: "object"
                 monitoringScheduleName:
-                  description: "The name of the monitoring schedule. The name must be unique within an Amazon\nWeb Services Region within an Amazon Web Services account."
+                  description: "The name of the monitoring schedule. The name must be unique within an Amazon\nWeb Services Region within an Amazon Web Services account.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 tags:
                   description: "(Optional) An array of key-value pairs. For more information, see Using Cost\nAllocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html#allocation-whatURL)\nin the Amazon Web Services Billing and Cost Management User Guide."

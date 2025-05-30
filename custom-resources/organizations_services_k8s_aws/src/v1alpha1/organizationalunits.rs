@@ -25,6 +25,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct OrganizationalUnitSpec {
     /// The friendly name to assign to the new OU.
+    /// 
+    /// Regex Pattern: `^[\s\S]*$`
     pub name: String,
     /// The unique identifier (ID) of the parent root or OU that you want to create
     /// the new OU in.
@@ -39,6 +41,8 @@ pub struct OrganizationalUnitSpec {
     ///    by from 4 to 32 lowercase letters or digits (the ID of the root that the
     ///    OU is in). This string is followed by a second "-" dash and from 8 to
     ///    32 additional lowercase letters or digits.
+    /// 
+    /// Regex Pattern: `^(r-[0-9a-z]{4,32})|(ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})$`
     #[serde(rename = "parentID")]
     pub parent_id: String,
     /// A list of tags that you want to attach to the newly created OU. For each
@@ -93,6 +97,8 @@ pub struct OrganizationalUnitStatus {
     /// unit ID string requires "ou-" followed by from 4 to 32 lowercase letters
     /// or digits (the ID of the root that contains the OU). This string is followed
     /// by a second "-" dash and from 8 to 32 additional lowercase letters or digits.
+    /// 
+    /// Regex Pattern: `^ou-[0-9a-z]{4,32}-[a-z0-9]{8,32}$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }

@@ -2598,6 +2598,7 @@ spec:
                       type: "integer"
                   type: "object"
                 replicas:
+                  default: 1
                   format: "int32"
                   type: "integer"
                 resources:
@@ -3158,6 +3159,8 @@ spec:
                         - "per-node"
                       type: "string"
                     collectorNotReadyGracePeriod:
+                      default: "30s"
+                      format: "duration"
                       type: "string"
                     enabled:
                       type: "boolean"

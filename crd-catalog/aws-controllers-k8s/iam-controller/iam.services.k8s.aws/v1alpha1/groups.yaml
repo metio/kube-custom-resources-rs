@@ -34,10 +34,10 @@ spec:
                     type: "string"
                   type: "object"
                 name:
-                  description: "The name of the group to create. Do not include the path in this value.\n\nIAM user, group, role, and policy names must be unique within the account.\nNames are not distinguished by case. For example, you cannot create resources\nnamed both \"MyResource\" and \"myresource\"."
+                  description: "The name of the group to create. Do not include the path in this value.\n\nIAM user, group, role, and policy names must be unique within the account.\nNames are not distinguished by case. For example, you cannot create resources\nnamed both \"MyResource\" and \"myresource\".\n\nRegex Pattern: `^[\\w+=,.@-]+$`"
                   type: "string"
                 path:
-                  description: "The path to the group. For more information about paths, see IAM identifiers\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
+                  description: "The path to the group. For more information about paths, see IAM identifiers\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters.\n\nRegex Pattern: `^(\\u002F)|(\\u002F[\\u0021-\\u007E]+\\u002F)$`"
                   type: "string"
                 policies:
                   items:
@@ -110,7 +110,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 groupID:
-                  description: "The stable and unique string identifying the group. For more information\nabout IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide."
+                  description: "The stable and unique string identifying the group. For more information\nabout IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nRegex Pattern: `^[\\w]+$`"
                   type: "string"
               type: "object"
           type: "object"

@@ -38,7 +38,7 @@ spec:
                 configuration:
                   type: "string"
                 name:
-                  description: "The name for the new rule groups namespace."
+                  description: "The name for the new rule groups namespace.\n\nRegex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -49,7 +49,7 @@ spec:
                   description: "The list of tag keys and values to associate with the rule groups namespace."
                   type: "object"
                 workspaceID:
-                  description: "The ID of the workspace to add the rule groups namespace."
+                  description: "The ID of the workspace to add the rule groups namespace.\n\nRegex Pattern: `[0-9A-Za-z][-.0-9A-Z_a-z]*`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"

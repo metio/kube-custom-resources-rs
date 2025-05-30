@@ -171,11 +171,11 @@ pub struct ClusterClassControlPlaneMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterClassControlPlaneMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -228,11 +228,11 @@ pub struct ClusterClassControlPlaneMachineHealthCheckRemediationTemplate {
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyConditions {
+pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,
@@ -612,30 +612,30 @@ pub struct ClusterClassPatchesExternal {
     /// discoverVariablesExtension references an extension which is called to discover variables.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discoverVariablesExtension")]
     pub discover_variables_extension: Option<String>,
-    /// generateExtension references an extension which is called to generate patches.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateExtension")]
-    pub generate_extension: Option<String>,
+    /// generatePatchesExtension references an extension which is called to generate patches.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatePatchesExtension")]
+    pub generate_patches_extension: Option<String>,
     /// settings defines key value pairs to be passed to the extensions.
     /// Values defined here take precedence over the values defined in the
     /// corresponding ExtensionConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settings: Option<BTreeMap<String, String>>,
-    /// validateExtension references an extension which is called to validate the topology.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validateExtension")]
-    pub validate_extension: Option<String>,
+    /// validateTopologyExtension references an extension which is called to validate the topology.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validateTopologyExtension")]
+    pub validate_topology_extension: Option<String>,
 }
 
 /// ClusterClassVariable defines a variable which can
 /// be configured in the Cluster topology and used in patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassVariables {
-    /// metadata is the metadata of a variable.
+    /// deprecatedV1Beta1Metadata is the metadata of a variable.
     /// It can be used to add additional data for higher level tools to
     /// a ClusterClassVariable.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterClassVariablesMetadata>,
+    /// Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deprecatedV1Beta1Metadata")]
+    pub deprecated_v1_beta1_metadata: Option<ClusterClassVariablesDeprecatedV1Beta1Metadata>,
     /// name of the variable.
     pub name: String,
     /// required specifies if the variable is required.
@@ -647,13 +647,13 @@ pub struct ClusterClassVariables {
     pub schema: ClusterClassVariablesSchema,
 }
 
-/// metadata is the metadata of a variable.
+/// deprecatedV1Beta1Metadata is the metadata of a variable.
 /// It can be used to add additional data for higher level tools to
 /// a ClusterClassVariable.
 /// 
-/// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead.
+/// Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassVariablesMetadata {
+pub struct ClusterClassVariablesDeprecatedV1Beta1Metadata {
     /// annotations is an unstructured key value map that can be used to store and
     /// retrieve arbitrary metadata.
     /// They are not queryable.
@@ -1066,11 +1066,11 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// unhealthyConditions contains a list of the conditions that determine
+    /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
-    pub unhealthy_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions>>,
     /// unhealthyRange specifies the range of unhealthy machines allowed.
     /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
     /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
@@ -1123,11 +1123,11 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTem
     pub uid: Option<String>,
 }
 
-/// UnhealthyCondition represents a Node condition type and value with a timeout
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
 /// specified as a duration.  When the named condition has been in the given
 /// status for at least the timeout value, a node is considered unhealthy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyConditions {
+pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
     /// timeout is the duration that a node must be in a given status for,
@@ -1649,17 +1649,17 @@ pub struct ClusterClassStatusVariables {
 /// ClusterClassStatusVariableDefinition defines a variable which appears in the status of a ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassStatusVariablesDefinitions {
+    /// deprecatedV1Beta1Metadata is the metadata of a variable.
+    /// It can be used to add additional data for higher level tools to
+    /// a ClusterClassVariable.
+    /// 
+    /// Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deprecatedV1Beta1Metadata")]
+    pub deprecated_v1_beta1_metadata: Option<ClusterClassStatusVariablesDefinitionsDeprecatedV1Beta1Metadata>,
     /// from specifies the origin of the variable definition.
     /// This will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass
     /// for variables discovered from a DiscoverVariables runtime extensions.
     pub from: String,
-    /// metadata is the metadata of a variable.
-    /// It can be used to add additional data for higher level tools to
-    /// a ClusterClassVariable.
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterClassStatusVariablesDefinitionsMetadata>,
     /// required specifies if the variable is required.
     /// Note: this applies to the variable as a whole and thus the
     /// top-level object defined in the schema. If nested fields are
@@ -1669,13 +1669,13 @@ pub struct ClusterClassStatusVariablesDefinitions {
     pub schema: ClusterClassStatusVariablesDefinitionsSchema,
 }
 
-/// metadata is the metadata of a variable.
+/// deprecatedV1Beta1Metadata is the metadata of a variable.
 /// It can be used to add additional data for higher level tools to
 /// a ClusterClassVariable.
 /// 
-/// Deprecated: This field is deprecated and is going to be removed in the next apiVersion.
+/// Deprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassStatusVariablesDefinitionsMetadata {
+pub struct ClusterClassStatusVariablesDefinitionsDeprecatedV1Beta1Metadata {
     /// annotations is an unstructured key value map that can be used to store and
     /// retrieve arbitrary metadata.
     /// They are not queryable.

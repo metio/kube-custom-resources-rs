@@ -3074,6 +3074,10 @@ pub struct MattermostPodExtensionsSidecarContainersVolumeMounts {
 /// PodTemplate defines configuration for the template for Mattermost pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MattermostPodTemplate {
+    /// Defines a command override for Mattermost app server pods.
+    /// The default command is "mattermost".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
     /// Defines the security context for the Mattermost app server container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<MattermostPodTemplateContainerSecurityContext>,

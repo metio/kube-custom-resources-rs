@@ -62,6 +62,9 @@ pub enum NginxProxyIpFamily {
 /// Kubernetes contains the configuration for the NGINX Deployment and Service Kubernetes objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetes {
+    /// DaemonSet is the configuration for the NGINX DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonSet")]
+    pub daemon_set: Option<NginxProxyKubernetesDaemonSet>,
     /// Deployment is the configuration for the NGINX Deployment.
     /// This is the default deployment option.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,6 +72,2937 @@ pub struct NginxProxyKubernetes {
     /// Service is the configuration for the NGINX Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<NginxProxyKubernetesService>,
+}
+
+/// DaemonSet is the configuration for the NGINX DaemonSet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSet {
+    /// Container defines container fields for the NGINX container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<NginxProxyKubernetesDaemonSetContainer>,
+    /// Pod defines Pod-specific fields.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod: Option<NginxProxyKubernetesDaemonSetPod>,
+}
+
+/// Container defines container fields for the NGINX container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainer {
+    /// Debug enables debugging for NGINX by using the nginx-debug binary.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub debug: Option<bool>,
+    /// Image is the NGINX image to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<NginxProxyKubernetesDaemonSetContainerImage>,
+    /// Lifecycle describes actions that the management system should take in response to container lifecycle
+    /// events. For the PostStart and PreStop lifecycle handlers, management of the container blocks
+    /// until the action is complete, unless the container process fails, in which case the handler is aborted.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lifecycle: Option<NginxProxyKubernetesDaemonSetContainerLifecycle>,
+    /// Resources describes the compute resource requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<NginxProxyKubernetesDaemonSetContainerResources>,
+    /// VolumeMounts describe the mounting of Volumes within a container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<NginxProxyKubernetesDaemonSetContainerVolumeMounts>>,
+}
+
+/// Image is the NGINX image to use.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerImage {
+    /// PullPolicy describes a policy for if/when to pull a container image.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<NginxProxyKubernetesDaemonSetContainerImagePullPolicy>,
+    /// Repository is the image path.
+    /// Default is ghcr.io/nginx/nginx-gateway-fabric/nginx.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repository: Option<String>,
+    /// Tag is the image tag to use. Default matches the tag of the control plane.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tag: Option<String>,
+}
+
+/// Image is the NGINX image to use.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyKubernetesDaemonSetContainerImagePullPolicy {
+    Always,
+    Never,
+    IfNotPresent,
+}
+
+/// Lifecycle describes actions that the management system should take in response to container lifecycle
+/// events. For the PostStart and PreStop lifecycle handlers, management of the container blocks
+/// until the action is complete, unless the container process fails, in which case the handler is aborted.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecycle {
+    /// PostStart is called immediately after a container is created. If the handler fails,
+    /// the container is terminated and restarted according to its restart policy.
+    /// Other management of the container blocks until the hook completes.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
+    pub post_start: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePostStart>,
+    /// PreStop is called immediately before a container is terminated due to an
+    /// API request or management event such as liveness/startup probe failure,
+    /// preemption, resource contention, etc. The handler is not called if the
+    /// container crashes or exits. The Pod's termination grace period countdown begins before the
+    /// PreStop hook is executed. Regardless of the outcome of the handler, the
+    /// container will eventually terminate within the Pod's termination grace
+    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+    /// or until the termination grace period is reached.
+    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
+    pub pre_stop: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+}
+
+/// PostStart is called immediately after a container is created. If the handler fails,
+/// the container is terminated and restarted according to its restart policy.
+/// Other management of the container blocks until the hook completes.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStart {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePostStartExec>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePostStartHttpGet>,
+    /// Sleep represents a duration that the container should sleep.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePostStartSleep>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePostStartTcpSocket>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStartExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStartHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<NginxProxyKubernetesDaemonSetContainerLifecyclePostStartHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStartHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Sleep represents a duration that the container should sleep.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePostStartTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// PreStop is called immediately before a container is terminated due to an
+/// API request or management event such as liveness/startup probe failure,
+/// preemption, resource contention, etc. The handler is not called if the
+/// container crashes or exits. The Pod's termination grace period countdown begins before the
+/// PreStop hook is executed. Regardless of the outcome of the handler, the
+/// container will eventually terminate within the Pod's termination grace
+/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
+/// or until the termination grace period is reached.
+/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStop {
+    /// Exec specifies a command to execute in the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePreStopExec>,
+    /// HTTPGet specifies an HTTP GET request to perform.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
+    pub http_get: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePreStopHttpGet>,
+    /// Sleep represents a duration that the container should sleep.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePreStopSleep>,
+    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
+    pub tcp_socket: Option<NginxProxyKubernetesDaemonSetContainerLifecyclePreStopTcpSocket>,
+}
+
+/// Exec specifies a command to execute in the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopExec {
+    /// Command is the command line to execute inside the container, the working directory for the
+    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
+    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
+    /// a shell, you need to explicitly call out to that shell.
+    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+}
+
+/// HTTPGet specifies an HTTP GET request to perform.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopHttpGet {
+    /// Host name to connect to, defaults to the pod IP. You probably want to set
+    /// "Host" in httpHeaders instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Custom headers to set in the request. HTTP allows repeated headers.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<NginxProxyKubernetesDaemonSetContainerLifecyclePreStopHttpGetHttpHeaders>>,
+    /// Path to access on the HTTP server.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// Name or number of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+    /// Scheme to use for connecting to the host.
+    /// Defaults to HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scheme: Option<String>,
+}
+
+/// HTTPHeader describes a custom header to be used in HTTP probes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopHttpGetHttpHeaders {
+    /// The header field name.
+    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
+    pub name: String,
+    /// The header field value
+    pub value: String,
+}
+
+/// Sleep represents a duration that the container should sleep.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
+/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopTcpSocket {
+    /// Optional: Host name to connect to, defaults to the pod IP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
+    /// Number or name of the port to access on the container.
+    /// Number must be in the range 1 to 65535.
+    /// Name must be an IANA_SVC_NAME.
+    pub port: IntOrString,
+}
+
+/// Resources describes the compute resource requirements.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<NginxProxyKubernetesDaemonSetContainerResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+/// VolumeMount describes a mounting of a Volume within a container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerVolumeMounts {
+    /// Path within the container at which the volume should be mounted.  Must
+    /// not contain ':'.
+    #[serde(rename = "mountPath")]
+    pub mount_path: String,
+    /// mountPropagation determines how mounts are propagated from the host
+    /// to container and the other way around.
+    /// When not set, MountPropagationNone is used.
+    /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
+    pub mount_propagation: Option<String>,
+    /// This must match the Name of a Volume.
+    pub name: String,
+    /// Mounted read-only if true, read-write otherwise (false or unspecified).
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
+    /// Path within the volume from which the container's volume should be mounted.
+    /// Defaults to "" (volume's root).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
+    pub sub_path: Option<String>,
+    /// Expanded path within the volume from which the container's volume should be mounted.
+    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
+    /// Defaults to "" (volume's root).
+    /// SubPathExpr and SubPath are mutually exclusive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
+    pub sub_path_expr: Option<String>,
+}
+
+/// Pod defines Pod-specific fields.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPod {
+    /// Affinity is the pod's scheduling constraints.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<NginxProxyKubernetesDaemonSetPodAffinity>,
+    /// NodeSelector is a selector which must be true for the pod to fit on a node.
+    /// Selector which must match a node's labels for the pod to be scheduled on that node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// TerminationGracePeriodSeconds is the optional duration in seconds the pod needs to terminate gracefully.
+    /// Value must be non-negative integer. The value zero indicates stop immediately via
+    /// the kill signal (no opportunity to shut down).
+    /// If this value is nil, the default grace period will be used instead.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
+    /// Set this value longer than the expected cleanup time for your process.
+    /// Defaults to 30 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
+    /// Tolerations allow the scheduler to schedule Pods with matching taints.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<NginxProxyKubernetesDaemonSetPodTolerations>>,
+    /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology
+    /// domains. Scheduler will schedule Pods in a way which abides by the constraints.
+    /// All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<NginxProxyKubernetesDaemonSetPodTopologySpreadConstraints>>,
+    /// Volumes represents named volumes in a pod that may be accessed by any container in the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volumes: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumes>>,
+}
+
+/// Affinity is the pod's scheduling constraints.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// 
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// 
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Volume represents a named volume in a pod that may be accessed by any container in the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumes {
+    /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<NginxProxyKubernetesDaemonSetPodVolumesAwsElasticBlockStore>,
+    /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
+    pub azure_disk: Option<NginxProxyKubernetesDaemonSetPodVolumesAzureDisk>,
+    /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
+    pub azure_file: Option<NginxProxyKubernetesDaemonSetPodVolumesAzureFile>,
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephfs: Option<NginxProxyKubernetesDaemonSetPodVolumesCephfs>,
+    /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cinder: Option<NginxProxyKubernetesDaemonSetPodVolumesCinder>,
+    /// configMap represents a configMap that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<NginxProxyKubernetesDaemonSetPodVolumesConfigMap>,
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<NginxProxyKubernetesDaemonSetPodVolumesCsi>,
+    /// downwardAPI represents downward API about the pod that should populate this volume
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<NginxProxyKubernetesDaemonSetPodVolumesDownwardApi>,
+    /// emptyDir represents a temporary directory that shares a pod's lifetime.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<NginxProxyKubernetesDaemonSetPodVolumesEmptyDir>,
+    /// ephemeral represents a volume that is handled by a cluster storage driver.
+    /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+    /// and deleted when the pod is removed.
+    /// 
+    /// Use this if:
+    /// a) the volume is only needed while the pod runs,
+    /// b) features of normal volumes like restoring from snapshot or capacity
+    ///    tracking are needed,
+    /// c) the storage driver is specified through a storage class, and
+    /// d) the storage driver supports dynamic volume provisioning through
+    ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+    ///    information on the connection between this volume type
+    ///    and PersistentVolumeClaim).
+    /// 
+    /// Use PersistentVolumeClaim or one of the vendor-specific
+    /// APIs for volumes that persist for longer than the lifecycle
+    /// of an individual pod.
+    /// 
+    /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+    /// be used that way - see the documentation of the driver for
+    /// more information.
+    /// 
+    /// A pod can use both types of ephemeral volumes and
+    /// persistent volumes at the same time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ephemeral: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeral>,
+    /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub fc: Option<NginxProxyKubernetesDaemonSetPodVolumesFc>,
+    /// flexVolume represents a generic volume resource that is
+    /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<NginxProxyKubernetesDaemonSetPodVolumesFlexVolume>,
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flocker: Option<NginxProxyKubernetesDaemonSetPodVolumesFlocker>,
+    /// gcePersistentDisk represents a GCE Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<NginxProxyKubernetesDaemonSetPodVolumesGcePersistentDisk>,
+    /// gitRepo represents a git repository at a particular revision.
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+    /// into the Pod's container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
+    pub git_repo: Option<NginxProxyKubernetesDaemonSetPodVolumesGitRepo>,
+    /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub glusterfs: Option<NginxProxyKubernetesDaemonSetPodVolumesGlusterfs>,
+    /// hostPath represents a pre-existing file or directory on the host
+    /// machine that is directly exposed to the container. This is generally
+    /// used for system agents or other privileged things that are allowed
+    /// to see the host machine. Most containers will NOT need this.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
+    pub host_path: Option<NginxProxyKubernetesDaemonSetPodVolumesHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<NginxProxyKubernetesDaemonSetPodVolumesImage>,
+    /// iscsi represents an ISCSI Disk resource that is attached to a
+    /// kubelet's host machine and then exposed to the pod.
+    /// More info: https://examples.k8s.io/volumes/iscsi/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub iscsi: Option<NginxProxyKubernetesDaemonSetPodVolumesIscsi>,
+    /// name of the volume.
+    /// Must be a DNS_LABEL and unique within the pod.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+    /// nfs represents an NFS mount on the host that shares a pod's lifetime
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<NginxProxyKubernetesDaemonSetPodVolumesNfs>,
+    /// persistentVolumeClaimVolumeSource represents a reference to a
+    /// PersistentVolumeClaim in the same namespace.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<NginxProxyKubernetesDaemonSetPodVolumesPersistentVolumeClaim>,
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<NginxProxyKubernetesDaemonSetPodVolumesPhotonPersistentDisk>,
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<NginxProxyKubernetesDaemonSetPodVolumesPortworxVolume>,
+    /// projected items for all in one resources secrets, configmaps, and downward API
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub projected: Option<NginxProxyKubernetesDaemonSetPodVolumesProjected>,
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quobyte: Option<NginxProxyKubernetesDaemonSetPodVolumesQuobyte>,
+    /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rbd: Option<NginxProxyKubernetesDaemonSetPodVolumesRbd>,
+    /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
+    pub scale_io: Option<NginxProxyKubernetesDaemonSetPodVolumesScaleIo>,
+    /// secret represents a secret that should populate this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<NginxProxyKubernetesDaemonSetPodVolumesSecret>,
+    /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storageos: Option<NginxProxyKubernetesDaemonSetPodVolumesStorageos>,
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<NginxProxyKubernetesDaemonSetPodVolumesVsphereVolume>,
+}
+
+/// awsElasticBlockStore represents an AWS Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesAwsElasticBlockStore {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// readOnly value true will force the readOnly setting in VolumeMounts.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID is unique ID of the persistent disk resource in AWS (Amazon EBS volume).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesAzureDisk {
+    /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
+    pub caching_mode: Option<String>,
+    /// diskName is the Name of the data disk in the blob storage
+    #[serde(rename = "diskName")]
+    pub disk_name: String,
+    /// diskURI is the URI of data disk in the blob storage
+    #[serde(rename = "diskURI")]
+    pub disk_uri: String,
+    /// fsType is Filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesAzureFile {
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretName is the  name of secret that contains Azure Storage Account Name and Key
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
+    /// shareName is the azure share Name
+    #[serde(rename = "shareName")]
+    pub share_name: String,
+}
+
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCephfs {
+    /// monitors is Required: Monitors is a collection of Ceph monitors
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
+    pub secret_file: Option<String>,
+    /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesCephfsSecretRef>,
+    /// user is optional: User is the rados user name, default is admin
+    /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
+/// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCephfsSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
+/// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCinder {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is optional: points to a secret object containing parameters used to connect
+    /// to OpenStack.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesCinderSecretRef>,
+    /// volumeID used to identify the volume in cinder.
+    /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// secretRef is optional: points to a secret object containing parameters used to connect
+/// to OpenStack.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCinderSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// configMap represents a configMap that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesConfigMap {
+    /// defaultMode is optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesConfigMapItems>>,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCsi {
+    /// driver is the name of the CSI driver that handles this volume.
+    /// Consult with your admin for the correct name as registered in the cluster.
+    pub driver: String,
+    /// fsType to mount. Ex. "ext4", "xfs", "ntfs".
+    /// If not provided, the empty value is passed to the associated CSI driver
+    /// which will determine the default filesystem to apply.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// nodePublishSecretRef is a reference to the secret object containing
+    /// sensitive information to pass to the CSI driver to complete the CSI
+    /// NodePublishVolume and NodeUnpublishVolume calls.
+    /// This field is optional, and  may be empty if no secret is required. If the
+    /// secret object contains more than one secret, all secret references are passed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesCsiNodePublishSecretRef>,
+    /// readOnly specifies a read-only configuration for the volume.
+    /// Defaults to false (read/write).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeAttributes stores driver-specific properties that are passed to the CSI
+    /// driver. Consult your driver's documentation for supported values.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+/// nodePublishSecretRef is a reference to the secret object containing
+/// sensitive information to pass to the CSI driver to complete the CSI
+/// NodePublishVolume and NodeUnpublishVolume calls.
+/// This field is optional, and  may be empty if no secret is required. If the
+/// secret object contains more than one secret, all secret references are passed.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesCsiNodePublishSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// downwardAPI represents downward API about the pod that should populate this volume
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesDownwardApi {
+    /// Optional: mode bits to use on created files by default. Must be a
+    /// Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// Items is a list of downward API volume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// emptyDir represents a temporary directory that shares a pod's lifetime.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEmptyDir {
+    /// medium represents what type of storage medium should back this directory.
+    /// The default is "" which means to use the node's default medium.
+    /// Must be an empty string (default) or Memory.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    /// sizeLimit is the total amount of local storage required for this EmptyDir volume.
+    /// The size limit is also applicable for memory medium.
+    /// The maximum usage on memory medium EmptyDir would be the minimum value between
+    /// the SizeLimit specified here and the sum of memory limits of all containers in a pod.
+    /// The default is nil which means that the limit is undefined.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+/// ephemeral represents a volume that is handled by a cluster storage driver.
+/// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
+/// and deleted when the pod is removed.
+/// 
+/// Use this if:
+/// a) the volume is only needed while the pod runs,
+/// b) features of normal volumes like restoring from snapshot or capacity
+///    tracking are needed,
+/// c) the storage driver is specified through a storage class, and
+/// d) the storage driver supports dynamic volume provisioning through
+///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
+///    information on the connection between this volume type
+///    and PersistentVolumeClaim).
+/// 
+/// Use PersistentVolumeClaim or one of the vendor-specific
+/// APIs for volumes that persist for longer than the lifecycle
+/// of an individual pod.
+/// 
+/// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
+/// be used that way - see the documentation of the driver for
+/// more information.
+/// 
+/// A pod can use both types of ephemeral volumes and
+/// persistent volumes at the same time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeral {
+    /// Will be used to create a stand-alone PVC to provision the volume.
+    /// The pod in which this EphemeralVolumeSource is embedded will be the
+    /// owner of the PVC, i.e. the PVC will be deleted together with the
+    /// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+    /// `<volume name>` is the name from the `PodSpec.Volumes` array
+    /// entry. Pod validation will reject the pod if the concatenated name
+    /// is not valid for a PVC (for example, too long).
+    /// 
+    /// An existing PVC with that name that is not owned by the pod
+    /// will *not* be used for the pod to avoid using an unrelated
+    /// volume by mistake. Starting the pod is then blocked until
+    /// the unrelated PVC is removed. If such a pre-created PVC is
+    /// meant to be used by the pod, the PVC has to updated with an
+    /// owner reference to the pod once the pod exists. Normally
+    /// this should not be necessary, but it may be useful when
+    /// manually reconstructing a broken cluster.
+    /// 
+    /// This field is read-only and no changes will be made by Kubernetes
+    /// to the PVC after it has been created.
+    /// 
+    /// Required, must not be nil.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplate>,
+}
+
+/// Will be used to create a stand-alone PVC to provision the volume.
+/// The pod in which this EphemeralVolumeSource is embedded will be the
+/// owner of the PVC, i.e. the PVC will be deleted together with the
+/// pod.  The name of the PVC will be `<pod name>-<volume name>` where
+/// `<volume name>` is the name from the `PodSpec.Volumes` array
+/// entry. Pod validation will reject the pod if the concatenated name
+/// is not valid for a PVC (for example, too long).
+/// 
+/// An existing PVC with that name that is not owned by the pod
+/// will *not* be used for the pod to avoid using an unrelated
+/// volume by mistake. Starting the pod is then blocked until
+/// the unrelated PVC is removed. If such a pre-created PVC is
+/// meant to be used by the pod, the PVC has to updated with an
+/// owner reference to the pod once the pod exists. Normally
+/// this should not be necessary, but it may be useful when
+/// manually reconstructing a broken cluster.
+/// 
+/// This field is read-only and no changes will be made by Kubernetes
+/// to the PVC after it has been created.
+/// 
+/// Required, must not be nil.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplate {
+    /// May contain labels and annotations that will be copied into the PVC
+    /// when creating it. No other fields are allowed and will be rejected during
+    /// validation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateMetadata>,
+    /// The specification for the PersistentVolumeClaim. The entire content is
+    /// copied unchanged into the PVC that gets created from this
+    /// template. The same fields as in a PersistentVolumeClaim
+    /// are also valid here.
+    pub spec: NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpec,
+}
+
+/// May contain labels and annotations that will be copied into the PVC
+/// when creating it. No other fields are allowed and will be rejected during
+/// validation.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateMetadata {
+}
+
+/// The specification for the PersistentVolumeClaim. The entire content is
+/// copied unchanged into the PVC that gets created from this
+/// template. The same fields as in a PersistentVolumeClaim
+/// are also valid here.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesFc {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// lun is Optional: FC target lun number
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lun: Option<i32>,
+    /// readOnly is Optional: Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// targetWWNs is Optional: FC target worldwide names (WWNs)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
+    pub target_ww_ns: Option<Vec<String>>,
+    /// wwids Optional: FC volume world wide identifiers (wwids)
+    /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wwids: Option<Vec<String>>,
+}
+
+/// flexVolume represents a generic volume resource that is
+/// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesFlexVolume {
+    /// driver is the name of the driver to use for this volume.
+    pub driver: String,
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". The default filesystem depends on FlexVolume script.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// options is Optional: this field holds extra command options if any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, String>>,
+    /// readOnly is Optional: defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is Optional: secretRef is reference to the secret object containing
+    /// sensitive information to pass to the plugin scripts. This may be
+    /// empty if no secret object is specified. If the secret object
+    /// contains more than one secret, all secrets are passed to the plugin
+    /// scripts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesFlexVolumeSecretRef>,
+}
+
+/// secretRef is Optional: secretRef is reference to the secret object containing
+/// sensitive information to pass to the plugin scripts. This may be
+/// empty if no secret object is specified. If the secret object
+/// contains more than one secret, all secrets are passed to the plugin
+/// scripts.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesFlexVolumeSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesFlocker {
+    /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
+    /// should be considered as deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
+    pub dataset_name: Option<String>,
+    /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
+    pub dataset_uuid: Option<String>,
+}
+
+/// gcePersistentDisk represents a GCE Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesGcePersistentDisk {
+    /// fsType is filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// partition is the partition in the volume that you want to mount.
+    /// If omitted, the default is to mount by volume name.
+    /// Examples: For volume /dev/sda1, you specify the partition as "1".
+    /// Similarly, the volume partition for /dev/sda is "0" (or you can leave the property empty).
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<i32>,
+    /// pdName is unique name of the PD resource in GCE. Used to identify the disk in GCE.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(rename = "pdName")]
+    pub pd_name: String,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// gitRepo represents a git repository at a particular revision.
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
+/// into the Pod's container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesGitRepo {
+    /// directory is the target directory name.
+    /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
+    /// git repository.  Otherwise, if specified, the volume will contain the git repository in
+    /// the subdirectory with the given name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub directory: Option<String>,
+    /// repository is the URL
+    pub repository: String,
+    /// revision is the commit hash for the specified revision.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+}
+
+/// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
+/// More info: https://examples.k8s.io/volumes/glusterfs/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesGlusterfs {
+    /// endpoints is the endpoint name that details Glusterfs topology.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub endpoints: String,
+    /// path is the Glusterfs volume path.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    pub path: String,
+    /// readOnly here will force the Glusterfs volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// hostPath represents a pre-existing file or directory on the host
+/// machine that is directly exposed to the container. This is generally
+/// used for system agents or other privileged things that are allowed
+/// to see the host machine. Most containers will NOT need this.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesHostPath {
+    /// path of the directory on the host.
+    /// If the path is a symlink, it will follow the link to the real path.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    pub path: String,
+    /// type for HostPath Volume
+    /// Defaults to ""
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+/// iscsi represents an ISCSI Disk resource that is attached to a
+/// kubelet's host machine and then exposed to the pod.
+/// More info: https://examples.k8s.io/volumes/iscsi/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesIscsi {
+    /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
+    pub chap_auth_discovery: Option<bool>,
+    /// chapAuthSession defines whether support iSCSI Session CHAP authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
+    pub chap_auth_session: Option<bool>,
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// initiatorName is the custom iSCSI Initiator Name.
+    /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
+    /// <target portal>:<volume name> will be created for the connection.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
+    pub initiator_name: Option<String>,
+    /// iqn is the target iSCSI Qualified Name.
+    pub iqn: String,
+    /// iscsiInterface is the interface Name that uses an iSCSI transport.
+    /// Defaults to 'default' (tcp).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
+    pub iscsi_interface: Option<String>,
+    /// lun represents iSCSI Target Lun number.
+    pub lun: i32,
+    /// portals is the iSCSI Target Portal List. The portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub portals: Option<Vec<String>>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesIscsiSecretRef>,
+    /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
+    /// is other than default (typically TCP ports 860 and 3260).
+    #[serde(rename = "targetPortal")]
+    pub target_portal: String,
+}
+
+/// secretRef is the CHAP Secret for iSCSI target and initiator authentication
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesIscsiSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// nfs represents an NFS mount on the host that shares a pod's lifetime
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesNfs {
+    /// path that is exported by the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub path: String,
+    /// readOnly here will force the NFS export to be mounted with read-only permissions.
+    /// Defaults to false.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// server is the hostname or IP address of the NFS server.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
+    pub server: String,
+}
+
+/// persistentVolumeClaimVolumeSource represents a reference to a
+/// PersistentVolumeClaim in the same namespace.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesPersistentVolumeClaim {
+    /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    /// readOnly Will force the ReadOnly setting in VolumeMounts.
+    /// Default false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesPhotonPersistentDisk {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// pdID is the ID that identifies Photon Controller persistent disk
+    #[serde(rename = "pdID")]
+    pub pd_id: String,
+}
+
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesPortworxVolume {
+    /// fSType represents the filesystem type to mount
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// volumeID uniquely identifies a Portworx volume
+    #[serde(rename = "volumeID")]
+    pub volume_id: String,
+}
+
+/// projected items for all in one resources secrets, configmaps, and downward API
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjected {
+    /// defaultMode are the mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sources: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesProjectedSources>>,
+}
+
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundle>,
+    /// configMap information about the configMap data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesConfigMap>,
+    /// downwardAPI information about the downwardAPI data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApi>,
+    /// secret information about the secret data to project
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecret>,
+    /// serviceAccountToken is information about the serviceAccountToken data to project
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// configMap information about the configMap data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesConfigMap {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// ConfigMap will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the ConfigMap,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesConfigMapItems>>,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional specify whether the ConfigMap or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesConfigMapItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// downwardAPI information about the downwardAPI data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApi {
+    /// Items is a list of DownwardAPIVolume file
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItems>>,
+}
+
+/// DownwardAPIVolumeFile represents information to create the file containing the pod field
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItems {
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    /// Optional: mode bits used to set permissions on this file, must be an octal value
+    /// between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
+    pub path: String,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+}
+
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// secret information about the secret data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecret {
+    /// items if unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecretItems>>,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// optional field specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// serviceAccountToken is information about the serviceAccountToken data to project
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesProjectedSourcesServiceAccountToken {
+    /// audience is the intended audience of the token. A recipient of a token
+    /// must identify itself with an identifier specified in the audience of the
+    /// token, and otherwise should reject the token. The audience defaults to the
+    /// identifier of the apiserver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub audience: Option<String>,
+    /// expirationSeconds is the requested duration of validity of the service
+    /// account token. As the token approaches expiration, the kubelet volume
+    /// plugin will proactively rotate the service account token. The kubelet will
+    /// start trying to rotate the token if the token is older than 80 percent of
+    /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
+    /// and must be at least 10 minutes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
+    pub expiration_seconds: Option<i64>,
+    /// path is the path relative to the mount point of the file to project the
+    /// token into.
+    pub path: String,
+}
+
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesQuobyte {
+    /// group to map volume access to
+    /// Default is no group
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    /// readOnly here will force the Quobyte volume to be mounted with read-only permissions.
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// registry represents a single or multiple Quobyte Registry services
+    /// specified as a string as host:port pair (multiple entries are separated with commas)
+    /// which acts as the central registry for volumes
+    pub registry: String,
+    /// tenant owning the given Quobyte volume in the Backend
+    /// Used with dynamically provisioned Quobyte volumes, value is set by the plugin
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    /// user to map volume access to
+    /// Defaults to serivceaccount user
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+    /// volume is a string that references an already created Quobyte volume by name.
+    pub volume: String,
+}
+
+/// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesRbd {
+    /// fsType is the filesystem type of the volume that you want to mount.
+    /// Tip: Ensure that the filesystem type is supported by the host operating system.
+    /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// image is the rados image name.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub image: String,
+    /// keyring is the path to key ring for RBDUser.
+    /// Default is /etc/ceph/keyring.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub keyring: Option<String>,
+    /// monitors is a collection of Ceph monitors.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    pub monitors: Vec<String>,
+    /// pool is the rados pool name.
+    /// Default is rbd.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pool: Option<String>,
+    /// readOnly here will force the ReadOnly setting in VolumeMounts.
+    /// Defaults to false.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef is name of the authentication secret for RBDUser. If provided
+    /// overrides keyring.
+    /// Default is nil.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesRbdSecretRef>,
+    /// user is the rados user name.
+    /// Default is admin.
+    /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<String>,
+}
+
+/// secretRef is name of the authentication secret for RBDUser. If provided
+/// overrides keyring.
+/// Default is nil.
+/// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesRbdSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesScaleIo {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs".
+    /// Default is "xfs".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// gateway is the host address of the ScaleIO API Gateway.
+    pub gateway: String,
+    /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
+    pub protection_domain: Option<String>,
+    /// readOnly Defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef references to the secret for ScaleIO user and other
+    /// sensitive information. If this is not provided, Login operation will fail.
+    #[serde(rename = "secretRef")]
+    pub secret_ref: NginxProxyKubernetesDaemonSetPodVolumesScaleIoSecretRef,
+    /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
+    pub ssl_enabled: Option<bool>,
+    /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
+    /// Default is ThinProvisioned.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
+    pub storage_mode: Option<String>,
+    /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
+    pub storage_pool: Option<String>,
+    /// system is the name of the storage system as configured in ScaleIO.
+    pub system: String,
+    /// volumeName is the name of a volume already created in the ScaleIO system
+    /// that is associated with this volume source.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// secretRef references to the secret for ScaleIO user and other
+/// sensitive information. If this is not provided, Login operation will fail.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesScaleIoSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// secret represents a secret that should populate this volume.
+/// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesSecret {
+    /// defaultMode is Optional: mode bits used to set permissions on created files by default.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values
+    /// for mode bits. Defaults to 0644.
+    /// Directories within the path are not affected by this setting.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
+    /// items If unspecified, each key-value pair in the Data field of the referenced
+    /// Secret will be projected into the volume as a file whose name is the
+    /// key and content is the value. If specified, the listed keys will be
+    /// projected into the specified paths, and unlisted keys will not be
+    /// present. If a key is specified which is not present in the Secret,
+    /// the volume setup will error unless it is marked optional. Paths must be
+    /// relative and may not contain the '..' path or start with '..'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub items: Option<Vec<NginxProxyKubernetesDaemonSetPodVolumesSecretItems>>,
+    /// optional field specify whether the Secret or its keys must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// secretName is the name of the secret in the pod's namespace to use.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
+}
+
+/// Maps a string key to a path within a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesSecretItems {
+    /// key is the key to project.
+    pub key: String,
+    /// mode is Optional: mode bits used to set permissions on this file.
+    /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
+    /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
+    /// If not specified, the volume defaultMode will be used.
+    /// This might be in conflict with other options that affect the file
+    /// mode, like fsGroup, and the result can be other mode bits set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<i32>,
+    /// path is the relative path of the file to map the key to.
+    /// May not be an absolute path.
+    /// May not contain the path element '..'.
+    /// May not start with the string '..'.
+    pub path: String,
+}
+
+/// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesStorageos {
+    /// fsType is the filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// readOnly defaults to false (read/write). ReadOnly here will force
+    /// the ReadOnly setting in VolumeMounts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    /// secretRef specifies the secret to use for obtaining the StorageOS API
+    /// credentials.  If not specified, default values will be attempted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<NginxProxyKubernetesDaemonSetPodVolumesStorageosSecretRef>,
+    /// volumeName is the human-readable name of the StorageOS volume.  Volume
+    /// names are only unique within a namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+    /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
+    /// namespace is specified then the Pod's namespace will be used.  This allows the
+    /// Kubernetes name scoping to be mirrored within StorageOS for tighter integration.
+    /// Set VolumeName to any name to override the default behaviour.
+    /// Set to "default" if you are not using namespaces within StorageOS.
+    /// Namespaces that do not pre-exist within StorageOS will be created.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
+    pub volume_namespace: Option<String>,
+}
+
+/// secretRef specifies the secret to use for obtaining the StorageOS API
+/// credentials.  If not specified, default values will be attempted.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesStorageosSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPodVolumesVsphereVolume {
+    /// fsType is filesystem type to mount.
+    /// Must be a filesystem type supported by the host operating system.
+    /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
+    pub storage_policy_id: Option<String>,
+    /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
+    pub storage_policy_name: Option<String>,
+    /// volumePath is the path that identifies vSphere volume vmdk
+    #[serde(rename = "volumePath")]
+    pub volume_path: String,
 }
 
 /// Deployment is the configuration for the NGINX Deployment.

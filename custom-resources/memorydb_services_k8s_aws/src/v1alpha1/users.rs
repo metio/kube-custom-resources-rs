@@ -25,6 +25,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// Access permissions string used for this user.
+    /// 
+    /// Regex Pattern: `\S`
     #[serde(rename = "accessString")]
     pub access_string: String,
     /// Denotes the user's authentication properties, such as whether it requires
@@ -33,6 +35,8 @@ pub struct UserSpec {
     pub authentication_mode: UserAuthenticationMode,
     /// The name of the user. This value must be unique as it also serves as the
     /// user identifier.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z][a-zA-Z0-9\-]*$`
     pub name: String,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.

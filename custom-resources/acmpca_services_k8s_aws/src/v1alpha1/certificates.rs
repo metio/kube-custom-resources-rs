@@ -35,6 +35,8 @@ pub struct CertificateSpec {
     /// This must be of the form:
     /// 
     /// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
+    /// 
+    /// Regex Pattern: `^arn:[\w+=/,.@-]+:acm-pca:[\w+=/,.@-]*:[0-9]*:[\w+=,.@-]+(/[\w+=,.@-]+)*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateAuthorityARN")]
     pub certificate_authority_arn: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
@@ -82,6 +84,8 @@ pub struct CertificateSpec {
     /// 
     /// For a list of TemplateArn values supported by Amazon Web Services Private
     /// CA, see Understanding Certificate Templates (https://docs.aws.amazon.com/privateca/latest/userguide/UsingTemplates.html).
+    /// 
+    /// Regex Pattern: `^arn:[\w+=/,.@-]+:acm-pca:[\w+=/,.@-]*:[0-9]*:[\w+=,.@-]+(/[\w+=,.@-]+)*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateARN")]
     pub template_arn: Option<String>,
     /// Information describing the end of the validity period of the certificate.

@@ -38,6 +38,8 @@ pub struct ResolverRuleSpec {
     pub domain_name: Option<String>,
     /// A friendly name that lets you easily find a rule in the Resolver dashboard
     /// in the Route 53 console.
+    /// 
+    /// Regex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9\-_' ']+)$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// The ID of the outbound Resolver endpoint that you want to use to route DNS

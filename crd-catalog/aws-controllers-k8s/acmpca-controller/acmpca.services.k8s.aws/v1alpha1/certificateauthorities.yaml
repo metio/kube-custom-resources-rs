@@ -322,7 +322,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 ownerAccount:
-                  description: "The Amazon Web Services account ID that owns the certificate authority."
+                  description: "The Amazon Web Services account ID that owns the certificate authority.\n\nRegex Pattern: `^[0-9]+$`"
                   type: "string"
                 restorableUntil:
                   description: "The period during which a deleted CA can be restored. For more information,\nsee the PermanentDeletionTimeInDays parameter of the DeleteCertificateAuthorityRequest\n(https://docs.aws.amazon.com/privateca/latest/APIReference/API_DeleteCertificateAuthorityRequest.html)\naction."

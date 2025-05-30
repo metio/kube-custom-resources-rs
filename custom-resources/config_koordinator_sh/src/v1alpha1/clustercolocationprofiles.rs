@@ -30,6 +30,7 @@ pub struct ClusterColocationProfileSpec {
     /// Various Koordinator components determine the priority of the Pod
     /// in the Koordinator through KoordinatorPriority and the priority value in PriorityClassName.
     /// The higher the value, the higher the priority.
+    /// TODO: remove this field, use Labels instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "koordinatorPriority")]
     pub koordinator_priority: Option<i32>,
     /// LabelKeysMapping describes the labels that needs to inject into Pod.Labels with the same values.

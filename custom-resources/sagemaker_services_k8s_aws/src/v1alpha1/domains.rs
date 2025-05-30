@@ -46,17 +46,23 @@ pub struct DomainSpec {
     #[serde(rename = "defaultUserSettings")]
     pub default_user_settings: DomainDefaultUserSettings,
     /// A name for the domain.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "domainName")]
     pub domain_name: String,
     /// A collection of Domain settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainSettings")]
     pub domain_settings: Option<DomainDomainSettings>,
     /// Use KmsKeyId.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "homeEFSFileSystemKMSKeyID")]
     pub home_efs_file_system_kms_key_id: Option<String>,
     /// SageMaker uses Amazon Web Services KMS to encrypt EFS and EBS volumes attached
     /// to the domain with an Amazon Web Services managed key by default. For more
     /// control, specify a customer managed key.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9:/_-]*$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// The VPC subnets that the domain uses for communication.
@@ -72,6 +78,8 @@ pub struct DomainSpec {
     pub tags: Option<Vec<DomainTags>>,
     /// The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for
     /// communication.
+    /// 
+    /// Regex Pattern: `^[-0-9a-zA-Z]+$`
     #[serde(rename = "vpcID")]
     pub vpc_id: String,
 }
@@ -458,6 +466,8 @@ pub struct DomainStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The domain ID.
+    /// 
+    /// Regex Pattern: `^d-(-*[a-z0-9]){1,61}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainID")]
     pub domain_id: Option<String>,
     /// The status.

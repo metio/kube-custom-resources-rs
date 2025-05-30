@@ -522,6 +522,8 @@ pub struct TableStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSummary")]
     pub restore_summary: Option<TableStatusRestoreSummary>,
     /// Unique identifier for the table for which the backup was created.
+    /// 
+    /// Regex Pattern: `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tableID")]
     pub table_id: Option<String>,
     /// The total size of the specified table, in bytes. DynamoDB updates this value

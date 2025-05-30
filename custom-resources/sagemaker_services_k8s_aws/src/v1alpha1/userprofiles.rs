@@ -20,12 +20,16 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct UserProfileSpec {
     /// The ID of the associated Domain.
+    /// 
+    /// Regex Pattern: `^d-(-*[a-z0-9]){1,61}$`
     #[serde(rename = "domainID")]
     pub domain_id: String,
     /// A specifier for the type of value specified in SingleSignOnUserValue. Currently,
     /// the only supported value is "UserName". If the Domain's AuthMode is IAM Identity
     /// Center, this field is required. If the Domain's AuthMode is not IAM Identity
     /// Center, this field cannot be specified.
+    /// 
+    /// Regex Pattern: `^UserName$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "singleSignOnUserIdentifier")]
     pub single_sign_on_user_identifier: Option<String>,
     /// The username of the associated Amazon Web Services Single Sign-On User for
@@ -43,6 +47,8 @@ pub struct UserProfileSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<UserProfileTags>>,
     /// A name for the UserProfile. This value is not case sensitive.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`
     #[serde(rename = "userProfileName")]
     pub user_profile_name: String,
     /// A collection of settings.

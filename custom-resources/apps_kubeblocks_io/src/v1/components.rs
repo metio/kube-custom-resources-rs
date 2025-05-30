@@ -710,6 +710,9 @@ pub struct ComponentInstances {
     /// Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Indicate whether the instances belonging to this template are canary instances.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub canary: Option<bool>,
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -747,6 +750,10 @@ pub struct ComponentInstances {
     /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ComponentInstancesSchedulingPolicy>,
+    /// ServiceVersion specifies the version of the Service expected to be provisioned by this InstanceTemplate.
+    /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
+    pub service_version: Option<String>,
     /// Specifies an override for the storage requirements of the instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ComponentInstancesVolumeClaimTemplates>>,

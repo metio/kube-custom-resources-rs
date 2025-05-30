@@ -30,7 +30,7 @@ spec:
               description: "DomainSpec defines the desired state of Domain."
               properties:
                 accessPolicies:
-                  description: "Identity and Access Management (IAM) policy document specifying the access\npolicies for the new domain."
+                  description: "Identity and Access Management (IAM) policy document specifying the access\npolicies for the new domain.\n\nRegex Pattern: `.*`"
                   type: "string"
                 advancedOptions:
                   additionalProperties:
@@ -244,7 +244,7 @@ spec:
                       type: "string"
                   type: "object"
                 engineVersion:
-                  description: "String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine\nversion for the OpenSearch Service domain. For example, OpenSearch_1.0 or\nElasticsearch_7.9. For more information, see Creating and managing Amazon\nOpenSearch Service domains (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains)."
+                  description: "String of format Elasticsearch_X.Y or OpenSearch_X.Y to specify the engine\nversion for the OpenSearch Service domain. For example, OpenSearch_1.0 or\nElasticsearch_7.9. For more information, see Creating and managing Amazon\nOpenSearch Service domains (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomains).\n\nRegex Pattern: `^Elasticsearch_[0-9]{1}\\.[0-9]{1,2}$|^OpenSearch_[0-9]{1,2}\\.[0-9]{1,2}$`"
                   type: "string"
                 ipAddressType:
                   description: "Specify either dual stack or IPv4 as your IP address type. Dual stack allows\nyou to share domain resources across IPv4 and IPv6 address types, and is\nthe recommended option. If you set your IP address type to dual stack, you\ncan't change your address type later."
@@ -262,7 +262,7 @@ spec:
                   description: "Key-value pairs to configure log publishing."
                   type: "object"
                 name:
-                  description: "Name of the OpenSearch Service domain to create. Domain names are unique\nacross the domains owned by an account within an Amazon Web Services Region."
+                  description: "Name of the OpenSearch Service domain to create. Domain names are unique\nacross the domains owned by an account within an Amazon Web Services Region.\n\nRegex Pattern: `^[a-z][a-z0-9\\-]+$`"
                   type: "string"
                 nodeToNodeEncryptionOptions:
                   description: "Enables node-to-node encryption."

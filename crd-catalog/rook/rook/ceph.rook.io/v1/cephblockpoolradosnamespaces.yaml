@@ -10,6 +10,9 @@ spec:
     kind: "CephBlockPoolRadosNamespace"
     listKind: "CephBlockPoolRadosNamespaceList"
     plural: "cephblockpoolradosnamespaces"
+    shortNames:
+      - "cephbprns"
+      - "cephrns"
     singular: "cephblockpoolradosnamespace"
   scope: "Namespaced"
   versions:

@@ -64,7 +64,7 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name or ARN of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length.\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 functionRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
@@ -187,10 +187,10 @@ spec:
                     type: "object"
                   type: "array"
                 functionARN:
-                  description: "The function's Amazon Resource Name (ARN)."
+                  description: "The function's Amazon Resource Name (ARN).\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_\\.]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 handler:
-                  description: "The function that Lambda calls to begin running your function."
+                  description: "The function that Lambda calls to begin running your function.\n\nRegex Pattern: `^[^\\s]+$`"
                   type: "string"
                 imageConfigResponse:
                   description: "The function's image configuration values."
@@ -219,7 +219,7 @@ spec:
                       type: "object"
                   type: "object"
                 kmsKeyARN:
-                  description: "The ARN of the Key Management Service (KMS) customer managed key that's used\nto encrypt the following resources:\n\n   * The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).\n\n   * The function's Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)\n   snapshots.\n\n   * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment\n   package that's used for function invocations. For more information, see\n   Specifying a customer managed key for Lambda (https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).\n\n   * The optimized version of the container image that's used for function\n   invocations. Note that this is not the same key that's used to protect\n   your container image in the Amazon Elastic Container Registry (Amazon\n   ECR). For more information, see Function lifecycle (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).\n\nIf you don't provide a customer managed key, Lambda uses an Amazon Web Services\nowned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)\nor an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk)."
+                  description: "The ARN of the Key Management Service (KMS) customer managed key that's used\nto encrypt the following resources:\n\n   * The function's environment variables (https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html#configuration-envvars-encryption).\n\n   * The function's Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart-security.html)\n   snapshots.\n\n   * When used with SourceKMSKeyArn, the unzipped version of the .zip deployment\n   package that's used for function invocations. For more information, see\n   Specifying a customer managed key for Lambda (https://docs.aws.amazon.com/lambda/latest/dg/encrypt-zip-package.html#enable-zip-custom-encryption).\n\n   * The optimized version of the container image that's used for function\n   invocations. Note that this is not the same key that's used to protect\n   your container image in the Amazon Elastic Container Registry (Amazon\n   ECR). For more information, see Function lifecycle (https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-lifecycle).\n\nIf you don't provide a customer managed key, Lambda uses an Amazon Web Services\nowned key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-owned-cmk)\nor an Amazon Web Services managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#aws-managed-cmk).\n\nRegex Pattern: `^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$`"
                   type: "string"
                 lastModified:
                   description: "The date and time that the function was last updated, in ISO-8601 format\n(https://www.w3.org/TR/NOTE-datetime) (YYYY-MM-DDThh:mm:ss.sTZD)."
@@ -250,7 +250,7 @@ spec:
                     type: "object"
                   type: "array"
                 masterARN:
-                  description: "For Lambda@Edge functions, the ARN of the main function."
+                  description: "For Lambda@Edge functions, the ARN of the main function.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}(-gov)?-[a-z]+-\\d{1}:\\d{12}:function:[a-zA-Z0-9-_]+(:(\\$LATEST|[a-zA-Z0-9-_]+))?$`"
                   type: "string"
                 memorySize:
                   description: "The amount of memory available to the function at runtime."
@@ -260,19 +260,19 @@ spec:
                   description: "The type of deployment package. Set to Image for container image and set\nZip for .zip file archive."
                   type: "string"
                 qualifier:
-                  description: "The version of the Lambda function."
+                  description: "The version of the Lambda function.\n\nRegex Pattern: `^(\\$LATEST|[0-9]+)$`"
                   type: "string"
                 role:
-                  description: "The function's execution role."
+                  description: "The function's execution role.\n\nRegex Pattern: `^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$`"
                   type: "string"
                 runtime:
                   description: "The identifier of the function's runtime (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html).\nRuntime is required if the deployment package is a .zip file archive. Specifying\na runtime results in an error if you're deploying a function using a container\nimage.\n\nThe following list includes deprecated runtimes. Lambda blocks creating new\nfunctions and updating existing functions shortly after each runtime is deprecated.\nFor more information, see Runtime use after deprecation (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtime-deprecation-levels).\n\nFor a list of all currently supported runtimes, see Supported runtimes (https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html#runtimes-supported)."
                   type: "string"
                 signingJobARN:
-                  description: "The ARN of the signing job."
+                  description: "The ARN of the signing job.\n\nRegex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$`"
                   type: "string"
                 signingProfileVersionARN:
-                  description: "The ARN of the signing profile version."
+                  description: "The ARN of the signing profile version.\n\nRegex Pattern: `^arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)$`"
                   type: "string"
                 snapStart:
                   description: "Set ApplyOn to PublishedVersions to create a snapshot of the initialized\nexecution environment when you publish a function version. For more information,\nsee Improving startup performance with Lambda SnapStart (https://docs.aws.amazon.com/lambda/latest/dg/snapstart.html)."
@@ -302,7 +302,7 @@ spec:
                       type: "string"
                   type: "object"
                 version:
-                  description: "The version of the Lambda function."
+                  description: "The version of the Lambda function.\n\nRegex Pattern: `^(\\$LATEST|[0-9]+)$`"
                   type: "string"
                 vpcConfig:
                   description: "The function's networking configuration."

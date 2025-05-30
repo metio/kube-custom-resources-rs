@@ -144,8 +144,7 @@ spec:
                       description: "SerialNumber is the identification number of the MFA device that is associated with the IAM user who is making\nthe GetSessionToken call.\nPossible values: hardware device (such as GAHT12345678) or an Amazon Resource Name (ARN) for a virtual device\n(such as arn:aws:iam::123456789012:mfa/user)"
                       type: "string"
                     sessionDuration:
-                      description: "SessionDuration The duration, in seconds, that the credentials should remain valid. Acceptable durations for\nIAM user sessions range from 900 seconds (15 minutes) to 129,600 seconds (36 hours), with 43,200 seconds\n(12 hours) as the default."
-                      format: "int64"
+                      format: "int32"
                       type: "integer"
                     tokenCode:
                       description: "TokenCode is the value provided by the MFA device, if MFA is required."

@@ -62,7 +62,7 @@ spec:
                     type: "object"
                   type: "array"
                 name:
-                  description: "A friendly name that lets you easily find a configuration in the Resolver\ndashboard in the Route 53 console."
+                  description: "A friendly name that lets you easily find a configuration in the Resolver\ndashboard in the Route 53 console.\n\nRegex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9\\-_' ']+)$`"
                   type: "string"
                 resolverEndpointType:
                   description: "For the endpoint type you can choose either IPv4, IPv6, or dual-stack. A\ndual-stack endpoint means that it will resolve via both IPv4 and IPv6. This\nendpoint type is applied to all IP addresses."

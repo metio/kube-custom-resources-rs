@@ -19,9 +19,13 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// Access permissions string used for this user.
+    /// 
+    /// Regex Pattern: `\S`
     #[serde(rename = "accessString")]
     pub access_string: String,
     /// The current supported value is Redis.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z]*$`
     pub engine: String,
     /// Indicates a password is not required for this user.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noPasswordRequired")]
@@ -35,6 +39,8 @@ pub struct UserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<UserTags>>,
     /// The ID of the user.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z][a-zA-Z0-9\-]*$`
     #[serde(rename = "userID")]
     pub user_id: String,
     /// The username of the user.

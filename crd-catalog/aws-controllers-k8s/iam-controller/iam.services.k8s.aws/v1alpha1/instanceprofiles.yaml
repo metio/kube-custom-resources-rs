@@ -30,10 +30,10 @@ spec:
               description: "InstanceProfileSpec defines the desired state of InstanceProfile.\n\nContains information about an instance profile.\n\nThis data type is used as a response element in the following operations:\n\n   * CreateInstanceProfile\n\n   * GetInstanceProfile\n\n   * ListInstanceProfiles\n\n   * ListInstanceProfilesForRole"
               properties:
                 name:
-                  description: "The name of the instance profile to create.\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of upper and lowercase alphanumeric characters\nwith no spaces. You can also include any of the following characters: _+=,.@-"
+                  description: "The name of the instance profile to create.\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of upper and lowercase alphanumeric characters\nwith no spaces. You can also include any of the following characters: _+=,.@-\n\nRegex Pattern: `^[\\w+=,.@-]+$`"
                   type: "string"
                 path:
-                  description: "The path to the instance profile. For more information about paths, see IAM\nIdentifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
+                  description: "The path to the instance profile. For more information about paths, see IAM\nIdentifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters.\n\nRegex Pattern: `^(\\u002F)|(\\u002F[\\u0021-\\u007E]+\\u002F)$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -116,7 +116,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 instanceProfileID:
-                  description: "The stable and unique string identifying the instance profile. For more information\nabout IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide."
+                  description: "The stable and unique string identifying the instance profile. For more information\nabout IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nRegex Pattern: `^[\\w]+$`"
                   type: "string"
               type: "object"
           type: "object"

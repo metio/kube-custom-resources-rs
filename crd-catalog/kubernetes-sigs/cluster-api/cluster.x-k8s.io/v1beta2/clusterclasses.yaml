@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.3"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "clusterclasses.cluster.x-k8s.io"
 spec:
   group: "cluster.x-k8s.io"
@@ -25,7 +25,7 @@ spec:
       name: "v1beta2"
       schema:
         openAPIV3Schema:
-          description: "ClusterClass is a template which can be used to create managed topologies."
+          description: "ClusterClass is a template which can be used to create managed topologies.\nNOTE: This CRD can only be used if the ClusterTopology feature gate is enabled."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -104,10 +104,10 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
-                        unhealthyConditions:
-                          description: "unhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
+                        unhealthyNodeConditions:
+                          description: "unhealthyNodeConditions contains a list of conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
                           items:
-                            description: "UnhealthyCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
+                            description: "UnhealthyNodeCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
                             properties:
                               status:
                                 description: "status of the condition, one of True, False, Unknown."
@@ -419,8 +419,8 @@ spec:
                             maxLength: 512
                             minLength: 1
                             type: "string"
-                          generateExtension:
-                            description: "generateExtension references an extension which is called to generate patches."
+                          generatePatchesExtension:
+                            description: "generatePatchesExtension references an extension which is called to generate patches."
                             maxLength: 512
                             minLength: 1
                             type: "string"
@@ -429,8 +429,8 @@ spec:
                               type: "string"
                             description: "settings defines key value pairs to be passed to the extensions.\nValues defined here take precedence over the values defined in the\ncorresponding ExtensionConfig."
                             type: "object"
-                          validateExtension:
-                            description: "validateExtension references an extension which is called to validate the topology."
+                          validateTopologyExtension:
+                            description: "validateTopologyExtension references an extension which is called to validate the topology."
                             maxLength: 512
                             minLength: 1
                             type: "string"
@@ -450,8 +450,8 @@ spec:
                   items:
                     description: "ClusterClassVariable defines a variable which can\nbe configured in the Cluster topology and used in patches."
                     properties:
-                      metadata:
-                        description: "metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please use XMetadata in JSONSchemaProps instead."
+                      deprecatedV1Beta1Metadata:
+                        description: "deprecatedV1Beta1Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\nDeprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead."
                         properties:
                           annotations:
                             additionalProperties:
@@ -714,10 +714,10 @@ spec:
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
-                              unhealthyConditions:
-                                description: "unhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
+                              unhealthyNodeConditions:
+                                description: "unhealthyNodeConditions contains a list of conditions that determine\nwhether a node is considered unhealthy. The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
                                 items:
-                                  description: "UnhealthyCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
+                                  description: "UnhealthyNodeCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
                                   properties:
                                     status:
                                       description: "status of the condition, one of True, False, Unknown."
@@ -1174,13 +1174,8 @@ spec:
                         items:
                           description: "ClusterClassStatusVariableDefinition defines a variable which appears in the status of a ClusterClass."
                           properties:
-                            from:
-                              description: "from specifies the origin of the variable definition.\nThis will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass\nfor variables discovered from a DiscoverVariables runtime extensions."
-                              maxLength: 256
-                              minLength: 1
-                              type: "string"
-                            metadata:
-                              description: "metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion."
+                            deprecatedV1Beta1Metadata:
+                              description: "deprecatedV1Beta1Metadata is the metadata of a variable.\nIt can be used to add additional data for higher level tools to\na ClusterClassVariable.\n\nDeprecated: This field is deprecated and will be removed when support for v1beta1 will be dropped. Please use XMetadata in JSONSchemaProps instead."
                               properties:
                                 annotations:
                                   additionalProperties:
@@ -1193,6 +1188,11 @@ spec:
                                   description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) variables."
                                   type: "object"
                               type: "object"
+                            from:
+                              description: "from specifies the origin of the variable definition.\nThis will be `inline` for variables defined in the ClusterClass or the name of a patch defined in the ClusterClass\nfor variables discovered from a DiscoverVariables runtime extensions."
+                              maxLength: 256
+                              minLength: 1
+                              type: "string"
                             required:
                               description: "required specifies if the variable is required.\nNote: this applies to the variable as a whole and thus the\ntop-level object defined in the schema. If nested fields are\nrequired, this will be specified inside the schema."
                               type: "boolean"

@@ -30,13 +30,13 @@ spec:
               description: "PullThroughCacheRuleSpec defines the desired state of PullThroughCacheRule.\n\nThe details of a pull through cache rule."
               properties:
                 ecrRepositoryPrefix:
-                  description: "The repository name prefix to use when caching images from the source registry."
+                  description: "The repository name prefix to use when caching images from the source registry.\n\nRegex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
                       rule: "self == oldSelf"
                 registryID:
-                  description: "The Amazon Web Services account ID associated with the registry to create\nthe pull through cache rule for. If you do not specify a registry, the default\nregistry is assumed."
+                  description: "The Amazon Web Services account ID associated with the registry to create\nthe pull through cache rule for. If you do not specify a registry, the default\nregistry is assumed.\n\nRegex Pattern: `^[0-9]{12}$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"

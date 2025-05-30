@@ -73,6 +73,11 @@ spec:
                   description: "Attestors provides a list of trusted authorities."
                   items:
                     description: "Attestor is an identity that confirms or verifies the authenticity of an image or an attestation"
+                    oneOf:
+                      - required:
+                          - "cosign"
+                      - required:
+                          - "notary"
                     properties:
                       cosign:
                         description: "Cosign defines attestor configuration for Cosign based signatures"
@@ -678,6 +683,11 @@ spec:
                                 description: "Attestors provides a list of trusted authorities."
                                 items:
                                   description: "Attestor is an identity that confirms or verifies the authenticity of an image or an attestation"
+                                  oneOf:
+                                    - required:
+                                        - "cosign"
+                                    - required:
+                                        - "notary"
                                   properties:
                                     cosign:
                                       description: "Cosign defines attestor configuration for Cosign based signatures"
@@ -1238,8 +1248,26 @@ spec:
                               - "attestors"
                               - "validations"
                             type: "object"
+                          targets:
+                            items:
+                              properties:
+                                group:
+                                  type: "string"
+                                kind:
+                                  type: "string"
+                                resource:
+                                  type: "string"
+                                version:
+                                  type: "string"
+                              required:
+                                - "kind"
+                                - "resource"
+                                - "version"
+                              type: "object"
+                            type: "array"
                         required:
                           - "spec"
+                          - "targets"
                         type: "object"
                       type: "object"
                   type: "object"

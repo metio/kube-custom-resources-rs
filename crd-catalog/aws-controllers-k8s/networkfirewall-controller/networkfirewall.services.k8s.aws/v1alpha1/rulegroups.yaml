@@ -37,7 +37,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 description:
-                  description: "A description of the rule group."
+                  description: "A description of the rule group.\n\nRegex Pattern: `^.*$`"
                   type: "string"
                 dryRun:
                   description: "Indicates whether you want Network Firewall to just check the validity of\nthe request, rather than run the request.\n\nIf set to TRUE, Network Firewall checks whether the request can run successfully,\nbut doesn't actually make the requested changes. The call returns the value\nthat the request would return if you ran it with dry run set to FALSE, but\ndoesn't make additions or changes to your resources. This option allows you\nto make sure that you have the required permissions to run the request and\nthat your request parameters are valid.\n\nIf set to FALSE, Network Firewall makes the requested changes to your resources."
@@ -261,7 +261,7 @@ spec:
                       type: "object"
                   type: "object"
                 ruleGroupName:
-                  description: "The descriptive name of the rule group. You can't change the name of a rule\ngroup after you create it."
+                  description: "The descriptive name of the rule group. You can't change the name of a rule\ngroup after you create it.\n\nRegex Pattern: `^[a-zA-Z0-9-]+$`"
                   type: "string"
                 rules:
                   description: "A string containing stateful rule group rules specifications in Suricata\nflat format, with one ruleper line. Use this to import your existing Suricata\ncompatible rule groups.\n\nYou must provide either this rules setting or a populated RuleGroup setting,\nbut not both.\n\nYou can provide your rule group specification in Suricata flat format through\nthis setting when you create or update your rule group. The callresponse\nreturns a RuleGroup object that Network Firewall has populated from your\nstring."
@@ -409,7 +409,7 @@ spec:
                       type: "string"
                   type: "object"
                 updateToken:
-                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the rule group. The token marks the state of the\nrule group resource at the time of the request.\n\nTo make changes to the rule group, you provide the token in your request.\nNetwork Firewall uses the token to ensure that the rule group hasn't changed\nsince you last retrieved it. If it has changed, the operation fails with\nan InvalidTokenException. If this happens, retrieve the rule group again\nto get a current copy of it with a current token. Reapply your changes as\nneeded, then try the operation again using the new token."
+                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the rule group. The token marks the state of the\nrule group resource at the time of the request.\n\nTo make changes to the rule group, you provide the token in your request.\nNetwork Firewall uses the token to ensure that the rule group hasn't changed\nsince you last retrieved it. If it has changed, the operation fails with\nan InvalidTokenException. If this happens, retrieve the rule group again\nto get a current copy of it with a current token. Reapply your changes as\nneeded, then try the operation again using the new token.\n\nRegex Pattern: `^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$`"
                   type: "string"
               type: "object"
           type: "object"

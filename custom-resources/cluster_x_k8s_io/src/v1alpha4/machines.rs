@@ -270,11 +270,22 @@ pub struct MachineStatusNodeInfo {
     /// OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
     #[serde(rename = "osImage")]
     pub os_image: String,
+    /// Swap Info reported by the node.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub swap: Option<MachineStatusNodeInfoSwap>,
     /// SystemUUID reported by the node. For unique machine identification
     /// MachineID is preferred. This field is specific to Red Hat hosts
     /// https://access.redhat.com/documentation/en-us/red_hat_subscription_management/1/html/rhsm/uuid
     #[serde(rename = "systemUUID")]
     pub system_uuid: String,
+}
+
+/// Swap Info reported by the node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineStatusNodeInfoSwap {
+    /// Total amount of swap memory in bytes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capacity: Option<i64>,
 }
 
 /// nodeRef will point to the corresponding Node if it exists.

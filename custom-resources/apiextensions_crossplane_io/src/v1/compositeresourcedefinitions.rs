@@ -63,6 +63,13 @@ pub struct CompositeResourceDefinitionSpec {
     /// Names specifies the resource and kind names of the defined composite
     /// resource.
     pub names: CompositeResourceDefinitionNames,
+    /// Scope of the defined composite resource. Namespaced composite resources
+    /// are scoped to a single namespace. Cluster scoped composite resource exist
+    /// outside the scope of any namespace. Neither can be claimed. Legacy
+    /// cluster scoped composite resources are cluster scoped resources that can
+    /// be claimed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub scope: Option<CompositeResourceDefinitionScope>,
     /// Versions is the list of all API versions of the defined composite
     /// resource. Version names are used to compute the order in which served
     /// versions are listed in API discovery. If the version string is
@@ -283,6 +290,14 @@ pub struct CompositeResourceDefinitionNames {
     /// singular is the singular name of the resource. It must be all lowercase. Defaults to lowercased `kind`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub singular: Option<String>,
+}
+
+/// CompositeResourceDefinitionSpec specifies the desired state of the definition.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CompositeResourceDefinitionScope {
+    LegacyCluster,
+    Namespaced,
+    Cluster,
 }
 
 /// CompositeResourceDefinitionVersion describes a version of an XR.

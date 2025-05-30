@@ -33,7 +33,7 @@ spec:
                   description: "A flag indicating whether it is possible to delete the firewall. A setting\nof TRUE indicates that the firewall is protected against deletion. Use this\nsetting to protect against accidentally deleting a firewall that is in use.\nWhen you create a firewall, the operation initializes this flag to TRUE."
                   type: "boolean"
                 description:
-                  description: "A description of the firewall."
+                  description: "A description of the firewall.\n\nRegex Pattern: `^.*$`"
                   type: "string"
                 encryptionConfiguration:
                   description: "A complex type that contains settings for encryption of your firewall resources."
@@ -44,10 +44,10 @@ spec:
                       type: "string"
                   type: "object"
                 firewallName:
-                  description: "The descriptive name of the firewall. You can't change the name of a firewall\nafter you create it."
+                  description: "The descriptive name of the firewall. You can't change the name of a firewall\nafter you create it.\n\nRegex Pattern: `^[a-zA-Z0-9-]+$`"
                   type: "string"
                 firewallPolicyARN:
-                  description: "The Amazon Resource Name (ARN) of the FirewallPolicy that you want to use\nfor the firewall."
+                  description: "The Amazon Resource Name (ARN) of the FirewallPolicy that you want to use\nfor the firewall.\n\nRegex Pattern: `^arn:aws`"
                   type: "string"
                 firewallPolicyChangeProtection:
                   description: "A setting indicating whether the firewall is protected against a change to\nthe firewall policy association. Use this setting to protect against accidentally\nmodifying the firewall policy for a firewall that is in use. When you create\na firewall, the operation initializes this setting to TRUE."
@@ -96,7 +96,7 @@ spec:
                     type: "object"
                   type: "array"
                 vpcID:
-                  description: "The unique identifier of the VPC where Network Firewall should create the\nfirewall.\n\nYou can't change this setting after you create the firewall."
+                  description: "The unique identifier of the VPC where Network Firewall should create the\nfirewall.\n\nYou can't change this setting after you create the firewall.\n\nRegex Pattern: `^vpc-[0-9a-f]+$`"
                   type: "string"
               required:
                 - "firewallName"

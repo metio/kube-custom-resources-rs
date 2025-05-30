@@ -146,6 +146,9 @@ pub struct InstallationSpec {
     /// Kubernetes Service CIDRs. Specifying this is required when using Calico for Windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDRs")]
     pub service_cid_rs: Option<Vec<String>>,
+    /// TLSCipherSuites defines the cipher suite list that the TLS protocol should use during secure communication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCipherSuites")]
+    pub tls_cipher_suites: Option<Vec<InstallationTlsCipherSuites>>,
     /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
     /// TyphaAffinity allows configuration of node affinity characteristics for Typha pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaAffinity")]
@@ -5434,6 +5437,45 @@ pub struct InstallationProxy {
     pub no_proxy: Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationTlsCipherSuites {
+    /// This should be a valid TLS cipher suite name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<InstallationTlsCipherSuitesName>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationTlsCipherSuitesName {
+    #[serde(rename = "TLS_AES_256_GCM_SHA384")]
+    TlsAes256GcmSha384,
+    #[serde(rename = "TLS_CHACHA20_POLY1305_SHA256")]
+    TlsChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_AES_128_GCM_SHA256")]
+    TlsAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")]
+    TlsEcdheEcdsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")]
+    TlsEcdheRsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256")]
+    TlsEcdheRsaWithChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")]
+    TlsEcdheEcdsaWithChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")]
+    TlsEcdheRsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")]
+    TlsEcdheEcdsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_RSA_WITH_AES_256_GCM_SHA384")]
+    TlsRsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_RSA_WITH_AES_128_GCM_SHA256")]
+    TlsRsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")]
+    TlsEcdheEcdsaWithAes256CbcSha,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")]
+    TlsEcdheRsaWithAes256CbcSha,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")]
+    TlsEcdheRsaWithAes128CbcSha,
+}
+
 /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
 /// TyphaAffinity allows configuration of node affinity characteristics for Typha pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6944,6 +6986,9 @@ pub struct InstallationStatusComputed {
     /// Kubernetes Service CIDRs. Specifying this is required when using Calico for Windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDRs")]
     pub service_cid_rs: Option<Vec<String>>,
+    /// TLSCipherSuites defines the cipher suite list that the TLS protocol should use during secure communication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsCipherSuites")]
+    pub tls_cipher_suites: Option<Vec<InstallationStatusComputedTlsCipherSuites>>,
     /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
     /// TyphaAffinity allows configuration of node affinity characteristics for Typha pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaAffinity")]
@@ -12230,6 +12275,45 @@ pub struct InstallationStatusComputedProxy {
     /// the Kubernetes API server, are exempt from being proxied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedTlsCipherSuites {
+    /// This should be a valid TLS cipher suite name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<InstallationStatusComputedTlsCipherSuitesName>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationStatusComputedTlsCipherSuitesName {
+    #[serde(rename = "TLS_AES_256_GCM_SHA384")]
+    TlsAes256GcmSha384,
+    #[serde(rename = "TLS_CHACHA20_POLY1305_SHA256")]
+    TlsChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_AES_128_GCM_SHA256")]
+    TlsAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")]
+    TlsEcdheEcdsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")]
+    TlsEcdheRsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256")]
+    TlsEcdheRsaWithChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")]
+    TlsEcdheEcdsaWithChacha20Poly1305Sha256,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")]
+    TlsEcdheRsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")]
+    TlsEcdheEcdsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_RSA_WITH_AES_256_GCM_SHA384")]
+    TlsRsaWithAes256GcmSha384,
+    #[serde(rename = "TLS_RSA_WITH_AES_128_GCM_SHA256")]
+    TlsRsaWithAes128GcmSha256,
+    #[serde(rename = "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")]
+    TlsEcdheEcdsaWithAes256CbcSha,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")]
+    TlsEcdheRsaWithAes256CbcSha,
+    #[serde(rename = "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")]
+    TlsEcdheRsaWithAes128CbcSha,
 }
 
 /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.

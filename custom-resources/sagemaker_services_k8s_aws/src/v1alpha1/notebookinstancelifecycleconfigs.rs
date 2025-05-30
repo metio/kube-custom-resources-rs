@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct NotebookInstanceLifecycleConfigSpec {
     /// The name of the lifecycle configuration.
+    /// 
+    /// Regex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9])*$`
     #[serde(rename = "notebookInstanceLifecycleConfigName")]
     pub notebook_instance_lifecycle_config_name: String,
     /// A shell script that runs only once, when you create a notebook instance.

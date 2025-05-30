@@ -97,6 +97,10 @@ pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListeners {
     /// Will default to TCP protocol if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersProtocol>,
+    /// The selector is used to find IBMPowerVSMachines with matching labels.
+    /// If the label matches, the machine is then added to the load balancer listener configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersSelector>,
 }
 
 /// AdditionalListenerSpec defines the desired state of an
@@ -111,6 +115,37 @@ pub enum IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersProtocol {
     Tcp,
     #[serde(rename = "udp")]
     Udp,
+}
+
+/// The selector is used to find IBMPowerVSMachines with matching labels.
+/// If the label matches, the machine is then added to the load balancer listener configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterControlPlaneLoadBalancerAdditionalListenersSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// VPCLoadBalancerBackendPoolSpec defines the desired configuration of a VPC Load Balancer Backend Pool.
@@ -322,6 +357,10 @@ pub struct IBMVPCClusterNetworkLoadBalancersAdditionalListeners {
     /// Will default to TCP protocol if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<IBMVPCClusterNetworkLoadBalancersAdditionalListenersProtocol>,
+    /// The selector is used to find IBMPowerVSMachines with matching labels.
+    /// If the label matches, the machine is then added to the load balancer listener configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<IBMVPCClusterNetworkLoadBalancersAdditionalListenersSelector>,
 }
 
 /// AdditionalListenerSpec defines the desired state of an
@@ -336,6 +375,37 @@ pub enum IBMVPCClusterNetworkLoadBalancersAdditionalListenersProtocol {
     Tcp,
     #[serde(rename = "udp")]
     Udp,
+}
+
+/// The selector is used to find IBMPowerVSMachines with matching labels.
+/// If the label matches, the machine is then added to the load balancer listener configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetworkLoadBalancersAdditionalListenersSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<IBMVPCClusterNetworkLoadBalancersAdditionalListenersSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterNetworkLoadBalancersAdditionalListenersSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// VPCLoadBalancerBackendPoolSpec defines the desired configuration of a VPC Load Balancer Backend Pool.

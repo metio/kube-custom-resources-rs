@@ -25,6 +25,8 @@ pub struct JobTemplateSpec {
     pub min_available: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minSuccess")]
     pub min_success: Option<i32>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkTopology")]
+    pub network_topology: Option<JobTemplateNetworkTopology>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -43,6 +45,22 @@ pub struct JobTemplateSpec {
     pub ttl_seconds_after_finished: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<JobTemplateVolumes>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateNetworkTopology {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "highestTierAllowed")]
+    pub highest_tier_allowed: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<JobTemplateNetworkTopologyMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobTemplateNetworkTopologyMode {
+    #[serde(rename = "hard")]
+    Hard,
+    #[serde(rename = "soft")]
+    Soft,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

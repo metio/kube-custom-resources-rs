@@ -647,6 +647,8 @@ pub struct ValidatingPolicyStatusAutogenConfigs {
     /// ValidatingPolicySpec is the specification of the desired behavior of the ValidatingPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ValidatingPolicyStatusAutogenConfigsSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<ValidatingPolicyStatusAutogenConfigsTargets>>,
 }
 
 /// ValidatingPolicySpec is the specification of the desired behavior of the ValidatingPolicy.
@@ -1254,6 +1256,15 @@ pub struct ValidatingPolicyStatusAutogenConfigsSpecWebhookConfiguration {
     /// based on the failure policy. The default timeout is 10s, the value must be between 1 and 30 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ValidatingPolicyStatusAutogenConfigsTargets {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub group: Option<String>,
+    pub kind: String,
+    pub resource: String,
+    pub version: String,
 }
 
 /// ConditionStatus is the shared status across all policy types

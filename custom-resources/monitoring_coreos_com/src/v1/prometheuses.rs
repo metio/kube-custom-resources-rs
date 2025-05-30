@@ -150,6 +150,12 @@ pub struct PrometheusSpec {
     /// may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<PrometheusContainers>>,
+    /// Whether to convert all scraped classic histograms into a native
+    /// histogram with custom buckets.
+    /// 
+    /// It requires Prometheus >= v3.4.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
+    pub convert_classic_histograms_to_nhcb: Option<bool>,
     /// When true, the Prometheus compaction is disabled.
     /// When `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically
     /// disables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends).
@@ -453,7 +459,16 @@ pub struct PrometheusSpec {
     /// enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Specifies the character escaping scheme that will be requested when scraping
+    /// for metric and label names that do not conform to the legacy Prometheus
+    /// character set.
+    /// 
+    /// It requires Prometheus >= v3.4.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameEscapingScheme")]
+    pub name_escaping_scheme: Option<PrometheusNameEscapingScheme>,
     /// Specifies the validation scheme for metric and label names.
+    /// 
+    /// It requires Prometheus >= v2.55.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
     pub name_validation_scheme: Option<PrometheusNameValidationScheme>,
     /// Defines on which Nodes the Pods are scheduled.
@@ -5197,6 +5212,17 @@ pub enum PrometheusLogLevel {
     Warn,
     #[serde(rename = "error")]
     Error,
+}
+
+/// Specification of the desired behavior of the Prometheus cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusNameEscapingScheme {
+    #[serde(rename = "AllowUTF8")]
+    AllowUtf8,
+    Underscores,
+    Dots,
+    Values,
 }
 
 /// Specification of the desired behavior of the Prometheus cluster. More info:

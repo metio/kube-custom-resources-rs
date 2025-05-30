@@ -32,6 +32,8 @@ pub struct VirtualClusterSpec {
     #[serde(rename = "containerProvider")]
     pub container_provider: VirtualClusterContainerProvider,
     /// The specified name of the virtual cluster.
+    /// 
+    /// Regex Pattern: `^[\.\-_/#A-Za-z0-9]+$`
     pub name: String,
     /// The tags assigned to the virtual cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,6 +82,8 @@ pub struct VirtualClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// This output contains the virtual cluster ID.
+    /// 
+    /// Regex Pattern: `^[0-9a-z]+$`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
 }

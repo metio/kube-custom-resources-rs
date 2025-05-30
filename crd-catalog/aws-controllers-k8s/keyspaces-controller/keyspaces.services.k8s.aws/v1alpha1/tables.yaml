@@ -66,7 +66,7 @@ spec:
                       type: "string"
                   type: "object"
                 keyspaceName:
-                  description: "The name of the keyspace that the table is going to be created in."
+                  description: "The name of the keyspace that the table is going to be created in.\n\nRegex Pattern: `^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$`"
                   type: "string"
                 pointInTimeRecovery:
                   description: "Specifies if pointInTimeRecovery is enabled or disabled for the table. The\noptions are:\n\n   * status=ENABLED\n\n   * status=DISABLED\n\nIf it's not specified, the default is status=DISABLED.\n\nFor more information, see Point-in-time recovery (https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery.html)\nin the Amazon Keyspaces Developer Guide."
@@ -115,7 +115,7 @@ spec:
                       type: "array"
                   type: "object"
                 tableName:
-                  description: "The name of the table."
+                  description: "The name of the table.\n\nRegex Pattern: `^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$`"
                   type: "string"
                 tags:
                   description: "A list of key-value pair tags to be attached to the resource.\n\nFor more information, see Adding tags and labels to Amazon Keyspaces resources\n(https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)\nin the Amazon Keyspaces Developer Guide."

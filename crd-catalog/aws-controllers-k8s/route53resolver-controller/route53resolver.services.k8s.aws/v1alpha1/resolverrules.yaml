@@ -55,7 +55,7 @@ spec:
                   description: "DNS queries for this domain name are forwarded to the IP addresses that you\nspecify in TargetIps. If a query matches multiple Resolver rules (example.com\nand www.example.com), outbound DNS queries are routed using the Resolver\nrule that contains the most specific domain name (www.example.com)."
                   type: "string"
                 name:
-                  description: "A friendly name that lets you easily find a rule in the Resolver dashboard\nin the Route 53 console."
+                  description: "A friendly name that lets you easily find a rule in the Resolver dashboard\nin the Route 53 console.\n\nRegex Pattern: `^(?!^[0-9]+$)([a-zA-Z0-9\\-_' ']+)$`"
                   type: "string"
                 resolverEndpointID:
                   description: "The ID of the outbound Resolver endpoint that you want to use to route DNS\nqueries to the IP addresses that you specify in TargetIps."

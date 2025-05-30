@@ -84,7 +84,8 @@ pub struct FlowCollectorAgent {
 pub struct FlowCollectorAgentEbpf {
     /// `advanced` allows setting some aspects of the internal configuration of the eBPF agent.
     /// This section is aimed mostly for debugging and fine-grained performance optimizations,
-    /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+    /// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk. You can also
+    /// override the default Linux capabilities from there.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub advanced: Option<FlowCollectorAgentEbpfAdvanced>,
     /// `cacheActiveTimeout` is the max period during which the reporter aggregates flows before sending.
@@ -116,7 +117,7 @@ pub struct FlowCollectorAgentEbpf {
     /// - `EbpfManager`: [Unsupported (*)]. Use eBPF Manager to manage NetObserv eBPF programs. Pre-requisite: the eBPF Manager operator (or upstream bpfman operator) must be installed.<br>
     /// - `UDNMapping`: Enable interfaces mapping to User Defined Networks (UDN). <br>
     /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods must run as privileged.
-    /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
+    /// It requires using the OVN-Kubernetes network plugin with the Observability feature. <br>
     /// - `IPSec`, to track flows between nodes with IPsec encryption. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
@@ -142,7 +143,7 @@ pub struct FlowCollectorAgentEbpf {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorAgentEbpfMetrics>,
     /// Privileged mode for the eBPF Agent container. When ignored or set to `false`, the operator sets
-    /// granular capabilities (BPF, PERFMON, NET_ADMIN, SYS_RESOURCE) to the container.
+    /// granular capabilities (BPF, PERFMON, NET_ADMIN) to the container.
     /// If for some reason these capabilities cannot be set, such as if an old kernel version not knowing CAP_BPF
     /// is in use, then you can turn on this mode for more global privileges.
     /// Some agent features require the privileged mode, such as packet drops tracking (see `features`) and SR-IOV support.
@@ -159,9 +160,13 @@ pub struct FlowCollectorAgentEbpf {
 
 /// `advanced` allows setting some aspects of the internal configuration of the eBPF agent.
 /// This section is aimed mostly for debugging and fine-grained performance optimizations,
-/// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk.
+/// such as `GOGC` and `GOMAXPROCS` env vars. Set these values at your own risk. You can also
+/// override the default Linux capabilities from there.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentEbpfAdvanced {
+    /// Linux capabilities override, when not running as privileged. Default capabilities are BPF, PERFMON and NET_ADMIN.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capOverride")]
+    pub cap_override: Option<Vec<String>>,
     /// `env` allows passing custom environment variables to underlying components. Useful for passing
     /// some very concrete performance-tuning options, such as `GOGC` and `GOMAXPROCS`, that should not be
     /// publicly exposed as part of the FlowCollector descriptor, as they are only useful

@@ -2244,6 +2244,9 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                convertClassicHistogramsToNHCB:
+                  description: "Whether to convert all scraped classic histograms into a native\nhistogram with custom buckets.\n\nIt requires Prometheus >= v3.4.0."
+                  type: "boolean"
                 disableCompaction:
                   description: "When true, the Prometheus compaction is disabled.\nWhen `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically\ndisables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends)."
                   type: "boolean"
@@ -3382,8 +3385,16 @@ spec:
                   description: "Minimum number of seconds for which a newly created Pod should be ready\nwithout any of its container crashing for it to be considered available.\nDefaults to 0 (pod will be considered available as soon as it is ready)\n\nThis is an alpha field from kubernetes 1.22 until 1.24 which requires\nenabling the StatefulSetMinReadySeconds feature gate."
                   format: "int32"
                   type: "integer"
+                nameEscapingScheme:
+                  description: "Specifies the character escaping scheme that will be requested when scraping\nfor metric and label names that do not conform to the legacy Prometheus\ncharacter set.\n\nIt requires Prometheus >= v3.4.0."
+                  enum:
+                    - "AllowUTF8"
+                    - "Underscores"
+                    - "Dots"
+                    - "Values"
+                  type: "string"
                 nameValidationScheme:
-                  description: "Specifies the validation scheme for metric and label names."
+                  description: "Specifies the validation scheme for metric and label names.\n\nIt requires Prometheus >= v2.55.0."
                   enum:
                     - "UTF8"
                     - "Legacy"

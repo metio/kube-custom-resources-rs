@@ -567,6 +567,8 @@ pub struct CertificateAuthorityStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
     pub not_before: Option<String>,
     /// The Amazon Web Services account ID that owns the certificate authority.
+    /// 
+    /// Regex Pattern: `^[0-9]+$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerAccount")]
     pub owner_account: Option<String>,
     /// The period during which a deleted CA can be restored. For more information,

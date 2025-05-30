@@ -30,7 +30,7 @@ spec:
               description: "ClusterSpec defines the desired state of Cluster.\n\nContains all of the attributes of a specific cluster."
               properties:
                 aclName:
-                  description: "The name of the Access Control List to associate with the cluster."
+                  description: "The name of the Access Control List to associate with the cluster.\n\nRegex Pattern: `^[a-zA-Z][a-zA-Z0-9\\-]*$`"
                   type: "string"
                 aclRef:
                   description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"

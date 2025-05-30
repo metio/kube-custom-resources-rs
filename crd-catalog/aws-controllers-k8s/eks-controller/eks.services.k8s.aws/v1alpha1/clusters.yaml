@@ -136,7 +136,7 @@ spec:
                       type: "array"
                   type: "object"
                 name:
-                  description: "The unique name to give to your cluster. The name can contain only alphanumeric\ncharacters (case-sensitive),hyphens, and underscores. It must start with\nan alphanumeric character and can't be longer than100 characters. The name\nmust be unique within the Amazon Web Services Region and Amazon Web Services\naccount that you're creating the cluster in."
+                  description: "The unique name to give to your cluster. The name can contain only alphanumeric\ncharacters (case-sensitive),hyphens, and underscores. It must start with\nan alphanumeric character and can't be longer than100 characters. The name\nmust be unique within the Amazon Web Services Region and Amazon Web Services\naccount that you're creating the cluster in.\n\nRegex Pattern: `^[0-9A-Za-z][A-Za-z0-9\\-_]*$`"
                   type: "string"
                 outpostConfig:
                   description: "An object representing the configuration of your local Amazon EKS cluster\non an Amazon Web Services Outpost. Before creating a local cluster on an\nOutpost, review Local clusters for Amazon EKS on Amazon Web Services Outposts\n(https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-local-cluster-overview.html)\nin the Amazon EKS User Guide. This object isn't available for creating Amazon\nEKS clusters on the Amazon Web Services cloud."

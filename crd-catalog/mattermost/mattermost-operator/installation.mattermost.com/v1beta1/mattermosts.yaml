@@ -2277,6 +2277,11 @@ spec:
                 podTemplate:
                   description: "PodTemplate defines configuration for the template for Mattermost pods."
                   properties:
+                    command:
+                      description: "Defines a command override for Mattermost app server pods.\nThe default command is \"mattermost\"."
+                      items:
+                        type: "string"
+                      type: "array"
                     containerSecurityContext:
                       description: "Defines the security context for the Mattermost app server container."
                       properties:

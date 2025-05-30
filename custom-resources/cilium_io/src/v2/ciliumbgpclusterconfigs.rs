@@ -51,6 +51,9 @@ pub struct CiliumBGPClusterConfigBgpInstances {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBGPClusterConfigBgpInstancesPeers {
+    /// AutoDiscovery is the configuration for auto-discovery of the peer address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDiscovery")]
+    pub auto_discovery: Option<CiliumBGPClusterConfigBgpInstancesPeersAutoDiscovery>,
     /// Name is the name of the BGP peer. It is a unique identifier for the peer within the BGP instance.
     pub name: String,
     /// PeerASN is the ASN of the peer BGP router.
@@ -68,6 +71,33 @@ pub struct CiliumBGPClusterConfigBgpInstancesPeers {
     /// If not specified, the default BGP configuration is used for this peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerConfigRef")]
     pub peer_config_ref: Option<CiliumBGPClusterConfigBgpInstancesPeersPeerConfigRef>,
+}
+
+/// AutoDiscovery is the configuration for auto-discovery of the peer address.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumBGPClusterConfigBgpInstancesPeersAutoDiscovery {
+    /// defaultGateway is the configuration for auto-discovery of the default gateway.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultGateway")]
+    pub default_gateway: Option<CiliumBGPClusterConfigBgpInstancesPeersAutoDiscoveryDefaultGateway>,
+    /// mode is the mode of the auto-discovery.
+    pub mode: String,
+}
+
+/// defaultGateway is the configuration for auto-discovery of the default gateway.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct CiliumBGPClusterConfigBgpInstancesPeersAutoDiscoveryDefaultGateway {
+    /// addressFamily is the address family of the default gateway.
+    #[serde(rename = "addressFamily")]
+    pub address_family: CiliumBGPClusterConfigBgpInstancesPeersAutoDiscoveryDefaultGatewayAddressFamily,
+}
+
+/// defaultGateway is the configuration for auto-discovery of the default gateway.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumBGPClusterConfigBgpInstancesPeersAutoDiscoveryDefaultGatewayAddressFamily {
+    #[serde(rename = "ipv4")]
+    Ipv4,
+    #[serde(rename = "ipv6")]
+    Ipv6,
 }
 
 /// PeerConfigRef is a reference to a peer configuration resource.

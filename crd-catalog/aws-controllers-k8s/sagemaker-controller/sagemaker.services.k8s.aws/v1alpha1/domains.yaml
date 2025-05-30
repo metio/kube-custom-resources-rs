@@ -248,7 +248,7 @@ spec:
                       type: "object"
                   type: "object"
                 domainName:
-                  description: "A name for the domain."
+                  description: "A name for the domain.\n\nRegex Pattern: `^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}$`"
                   type: "string"
                 domainSettings:
                   description: "A collection of Domain settings."
@@ -293,10 +293,10 @@ spec:
                       type: "array"
                   type: "object"
                 homeEFSFileSystemKMSKeyID:
-                  description: "Use KmsKeyId."
+                  description: "Use KmsKeyId.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
                   type: "string"
                 kmsKeyID:
-                  description: "SageMaker uses Amazon Web Services KMS to encrypt EFS and EBS volumes attached\nto the domain with an Amazon Web Services managed key by default. For more\ncontrol, specify a customer managed key."
+                  description: "SageMaker uses Amazon Web Services KMS to encrypt EFS and EBS volumes attached\nto the domain with an Amazon Web Services managed key by default. For more\ncontrol, specify a customer managed key.\n\nRegex Pattern: `^[a-zA-Z0-9:/_-]*$`"
                   type: "string"
                 subnetIDs:
                   description: "The VPC subnets that the domain uses for communication."
@@ -315,7 +315,7 @@ spec:
                     type: "object"
                   type: "array"
                 vpcID:
-                  description: "The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for\ncommunication."
+                  description: "The ID of the Amazon Virtual Private Cloud (VPC) that the domain uses for\ncommunication.\n\nRegex Pattern: `^[-0-9a-zA-Z]+$`"
                   type: "string"
               required:
                 - "authMode"
@@ -370,7 +370,7 @@ spec:
                     type: "object"
                   type: "array"
                 domainID:
-                  description: "The domain ID."
+                  description: "The domain ID.\n\nRegex Pattern: `^d-(-*[a-z0-9]){1,61}$`"
                   type: "string"
                 status:
                   description: "The status."

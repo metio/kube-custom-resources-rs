@@ -5328,6 +5328,9 @@ pub struct InstanaAgentStatus {
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leadingAgentPod")]
     pub leading_agent_pod: Option<BTreeMap<String, InstanaAgentStatusLeadingAgentPod>>,
+    /// ResourceInfo holds Name and UID to given object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespacesconfigmap: Option<InstanaAgentStatusNamespacesconfigmap>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oldVersionsUpdated")]
@@ -5368,5 +5371,12 @@ pub struct InstanaAgentStatusLeadingAgentPod {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// ResourceInfo holds Name and UID to given object
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstanaAgentStatusNamespacesconfigmap {
+    pub name: String,
+    pub uid: String,
 }
 

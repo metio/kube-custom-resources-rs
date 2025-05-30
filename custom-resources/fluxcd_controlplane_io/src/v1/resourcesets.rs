@@ -101,13 +101,50 @@ pub struct ResourceSetInputsFrom {
     pub api_version: Option<String>,
     /// Kind of the input provider resource.
     pub kind: ResourceSetInputsFromKind,
-    /// Name of the input provider resource.
-    pub name: String,
+    /// Name of the input provider resource. Cannot be set
+    /// when the Selector field is set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Selector is a label selector to filter the input provider resources
+    /// as an alternative to the Name field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ResourceSetInputsFromSelector>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ResourceSetInputsFromKind {
     ResourceSetInputProvider,
+}
+
+/// Selector is a label selector to filter the input provider resources
+/// as an alternative to the Name field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetInputsFromSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ResourceSetInputsFromSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetInputsFromSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// ResourceSetStatus defines the observed state of ResourceSet.

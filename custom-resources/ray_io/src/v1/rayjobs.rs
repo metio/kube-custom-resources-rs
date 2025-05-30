@@ -9715,6 +9715,8 @@ pub struct RayJobStatus {
     pub ray_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterStatus")]
     pub ray_cluster_status: Option<RayJobStatusRayClusterStatus>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayJobInfo")]
+    pub ray_job_info: Option<RayJobStatusRayJobInfo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
@@ -9771,5 +9773,13 @@ pub struct RayJobStatusRayClusterStatusHead {
     pub service_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobStatusRayJobInfo {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
+    pub end_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
+    pub start_time: Option<String>,
 }
 

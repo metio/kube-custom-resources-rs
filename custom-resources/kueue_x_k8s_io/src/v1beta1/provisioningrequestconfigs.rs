@@ -31,6 +31,10 @@ pub struct ProvisioningRequestConfigSpec {
     /// Parameters contains all other parameters classes may require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
+    /// podSetMergePolicy specifies the policy for merging PodSets before being passed
+    /// to the cluster autoscaler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetMergePolicy")]
+    pub pod_set_merge_policy: Option<ProvisioningRequestConfigPodSetMergePolicy>,
     /// podSetUpdates specifies the update of the workload's PodSetUpdates which
     /// are used to target the provisioned nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetUpdates")]
@@ -49,6 +53,13 @@ pub struct ProvisioningRequestConfigSpec {
     /// set retryStrategy.backoffLimitCount to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<ProvisioningRequestConfigRetryStrategy>,
+}
+
+/// ProvisioningRequestConfigSpec defines the desired state of ProvisioningRequestConfig
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ProvisioningRequestConfigPodSetMergePolicy {
+    IdenticalPodTemplates,
+    IdenticalWorkloadSchedulingRequirements,
 }
 
 /// podSetUpdates specifies the update of the workload's PodSetUpdates which
