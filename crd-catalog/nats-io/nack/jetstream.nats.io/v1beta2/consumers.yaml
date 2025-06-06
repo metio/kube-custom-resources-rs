@@ -15,11 +15,11 @@ spec:
           jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
           name: "State"
           type: "string"
-        - description: "The name of the Jetstream Stream."
+        - description: "The name of the JetStream Stream."
           jsonPath: ".spec.streamName"
           name: "Stream"
           type: "string"
-        - description: "The name of the Jetstream Consumer."
+        - description: "The name of the JetStream Consumer."
           jsonPath: ".spec.durableName"
           name: "Consumer"
           type: "string"
@@ -102,6 +102,9 @@ spec:
                   type: "string"
                 inactiveThreshold:
                   description: "The idle time an Ephemeral Consumer allows before it is removed."
+                  type: "string"
+                jsDomain:
+                  description: "The JetStream domain to use for the consumer."
                   type: "string"
                 maxAckPending:
                   description: "Maximum pending Acks before consumers are paused."

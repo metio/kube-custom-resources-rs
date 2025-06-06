@@ -707,6 +707,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -864,6 +866,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -1259,6 +1263,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -1416,6 +1422,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -1817,6 +1825,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -1974,6 +1984,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -2198,15 +2210,38 @@ spec:
                                 properties:
                                   name:
                                     type: "string"
-                                  source:
-                                    properties:
-                                      resourceClaimName:
-                                        type: "string"
-                                      resourceClaimTemplateName:
-                                        type: "string"
-                                    type: "object"
+                                  resourceClaimName:
+                                    type: "string"
+                                  resourceClaimTemplateName:
+                                    type: "string"
                                 type: "object"
                               type: "array"
+                            resources:
+                              properties:
+                                claims:
+                                  items:
+                                    properties:
+                                      name:
+                                        type: "string"
+                                      request:
+                                        type: "string"
+                                    type: "object"
+                                  type: "array"
+                                limits:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                                requests:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                              type: "object"
                             restartPolicy:
                               type: "string"
                             runtimeClassName:
@@ -2239,6 +2274,8 @@ spec:
                                   type: "boolean"
                                 runAsUser:
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  type: "string"
                                 seLinuxOptions:
                                   properties:
                                     level:
@@ -2261,6 +2298,8 @@ spec:
                                   items:
                                     type: "integer"
                                   type: "array"
+                                supplementalGroupsPolicy:
+                                  type: "string"
                                 sysctls:
                                   items:
                                     properties:
@@ -2730,6 +2769,13 @@ spec:
                                       type:
                                         type: "string"
                                     type: "object"
+                                  image:
+                                    properties:
+                                      pullPolicy:
+                                        type: "string"
+                                      reference:
+                                        type: "string"
+                                    type: "object"
                                   iscsi:
                                     properties:
                                       chapAuthDiscovery:
@@ -3037,6 +3083,8 @@ spec:
                                     type: "string"
                                   message:
                                     type: "string"
+                                  observedGeneration:
+                                    type: "integer"
                                   reason:
                                     type: "string"
                                   status:
@@ -3055,6 +3103,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -3103,6 +3167,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -3155,6 +3221,22 @@ spec:
                                             type: "string"
                                           reason:
                                             type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
                                         type: "object"
                                     type: "object"
                                   volumeMounts:
@@ -3182,6 +3264,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -3230,6 +3328,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -3282,6 +3382,22 @@ spec:
                                             type: "string"
                                           reason:
                                             type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
                                         type: "object"
                                     type: "object"
                                   volumeMounts:
@@ -3318,6 +3434,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -3366,6 +3498,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -3420,6 +3554,22 @@ spec:
                                             type: "string"
                                         type: "object"
                                     type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
+                                        type: "object"
+                                    type: "object"
                                   volumeMounts:
                                     items:
                                       properties:
@@ -3439,6 +3589,8 @@ spec:
                               type: "string"
                             nominatedNodeName:
                               type: "string"
+                            observedGeneration:
+                              type: "integer"
                             phase:
                               type: "string"
                             podIP:
@@ -4084,6 +4236,8 @@ spec:
                                             x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  stopSignal:
+                                    type: "string"
                                 type: "object"
                               livenessProbe:
                                 properties:
@@ -4241,6 +4395,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -4636,6 +4792,8 @@ spec:
                                             x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  stopSignal:
+                                    type: "string"
                                 type: "object"
                               livenessProbe:
                                 properties:
@@ -4793,6 +4951,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -5194,6 +5354,8 @@ spec:
                                             x-kubernetes-int-or-string: true
                                         type: "object"
                                     type: "object"
+                                  stopSignal:
+                                    type: "string"
                                 type: "object"
                               livenessProbe:
                                 properties:
@@ -5351,6 +5513,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -5575,15 +5739,38 @@ spec:
                             properties:
                               name:
                                 type: "string"
-                              source:
-                                properties:
-                                  resourceClaimName:
-                                    type: "string"
-                                  resourceClaimTemplateName:
-                                    type: "string"
-                                type: "object"
+                              resourceClaimName:
+                                type: "string"
+                              resourceClaimTemplateName:
+                                type: "string"
                             type: "object"
                           type: "array"
+                        resources:
+                          properties:
+                            claims:
+                              items:
+                                properties:
+                                  name:
+                                    type: "string"
+                                  request:
+                                    type: "string"
+                                type: "object"
+                              type: "array"
+                            limits:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                x-kubernetes-int-or-string: true
+                              type: "object"
+                            requests:
+                              additionalProperties:
+                                anyOf:
+                                  - type: "integer"
+                                  - type: "string"
+                                x-kubernetes-int-or-string: true
+                              type: "object"
+                          type: "object"
                         restartPolicy:
                           type: "string"
                         runtimeClassName:
@@ -5616,6 +5803,8 @@ spec:
                               type: "boolean"
                             runAsUser:
                               type: "integer"
+                            seLinuxChangePolicy:
+                              type: "string"
                             seLinuxOptions:
                               properties:
                                 level:
@@ -5638,6 +5827,8 @@ spec:
                               items:
                                 type: "integer"
                               type: "array"
+                            supplementalGroupsPolicy:
+                              type: "string"
                             sysctls:
                               items:
                                 properties:
@@ -6107,6 +6298,13 @@ spec:
                                   type:
                                     type: "string"
                                 type: "object"
+                              image:
+                                properties:
+                                  pullPolicy:
+                                    type: "string"
+                                  reference:
+                                    type: "string"
+                                type: "object"
                               iscsi:
                                 properties:
                                   chapAuthDiscovery:
@@ -6414,6 +6612,8 @@ spec:
                                 type: "string"
                               message:
                                 type: "string"
+                              observedGeneration:
+                                type: "integer"
                               reason:
                                 type: "string"
                               status:
@@ -6432,6 +6632,22 @@ spec:
                                     - type: "string"
                                   x-kubernetes-int-or-string: true
                                 type: "object"
+                              allocatedResourcesStatus:
+                                items:
+                                  properties:
+                                    name:
+                                      type: "string"
+                                    resources:
+                                      items:
+                                        properties:
+                                          health:
+                                            type: "string"
+                                          resourceID:
+                                            type: "string"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
                               containerID:
                                 type: "string"
                               image:
@@ -6480,6 +6696,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -6532,6 +6750,22 @@ spec:
                                         type: "string"
                                       reason:
                                         type: "string"
+                                    type: "object"
+                                type: "object"
+                              stopSignal:
+                                type: "string"
+                              user:
+                                properties:
+                                  linux:
+                                    properties:
+                                      gid:
+                                        type: "integer"
+                                      supplementalGroups:
+                                        items:
+                                          type: "integer"
+                                        type: "array"
+                                      uid:
+                                        type: "integer"
                                     type: "object"
                                 type: "object"
                               volumeMounts:
@@ -6559,6 +6793,22 @@ spec:
                                     - type: "string"
                                   x-kubernetes-int-or-string: true
                                 type: "object"
+                              allocatedResourcesStatus:
+                                items:
+                                  properties:
+                                    name:
+                                      type: "string"
+                                    resources:
+                                      items:
+                                        properties:
+                                          health:
+                                            type: "string"
+                                          resourceID:
+                                            type: "string"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
                               containerID:
                                 type: "string"
                               image:
@@ -6607,6 +6857,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -6659,6 +6911,22 @@ spec:
                                         type: "string"
                                       reason:
                                         type: "string"
+                                    type: "object"
+                                type: "object"
+                              stopSignal:
+                                type: "string"
+                              user:
+                                properties:
+                                  linux:
+                                    properties:
+                                      gid:
+                                        type: "integer"
+                                      supplementalGroups:
+                                        items:
+                                          type: "integer"
+                                        type: "array"
+                                      uid:
+                                        type: "integer"
                                     type: "object"
                                 type: "object"
                               volumeMounts:
@@ -6695,6 +6963,22 @@ spec:
                                     - type: "string"
                                   x-kubernetes-int-or-string: true
                                 type: "object"
+                              allocatedResourcesStatus:
+                                items:
+                                  properties:
+                                    name:
+                                      type: "string"
+                                    resources:
+                                      items:
+                                        properties:
+                                          health:
+                                            type: "string"
+                                          resourceID:
+                                            type: "string"
+                                        type: "object"
+                                      type: "array"
+                                  type: "object"
+                                type: "array"
                               containerID:
                                 type: "string"
                               image:
@@ -6743,6 +7027,8 @@ spec:
                                     items:
                                       properties:
                                         name:
+                                          type: "string"
+                                        request:
                                           type: "string"
                                       type: "object"
                                     type: "array"
@@ -6797,6 +7083,22 @@ spec:
                                         type: "string"
                                     type: "object"
                                 type: "object"
+                              stopSignal:
+                                type: "string"
+                              user:
+                                properties:
+                                  linux:
+                                    properties:
+                                      gid:
+                                        type: "integer"
+                                      supplementalGroups:
+                                        items:
+                                          type: "integer"
+                                        type: "array"
+                                      uid:
+                                        type: "integer"
+                                    type: "object"
+                                type: "object"
                               volumeMounts:
                                 items:
                                   properties:
@@ -6816,6 +7118,8 @@ spec:
                           type: "string"
                         nominatedNodeName:
                           type: "string"
+                        observedGeneration:
+                          type: "integer"
                         phase:
                           type: "string"
                         podIP:
@@ -7446,6 +7750,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -7603,6 +7909,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -7998,6 +8306,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -8155,6 +8465,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -8556,6 +8868,8 @@ spec:
                                                 x-kubernetes-int-or-string: true
                                             type: "object"
                                         type: "object"
+                                      stopSignal:
+                                        type: "string"
                                     type: "object"
                                   livenessProbe:
                                     properties:
@@ -8713,6 +9027,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -8937,15 +9253,38 @@ spec:
                                 properties:
                                   name:
                                     type: "string"
-                                  source:
-                                    properties:
-                                      resourceClaimName:
-                                        type: "string"
-                                      resourceClaimTemplateName:
-                                        type: "string"
-                                    type: "object"
+                                  resourceClaimName:
+                                    type: "string"
+                                  resourceClaimTemplateName:
+                                    type: "string"
                                 type: "object"
                               type: "array"
+                            resources:
+                              properties:
+                                claims:
+                                  items:
+                                    properties:
+                                      name:
+                                        type: "string"
+                                      request:
+                                        type: "string"
+                                    type: "object"
+                                  type: "array"
+                                limits:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                                requests:
+                                  additionalProperties:
+                                    anyOf:
+                                      - type: "integer"
+                                      - type: "string"
+                                    x-kubernetes-int-or-string: true
+                                  type: "object"
+                              type: "object"
                             restartPolicy:
                               type: "string"
                             runtimeClassName:
@@ -8978,6 +9317,8 @@ spec:
                                   type: "boolean"
                                 runAsUser:
                                   type: "integer"
+                                seLinuxChangePolicy:
+                                  type: "string"
                                 seLinuxOptions:
                                   properties:
                                     level:
@@ -9000,6 +9341,8 @@ spec:
                                   items:
                                     type: "integer"
                                   type: "array"
+                                supplementalGroupsPolicy:
+                                  type: "string"
                                 sysctls:
                                   items:
                                     properties:
@@ -9469,6 +9812,13 @@ spec:
                                       type:
                                         type: "string"
                                     type: "object"
+                                  image:
+                                    properties:
+                                      pullPolicy:
+                                        type: "string"
+                                      reference:
+                                        type: "string"
+                                    type: "object"
                                   iscsi:
                                     properties:
                                       chapAuthDiscovery:
@@ -9776,6 +10126,8 @@ spec:
                                     type: "string"
                                   message:
                                     type: "string"
+                                  observedGeneration:
+                                    type: "integer"
                                   reason:
                                     type: "string"
                                   status:
@@ -9794,6 +10146,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -9842,6 +10210,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -9894,6 +10264,22 @@ spec:
                                             type: "string"
                                           reason:
                                             type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
                                         type: "object"
                                     type: "object"
                                   volumeMounts:
@@ -9921,6 +10307,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -9969,6 +10371,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -10021,6 +10425,22 @@ spec:
                                             type: "string"
                                           reason:
                                             type: "string"
+                                        type: "object"
+                                    type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
                                         type: "object"
                                     type: "object"
                                   volumeMounts:
@@ -10057,6 +10477,22 @@ spec:
                                         - type: "string"
                                       x-kubernetes-int-or-string: true
                                     type: "object"
+                                  allocatedResourcesStatus:
+                                    items:
+                                      properties:
+                                        name:
+                                          type: "string"
+                                        resources:
+                                          items:
+                                            properties:
+                                              health:
+                                                type: "string"
+                                              resourceID:
+                                                type: "string"
+                                            type: "object"
+                                          type: "array"
+                                      type: "object"
+                                    type: "array"
                                   containerID:
                                     type: "string"
                                   image:
@@ -10105,6 +10541,8 @@ spec:
                                         items:
                                           properties:
                                             name:
+                                              type: "string"
+                                            request:
                                               type: "string"
                                           type: "object"
                                         type: "array"
@@ -10159,6 +10597,22 @@ spec:
                                             type: "string"
                                         type: "object"
                                     type: "object"
+                                  stopSignal:
+                                    type: "string"
+                                  user:
+                                    properties:
+                                      linux:
+                                        properties:
+                                          gid:
+                                            type: "integer"
+                                          supplementalGroups:
+                                            items:
+                                              type: "integer"
+                                            type: "array"
+                                          uid:
+                                            type: "integer"
+                                        type: "object"
+                                    type: "object"
                                   volumeMounts:
                                     items:
                                       properties:
@@ -10178,6 +10632,8 @@ spec:
                               type: "string"
                             nominatedNodeName:
                               type: "string"
+                            observedGeneration:
+                              type: "integer"
                             phase:
                               type: "string"
                             podIP:

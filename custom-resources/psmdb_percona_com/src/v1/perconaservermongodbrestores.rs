@@ -48,6 +48,8 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub filesystem: Option<PerconaServerMongoDBRestoreBackupSourceFilesystem>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastWriteAt")]
+    pub last_write_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]

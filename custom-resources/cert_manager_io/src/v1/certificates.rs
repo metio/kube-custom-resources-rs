@@ -147,8 +147,7 @@ pub struct CertificateSpec {
     /// revisions exceeds this number.
     /// 
     /// If set, revisionHistoryLimit must be a value of `1` or greater.
-    /// If unset (`nil`), revisions will not be garbage collected.
-    /// Default value is `nil`.
+    /// Default value is `1`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i32>,
     /// Name of the Secret resource that will be automatically created and

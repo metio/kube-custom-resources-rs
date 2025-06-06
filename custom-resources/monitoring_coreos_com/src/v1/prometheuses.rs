@@ -357,7 +357,7 @@ pub struct PrometheusSpec {
     /// Use the host's network namespace if true.
     /// 
     /// Make sure to understand the security implications if you want to enable
-    /// it (https://kubernetes.io/docs/concepts/configuration/overview/).
+    /// it (https://kubernetes.io/docs/concepts/configuration/overview/ ).
     /// 
     /// When hostNetwork is enabled, this will set the DNS policy to
     /// `ClusterFirstWithHostNet` automatically (unless `.spec.DNSPolicy` is set
@@ -5305,13 +5305,13 @@ pub struct PrometheusPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5319,7 +5319,7 @@ pub struct PrometheusPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8617,13 +8617,13 @@ pub struct PrometheusStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -8631,7 +8631,7 @@ pub struct PrometheusStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

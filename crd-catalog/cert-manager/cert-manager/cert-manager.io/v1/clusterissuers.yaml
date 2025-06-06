@@ -110,6 +110,9 @@ spec:
                       required:
                         - "name"
                       type: "object"
+                    profile:
+                      description: "Profile allows requesting a certificate profile from the ACME server.\nSupported profiles are listed by the server's ACME directory URL."
+                      type: "string"
                     server:
                       description: "Server is the URL used to access the ACME server's 'directory' endpoint.\nFor example, for Let's Encrypt's staging endpoint, you would use:\n\"https://acme-staging-v02.api.letsencrypt.org/directory\".\nOnly ACME v2 endpoints (i.e. RFC 8555) are supported."
                       type: "string"

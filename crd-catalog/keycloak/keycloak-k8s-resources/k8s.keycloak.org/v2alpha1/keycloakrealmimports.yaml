@@ -3541,6 +3541,8 @@ spec:
                       items:
                         type: "string"
                       type: "array"
+                    webAuthnPolicyPasswordlessPasskeysEnabled:
+                      type: "boolean"
                     webAuthnPolicyPasswordlessRequireResidentKey:
                       type: "string"
                     webAuthnPolicyPasswordlessRpEntityName:

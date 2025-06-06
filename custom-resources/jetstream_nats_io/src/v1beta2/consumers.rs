@@ -66,6 +66,9 @@ pub struct ConsumerSpec {
     /// The idle time an Ephemeral Consumer allows before it is removed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inactiveThreshold")]
     pub inactive_threshold: Option<String>,
+    /// The JetStream domain to use for the consumer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
+    pub js_domain: Option<String>,
     /// Maximum pending Acks before consumers are paused.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAckPending")]
     pub max_ack_pending: Option<i64>,

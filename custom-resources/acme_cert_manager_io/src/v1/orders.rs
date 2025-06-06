@@ -43,6 +43,10 @@ pub struct OrderSpec {
     /// Order will be marked as failed.
     #[serde(rename = "issuerRef")]
     pub issuer_ref: OrderIssuerRef,
+    /// Profile allows requesting a certificate profile from the ACME server.
+    /// Supported profiles are listed by the server's ACME directory URL.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<String>,
     /// Certificate signing request bytes in DER encoding.
     /// This will be used when finalizing the order.
     /// This field must be set on the order.

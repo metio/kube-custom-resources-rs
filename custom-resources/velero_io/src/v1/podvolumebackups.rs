@@ -24,6 +24,10 @@ pub struct PodVolumeBackupSpec {
     /// where the backup repository is stored.
     #[serde(rename = "backupStorageLocation")]
     pub backup_storage_location: String,
+    /// Cancel indicates request to cancel the ongoing PodVolumeBackup. It can be set
+    /// when the PodVolumeBackup is in InProgress phase
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel: Option<bool>,
     /// Node is the name of the node that the Pod is running on.
     pub node: String,
     /// Pod is a reference to the pod containing the volume to be backed up.

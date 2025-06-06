@@ -156,7 +156,7 @@ pub struct AlertmanagerSpec {
     pub image_pull_policy: Option<AlertmanagerImagePullPolicy>,
     /// An optional list of references to secrets in the same namespace
     /// to use for pulling prometheus and alertmanager images from registries
-    /// see http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod
+    /// see https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<AlertmanagerImagePullSecrets>>,
     /// InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.
@@ -5067,13 +5067,13 @@ pub struct AlertmanagerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5081,7 +5081,7 @@ pub struct AlertmanagerPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5691,13 +5691,13 @@ pub struct AlertmanagerStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5705,7 +5705,7 @@ pub struct AlertmanagerStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

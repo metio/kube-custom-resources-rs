@@ -47,6 +47,9 @@ spec:
                 history:
                   description: "The number of historical values to keep per key."
                   type: "integer"
+                jsDomain:
+                  description: "The JetStream domain to use for the KV store."
+                  type: "string"
                 maxBytes:
                   description: "The maximum size of the KV Store in bytes."
                   type: "integer"

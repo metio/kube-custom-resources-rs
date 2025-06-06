@@ -208,6 +208,7 @@ spec:
                       - "address"
                       - "type"
                     type: "object"
+                  maxItems: 32
                   type: "array"
                 certificatesExpiryDate:
                   description: "certificatesExpiryDate is the expiry date of the machine certificates.\nThis value is only set for control plane machines."

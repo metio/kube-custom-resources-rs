@@ -25,7 +25,7 @@ spec:
           name: "Server"
           type: "string"
         - description: "API Endpoint"
-          jsonPath: ".spec.controlPlaneEndpoint[0]"
+          jsonPath: ".spec.controlPlaneEndpoint.host"
           name: "ControlPlaneEndpoint"
           priority: 1
           type: "string"

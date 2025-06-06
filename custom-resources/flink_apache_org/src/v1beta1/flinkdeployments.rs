@@ -286,6 +286,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpec {
     pub readiness_gates: Option<Vec<FlinkDeploymentJobManagerPodTemplateSpecReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<FlinkDeploymentJobManagerPodTemplateSpecResourceClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<FlinkDeploymentJobManagerPodTemplateSpecResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -788,6 +790,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersLifecycle {
     pub post_start: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentJobManagerPodTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1070,6 +1074,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersResources {
 pub struct FlinkDeploymentJobManagerPodTemplateSpecContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1406,6 +1412,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersLifecycle 
     pub post_start: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1688,6 +1696,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersResources 
 pub struct FlinkDeploymentJobManagerPodTemplateSpecEphemeralContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2018,6 +2028,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersLifecycle {
     pub post_start: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentJobManagerPodTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2300,6 +2312,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersResources {
 pub struct FlinkDeploymentJobManagerPodTemplateSpecInitContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2488,16 +2502,28 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecReadinessGates {
 pub struct FlinkDeploymentJobManagerPodTemplateSpecResourceClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<FlinkDeploymentJobManagerPodTemplateSpecResourceClaimsSource>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlinkDeploymentJobManagerPodTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<FlinkDeploymentJobManagerPodTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecResourcesClaims {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2520,12 +2546,16 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<FlinkDeploymentJobManagerPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2668,6 +2698,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecVolumes {
     pub glusterfs: Option<FlinkDeploymentJobManagerPodTemplateSpecVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<FlinkDeploymentJobManagerPodTemplateSpecVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<FlinkDeploymentJobManagerPodTemplateSpecVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<FlinkDeploymentJobManagerPodTemplateSpecVolumesIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3101,6 +3133,14 @@ pub struct FlinkDeploymentJobManagerPodTemplateSpecVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateSpecVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -3452,6 +3492,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatus {
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nominatedNodeName")]
     pub nominated_node_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
@@ -3474,6 +3516,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatus {
 pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3494,8 +3538,28 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3554,6 +3618,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesResources 
 pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3599,6 +3665,22 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesStateWaiti
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -3614,6 +3696,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusContainerStatusesVolumeMoun
 pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3634,8 +3718,28 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatuses 
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3694,6 +3798,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesR
 pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3739,6 +3845,22 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentJobManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -3760,6 +3882,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusHostIPs {
 pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3780,8 +3904,28 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3840,6 +3984,8 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesResour
 pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3882,6 +4028,22 @@ pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesStateW
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentJobManagerPodTemplateStatusInitContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4066,6 +4228,8 @@ pub struct FlinkDeploymentPodTemplateSpec {
     pub readiness_gates: Option<Vec<FlinkDeploymentPodTemplateSpecReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<FlinkDeploymentPodTemplateSpecResourceClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<FlinkDeploymentPodTemplateSpecResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -4568,6 +4732,8 @@ pub struct FlinkDeploymentPodTemplateSpecContainersLifecycle {
     pub post_start: Option<FlinkDeploymentPodTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentPodTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4850,6 +5016,8 @@ pub struct FlinkDeploymentPodTemplateSpecContainersResources {
 pub struct FlinkDeploymentPodTemplateSpecContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5186,6 +5354,8 @@ pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersLifecycle {
     pub post_start: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentPodTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5468,6 +5638,8 @@ pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersResources {
 pub struct FlinkDeploymentPodTemplateSpecEphemeralContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5798,6 +5970,8 @@ pub struct FlinkDeploymentPodTemplateSpecInitContainersLifecycle {
     pub post_start: Option<FlinkDeploymentPodTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentPodTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6080,6 +6254,8 @@ pub struct FlinkDeploymentPodTemplateSpecInitContainersResources {
 pub struct FlinkDeploymentPodTemplateSpecInitContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6268,16 +6444,28 @@ pub struct FlinkDeploymentPodTemplateSpecReadinessGates {
 pub struct FlinkDeploymentPodTemplateSpecResourceClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<FlinkDeploymentPodTemplateSpecResourceClaimsSource>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlinkDeploymentPodTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<FlinkDeploymentPodTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecResourcesClaims {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6300,12 +6488,16 @@ pub struct FlinkDeploymentPodTemplateSpecSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<FlinkDeploymentPodTemplateSpecSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<FlinkDeploymentPodTemplateSpecSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<FlinkDeploymentPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -6448,6 +6640,8 @@ pub struct FlinkDeploymentPodTemplateSpecVolumes {
     pub glusterfs: Option<FlinkDeploymentPodTemplateSpecVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<FlinkDeploymentPodTemplateSpecVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<FlinkDeploymentPodTemplateSpecVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<FlinkDeploymentPodTemplateSpecVolumesIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6881,6 +7075,14 @@ pub struct FlinkDeploymentPodTemplateSpecVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateSpecVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -7232,6 +7434,8 @@ pub struct FlinkDeploymentPodTemplateStatus {
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nominatedNodeName")]
     pub nominated_node_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
@@ -7254,6 +7458,8 @@ pub struct FlinkDeploymentPodTemplateStatus {
 pub struct FlinkDeploymentPodTemplateStatusContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentPodTemplateStatusContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7274,8 +7480,28 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentPodTemplateStatusContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7334,6 +7560,8 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatusesResources {
 pub struct FlinkDeploymentPodTemplateStatusContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7379,6 +7607,22 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatusesStateWaiting {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentPodTemplateStatusContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateStatusContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -7394,6 +7638,8 @@ pub struct FlinkDeploymentPodTemplateStatusContainerStatusesVolumeMounts {
 pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7414,8 +7660,28 @@ pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7474,6 +7740,8 @@ pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesResources {
 pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7519,6 +7787,22 @@ pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesStateWaitin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -7540,6 +7824,8 @@ pub struct FlinkDeploymentPodTemplateStatusHostIPs {
 pub struct FlinkDeploymentPodTemplateStatusInitContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7560,8 +7846,28 @@ pub struct FlinkDeploymentPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentPodTemplateStatusInitContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentPodTemplateStatusInitContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7620,6 +7926,8 @@ pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesResources {
 pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7662,6 +7970,22 @@ pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesStateWaiting {
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentPodTemplateStatusInitContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentPodTemplateStatusInitContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7838,6 +8162,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpec {
     pub readiness_gates: Option<Vec<FlinkDeploymentTaskManagerPodTemplateSpecReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<FlinkDeploymentTaskManagerPodTemplateSpecResourceClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<FlinkDeploymentTaskManagerPodTemplateSpecResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -8340,6 +8666,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersLifecycle {
     pub post_start: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentTaskManagerPodTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8622,6 +8950,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersResources {
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8958,6 +9288,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersLifecycle
     pub post_start: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9240,6 +9572,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersResources
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecEphemeralContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9570,6 +9904,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersLifecycle {
     pub post_start: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<FlinkDeploymentTaskManagerPodTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9852,6 +10188,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersResources {
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecInitContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10040,16 +10378,28 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecReadinessGates {
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecResourceClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<FlinkDeploymentTaskManagerPodTemplateSpecResourceClaimsSource>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct FlinkDeploymentTaskManagerPodTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<FlinkDeploymentTaskManagerPodTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecResourcesClaims {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10072,12 +10422,16 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<FlinkDeploymentTaskManagerPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -10220,6 +10574,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecVolumes {
     pub glusterfs: Option<FlinkDeploymentTaskManagerPodTemplateSpecVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<FlinkDeploymentTaskManagerPodTemplateSpecVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<FlinkDeploymentTaskManagerPodTemplateSpecVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<FlinkDeploymentTaskManagerPodTemplateSpecVolumesIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10653,6 +11009,14 @@ pub struct FlinkDeploymentTaskManagerPodTemplateSpecVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateSpecVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -11004,6 +11368,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatus {
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nominatedNodeName")]
     pub nominated_node_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
@@ -11026,6 +11392,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatus {
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11046,8 +11414,28 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11106,6 +11494,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesResources
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11151,6 +11541,22 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesStateWait
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -11166,6 +11572,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusContainerStatusesVolumeMou
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11186,8 +11594,28 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11246,6 +11674,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11291,6 +11721,22 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatuses
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusEphemeralContainerStatusesVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
     pub mount_path: Option<String>,
@@ -11312,6 +11758,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusHostIPs {
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResources")]
     pub allocated_resources: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatedResourcesStatus")]
+    pub allocated_resources_status: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerID")]
     pub container_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11332,8 +11780,28 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatuses {
     pub started: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user: Option<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesUser>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesVolumeMounts>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesAllocatedResourcesStatusResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub health: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
+    pub resource_id: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11392,6 +11860,8 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesResou
 pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11434,6 +11904,22 @@ pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesState
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesUser {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub linux: Option<FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesUserLinux>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FlinkDeploymentTaskManagerPodTemplateStatusInitContainerStatusesUserLinux {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gid: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
+    pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

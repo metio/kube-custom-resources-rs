@@ -34,6 +34,9 @@ pub struct ObjectStoreSpec {
     /// The description of the Object Store.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// The JetStream domain to use for the Object Store.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
+    pub js_domain: Option<String>,
     /// The maximum size of the Store in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
@@ -64,7 +67,7 @@ pub struct ObjectStoreSpec {
     /// A client's TLS certs and keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ObjectStoreTls>,
-    /// When true, the KV Store will initiate TLS before server INFO.
+    /// When true, the Object Store will initiate TLS before server INFO.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsFirst")]
     pub tls_first: Option<bool>,
     /// The time expiry for keys.

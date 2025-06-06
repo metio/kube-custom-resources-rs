@@ -57,6 +57,9 @@ pub struct StreamSpec {
     /// Sequence number from which the Stream will start.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSequence")]
     pub first_sequence: Option<f64>,
+    /// The JetStream domain to use for the stream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
+    pub js_domain: Option<String>,
     /// Maximum age of any message in the stream, expressed in Go's time.Duration format. Empty for unlimited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<String>,

@@ -403,7 +403,7 @@ spec:
                   type: "object"
                 retentionPeriod:
                   description: "RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., \"1d\", \"1w\", \"1m\").\nData with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.\nThe default value is 1 (one month).\nSee [retention](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention) docs for details."
-                  pattern: "^[0-9]+(h|d|y)?$"
+                  pattern: "^[0-9]+(h|d|w|y)?$"
                   type: "string"
                 revisionHistoryLimitCount:
                   description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."

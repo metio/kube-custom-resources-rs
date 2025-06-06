@@ -367,7 +367,7 @@ spec:
                   type: "string"
                 retentionPeriod:
                   description: "RetentionPeriod for the stored logs\nhttps://docs.victoriametrics.com/victorialogs/#retention"
-                  pattern: "^[0-9]+(h|d|y)?$"
+                  pattern: "^[0-9]+(h|d|w|y)?$"
                   type: "string"
                 revisionHistoryLimitCount:
                   description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
