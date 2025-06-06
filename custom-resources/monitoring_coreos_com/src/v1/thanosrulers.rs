@@ -269,6 +269,10 @@ pub struct ThanosRulerSpec {
     /// the same namespace as the ThanosRuler object is in is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]
     pub rule_namespace_selector: Option<ThanosRulerRuleNamespaceSelector>,
+    /// The default rule group's query offset duration to use.
+    /// It requires Thanos >= v0.38.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleQueryOffset")]
+    pub rule_query_offset: Option<String>,
     /// PrometheusRule objects to be selected for rule evaluation. An empty
     /// label selector matches all objects. A null label selector matches no
     /// objects.
@@ -3899,13 +3903,13 @@ pub struct ThanosRulerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -3913,7 +3917,7 @@ pub struct ThanosRulerPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5667,13 +5671,13 @@ pub struct ThanosRulerStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5681,7 +5685,7 @@ pub struct ThanosRulerStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

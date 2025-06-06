@@ -36,6 +36,9 @@ pub struct KeyValueSpec {
     /// The number of historical values to keep per key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub history: Option<i64>,
+    /// The JetStream domain to use for the KV store.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
+    pub js_domain: Option<String>,
     /// The maximum size of the KV Store in bytes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,

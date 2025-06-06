@@ -78,7 +78,7 @@ spec:
                         type: "object"
                         x-kubernetes-validations:
                           - message: "RootCA cannot have both Secret and ConfigMap defined."
-                            rule: "has(self.secret) && has(self.configMap)"
+                            rule: "!has(self.secret) || !has(self.configMap)"
                       type: "array"
                     rootCAsSecrets:
                       description: "RootCAsSecrets defines a list of CA secret used to validate self-signed certificate.\nDeprecated: RootCAsSecrets is deprecated, please use the RootCAs option instead."

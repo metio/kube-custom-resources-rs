@@ -100,6 +100,10 @@ pub struct IssuerAcme {
     /// If `key` is not specified, a default of `tls.key` will be used.
     #[serde(rename = "privateKeySecretRef")]
     pub private_key_secret_ref: IssuerAcmePrivateKeySecretRef,
+    /// Profile allows requesting a certificate profile from the ACME server.
+    /// Supported profiles are listed by the server's ACME directory URL.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub profile: Option<String>,
     /// Server is the URL used to access the ACME server's 'directory' endpoint.
     /// For example, for Let's Encrypt's staging endpoint, you would use:
     /// "https://acme-staging-v02.api.letsencrypt.org/directory".

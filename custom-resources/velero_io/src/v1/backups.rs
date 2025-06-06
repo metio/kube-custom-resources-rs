@@ -129,6 +129,9 @@ pub struct BackupSpec {
     /// UploaderConfig specifies the configuration for the uploader.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploaderConfig")]
     pub uploader_config: Option<BackupUploaderConfig>,
+    /// VolumeGroupSnapshotLabelKey specifies the label key to group PVCs under a VGS.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotLabelKey")]
+    pub volume_group_snapshot_label_key: Option<String>,
     /// VolumeSnapshotLocations is a list containing names of VolumeSnapshotLocations associated with this backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotLocations")]
     pub volume_snapshot_locations: Option<Vec<String>>,

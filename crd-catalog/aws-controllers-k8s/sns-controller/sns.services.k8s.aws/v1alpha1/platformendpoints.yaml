@@ -30,7 +30,6 @@ spec:
               description: "PlatformEndpointSpec defines the desired state of PlatformEndpoint."
               properties:
                 customUserData:
-                  description: "Arbitrary user data to associate with the endpoint. Amazon SNS does not use\nthis data. The data must be in UTF-8 format and less than 2KB."
                   type: "string"
                 enabled:
                   type: "string"
@@ -38,7 +37,6 @@ spec:
                   description: "PlatformApplicationArn returned from CreatePlatformApplication is used to\ncreate a an endpoint."
                   type: "string"
                 token:
-                  description: "Unique identifier created by the notification service for an app on a device.\nThe specific name for Token will vary, depending on which notification service\nis being used. For example, when using APNS as the notification service,\nyou need the device token. Alternatively, when using GCM (Firebase Cloud\nMessaging) or ADM, the device token equivalent is called the registration\nID."
                   type: "string"
               required:
                 - "platformApplicationARN"

@@ -42,6 +42,9 @@ spec:
                 description:
                   description: "The description of the Object Store."
                   type: "string"
+                jsDomain:
+                  description: "The JetStream domain to use for the Object Store."
+                  type: "string"
                 maxBytes:
                   description: "The maximum size of the Store in bytes."
                   type: "integer"
@@ -107,7 +110,7 @@ spec:
                   type: "object"
                 tlsFirst:
                   default: false
-                  description: "When true, the KV Store will initiate TLS before server INFO."
+                  description: "When true, the Object Store will initiate TLS before server INFO."
                   type: "boolean"
                 ttl:
                   description: "The time expiry for keys."

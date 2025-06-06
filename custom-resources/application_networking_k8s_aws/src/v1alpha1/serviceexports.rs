@@ -10,6 +10,44 @@ mod prelude {
 }
 use self::prelude::*;
 
+/// spec defines the desired state of ServiceExport
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[kube(group = "application-networking.k8s.aws", version = "v1alpha1", kind = "ServiceExport", plural = "serviceexports")]
+#[kube(namespaced)]
+#[kube(status = "ServiceExportStatus")]
+#[kube(schema = "disabled")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct ServiceExportSpec {
+    /// exportedPorts defines which ports of the service should be exported and what route types they should be used with.
+    /// If not specified, the controller will use the port from the annotation "application-networking.k8s.aws/port"
+    /// and create HTTP target groups for backward compatibility.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportedPorts")]
+    pub exported_ports: Option<Vec<ServiceExportExportedPorts>>,
+}
+
+/// ExportedPort defines a port to be exported and the route type it should be used with
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ServiceExportExportedPorts {
+    /// port is the port number to export
+    pub port: i32,
+    /// routeType is the type of route this port should be used with
+    /// Valid values are "HTTP", "GRPC", "TLS"
+    #[serde(rename = "routeType")]
+    pub route_type: ServiceExportExportedPortsRouteType,
+}
+
+/// ExportedPort defines a port to be exported and the route type it should be used with
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceExportExportedPortsRouteType {
+    #[serde(rename = "HTTP")]
+    Http,
+    #[serde(rename = "GRPC")]
+    Grpc,
+    #[serde(rename = "TLS")]
+    Tls,
+}
+
 /// status describes the current state of an exported service.
 /// Service configuration comes from the Service that had the same
 /// name and namespace as this ServiceExport.

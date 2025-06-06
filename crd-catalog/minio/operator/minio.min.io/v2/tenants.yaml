@@ -3403,6 +3403,9 @@ spec:
                         x-kubernetes-validations:
                           - message: "servers is immutable"
                             rule: "self == oldSelf"
+                      terminationGracePeriodSeconds:
+                        format: "int64"
+                        type: "integer"
                       tolerations:
                         items:
                           properties:

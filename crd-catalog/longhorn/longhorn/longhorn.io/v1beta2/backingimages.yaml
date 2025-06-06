@@ -10,18 +10,6 @@ metadata:
     longhorn-manager: ""
   name: "backingimages.longhorn.io"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "longhorn-conversion-webhook"
-          namespace: "longhorn-system"
-          path: "/v1/webhook/conversion"
-          port: 9501
-      conversionReviewVersions:
-        - "v1beta2"
-        - "v1beta1"
   group: "longhorn.io"
   names:
     kind: "BackingImage"

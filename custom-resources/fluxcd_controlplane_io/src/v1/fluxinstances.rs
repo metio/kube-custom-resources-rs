@@ -75,6 +75,11 @@ pub struct FluxInstanceCluster {
     /// Defaults to true.
     #[serde(rename = "networkPolicy")]
     pub network_policy: bool,
+    /// ObjectLevelWorkloadIdentity enables the feature gate
+    /// required for object-level workload identity.
+    /// This feature is only available in Flux v2.6.0 and later.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectLevelWorkloadIdentity")]
+    pub object_level_workload_identity: Option<bool>,
     /// TenantDefaultServiceAccount is the name of the service account
     /// to use as default when the multitenant lockdown is enabled.
     /// Defaults to the 'default' service account from the tenant namespace.

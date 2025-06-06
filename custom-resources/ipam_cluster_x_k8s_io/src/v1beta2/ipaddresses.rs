@@ -29,7 +29,7 @@ pub struct IPAddressSpec {
     #[serde(rename = "poolRef")]
     pub pool_ref: IPAddressPoolRef,
     /// prefix is the prefix of the address.
-    pub prefix: i64,
+    pub prefix: i32,
 }
 
 /// claimRef is a reference to the claim this IPAddress was created for.

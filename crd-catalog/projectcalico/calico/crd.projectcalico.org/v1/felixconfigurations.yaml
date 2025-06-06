@@ -562,8 +562,8 @@ spec:
                 policySyncPathPrefix:
                   description: "PolicySyncPathPrefix is used to by Felix to communicate policy changes to external services,\nlike Application layer policy. [Default: Empty]"
                   type: "string"
-                programRoutes:
-                  description: "ProgramRoutes specifies whether Felix should program IPIP or unencapsulated routes instead of BIRD.\nFelix always programs VXLAN routes. [Default: Disabled]"
+                programClusterRoutes:
+                  description: "ProgramClusterRoutes specifies whether Felix should program IPIP routes instead of BIRD.\nFelix always programs VXLAN routes. [Default: Disabled]"
                   enum:
                     - "Enabled"
                     - "Disabled"

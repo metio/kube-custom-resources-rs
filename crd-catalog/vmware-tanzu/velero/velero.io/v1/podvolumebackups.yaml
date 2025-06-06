@@ -63,6 +63,9 @@ spec:
                 backupStorageLocation:
                   description: "BackupStorageLocation is the name of the backup storage location\nwhere the backup repository is stored."
                   type: "string"
+                cancel:
+                  description: "Cancel indicates request to cancel the ongoing PodVolumeBackup. It can be set\nwhen the PodVolumeBackup is in InProgress phase"
+                  type: "boolean"
                 node:
                   description: "Node is the name of the node that the Pod is running on."
                   type: "string"

@@ -22,8 +22,6 @@ pub struct HostTailerSpec {
     pub enable_recreate_workload_on_immutable_field_change: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileTailers")]
     pub file_tailers: Option<Vec<HostTailerFileTailers>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<HostTailerImage>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemdTailers")]
     pub systemd_tailers: Option<Vec<HostTailerSystemdTailers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadMetaOverrides")]
@@ -327,24 +325,6 @@ pub struct HostTailerFileTailersImage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostTailerFileTailersImageImagePullSecrets {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HostTailerImage {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
-    pub image_pull_secrets: Option<Vec<HostTailerImageImagePullSecrets>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
-    pub pull_policy: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub repository: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tag: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HostTailerImageImagePullSecrets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }

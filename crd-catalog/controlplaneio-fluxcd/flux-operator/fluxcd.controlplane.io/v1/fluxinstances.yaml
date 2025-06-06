@@ -56,6 +56,9 @@ spec:
                       default: true
                       description: "NetworkPolicy restricts network access to the current namespace.\nDefaults to true."
                       type: "boolean"
+                    objectLevelWorkloadIdentity:
+                      description: "ObjectLevelWorkloadIdentity enables the feature gate\nrequired for object-level workload identity.\nThis feature is only available in Flux v2.6.0 and later."
+                      type: "boolean"
                     tenantDefaultServiceAccount:
                       description: "TenantDefaultServiceAccount is the name of the service account\nto use as default when the multitenant lockdown is enabled.\nDefaults to the 'default' service account from the tenant namespace."
                       type: "string"
