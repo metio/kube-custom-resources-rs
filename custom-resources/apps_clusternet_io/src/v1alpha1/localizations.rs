@@ -60,6 +60,12 @@ pub enum LocalizationOverridePolicy {
 /// OverrideConfig holds information that describes a override config.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct LocalizationOverrides {
+    /// FieldFormat indicates the field format for the override value for FieldPatch.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldFormat")]
+    pub field_format: Option<LocalizationOverridesFieldFormat>,
+    /// FieldPath indicates the field path for the override value for FieldPatch.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
+    pub field_path: Option<String>,
     /// Name indicate the OverrideConfig name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -75,10 +81,22 @@ pub struct LocalizationOverrides {
 
 /// OverrideConfig holds information that describes a override config.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LocalizationOverridesFieldFormat {
+    #[serde(rename = "YAML")]
+    Yaml,
+    #[serde(rename = "JSON")]
+    Json,
+}
+
+/// OverrideConfig holds information that describes a override config.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum LocalizationOverridesType {
     Helm,
     #[serde(rename = "JSONPatch")]
     JsonPatch,
     MergePatch,
+    #[serde(rename = "FieldJSONPatch")]
+    FieldJsonPatch,
+    FieldMergePatch,
 }
 

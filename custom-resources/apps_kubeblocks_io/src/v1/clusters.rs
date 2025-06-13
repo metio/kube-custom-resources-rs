@@ -246,6 +246,9 @@ pub struct ClusterComponentSpecs {
     /// but required otherwise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Defines the network configuration for the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<ClusterComponentSpecsNetwork>,
     /// Specifies the names of instances to be transitioned to offline status.
     /// 
     /// 
@@ -2255,6 +2258,68 @@ pub struct ClusterComponentSpecsIssuerSecretRef {
     /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Defines the network configuration for the Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsNetwork {
+    /// Specifies the DNS parameters of a pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<ClusterComponentSpecsNetworkDnsConfig>,
+    /// Set DNS policy for the pod.
+    /// Defaults to "ClusterFirst". If the hostNetwork is enabled, the default policy will be set to "ClusterFirstWithHostNet".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
+    /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified.
+    /// This is only valid for non-hostNetwork pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
+    pub host_aliases: Option<Vec<ClusterComponentSpecsNetworkHostAliases>>,
+    /// Host networking requested for this pod. Use the host's network namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+}
+
+/// Specifies the DNS parameters of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsNetworkDnsConfig {
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    /// Duplicated nameservers will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Duplicated entries will be removed. Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<ClusterComponentSpecsNetworkDnsConfigOptions>>,
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    /// Duplicated search paths will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+/// PodDNSConfigOption defines DNS resolver options of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsNetworkDnsConfigOptions {
+    /// Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
+/// pod's hosts file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterComponentSpecsNetworkHostAliases {
+    /// Hostnames for the above IP address.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostnames: Option<Vec<String>>,
+    /// IP address of the host file entry.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent
@@ -6618,6 +6683,9 @@ pub struct ClusterShardings {
     /// Note that the name defined in Component template(`clusterSharding.template.name`) will be disregarded
     /// when generating the Component names of the shards. The `clusterSharding.name` field takes precedence.
     pub name: String,
+    /// Specifies the names of shards (components) to be transitioned to offline status.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub offline: Option<Vec<String>>,
     /// Specifies the ShardingDefinition custom resource (CR) that defines the sharding's characteristics and behavior.
     /// 
     /// 
@@ -6743,6 +6811,9 @@ pub struct ClusterShardingsTemplate {
     /// but required otherwise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Defines the network configuration for the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<ClusterShardingsTemplateNetwork>,
     /// Specifies the names of instances to be transitioned to offline status.
     /// 
     /// 
@@ -8752,6 +8823,68 @@ pub struct ClusterShardingsTemplateIssuerSecretRef {
     /// If not provided, the secret is assumed to be in the same namespace as the Cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// Defines the network configuration for the Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateNetwork {
+    /// Specifies the DNS parameters of a pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
+    pub dns_config: Option<ClusterShardingsTemplateNetworkDnsConfig>,
+    /// Set DNS policy for the pod.
+    /// Defaults to "ClusterFirst". If the hostNetwork is enabled, the default policy will be set to "ClusterFirstWithHostNet".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
+    pub dns_policy: Option<String>,
+    /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified.
+    /// This is only valid for non-hostNetwork pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
+    pub host_aliases: Option<Vec<ClusterShardingsTemplateNetworkHostAliases>>,
+    /// Host networking requested for this pod. Use the host's network namespace.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+}
+
+/// Specifies the DNS parameters of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateNetworkDnsConfig {
+    /// A list of DNS name server IP addresses.
+    /// This will be appended to the base nameservers generated from DNSPolicy.
+    /// Duplicated nameservers will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nameservers: Option<Vec<String>>,
+    /// A list of DNS resolver options.
+    /// This will be merged with the base options generated from DNSPolicy.
+    /// Duplicated entries will be removed. Resolution options given in Options
+    /// will override those that appear in the base DNSPolicy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<Vec<ClusterShardingsTemplateNetworkDnsConfigOptions>>,
+    /// A list of DNS search domains for host-name lookup.
+    /// This will be appended to the base search paths generated from DNSPolicy.
+    /// Duplicated search paths will be removed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub searches: Option<Vec<String>>,
+}
+
+/// PodDNSConfigOption defines DNS resolver options of a pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateNetworkDnsConfigOptions {
+    /// Required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
+/// pod's hosts file.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsTemplateNetworkHostAliases {
+    /// Hostnames for the above IP address.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostnames: Option<Vec<String>>,
+    /// IP address of the host file entry.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ip: Option<String>,
 }
 
 /// persistentVolumeClaimRetentionPolicy describes the lifecycle of persistent

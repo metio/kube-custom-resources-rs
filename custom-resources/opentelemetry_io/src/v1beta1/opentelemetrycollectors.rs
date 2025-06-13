@@ -12,11 +12,12 @@ mod prelude {
 }
 use self::prelude::*;
 
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "opentelemetry.io", version = "v1beta1", kind = "OpenTelemetryCollector", plural = "opentelemetrycollectors")]
 #[kube(namespaced)]
 #[kube(status = "OpenTelemetryCollectorStatus")]
 #[kube(schema = "disabled")]
+#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct OpenTelemetryCollectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalContainers")]
@@ -58,8 +59,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub lifecycle: Option<OpenTelemetryCollectorLifecycle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<OpenTelemetryCollectorLivenessProbe>,
-    #[serde(rename = "managementState")]
-    pub management_state: OpenTelemetryCollectorManagementState,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementState")]
+    pub management_state: Option<OpenTelemetryCollectorManagementState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<OpenTelemetryCollectorMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]

@@ -55,6 +55,11 @@ pub struct AmazonCloudWatchAgentSpec {
     /// Each ConfigMap will be added to the Collector's Deployments as a volume named `configmap-<configmap-name>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configmaps: Option<Vec<AmazonCloudWatchAgentConfigmaps>>,
+    /// UpdateStrategy represents the strategy the operator will take replacing existing Deployment pods with new pods
+    /// https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#DeploymentSpec
+    /// This is only applicable to Deployment mode.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentUpdateStrategy")]
+    pub deployment_update_strategy: Option<AmazonCloudWatchAgentDeploymentUpdateStrategy>,
     /// ENV vars to set on the OpenTelemetry Collector's Pods. These can then in certain cases be
     /// consumed in the config file for the Collector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2299,6 +2304,57 @@ pub struct AmazonCloudWatchAgentConfigmaps {
     pub mountpath: String,
     /// Configmap defines name and path where the configMaps should be mounted.
     pub name: String,
+}
+
+/// UpdateStrategy represents the strategy the operator will take replacing existing Deployment pods with new pods
+/// https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/deployment-v1/#DeploymentSpec
+/// This is only applicable to Deployment mode.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AmazonCloudWatchAgentDeploymentUpdateStrategy {
+    /// Rolling update config params. Present only if DeploymentStrategyType =
+    /// RollingUpdate.
+    /// ---
+    /// TODO: Update this to follow our convention for oneOf, whatever we decide it
+    /// to be.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<AmazonCloudWatchAgentDeploymentUpdateStrategyRollingUpdate>,
+    /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Rolling update config params. Present only if DeploymentStrategyType =
+/// RollingUpdate.
+/// ---
+/// TODO: Update this to follow our convention for oneOf, whatever we decide it
+/// to be.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AmazonCloudWatchAgentDeploymentUpdateStrategyRollingUpdate {
+    /// The maximum number of pods that can be scheduled above the desired number of
+    /// pods.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// This can not be 0 if MaxUnavailable is 0.
+    /// Absolute number is calculated from percentage by rounding up.
+    /// Defaults to 25%.
+    /// Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when
+    /// the rolling update starts, such that the total number of old and new pods do not exceed
+    /// 130% of desired pods. Once old pods have been killed,
+    /// new ReplicaSet can be scaled up further, ensuring that total number of pods running
+    /// at any time during the update is at most 130% of desired pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
+    pub max_surge: Option<IntOrString>,
+    /// The maximum number of pods that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding down.
+    /// This can not be 0 if MaxSurge is 0.
+    /// Defaults to 25%.
+    /// Example: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods
+    /// immediately when the rolling update starts. Once new pods are ready, old ReplicaSet
+    /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
+    /// that the total number of pods available at all times during the update is at
+    /// least 70% of desired pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
 }
 
 /// EnvVar represents an environment variable present in a Container.

@@ -34,10 +34,10 @@ pub struct XListenerSetSpec {
     /// 
     /// 1. "parent" Gateway
     /// 2. ListenerSet ordered by creation time (oldest first)
-    /// 3. ListenerSet ordered alphabetically by “{namespace}/{name}”.
+    /// 3. ListenerSet ordered alphabetically by "{namespace}/{name}".
     /// 
     /// An implementation MAY reject listeners by setting the ListenerEntryStatus
-    /// `Accepted`` condition to False with the Reason `TooManyListeners`
+    /// `Accepted` condition to False with the Reason `TooManyListeners`
     /// 
     /// If a listener has a conflict, this will be reported in the
     /// Status.ListenerEntryStatus setting the `Conflicted` condition to True.

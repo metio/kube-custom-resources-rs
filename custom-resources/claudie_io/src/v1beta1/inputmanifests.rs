@@ -71,6 +71,9 @@ pub struct InputManifestKubernetesClustersInstallationProxy {
     pub endpoint: Option<String>,
     /// Mode defines if the proxy mode (on/off/default). If undefined, the default mode is used.
     pub mode: String,
+    /// NoProxy is a comma-separated list of values that will be added to the default NoProxy list used by Claudie. Any values specified will be appended to the end of the default NoProxy list. This field only has an effect if the Proxy is turned on.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
 }
 
 /// List of nodepool names this cluster will use.

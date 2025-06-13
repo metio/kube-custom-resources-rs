@@ -48,7 +48,7 @@ pub struct VMRuleGroups {
     /// ExtraFilterLabels optional list of label filters applied to every rule's
     /// request within a group. Is compatible only with VM datasource.
     /// See more details [here](https://docs.victoriametrics.com/#prometheus-querying-api-enhancements)
-    /// Deprecated, use params instead
+    /// Deprecated: use params instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra_filter_labels: Option<BTreeMap<String, String>>,
     /// Headers contains optional HTTP headers added to each rule request

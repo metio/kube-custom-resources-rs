@@ -9,6 +9,7 @@ spec:
     plural: "serviceexports"
     shortNames:
       - "svcex"
+      - "svcexport"
     singular: "serviceexport"
   scope: "Namespaced"
   versions:

@@ -9,6 +9,7 @@ spec:
     plural: "serviceimports"
     shortNames:
       - "svcim"
+      - "svcimport"
     singular: "serviceimport"
   scope: "Namespaced"
   versions:

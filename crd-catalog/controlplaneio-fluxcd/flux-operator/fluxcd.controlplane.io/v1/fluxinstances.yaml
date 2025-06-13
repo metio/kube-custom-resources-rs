@@ -184,6 +184,12 @@ spec:
                         type: "string"
                       minItems: 1
                       type: "array"
+                    storage:
+                      description: "Storage defines if the source-controller shards\nshould use an emptyDir or a persistent volume claim for storage.\nAccepted values are 'ephemeral' or 'persistent', defaults to 'ephemeral'.\nFor 'persistent' to take effect, the '.spec.storage' field must be set."
+                      enum:
+                        - "ephemeral"
+                        - "persistent"
+                      type: "string"
                   required:
                     - "shards"
                   type: "object"
