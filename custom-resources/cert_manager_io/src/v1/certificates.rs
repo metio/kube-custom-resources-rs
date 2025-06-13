@@ -163,7 +163,7 @@ pub struct CertificateSpec {
     /// cert-manager sets on the Certificate's Secret.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretTemplate")]
     pub secret_template: Option<CertificateSecretTemplate>,
-    /// Signature algorith to use.
+    /// Signature algorithm to use.
     /// Allowed values for RSA keys: SHA256WithRSA, SHA384WithRSA, SHA512WithRSA.
     /// Allowed values for ECDSA keys: ECDSAWithSHA256, ECDSAWithSHA384, ECDSAWithSHA512.
     /// Allowed values for Ed25519 keys: PureEd25519.

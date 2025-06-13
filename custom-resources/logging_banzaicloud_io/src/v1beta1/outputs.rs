@@ -44,6 +44,8 @@ pub struct OutputSpec {
     pub kinesis_firehose: Option<OutputKinesisFirehose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisStream")]
     pub kinesis_stream: Option<OutputKinesisStream>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lmLogs")]
+    pub lm_logs: Option<OutputLmLogs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logdna: Option<OutputLogdna>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingRef")]
@@ -4562,6 +4564,254 @@ pub enum OutputKinesisStreamFormatType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputKinesisStreamProcessCredentials {
     pub process: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access_id: Option<OutputLmLogsAccessId>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub access_key: Option<OutputLmLogsAccessKey>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bearer_token: Option<OutputLmLogsBearerToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub buffer: Option<OutputLmLogsBuffer>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub company_domain: Option<String>,
+    pub company_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub debug: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub device_less_logs: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub force_encoding: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub format: Option<OutputLmLogsFormat>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_proxy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub include_metadata: Option<bool>,
+    pub resource_mapping: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessId {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputLmLogsAccessIdMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputLmLogsAccessIdValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessIdMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsAccessIdMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessIdMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessIdValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsAccessIdValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessIdValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessKey {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputLmLogsAccessKeyMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputLmLogsAccessKeyValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessKeyMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsAccessKeyMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessKeyMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessKeyValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsAccessKeyValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsAccessKeyValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBearerToken {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
+    pub mount_from: Option<OutputLmLogsBearerTokenMountFrom>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<OutputLmLogsBearerTokenValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBearerTokenMountFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsBearerTokenMountFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBearerTokenMountFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBearerTokenValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<OutputLmLogsBearerTokenValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBearerTokenValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsBuffer {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_full_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_records: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub chunk_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delayed_commit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disable_chunk_backup: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub disabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_at_shutdown: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_mode: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_burst_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_count: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flush_thread_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub overflow_action: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queue_limit_length: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub queued_chunks_limit_size: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_exponential_backoff_base: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_forever: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_interval: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_max_times: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_randomize: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_secondary_threshold: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retry_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tags: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_use_utc: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_wait: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timekey_zone: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub total_limit_size: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OutputLmLogsFormat {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub add_newline: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<OutputLmLogsFormatType>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum OutputLmLogsFormatType {
+    #[serde(rename = "out_file")]
+    OutFile,
+    #[serde(rename = "json")]
+    Json,
+    #[serde(rename = "ltsv")]
+    Ltsv,
+    #[serde(rename = "csv")]
+    Csv,
+    #[serde(rename = "msgpack")]
+    Msgpack,
+    #[serde(rename = "hash")]
+    Hash,
+    #[serde(rename = "single_value")]
+    SingleValue,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

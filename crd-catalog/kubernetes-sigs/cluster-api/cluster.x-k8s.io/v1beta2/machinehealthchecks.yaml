@@ -66,9 +66,11 @@ spec:
                     - type: "string"
                   description: "maxUnhealthy specifies the maximum number of unhealthy machines allowed.\nAny further remediation is only allowed if at most \"maxUnhealthy\" machines selected by\n\"selector\" are not healthy.\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   x-kubernetes-int-or-string: true
-                nodeStartupTimeout:
-                  description: "nodeStartupTimeout allows to set the maximum time for MachineHealthCheck\nto consider a Machine unhealthy if a corresponding Node isn't associated\nthrough a `Spec.ProviderID` field.\n\nThe duration set in this field is compared to the greatest of:\n- Cluster's infrastructure ready condition timestamp (if and when available)\n- Control Plane's initialized condition timestamp (if and when available)\n- Machine's infrastructure ready condition timestamp (if and when available)\n- Machine's metadata creation timestamp\n\nDefaults to 10 minutes.\nIf you wish to disable this feature, set the value explicitly to 0."
-                  type: "string"
+                nodeStartupTimeoutSeconds:
+                  description: "nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck\nto consider a Machine unhealthy if a corresponding Node isn't associated\nthrough a `Spec.ProviderID` field.\n\nThe duration set in this field is compared to the greatest of:\n- Cluster's infrastructure ready condition timestamp (if and when available)\n- Control Plane's initialized condition timestamp (if and when available)\n- Machine's infrastructure ready condition timestamp (if and when available)\n- Machine's metadata creation timestamp\n\nDefaults to 10 minutes.\nIf you wish to disable this feature, set the value explicitly to 0."
+                  format: "int32"
+                  minimum: 0.0
+                  type: "integer"
                 remediationTemplate:
                   description: "remediationTemplate is a reference to a remediation template\nprovided by an infrastructure provider.\n\nThis field is completely optional, when filled, the MachineHealthCheck controller\ncreates a new object from the template referenced and hands off remediation of the machine to\na controller that lives outside of Cluster API."
                   properties:
@@ -137,16 +139,18 @@ spec:
                         description: "status of the condition, one of True, False, Unknown."
                         minLength: 1
                         type: "string"
-                      timeout:
-                        description: "timeout is the duration that a node must be in a given status for,\nafter which the node is considered unhealthy.\nFor example, with a value of \"1h\", the node must match the status\nfor at least 1 hour before being considered unhealthy."
-                        type: "string"
+                      timeoutSeconds:
+                        description: "timeoutSeconds is the duration that a node must be in a given status for,\nafter which the node is considered unhealthy.\nFor example, with a value of \"1h\", the node must match the status\nfor at least 1 hour before being considered unhealthy."
+                        format: "int32"
+                        minimum: 0.0
+                        type: "integer"
                       type:
                         description: "type of Node condition"
                         minLength: 1
                         type: "string"
                     required:
                       - "status"
-                      - "timeout"
+                      - "timeoutSeconds"
                       - "type"
                     type: "object"
                   maxItems: 100

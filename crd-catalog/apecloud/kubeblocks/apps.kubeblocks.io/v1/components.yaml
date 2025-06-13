@@ -1316,6 +1316,58 @@ spec:
                     type: "string"
                   description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                   type: "object"
+                network:
+                  description: "Defines the network configuration for the Component."
+                  properties:
+                    dnsConfig:
+                      description: "Specifies the DNS parameters of a pod."
+                      properties:
+                        nameservers:
+                          description: "A list of DNS name server IP addresses.\nThis will be appended to the base nameservers generated from DNSPolicy.\nDuplicated nameservers will be removed."
+                          items:
+                            type: "string"
+                          type: "array"
+                        options:
+                          description: "A list of DNS resolver options.\nThis will be merged with the base options generated from DNSPolicy.\nDuplicated entries will be removed. Resolution options given in Options\nwill override those that appear in the base DNSPolicy."
+                          items:
+                            description: "PodDNSConfigOption defines DNS resolver options of a pod."
+                            properties:
+                              name:
+                                description: "Required."
+                                type: "string"
+                              value:
+                                type: "string"
+                            type: "object"
+                          type: "array"
+                        searches:
+                          description: "A list of DNS search domains for host-name lookup.\nThis will be appended to the base search paths generated from DNSPolicy.\nDuplicated search paths will be removed."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
+                    dnsPolicy:
+                      description: "Set DNS policy for the pod.\nDefaults to \"ClusterFirst\". If the hostNetwork is enabled, the default policy will be set to \"ClusterFirstWithHostNet\"."
+                      type: "string"
+                    hostAliases:
+                      description: "HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified.\nThis is only valid for non-hostNetwork pods."
+                      items:
+                        description: "HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the\npod's hosts file."
+                        properties:
+                          hostnames:
+                            description: "Hostnames for the above IP address."
+                            items:
+                              type: "string"
+                            type: "array"
+                          ip:
+                            description: "IP address of the host file entry."
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    hostNetwork:
+                      default: false
+                      description: "Host networking requested for this pod. Use the host's network namespace."
+                      type: "boolean"
+                  type: "object"
                 offlineInstances:
                   description: "Specifies the names of instances to be transitioned to offline status.\n\n\nMarking an instance as offline results in the following:\n\n\n1. The associated Pod is stopped, and its PersistentVolumeClaim (PVC) is retained for potential\n   future reuse or data recovery, but it is no longer actively used.\n2. The ordinal number assigned to this instance is preserved, ensuring it remains unique\n   and avoiding conflicts with new instances.\n\n\nSetting instances to offline allows for a controlled scale-in process, preserving their data and maintaining\nordinal consistency within the Cluster.\nNote that offline instances and their associated resources, such as PVCs, are not automatically deleted.\nThe administrator must manually manage the cleanup and removal of these resources when they are no longer needed."
                   items:

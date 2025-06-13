@@ -81,7 +81,7 @@ pub struct MachinePoolTemplateSpec {
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// failureDomain is the failure domain the machine will be created in.
-    /// Must match a key in the FailureDomains map stored on the cluster object.
+    /// Must match the name of a FailureDomain from the Cluster status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// infrastructureRef is a required reference to a custom resource
@@ -92,20 +92,20 @@ pub struct MachinePoolTemplateSpec {
     /// Defaults to 0 (Machine will be considered available as soon as the Machine is ready)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
-    pub node_deletion_timeout: Option<String>,
-    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
+    pub node_deletion_timeout_seconds: Option<i32>,
+    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
-    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
-    pub node_drain_timeout: Option<String>,
-    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
+    pub node_drain_timeout_seconds: Option<i32>,
+    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
-    pub node_volume_detach_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
+    pub node_volume_detach_timeout_seconds: Option<i32>,
     /// providerID is the identification ID of the machine provided by the provider.
     /// This field must match the provider ID as seen on the node object corresponding to this machine.
     /// This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler

@@ -116,7 +116,7 @@ spec:
                       type: "object"
                   type: "object"
                 configSecret:
-                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders\nDeprecated, use externalConfig.secretRef instead"
+                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders\nDeprecated: use externalConfig.secretRef instead"
                   type: "string"
                 containers:
                   description: "Containers property allows to inject additions sidecars or to patch existing containers.\nIt can be useful for proxies, backup, etc."
@@ -728,7 +728,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 unauthorizedAccessConfig:
-                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated, use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
+                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated: use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
                   x-kubernetes-preserve-unknown-fields: true
                 unauthorizedUserAccessSpec:
                   description: "UnauthorizedUserAccessSpec defines unauthorized_user config section of vmauth config"

@@ -6825,6 +6825,9 @@ pub struct OpsDefinitionPodInfoExtractorsEnv {
     /// Specifies the name of the environment variable to be injected into Pods executing OpsActions.
     /// It must conform to the C_IDENTIFIER format, which includes only alphanumeric characters and underscores, and cannot begin with a digit.
     pub name: String,
+    /// Specify whether the ENV must be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
     /// Specifies the source of the environment variable's value.
     #[serde(rename = "valueFrom")]
     pub value_from: OpsDefinitionPodInfoExtractorsEnvValueFrom,

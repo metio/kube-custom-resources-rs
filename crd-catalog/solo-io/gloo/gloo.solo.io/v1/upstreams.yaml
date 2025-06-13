@@ -47,6 +47,13 @@ spec:
                             hostname:
                               nullable: true
                               type: "string"
+                            pathOverride:
+                              properties:
+                                basePath:
+                                  type: "string"
+                                fullPath:
+                                  type: "string"
+                              type: "object"
                             port:
                               maximum: 4294967295.0
                               minimum: 0.0
@@ -108,6 +115,13 @@ spec:
                             hostname:
                               nullable: true
                               type: "string"
+                            pathOverride:
+                              properties:
+                                basePath:
+                                  type: "string"
+                                fullPath:
+                                  type: "string"
+                              type: "object"
                             port:
                               maximum: 4294967295.0
                               minimum: 0.0
@@ -162,6 +176,13 @@ spec:
                             hostname:
                               nullable: true
                               type: "string"
+                            pathOverride:
+                              properties:
+                                basePath:
+                                  type: "string"
+                                fullPath:
+                                  type: "string"
+                              type: "object"
                             port:
                               maximum: 4294967295.0
                               minimum: 0.0
@@ -201,6 +222,13 @@ spec:
                                             hostname:
                                               nullable: true
                                               type: "string"
+                                            pathOverride:
+                                              properties:
+                                                basePath:
+                                                  type: "string"
+                                                fullPath:
+                                                  type: "string"
+                                              type: "object"
                                             port:
                                               maximum: 4294967295.0
                                               minimum: 0.0
@@ -262,6 +290,13 @@ spec:
                                             hostname:
                                               nullable: true
                                               type: "string"
+                                            pathOverride:
+                                              properties:
+                                                basePath:
+                                                  type: "string"
+                                                fullPath:
+                                                  type: "string"
+                                              type: "object"
                                             port:
                                               maximum: 4294967295.0
                                               minimum: 0.0
@@ -316,6 +351,13 @@ spec:
                                             hostname:
                                               nullable: true
                                               type: "string"
+                                            pathOverride:
+                                              properties:
+                                                basePath:
+                                                  type: "string"
+                                                fullPath:
+                                                  type: "string"
+                                              type: "object"
                                             port:
                                               maximum: 4294967295.0
                                               minimum: 0.0
@@ -347,6 +389,13 @@ spec:
                                             hostname:
                                               nullable: true
                                               type: "string"
+                                            pathOverride:
+                                              properties:
+                                                basePath:
+                                                  type: "string"
+                                                fullPath:
+                                                  type: "string"
+                                              type: "object"
                                             port:
                                               maximum: 4294967295.0
                                               minimum: 0.0
@@ -416,6 +465,13 @@ spec:
                             hostname:
                               nullable: true
                               type: "string"
+                            pathOverride:
+                              properties:
+                                basePath:
+                                  type: "string"
+                                fullPath:
+                                  type: "string"
+                              type: "object"
                             port:
                               maximum: 4294967295.0
                               minimum: 0.0

@@ -154,6 +154,9 @@ spec:
                             - "quick"
                           type: "string"
                       type: "object"
+                    wipeDevicesFromOtherClusters:
+                      description: "WipeDevicesFromOtherClusters wipes the OSD disks belonging to other clusters. This is useful in scenarios where ceph cluster\nwas reinstalled but OSD disk still contains the metadata from previous ceph cluster."
+                      type: "boolean"
                   type: "object"
                 continueUpgradeAfterChecksEvenIfNotHealthy:
                   description: "ContinueUpgradeAfterChecksEvenIfNotHealthy defines if an upgrade should continue even if PGs are not clean"
@@ -1830,8 +1833,32 @@ spec:
                   description: "Security represents security settings"
                   nullable: true
                   properties:
+                    cephx:
+                      description: "CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/"
+                      properties:
+                        daemon:
+                          description: "Daemon configures CephX key settings for local Ceph daemons managed by Rook and part of the\nCeph cluster. Daemon CephX keys can be rotated without affecting client connections."
+                          properties:
+                            keyGeneration:
+                              description: "KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy\nis KeyGeneration and ignored for other policies. If this is set to greater than the current\nkey generation, relevant keys will be rotated, and the generation value will be updated to\nthis new value (generation values are not necessarily incremental, though that is the\nintended use case). If this is set to less than or equal to the current key generation, keys\nare not rotated."
+                              format: "int32"
+                              maximum: 4294967295.0
+                              minimum: 0.0
+                              type: "integer"
+                              x-kubernetes-validations:
+                                - message: "keyGeneration cannot be decreased"
+                                  rule: "self >= oldSelf"
+                            keyRotationPolicy:
+                              description: "KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.\nOne of Disabled, or KeyGeneration. Default Disabled."
+                              enum:
+                                - ""
+                                - "Disabled"
+                                - "KeyGeneration"
+                              type: "string"
+                          type: "object"
+                      type: "object"
                     keyRotation:
-                      description: "KeyRotation defines options for Key Rotation."
+                      description: "KeyRotation defines options for rotation of OSD disk encryption keys."
                       nullable: true
                       properties:
                         enabled:

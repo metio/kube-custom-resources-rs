@@ -251,20 +251,20 @@ pub struct ClusterTopologyControlPlane {
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyControlPlaneMetadata>,
-    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
-    pub node_deletion_timeout: Option<String>,
-    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
+    pub node_deletion_timeout_seconds: Option<i32>,
+    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
-    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
-    pub node_drain_timeout: Option<String>,
-    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
+    pub node_drain_timeout_seconds: Option<i32>,
+    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
-    pub node_volume_detach_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
+    pub node_volume_detach_timeout_seconds: Option<i32>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
     /// 
     /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
@@ -308,7 +308,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
     /// 
@@ -320,8 +320,8 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// 
     /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
-    pub node_startup_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
+    pub node_startup_timeout_seconds: Option<i32>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
@@ -394,11 +394,12 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
 pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
-    /// timeout is the duration that a node must be in a given status for,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
     /// after which the node is considered unhealthy.
     /// For example, with a value of "1h", the node must match the status
     /// for at least 1 hour before being considered unhealthy.
-    pub timeout: String,
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
     /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
@@ -531,20 +532,20 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
-    pub node_deletion_timeout: Option<String>,
-    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
+    pub node_deletion_timeout_seconds: Option<i32>,
+    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
-    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
-    pub node_drain_timeout: Option<String>,
-    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
+    pub node_drain_timeout_seconds: Option<i32>,
+    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
-    pub node_volume_detach_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
+    pub node_volume_detach_timeout_seconds: Option<i32>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
     /// 
     /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
@@ -590,7 +591,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
     /// 
@@ -602,8 +603,8 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// 
     /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
-    pub node_startup_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
+    pub node_startup_timeout_seconds: Option<i32>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
@@ -676,11 +677,12 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediation
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
-    /// timeout is the duration that a node must be in a given status for,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
     /// after which the node is considered unhealthy.
     /// For example, with a value of "1h", the node must match the status
     /// for at least 1 hour before being considered unhealthy.
-    pub timeout: String,
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
     /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
@@ -876,20 +878,20 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the MachinePool
+    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the MachinePool
     /// hosts after the MachinePool is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
-    pub node_deletion_timeout: Option<String>,
-    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
+    pub node_deletion_timeout_seconds: Option<i32>,
+    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
-    /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
-    pub node_drain_timeout: Option<String>,
-    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
+    pub node_drain_timeout_seconds: Option<i32>,
+    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
-    pub node_volume_detach_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
+    pub node_volume_detach_timeout_seconds: Option<i32>,
     /// replicas is the number of nodes belonging to this pool.
     /// If the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)
     /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
@@ -960,7 +962,7 @@ pub struct ClusterStatus {
     pub deprecated: Option<ClusterStatusDeprecated>,
     /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
-    pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
+    pub failure_domains: Option<Vec<ClusterStatusFailureDomains>>,
     /// initialization provides observations of the Cluster initialization process.
     /// NOTE: Fields in this struct are part of the Cluster API contract and are used to orchestrate initial Cluster provisioning.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1028,7 +1030,8 @@ pub struct ClusterStatusDeprecatedV1beta1 {
     pub failure_reason: Option<String>,
 }
 
-/// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
+/// FailureDomain is the Schema for Cluster API failure domains.
+/// It allows controllers to understand how many failure domains a cluster can optionally span across.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusFailureDomains {
     /// attributes is a free form map of attributes an infrastructure provider might use or require.
@@ -1037,6 +1040,8 @@ pub struct ClusterStatusFailureDomains {
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
+    /// name is the name of the failure domain.
+    pub name: String,
 }
 
 /// initialization provides observations of the Cluster initialization process.

@@ -209,6 +209,21 @@ pub struct FluxInstanceSharding {
     pub key: Option<String>,
     /// Shards is the list of shard names.
     pub shards: Vec<String>,
+    /// Storage defines if the source-controller shards
+    /// should use an emptyDir or a persistent volume claim for storage.
+    /// Accepted values are 'ephemeral' or 'persistent', defaults to 'ephemeral'.
+    /// For 'persistent' to take effect, the '.spec.storage' field must be set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage: Option<FluxInstanceShardingStorage>,
+}
+
+/// Sharding holds the specification of the sharding configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FluxInstanceShardingStorage {
+    #[serde(rename = "ephemeral")]
+    Ephemeral,
+    #[serde(rename = "persistent")]
+    Persistent,
 }
 
 /// Storage holds the specification of the source-controller

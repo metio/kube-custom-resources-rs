@@ -7034,6 +7034,15 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// - Kubeflow: training.kubeflow.org/replica-index
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndexLabel")]
     pub pod_index_label: Option<String>,
+    /// PodSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as
+    /// indicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceRequiredTopology")]
+    pub pod_set_slice_required_topology: Option<String>,
+    /// PodSetSliceSize indicates the size of a subgroup of pods in a PodSet for which
+    /// Kueue finds a requested topology domain on a level defined
+    /// in `kueue.x-k8s.io/podset-slice-required-topology` annotation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceSize")]
+    pub pod_set_slice_size: Option<i32>,
     /// preferred indicates the topology level preferred by the PodSet, as
     /// indicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet
     /// annotation.

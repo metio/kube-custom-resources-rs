@@ -24,6 +24,10 @@ pub struct PodVolumeRestoreSpec {
     /// where the backup repository is stored.
     #[serde(rename = "backupStorageLocation")]
     pub backup_storage_location: String,
+    /// Cancel indicates request to cancel the ongoing PodVolumeRestore. It can be set
+    /// when the PodVolumeRestore is in InProgress phase
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cancel: Option<bool>,
     /// Pod is a reference to the pod containing the volume to be restored.
     pub pod: ObjectReference,
     /// RepoIdentifier is the backup repository identifier.
@@ -97,6 +101,10 @@ pub enum PodVolumeRestoreUploaderType {
 /// PodVolumeRestoreStatus is the current status of a PodVolumeRestore.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodVolumeRestoreStatus {
+    /// AcceptedTimestamp records the time the pod volume restore is to be prepared.
+    /// The server's time is used for AcceptedTimestamp
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedTimestamp")]
+    pub accepted_timestamp: Option<String>,
     /// CompletionTimestamp records the time a restore was completed.
     /// Completion time is recorded even on failed restores.
     /// The server's time is used for CompletionTimestamps
@@ -105,6 +113,9 @@ pub struct PodVolumeRestoreStatus {
     /// Message is a message about the pod volume restore's status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// Node is name of the node where the pod volume restore is processed.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node: Option<String>,
     /// Phase is the current state of the PodVolumeRestore.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<PodVolumeRestoreStatusPhase>,
@@ -123,7 +134,11 @@ pub struct PodVolumeRestoreStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PodVolumeRestoreStatusPhase {
     New,
+    Accepted,
+    Prepared,
     InProgress,
+    Canceling,
+    Canceled,
     Completed,
     Failed,
 }

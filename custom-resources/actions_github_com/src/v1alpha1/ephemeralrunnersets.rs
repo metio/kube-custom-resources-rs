@@ -54,6 +54,8 @@ pub struct EphemeralRunnerSetEphemeralRunnerSpec {
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<EphemeralRunnerSetEphemeralRunnerSpecSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultConfig")]
+    pub vault_config: Option<EphemeralRunnerSetEphemeralRunnerSpecVaultConfig>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7002,6 +7004,57 @@ pub struct EphemeralRunnerSetEphemeralRunnerSpecSpecVolumesVsphereVolume {
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EphemeralRunnerSetEphemeralRunnerSpecVaultConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureKeyVault")]
+    pub azure_key_vault: Option<EphemeralRunnerSetEphemeralRunnerSpecVaultConfigAzureKeyVault>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub proxy: Option<EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxy>,
+    /// VaultType represents the type of vault that can be used in the application.
+    /// It is used to identify which vault integration should be used to resolve secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EphemeralRunnerSetEphemeralRunnerSpecVaultConfigAzureKeyVault {
+    #[serde(rename = "certificatePath")]
+    pub certificate_path: String,
+    #[serde(rename = "clientId")]
+    pub client_id: String,
+    #[serde(rename = "tenantId")]
+    pub tenant_id: String,
+    pub url: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxy {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxyHttp>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub https: Option<EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxyHttps>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxyHttp {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialSecretRef")]
+    pub credential_secret_ref: Option<String>,
+    /// Required
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EphemeralRunnerSetEphemeralRunnerSpecVaultConfigProxyHttps {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialSecretRef")]
+    pub credential_secret_ref: Option<String>,
+    /// Required
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub url: Option<String>,
 }
 
 /// EphemeralRunnerSetStatus defines the observed state of EphemeralRunnerSet

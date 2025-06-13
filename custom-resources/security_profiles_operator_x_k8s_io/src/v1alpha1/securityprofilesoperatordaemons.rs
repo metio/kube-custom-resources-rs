@@ -867,6 +867,24 @@ pub struct SecurityProfilesOperatorDaemonJsonEnricherOptions {
     /// Increasing this interval will reduce the rate at which logs are written.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogIntervalSeconds")]
     pub audit_log_interval_seconds: Option<i32>,
+    /// This field specifies the maximum number of days to retain old audit log files
+    /// The default is not to remove old log files based on age
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxAge")]
+    pub audit_log_max_age: Option<i32>,
+    /// This field specifies the maximum size in megabytes of the audit log file before it gets rotated.
+    /// The default is to retain all old log files (though MaxAge may still cause them to get deleted.)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxBackups")]
+    pub audit_log_max_backups: Option<i32>,
+    /// This field specifies the maximum number of audit log files to retain.
+    /// If left unspecified it defaults to 100 MB.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxSize")]
+    pub audit_log_max_size: Option<i32>,
+    /// This field specifies the path for the accumulated audit log data.
+    /// The audit log will be written to this file in JSON format if a file path
+    /// is provided. If left unspecified, the output will be directed to
+    /// standard output (stdout).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogPath")]
+    pub audit_log_path: Option<String>,
 }
 
 /// Defines options specific to the SELinux

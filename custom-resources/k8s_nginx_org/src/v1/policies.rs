@@ -156,6 +156,8 @@ pub struct PolicyOidc {
     pub end_session_endpoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksURI")]
     pub jwks_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pkceEnable")]
+    pub pkce_enable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postLogoutRedirectURI")]
     pub post_logout_redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURI")]

@@ -82,6 +82,8 @@ pub struct IBMPowerVSImageServiceInstance {
 /// IBMPowerVSImageSpec defines the desired state of IBMPowerVSImage.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum IBMPowerVSImageStorageType {
+    #[serde(rename = "tier0")]
+    Tier0,
     #[serde(rename = "tier1")]
     Tier1,
     #[serde(rename = "tier3")]

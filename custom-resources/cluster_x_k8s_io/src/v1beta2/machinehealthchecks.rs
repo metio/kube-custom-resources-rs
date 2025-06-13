@@ -32,7 +32,7 @@ pub struct MachineHealthCheckSpec {
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
     /// 
@@ -44,8 +44,8 @@ pub struct MachineHealthCheckSpec {
     /// 
     /// Defaults to 10 minutes.
     /// If you wish to disable this feature, set the value explicitly to 0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
-    pub node_startup_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
+    pub node_startup_timeout_seconds: Option<i32>,
     /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
@@ -152,11 +152,12 @@ pub struct MachineHealthCheckSelectorMatchExpressions {
 pub struct MachineHealthCheckUnhealthyNodeConditions {
     /// status of the condition, one of True, False, Unknown.
     pub status: String,
-    /// timeout is the duration that a node must be in a given status for,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
     /// after which the node is considered unhealthy.
     /// For example, with a value of "1h", the node must match the status
     /// for at least 1 hour before being considered unhealthy.
-    pub timeout: String,
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
     /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,

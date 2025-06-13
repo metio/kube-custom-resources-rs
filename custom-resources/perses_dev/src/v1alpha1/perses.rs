@@ -943,9 +943,15 @@ pub struct PersesConfig {
     /// Use it in case you want to prefix the API path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub api_prefix: Option<String>,
+    /// Dashboard contains the configuration for the dashboard feature.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub dashboard: Option<PersesConfigDashboard>,
     /// Database contains the different configuration depending on the database you want to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub database: Option<PersesConfigDatabase>,
+    /// Datasource contains the configuration for the datasource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub datasource: Option<PersesConfigDatasource>,
     /// EphemeralDashboard contains the config about the ephemeral dashboard feature
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral_dashboard: Option<PersesConfigEphemeralDashboard>,
@@ -957,20 +963,46 @@ pub struct PersesConfig {
     /// Frontend contains any config that will be used by the frontend itself.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub frontend: Option<PersesConfigFrontend>,
-    /// GlobalDatasourceDiscovery is the configuration that helps to generate a list of global datasource based on the discovery chosen.
-    /// Be careful: the data coming from the discovery will totally override what exists in the database.
-    /// Note that this is an experimental feature. Behavior and config may change in the future.
+    /// Plugin contains the config for runtime plugins.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub global_datasource_discovery: Option<Vec<PersesConfigGlobalDatasourceDiscovery>>,
+    pub plugin: Option<PersesConfigPlugin>,
     /// Provisioning contains the provisioning config that can be used if you want to provide default resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioning: Option<PersesConfigProvisioning>,
     /// Schemas contain the configuration to get access to the CUE schemas
+    /// DEPRECATED.
+    /// Please remove it from your config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schemas: Option<PersesConfigSchemas>,
     /// Security contains any configuration that changes the API behavior like the endpoints exposed or if the permissions are activated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<PersesConfigSecurity>,
+    /// Variable contains the configuration for the variable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variable: Option<PersesConfigVariable>,
+}
+
+/// Dashboard contains the configuration for the dashboard feature.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDashboard {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub custom_lint_rules: Option<Vec<PersesConfigDashboardCustomLintRules>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDashboardCustomLintRules {
+    /// Assertion is a CEL expression that validates the extracted value.
+    /// Refer to https://github.com/google/cel-spec/blob/master/doc/langdef.md for the syntax.
+    pub assertion: String,
+    /// Disable is a flag to disable the rule.
+    pub disable: bool,
+    /// Message is displayed if the assertion fails.
+    pub message: String,
+    /// Name of the rule
+    pub name: String,
+    /// Target is a JSONPath expression to extract the relevant portion of the dashboard data.
+    /// Refer to https://goessner.net/articles/JsonPath/ for the syntax.
+    pub target: String,
 }
 
 /// Database contains the different configuration depending on the database you want to use
@@ -1107,6 +1139,224 @@ pub struct PersesConfigDatabaseSqlTlsConfig {
     pub server_name: Option<String>,
 }
 
+/// Datasource contains the configuration for the datasource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasource {
+    /// DisableLocal when used is preventing the possibility to add a datasource directly in the dashboard spec.
+    /// It will also disable the associated proxy.
+    pub disable_local: bool,
+    pub global: PersesConfigDatasourceGlobal,
+    pub project: PersesConfigDatasourceProject,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobal {
+    /// Disable is used to disable the global datasource feature.
+    /// It will also remove the associated proxy.
+    /// Also, since the global variable depends on the global datasource, it will also disable the global variable feature.
+    pub disable: bool,
+    /// Discovery is the configuration that helps to generate a list of global datasource based on the discovery chosen.
+    /// Be careful: the data coming from the discovery will totally override what exists in the database.
+    /// Note that this is an experimental feature. Behavior and config may change in the future.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discovery: Option<Vec<PersesConfigDatasourceGlobalDiscovery>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscovery {
+    /// HTTP-based service discovery provides a more generic way to generate a set of global datasource and serves as an interface to plug in custom service discovery mechanisms.
+    /// It fetches an HTTP endpoint containing a list of zero or more global datasources.
+    /// The target must reply with an HTTP 200 response.
+    /// The HTTP header Content-Type must be application/json, and the body must be valid array of JSON.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http_sd: Option<PersesConfigDatasourceGlobalDiscoveryHttpSd>,
+    /// Kubernetes SD configurations allow retrieving global datasource from Kubernetes' REST API
+    /// and always staying synchronized with the cluster state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kubernetes_sd: Option<PersesConfigDatasourceGlobalDiscoveryKubernetesSd>,
+    /// The name of the discovery config. It is used for logging purposes only
+    pub name: String,
+    /// Refresh interval to re-query the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refresh_interval: Option<String>,
+}
+
+/// HTTP-based service discovery provides a more generic way to generate a set of global datasource and serves as an interface to plug in custom service discovery mechanisms.
+/// It fetches an HTTP endpoint containing a list of zero or more global datasources.
+/// The target must reply with an HTTP 200 response.
+/// The HTTP header Content-Type must be application/json, and the body must be valid array of JSON.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSd {
+    /// The HTTP authorization credentials for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub authorization: Option<PersesConfigDatasourceGlobalDiscoveryHttpSdAuthorization>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub basic_auth: Option<PersesConfigDatasourceGlobalDiscoveryHttpSdBasicAuth>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub headers: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub native_auth: Option<PersesConfigDatasourceGlobalDiscoveryHttpSdNativeAuth>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub oauth: Option<PersesConfigDatasourceGlobalDiscoveryHttpSdOauth>,
+    /// TLSConfig to use to connect to the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_config: Option<PersesConfigDatasourceGlobalDiscoveryHttpSdTlsConfig>,
+    pub url: String,
+}
+
+/// The HTTP authorization credentials for the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSdAuthorization {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub credentials: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
+    pub credentials_file: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSdBasicAuth {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub password: Option<String>,
+    /// PasswordFile is a path to a file that contains a password
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordFile")]
+    pub password_file: Option<String>,
+    pub username: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSdNativeAuth {
+    pub login: String,
+    pub password: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSdOauth {
+    /// AuthStyle optionally specifies how the endpoint wants the
+    /// client ID & client secret sent. The zero value means to
+    /// auto-detect.
+    #[serde(rename = "authStyle")]
+    pub auth_style: i64,
+    /// ClientID is the application's ID.
+    #[serde(rename = "clientID")]
+    pub client_id: String,
+    /// ClientSecret is the application's secret.
+    #[serde(rename = "clientSecret")]
+    pub client_secret: String,
+    #[serde(rename = "clientSecretFile")]
+    pub client_secret_file: String,
+    /// EndpointParams specifies additional parameters for requests to the token endpoint.
+    #[serde(rename = "endpointParams")]
+    pub endpoint_params: BTreeMap<String, String>,
+    /// Scope specifies optional requested permissions.
+    pub scopes: Vec<String>,
+    /// TokenURL is the resource server's token endpoint
+    /// URL. This is a constant specific to each server.
+    #[serde(rename = "tokenURL")]
+    pub token_url: String,
+}
+
+/// TLSConfig to use to connect to the targets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryHttpSdTlsConfig {
+    /// Text of the CA cert to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca: Option<String>,
+    /// The CA cert to use for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
+    pub ca_file: Option<String>,
+    /// Text of the client cert file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert: Option<String>,
+    /// The client cert file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
+    pub cert_file: Option<String>,
+    /// Disable target certificate validation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
+    pub insecure_skip_verify: Option<bool>,
+    /// Text of the client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The client key file for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
+    pub key_file: Option<String>,
+    /// Maximum acceptable TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).
+    /// If unset, Perses will use Go default maximum version, which is TLS 1.3.
+    /// See MaxVersion in https://pkg.go.dev/crypto/tls#Config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
+    pub max_version: Option<String>,
+    /// Minimum acceptable TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).
+    /// If unset, Perses will use Go default minimum version, which is TLS 1.2.
+    /// See MinVersion in https://pkg.go.dev/crypto/tls#Config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
+    pub min_version: Option<String>,
+    /// Used to verify the hostname for the targets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
+    pub server_name: Option<String>,
+}
+
+/// Kubernetes SD configurations allow retrieving global datasource from Kubernetes' REST API
+/// and always staying synchronized with the cluster state.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryKubernetesSd {
+    /// DatasourcePluginKind is the name of the datasource plugin that should be filled when creating datasources found.
+    pub datasource_plugin_kind: String,
+    /// The labels used to filter the list of resource when contacting the Kubernetes API.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Kubernetes namespace to constraint the query to only one namespace.
+    /// Leave empty if you are looking for datasource cross-namespace.
+    pub namespace: String,
+    /// Configuration when you want to discover the pods in Kubernetes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pod_configuration: Option<PersesConfigDatasourceGlobalDiscoveryKubernetesSdPodConfiguration>,
+    /// Configuration when you want to discover the services in Kubernetes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service_configuration: Option<PersesConfigDatasourceGlobalDiscoveryKubernetesSdServiceConfiguration>,
+}
+
+/// Configuration when you want to discover the pods in Kubernetes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryKubernetesSdPodConfiguration {
+    /// Name of the container the target address points to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container_name: Option<String>,
+    /// Name of the container port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container_port_name: Option<String>,
+    /// Number of the container port.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container_port_number: Option<i32>,
+    /// If set to true, Perses server will discovery the pod
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+}
+
+/// Configuration when you want to discover the services in Kubernetes
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceGlobalDiscoveryKubernetesSdServiceConfiguration {
+    /// If set to true, Perses server will discovery the service
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// Name of the service port for the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port_name: Option<String>,
+    /// Number of the service port for the target.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port_number: Option<i32>,
+    /// The type of the service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub service_type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigDatasourceProject {
+    /// Disable is used to disable the project datasource feature.
+    /// It will also remove the associated proxy.
+    pub disable: bool,
+}
+
 /// EphemeralDashboard contains the config about the ephemeral dashboard feature
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigEphemeralDashboard {
@@ -1154,200 +1404,23 @@ pub struct PersesConfigFrontendImportantDashboards {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigFrontendTimeRange {
     pub disable_custom: bool,
+    pub disable_zoom: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<Vec<String>>,
 }
 
+/// Plugin contains the config for runtime plugins.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscovery {
-    /// The name of the discovery config. It is used for logging purposes only
-    pub discovery_name: String,
-    /// HTTP-based service discovery provides a more generic way to generate a set of global datasource and serves as an interface to plug in custom service discovery mechanisms.
-    /// It fetches an HTTP endpoint containing a list of zero or more global datasources.
-    /// The target must reply with an HTTP 200 response.
-    /// The HTTP header Content-Type must be application/json, and the body must be valid array of JSON.
+pub struct PersesConfigPlugin {
+    /// ArchivePath is the path to the directory containing the archived plugins
+    /// When Perses is starting, it will extract the content of the archive in the folder specified in the `folder` attribute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub http_sd: Option<PersesConfigGlobalDatasourceDiscoveryHttpSd>,
-    /// Kubernetes SD configurations allow retrieving global datasource from Kubernetes' REST API
-    /// and always staying synchronized with the cluster state.
+    pub archive_path: Option<String>,
+    /// DevEnvironment is the configuration to use when developing a plugin
+    pub enable_dev: bool,
+    /// Path is the path to the directory containing the runtime plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubernetes_sd: Option<PersesConfigGlobalDatasourceDiscoveryKubernetesSd>,
-    /// Refresh interval to re-query the endpoint.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub refresh_interval: Option<String>,
-}
-
-/// HTTP-based service discovery provides a more generic way to generate a set of global datasource and serves as an interface to plug in custom service discovery mechanisms.
-/// It fetches an HTTP endpoint containing a list of zero or more global datasources.
-/// The target must reply with an HTTP 200 response.
-/// The HTTP header Content-Type must be application/json, and the body must be valid array of JSON.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSd {
-    /// The HTTP authorization credentials for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub authorization: Option<PersesConfigGlobalDatasourceDiscoveryHttpSdAuthorization>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub basic_auth: Option<PersesConfigGlobalDatasourceDiscoveryHttpSdBasicAuth>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub native_auth: Option<PersesConfigGlobalDatasourceDiscoveryHttpSdNativeAuth>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub oauth: Option<PersesConfigGlobalDatasourceDiscoveryHttpSdOauth>,
-    /// TLSConfig to use to connect to the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tls_config: Option<PersesConfigGlobalDatasourceDiscoveryHttpSdTlsConfig>,
-    pub url: PersesConfigGlobalDatasourceDiscoveryHttpSdUrl,
-}
-
-/// The HTTP authorization credentials for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdAuthorization {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
-    pub credentials_file: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdBasicAuth {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub password: Option<String>,
-    /// PasswordFile is a path to a file that contains a password
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordFile")]
-    pub password_file: Option<String>,
-    pub username: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdNativeAuth {
-    pub login: String,
-    pub password: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdOauth {
-    /// AuthStyle optionally specifies how the endpoint wants the
-    /// client ID & client secret sent. The zero value means to
-    /// auto-detect.
-    #[serde(rename = "authStyle")]
-    pub auth_style: i64,
-    /// ClientID is the application's ID.
-    #[serde(rename = "clientID")]
-    pub client_id: String,
-    /// ClientSecret is the application's secret.
-    #[serde(rename = "clientSecret")]
-    pub client_secret: String,
-    #[serde(rename = "clientSecretfile")]
-    pub client_secretfile: String,
-    /// EndpointParams specifies additional parameters for requests to the token endpoint.
-    #[serde(rename = "endpointParams")]
-    pub endpoint_params: BTreeMap<String, String>,
-    /// Scope specifies optional requested permissions.
-    pub scopes: Vec<String>,
-    /// TokenURL is the resource server's token endpoint
-    /// URL. This is a constant specific to each server.
-    #[serde(rename = "tokenURL")]
-    pub token_url: String,
-}
-
-/// TLSConfig to use to connect to the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdTlsConfig {
-    /// Text of the CA cert to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ca: Option<String>,
-    /// The CA cert to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
-    pub ca_file: Option<String>,
-    /// Text of the client cert file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<String>,
-    /// The client cert file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
-    pub cert_file: Option<String>,
-    /// Disable target certificate validation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
-    pub insecure_skip_verify: Option<bool>,
-    /// Text of the client key file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    /// The client key file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
-    pub key_file: Option<String>,
-    /// Maximum acceptable TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).
-    /// If unset, Perses will use Go default maximum version, which is TLS 1.3.
-    /// See MaxVersion in https://pkg.go.dev/crypto/tls#Config.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
-    pub max_version: Option<String>,
-    /// Minimum acceptable TLS version. Accepted values: TLS10 (TLS 1.0), TLS11 (TLS 1.1), TLS12 (TLS 1.2), TLS13 (TLS 1.3).
-    /// If unset, Perses will use Go default minimum version, which is TLS 1.2.
-    /// See MinVersion in https://pkg.go.dev/crypto/tls#Config.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
-    pub min_version: Option<String>,
-    /// Used to verify the hostname for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
-    pub server_name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryHttpSdUrl {
-}
-
-/// Kubernetes SD configurations allow retrieving global datasource from Kubernetes' REST API
-/// and always staying synchronized with the cluster state.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryKubernetesSd {
-    /// DatasourcePluginKind is the name of the datasource plugin that should be filled when creating datasources found.
-    pub datasource_plugin_kind: String,
-    /// The labels used to filter the list of resource when contacting the Kubernetes API.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    /// Kubernetes namespace to constraint the query to only one namespace.
-    /// Leave empty if you are looking for datasource cross-namespace.
-    pub namespace: String,
-    /// Configuration when you want to discover the pods in Kubernetes
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pod_configuration: Option<PersesConfigGlobalDatasourceDiscoveryKubernetesSdPodConfiguration>,
-    /// Configuration when you want to discover the services in Kubernetes
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service_configuration: Option<PersesConfigGlobalDatasourceDiscoveryKubernetesSdServiceConfiguration>,
-}
-
-/// Configuration when you want to discover the pods in Kubernetes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryKubernetesSdPodConfiguration {
-    /// Name of the container the target address points to.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub container_name: Option<String>,
-    /// Name of the container port.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub container_port_name: Option<String>,
-    /// Number of the container port.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub container_port_number: Option<i32>,
-    /// If set to true, Perses server will discovery the pod
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enable: Option<bool>,
-}
-
-/// Configuration when you want to discover the services in Kubernetes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigGlobalDatasourceDiscoveryKubernetesSdServiceConfiguration {
-    /// If set to true, Perses server will discovery the service
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enable: Option<bool>,
-    /// Name of the service port for the target.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port_name: Option<String>,
-    /// Number of the service port for the target.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port_number: Option<i32>,
-    /// The type of the service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service_type: Option<String>,
+    pub path: Option<String>,
 }
 
 /// Provisioning contains the provisioning config that can be used if you want to provide default resources.
@@ -1361,6 +1434,8 @@ pub struct PersesConfigProvisioning {
 }
 
 /// Schemas contain the configuration to get access to the CUE schemas
+/// DEPRECATED.
+/// Please remove it from your config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigSchemas {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1386,6 +1461,9 @@ pub struct PersesConfigSecurity {
     pub authorization: Option<PersesConfigSecurityAuthorization>,
     /// Cookie configuration
     pub cookie: PersesConfigSecurityCookie,
+    /// Configuration for the CORS middleware.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cors: Option<PersesConfigSecurityCors>,
     /// When it is true, the authentication and authorization config are considered.
     /// And you will need a valid JWT token to contact most of the endpoints exposed by the API
     pub enable_auth: bool,
@@ -1433,7 +1511,7 @@ pub struct PersesConfigSecurityAuthenticationProviders {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigSecurityAuthenticationProvidersOauth {
-    pub auth_url: PersesConfigSecurityAuthenticationProvidersOauthAuthUrl,
+    pub auth_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_credentials: Option<PersesConfigSecurityAuthenticationProvidersOauthClientCredentials>,
     /// Hidden special type for storing secrets.
@@ -1443,22 +1521,18 @@ pub struct PersesConfigSecurityAuthenticationProvidersOauth {
     pub client_secret: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_login_property: Option<String>,
-    pub device_auth_url: PersesConfigSecurityAuthenticationProvidersOauthDeviceAuthUrl,
+    pub device_auth_url: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device_code: Option<PersesConfigSecurityAuthenticationProvidersOauthDeviceCode>,
     pub http: PersesConfigSecurityAuthenticationProvidersOauthHttp,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub redirect_uri: Option<PersesConfigSecurityAuthenticationProvidersOauthRedirectUri>,
+    pub redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
     pub slug_id: String,
-    pub token_url: PersesConfigSecurityAuthenticationProvidersOauthTokenUrl,
-    pub user_infos_url: PersesConfigSecurityAuthenticationProvidersOauthUserInfosUrl,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOauthAuthUrl {
+    pub token_url: String,
+    pub user_infos_url: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1468,10 +1542,6 @@ pub struct PersesConfigSecurityAuthenticationProvidersOauthClientCredentials {
     /// Hidden special type for storing secrets.
     pub client_secret: String,
     pub scopes: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOauthDeviceAuthUrl {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1528,18 +1598,6 @@ pub struct PersesConfigSecurityAuthenticationProvidersOauthHttpTlsConfig {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOauthRedirectUri {
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOauthTokenUrl {
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOauthUserInfosUrl {
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigSecurityAuthenticationProvidersOidc {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_credentials: Option<PersesConfigSecurityAuthenticationProvidersOidcClientCredentials>,
@@ -1552,12 +1610,12 @@ pub struct PersesConfigSecurityAuthenticationProvidersOidc {
     pub device_code: Option<PersesConfigSecurityAuthenticationProvidersOidcDeviceCode>,
     pub disable_pkce: bool,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub discovery_url: Option<PersesConfigSecurityAuthenticationProvidersOidcDiscoveryUrl>,
+    pub discovery_url: Option<String>,
     pub http: PersesConfigSecurityAuthenticationProvidersOidcHttp,
-    pub issuer: PersesConfigSecurityAuthenticationProvidersOidcIssuer,
+    pub issuer: String,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub redirect_uri: Option<PersesConfigSecurityAuthenticationProvidersOidcRedirectUri>,
+    pub redirect_uri: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scopes: Option<Vec<String>>,
     pub slug_id: String,
@@ -1581,10 +1639,6 @@ pub struct PersesConfigSecurityAuthenticationProvidersOidcDeviceCode {
     /// Hidden special type for storing secrets.
     pub client_secret: String,
     pub scopes: Vec<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOidcDiscoveryUrl {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1631,14 +1685,6 @@ pub struct PersesConfigSecurityAuthenticationProvidersOidcHttpTlsConfig {
     pub server_name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOidcIssuer {
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PersesConfigSecurityAuthenticationProvidersOidcRedirectUri {
-}
-
 /// Authorization contains all configs around rbac (permissions and roles)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PersesConfigSecurityAuthorization {
@@ -1669,6 +1715,48 @@ pub struct PersesConfigSecurityCookie {
     pub same_site: Option<i64>,
     /// Set to true if you host Perses behind HTTPS. Default is false
     pub secure: bool,
+}
+
+/// Configuration for the CORS middleware.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigSecurityCors {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow_credentials: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow_headers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow_methods: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow_origins: Option<Vec<String>>,
+    pub enable: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expose_headers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_age: Option<i64>,
+}
+
+/// Variable contains the configuration for the variable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigVariable {
+    /// DisableLocal when used is preventing the possibility to add a variable directly in the dashboard spec.
+    pub disable_local: bool,
+    pub global: PersesConfigVariableGlobal,
+    pub project: PersesConfigVariableProject,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigVariableGlobal {
+    /// Disable is used to disable the global variable feature.
+    /// Note that if the global datasource is disabled, the global variable will also be disabled.
+    pub disable: bool,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PersesConfigVariableProject {
+    /// Disable is used to disable the project variable feature.
+    /// Note that if the global datasource and the project datasource are disabled,
+    /// then the project variable will also be disabled.
+    pub disable: bool,
 }
 
 /// Probe describes a health check to be performed against a container to determine whether it is

@@ -556,6 +556,13 @@ pub struct EC2NodeClassStatusCapacityReservations {
     /// The ID of the AWS account that owns the capacity reservation.
     #[serde(rename = "ownerID")]
     pub owner_id: String,
+    /// The type of capacity reservation.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservationType")]
+    pub reservation_type: Option<EC2NodeClassStatusCapacityReservationsReservationType>,
+    /// The state of the capacity reservation. A capacity reservation is considered to be expiring if it is within the EC2
+    /// reclaimation window. Only capacity-block reservations may be in this state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<EC2NodeClassStatusCapacityReservationsState>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -564,6 +571,22 @@ pub enum EC2NodeClassStatusCapacityReservationsInstanceMatchCriteria {
     Open,
     #[serde(rename = "targeted")]
     Targeted,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum EC2NodeClassStatusCapacityReservationsReservationType {
+    #[serde(rename = "default")]
+    Default,
+    #[serde(rename = "capacity-block")]
+    CapacityBlock,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum EC2NodeClassStatusCapacityReservationsState {
+    #[serde(rename = "active")]
+    Active,
+    #[serde(rename = "expiring")]
+    Expiring,
 }
 
 /// SecurityGroup contains resolved SecurityGroup selector values utilized for node launch
