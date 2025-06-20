@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "fluxinstances.fluxcd.controlplane.io"
 spec:
   group: "fluxcd.controlplane.io"
@@ -50,7 +50,8 @@ spec:
                       description: "Domain is the cluster domain used for generating the FQDN of services.\nDefaults to 'cluster.local'."
                       type: "string"
                     multitenant:
-                      description: "Multitenant enables the multitenancy lockdown."
+                      default: false
+                      description: "Multitenant enables the multitenancy lockdown. Defaults to false."
                       type: "boolean"
                     networkPolicy:
                       default: true
@@ -72,9 +73,6 @@ spec:
                         - "azure"
                         - "gcp"
                       type: "string"
-                  required:
-                    - "domain"
-                    - "networkPolicy"
                   type: "object"
                 commonMetadata:
                   description: "CommonMetadata specifies the common labels and annotations that are\napplied to all resources. Any existing label or annotation will be\noverridden if its key matches a common one."
@@ -91,7 +89,7 @@ spec:
                       type: "object"
                   type: "object"
                 components:
-                  description: "Components is the list of controllers to install.\nDefaults to all controllers."
+                  description: "Components is the list of controllers to install.\nDefaults to a commonly used subset."
                   items:
                     description: "Component is the name of a controller to install."
                     enum:

@@ -31,6 +31,9 @@ pub struct CryostatSpec {
     /// Options to configure the Cryostat application's database.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseOptions")]
     pub database_options: Option<CryostatDatabaseOptions>,
+    /// List of Stored Credentials to preconfigure in Cryostat.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "declarativeCredentials")]
+    pub declarative_credentials: Option<Vec<CryostatDeclarativeCredentials>>,
     /// Use cert-manager to secure in-cluster communication between Cryostat components.
     /// Requires cert-manager to be installed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCertManager")]
@@ -218,6 +221,15 @@ pub struct CryostatDatabaseOptions {
     /// More details: https://kubernetes.io/docs/concepts/configuration/secret/#secret-immutable
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CryostatDeclarativeCredentials {
+    /// Name of secret in the local namespace. The contents of that secret are expected to be a list of json
+    /// representations of stored credentials in the format
+    /// { "username": "$USERNAME", "password": "$PASSWORD", "matchExpression": "$MATCHEXPRESSION" }
+    #[serde(rename = "secretName")]
+    pub secret_name: String,
 }
 
 /// A ConfigMap containing a .jfc template file.

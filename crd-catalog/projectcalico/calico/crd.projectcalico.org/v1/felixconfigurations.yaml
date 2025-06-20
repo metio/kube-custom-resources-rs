@@ -63,7 +63,7 @@ spec:
                     - "Debug"
                   type: "string"
                 bpfConntrackMode:
-                  description: "BPFConntrackCleanupMode controls how BPF conntrack entries are cleaned up.  `Auto` will use a BPF program if supported,\nfalling back to userspace if not.  `Userspace` will always use the userspace cleanup code.  `BPFProgram` will\nalways use the BPF program (failing if not supported).\n[Default: Auto]"
+                  description: "BPFConntrackCleanupMode controls how BPF conntrack entries are cleaned up.  `Auto` will use a BPF program if supported,\nfalling back to userspace if not.  `Userspace` will always use the userspace cleanup code.  `BPFProgram` will\nalways use the BPF program (failing if not supported).\n\n/To be deprecated in future versions as conntrack map type changed to\nlru_hash and userspace cleanup is the only mode that is supported.\n[Default: Userspace]"
                   enum:
                     - "Auto"
                     - "Userspace"
@@ -597,6 +597,9 @@ spec:
                   description: "ReportingTTL is the time-to-live setting for process-wide status reports. [Default: 90s]"
                   pattern: "^([0-9]+(\\\\.[0-9]+)?(ms|s|m|h))*$"
                   type: "string"
+                requireMTUFile:
+                  description: "RequireMTUFile specifies whether mtu file is required to start the felix.\nOptional as to keep the same as previous behavior. [Default: false]"
+                  type: "boolean"
                 routeRefreshInterval:
                   description: "RouteRefreshInterval is the period at which Felix re-checks the routes\nin the dataplane to ensure that no other process has accidentally broken Calico's rules.\nSet to 0 to disable route refresh. [Default: 90s]"
                   pattern: "^([0-9]+(\\\\.[0-9]+)?(ms|s|m|h))*$"

@@ -40,7 +40,7 @@ pub struct AppWrapperComponents {
     /// PodSetInfos assigned to the Component's PodSets by Kueue
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetInfos")]
     pub pod_set_infos: Option<Vec<AppWrapperComponentsPodSetInfos>>,
-    /// DeclaredPodSets for the Component (optional for known PodCreating GVKs)
+    /// DeclaredPodSets for the Component (optional for known GVKs whose PodSets can be automatically inferred)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSets")]
     pub pod_sets: Option<Vec<AppWrapperComponentsPodSets>>,
     /// Template defines the Kubernetes resource for the Component
@@ -105,21 +105,21 @@ pub struct AppWrapperComponentsPodSetInfosTolerations {
     pub value: Option<String>,
 }
 
-/// AppWrapperPodSet describes an homogeneous set of pods
+/// AppWrapperPodSet describes a homogeneous set of pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperComponentsPodSets {
     /// Annotations is an unstructured key value map that may be used to store and retrieve
     /// arbitrary metadata about the PodSet to customize its treatment by the AppWrapper controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Path is the path Component.Template to the PodTemplateSpec for this PodSet
+    /// Path is the path within Component.Template to the PodTemplateSpec for this PodSet
     pub path: String,
     /// Replicas is the number of pods in this PodSet
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
 }
 
-/// AppWrapperStatus defines the observed state of the appwrapper
+/// AppWrapperStatus defines the observed state of the AppWrapper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperStatus {
     /// ComponentStatus parallels the Components array in the Spec and tracks the actually deployed resources
@@ -166,14 +166,14 @@ pub struct AppWrapperStatusComponentStatus {
     pub pod_sets: Vec<AppWrapperStatusComponentStatusPodSets>,
 }
 
-/// AppWrapperPodSet describes an homogeneous set of pods
+/// AppWrapperPodSet describes a homogeneous set of pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppWrapperStatusComponentStatusPodSets {
     /// Annotations is an unstructured key value map that may be used to store and retrieve
     /// arbitrary metadata about the PodSet to customize its treatment by the AppWrapper controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Path is the path Component.Template to the PodTemplateSpec for this PodSet
+    /// Path is the path within Component.Template to the PodTemplateSpec for this PodSet
     pub path: String,
     /// Replicas is the number of pods in this PodSet
     #[serde(default, skip_serializing_if = "Option::is_none")]

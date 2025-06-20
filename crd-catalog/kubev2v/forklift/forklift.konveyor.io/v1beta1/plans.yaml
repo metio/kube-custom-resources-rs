@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.17.0"
   name: "plans.forklift.konveyor.io"
 spec:
   group: "forklift.konveyor.io"
@@ -191,7 +191,7 @@ spec:
                     - "source"
                   type: "object"
                 pvcNameTemplate:
-                  description: "PVCNameTemplate is a template for generating PVC names for VM disks.\nIt follows Go template syntax and has access to the following variables:\n  - .VmName: name of the VM\n  - .PlanName: name of the migration plan\n  - .DiskIndex: initial volume index of the disk\n  - .RootDiskIndex: index of the root disk\n  - .Shared: true if the volume is shared by multiple VMs, false otherwise\nNote:\n  This template can be overridden at the individual VM level.\nExamples:\n  \"{{.VmName}}-disk-{{.DiskIndex}}\"\n  \"{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}\"\n  \"{{if .Shared}}shared-{{end}}{{.VmName}}-{{.DiskIndex}}\""
+                  description: "PVCNameTemplate is a template for generating PVC names for VM disks.\nIt follows Go template syntax and has access to the following variables:\n  - .VmName: name of the VM\n  - .PlanName: name of the migration plan\n  - .DiskIndex: initial volume index of the disk\n  - .WinDriveLetter: Windows drive letter (lower case, if applicable, e.g. \"c\", require guest agent)\n  - .RootDiskIndex: index of the root disk\n  - .Shared: true if the volume is shared by multiple VMs, false otherwise\n  - .FileName: name of the file in the source provider (vmWare only, require guest agent)\nNote:\n  This template can be overridden at the individual VM level.\nExamples:\n  \"{{.VmName}}-disk-{{.DiskIndex}}\"\n  \"{{if eq .DiskIndex .RootDiskIndex}}root{{else}}data{{end}}-{{.DiskIndex}}\"\n  \"{{if .Shared}}shared-{{end}}{{.VmName}}-{{.DiskIndex}}\""
                   type: "string"
                 pvcNameTemplateUseGenerateName:
                   default: true

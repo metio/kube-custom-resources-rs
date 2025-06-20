@@ -4374,7 +4374,6 @@ spec:
                       type: "string"
                   required:
                     - "company_name"
-                    - "resource_mapping"
                   type: "object"
                 logdna:
                   properties:

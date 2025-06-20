@@ -97,6 +97,8 @@ pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
     Vantara,
     #[serde(rename = "ontap")]
     Ontap,
+    #[serde(rename = "primera3par")]
+    Primera3par,
 }
 
 /// Source storage.

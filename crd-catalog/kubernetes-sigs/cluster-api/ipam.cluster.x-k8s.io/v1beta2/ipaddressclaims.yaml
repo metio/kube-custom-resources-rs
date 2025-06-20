@@ -53,19 +53,28 @@ spec:
                   description: "poolRef is a reference to the pool from which an IP address should be created."
                   properties:
                     apiGroup:
-                      description: "APIGroup is the group for the resource being referenced.\nIf APIGroup is not specified, the specified Kind must be in the core API group.\nFor any other third-party types, APIGroup is required."
+                      description: "apiGroup of the IPPool.\napiGroup must be fully qualified domain name."
+                      maxLength: 253
+                      minLength: 1
+                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                       type: "string"
                     kind:
-                      description: "Kind is the type of resource being referenced"
+                      description: "kind of the IPPool.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                      maxLength: 63
+                      minLength: 1
+                      pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
                       type: "string"
                     name:
-                      description: "Name is the name of resource being referenced"
+                      description: "name of the IPPool.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                      maxLength: 253
+                      minLength: 1
+                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                       type: "string"
                   required:
+                    - "apiGroup"
                     - "kind"
                     - "name"
                   type: "object"
-                  x-kubernetes-map-type: "atomic"
               required:
                 - "poolRef"
               type: "object"
@@ -76,11 +85,14 @@ spec:
                   description: "addressRef is a reference to the address that was created for this claim."
                   properties:
                     name:
-                      default: ""
-                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                      description: "name of the IPAddress.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                      maxLength: 253
+                      minLength: 1
+                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                       type: "string"
+                  required:
+                    - "name"
                   type: "object"
-                  x-kubernetes-map-type: "atomic"
                 conditions:
                   description: "conditions represents the observations of a IPAddressClaim's current state.\nKnown condition types are Ready."
                   items:

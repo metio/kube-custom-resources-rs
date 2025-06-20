@@ -6174,6 +6174,7 @@ pub struct ArgoCDSso {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Keycloak contains the configuration for Argo CD keycloak authentication
+    /// Deprecated: This field is planned for removal in a future release and will no longer be supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keycloak: Option<ArgoCDSsoKeycloak>,
     /// Provider installs and configures the given SSO Provider with Argo CD.
@@ -6252,6 +6253,7 @@ pub struct ArgoCDSsoDexResourcesClaims {
 }
 
 /// Keycloak contains the configuration for Argo CD keycloak authentication
+/// Deprecated: This field is planned for removal in a future release and will no longer be supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ArgoCDSsoKeycloak {
     /// Host is the hostname to use for Ingress/Route resources.

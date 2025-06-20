@@ -29,7 +29,7 @@ pub struct FluxInstanceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonMetadata")]
     pub common_metadata: Option<FluxInstanceCommonMetadata>,
     /// Components is the list of controllers to install.
-    /// Defaults to all controllers.
+    /// Defaults to a commonly used subset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<String>>,
     /// Distribution specifies the version and container registry to pull images from.
@@ -67,14 +67,15 @@ pub struct FluxInstanceSpec {
 pub struct FluxInstanceCluster {
     /// Domain is the cluster domain used for generating the FQDN of services.
     /// Defaults to 'cluster.local'.
-    pub domain: String,
-    /// Multitenant enables the multitenancy lockdown.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub domain: Option<String>,
+    /// Multitenant enables the multitenancy lockdown. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub multitenant: Option<bool>,
     /// NetworkPolicy restricts network access to the current namespace.
     /// Defaults to true.
-    #[serde(rename = "networkPolicy")]
-    pub network_policy: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<bool>,
     /// ObjectLevelWorkloadIdentity enables the feature gate
     /// required for object-level workload identity.
     /// This feature is only available in Flux v2.6.0 and later.

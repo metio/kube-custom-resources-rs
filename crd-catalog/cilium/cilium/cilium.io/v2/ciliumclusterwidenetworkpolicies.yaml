@@ -2115,6 +2115,15 @@ spec:
                       - "key"
                     type: "object"
                   type: "array"
+                log:
+                  description: "Log specifies custom policy-specific Hubble logging configuration."
+                  properties:
+                    value:
+                      description: "Value is a free-form string that is included in Hubble flows\nthat match this policy. The string is limited to 32 printable characters."
+                      maxLength: 32
+                      pattern: "^\\PC*$"
+                      type: "string"
+                  type: "object"
                 nodeSelector:
                   description: "NodeSelector selects all nodes which should be subject to this rule.\nEndpointSelector and NodeSelector cannot be both empty and are mutually\nexclusive. Can only be used in CiliumClusterwideNetworkPolicies."
                   properties:
@@ -4239,6 +4248,15 @@ spec:
                         - "key"
                       type: "object"
                     type: "array"
+                  log:
+                    description: "Log specifies custom policy-specific Hubble logging configuration."
+                    properties:
+                      value:
+                        description: "Value is a free-form string that is included in Hubble flows\nthat match this policy. The string is limited to 32 printable characters."
+                        maxLength: 32
+                        pattern: "^\\PC*$"
+                        type: "string"
+                    type: "object"
                   nodeSelector:
                     description: "NodeSelector selects all nodes which should be subject to this rule.\nEndpointSelector and NodeSelector cannot be both empty and are mutually\nexclusive. Can only be used in CiliumClusterwideNetworkPolicies."
                     properties:

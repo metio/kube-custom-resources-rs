@@ -76,7 +76,7 @@ spec:
                     - "plural"
                   type: "object"
                 connectionSecretKeys:
-                  description: "ConnectionSecretKeys is the list of keys that will be exposed to the end\nuser of the defined kind.\nIf the list is empty, all keys will be published."
+                  description: "ConnectionSecretKeys is the list of connection secret keys the\ndefined XR can publish. If the list is empty, all keys will be\npublished. If the list isn't empty, any connection secret keys that\ndon't appear in the list will be filtered out. Only LegacyCluster XRs\nsupport connection secrets.\n\nDeprecated: XR connection secrets aren't supported in\napiextensions.crossplane.io/v2. Compose a secret instead."
                   items:
                     type: "string"
                   type: "array"
@@ -307,6 +307,8 @@ spec:
               x-kubernetes-validations:
                 - message: "Claims aren't supported in apiextensions.crossplane.io/v2"
                   rule: "!has(self.claimNames)"
+                - message: "XR connection secrets aren't supported in apiextensions.crossplane.io/v2"
+                  rule: "!has(self.connectionSecretKeys)"
             status:
               description: "CompositeResourceDefinitionStatus shows the observed state of the definition."
               properties:

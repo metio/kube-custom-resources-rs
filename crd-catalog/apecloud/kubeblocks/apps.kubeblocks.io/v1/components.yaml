@@ -342,6 +342,10 @@ spec:
                       - "name"
                     type: "object"
                   type: "array"
+                flatInstanceOrdinal:
+                  default: false
+                  description: "flatInstanceOrdinal controls whether the naming of instances(pods) under this component uses a flattened,\nglobally uniquely ordinal scheme, regardless of the instance template.\n\n\nDefaults to false."
+                  type: "boolean"
                 instanceUpdateStrategy:
                   description: "Provides fine-grained control over the spec update process of all instances."
                   properties:
@@ -471,12 +475,12 @@ spec:
                         description: "Specifies a map of key-value pairs that will be merged into the Pod's existing labels.\nValues for existing keys will be overwritten, and new keys will be added."
                         type: "object"
                       name:
-                        description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate.\nThis name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal\nusing the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.\nThe specified name overrides any default naming conventions or patterns."
+                        description: "Name specifies the unique name of the instance Pod created using this InstanceTemplate.\nThis name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal\nusing the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.\nThe name can't be empty."
                         maxLength: 54
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                       ordinals:
-                        description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
+                        description: "Specifies the desired Ordinals of this InstanceTemplate.\nThe Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.\nIf Ordinals are defined, their number must be equal to or more than the corresponding replicas.\n\n\nFor example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},\nthen the instance names generated under this InstanceTemplate would be\n$(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and\n$(cluster.name)-$(component.name)-$(template.name)-7"
                         properties:
                           discrete:
                             items:
@@ -485,7 +489,7 @@ spec:
                             type: "array"
                           ranges:
                             items:
-                              description: "Range represents a range with a start and an end value.\nIt is used to define a continuous segment."
+                              description: "Range represents a range with a start and an end value. Both start and end are included.\nIt is used to define a continuous segment."
                               properties:
                                 end:
                                   format: "int32"

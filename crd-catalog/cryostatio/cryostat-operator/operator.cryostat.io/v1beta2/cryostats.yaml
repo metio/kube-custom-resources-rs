@@ -142,6 +142,17 @@ spec:
                       description: "Name of the secret containing database keys. This secret must contain a CONNECTION_KEY secret which is the\ndatabase connection password, and an ENCRYPTION_KEY secret which is the key used to encrypt sensitive data\nstored within the database, such as the target credentials keyring. This field cannot be updated.\nIt is recommended that the secret should be marked as immutable to avoid accidental changes to secret's data.\nMore details: https://kubernetes.io/docs/concepts/configuration/secret/#secret-immutable"
                       type: "string"
                   type: "object"
+                declarativeCredentials:
+                  description: "List of Stored Credentials to preconfigure in Cryostat."
+                  items:
+                    properties:
+                      secretName:
+                        description: "Name of secret in the local namespace. The contents of that secret are expected to be a list of json\nrepresentations of stored credentials in the format\n{ \"username\": \"$USERNAME\", \"password\": \"$PASSWORD\", \"matchExpression\": \"$MATCHEXPRESSION\" }"
+                        type: "string"
+                    required:
+                      - "secretName"
+                    type: "object"
+                  type: "array"
                 enableCertManager:
                   description: "Use cert-manager to secure in-cluster communication between Cryostat components.\nRequires cert-manager to be installed."
                   type: "boolean"

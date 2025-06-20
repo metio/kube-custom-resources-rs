@@ -26,8 +26,8 @@ pub struct RayJobSpec {
     pub backoff_limit: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterSelector")]
     pub cluster_selector: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
-    pub deletion_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionStrategy")]
+    pub deletion_strategy: Option<RayJobDeletionStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entrypoint: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "entrypointNumCpus")]
@@ -58,6 +58,24 @@ pub struct RayJobSpec {
     pub suspend: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobDeletionStrategy {
+    #[serde(rename = "onFailure")]
+    pub on_failure: RayJobDeletionStrategyOnFailure,
+    #[serde(rename = "onSuccess")]
+    pub on_success: RayJobDeletionStrategyOnSuccess,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobDeletionStrategyOnFailure {
+    pub policy: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RayJobDeletionStrategyOnSuccess {
+    pub policy: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

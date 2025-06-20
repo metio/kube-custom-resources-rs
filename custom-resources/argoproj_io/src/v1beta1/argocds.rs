@@ -33,6 +33,9 @@ pub struct ArgoCDSpec {
     /// Banner defines an additional banner to be displayed in Argo CD UI
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub banner: Option<ArgoCDBanner>,
+    /// CmdParams specifies command-line parameters for the Argo CD components.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cmdParams")]
+    pub cmd_params: Option<BTreeMap<String, String>>,
     /// Deprecated: ConfigManagementPlugins field is no longer supported. Argo CD now requires plugins to be defined as sidecar containers of repo server component. See '.spec.repo.sidecarContainers'. ConfigManagementPlugins was previously used to specify additional config management plugins.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configManagementPlugins")]
     pub config_management_plugins: Option<String>,

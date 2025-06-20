@@ -31,8 +31,9 @@ pub struct CouchbaseCollectionGroupSpec {
     /// pager is run, or the bucket is compacted.  When set to 0, then documents are not
     /// expired by default.  This field must either be a duration in the range 0-2147483648s or "-1",
     /// defaulting to 0. If set to "-1", the collection's bucket will be prevented from setting a
-    /// default expiration on the collection's documents. More info:
-    /// https://golang.org/pkg/time/#ParseDuration
+    /// default expiration on the collection's documents. While this field can be changed on the CRD,
+    /// it will not be updated on the collection if the Couchbase Server version is pre 7.6.0.
+    /// More info: https://golang.org/pkg/time/#ParseDuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTTL")]
     pub max_ttl: Option<String>,
     /// Names specifies the names of the collections.  Unlike CouchbaseCollection, which

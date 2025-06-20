@@ -1521,8 +1521,7 @@ pub struct PerconaServerMySQLBackupStoragesAffinityPodAntiAffinityRequiredDuring
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLBackupStoragesAzure {
-    #[serde(rename = "containerName")]
-    pub container_name: String,
+    pub container: String,
     #[serde(rename = "credentialsSecret")]
     pub credentials_secret: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
@@ -5164,14 +5163,14 @@ pub struct PerconaServerMySQLPmm {
     pub image: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlParams")]
+    pub mysql_params: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaServerMySQLPmmResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHost")]
     pub server_host: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverUser")]
-    pub server_user: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7667,6 +7666,8 @@ pub struct PerconaServerMySQLStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLStatusHaproxy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
+    pub image_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7679,6 +7680,8 @@ pub struct PerconaServerMySQLStatusHaproxy {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLStatusMysql {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
+    pub image_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7691,6 +7694,8 @@ pub struct PerconaServerMySQLStatusMysql {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLStatusOrchestrator {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
+    pub image_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7703,6 +7708,8 @@ pub struct PerconaServerMySQLStatusOrchestrator {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLStatusRouter {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageID")]
+    pub image_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

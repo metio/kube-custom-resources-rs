@@ -93,6 +93,8 @@ pub struct ResourceSetDependsOn {
     pub ready_expr: Option<String>,
 }
 
+/// InputProviderReference defines a reference to an input provider resource
+/// in the same namespace as the ResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ResourceSetInputsFrom {
     /// APIVersion of the input provider resource.
@@ -111,6 +113,8 @@ pub struct ResourceSetInputsFrom {
     pub selector: Option<ResourceSetInputsFromSelector>,
 }
 
+/// InputProviderReference defines a reference to an input provider resource
+/// in the same namespace as the ResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ResourceSetInputsFromKind {
     ResourceSetInputProvider,

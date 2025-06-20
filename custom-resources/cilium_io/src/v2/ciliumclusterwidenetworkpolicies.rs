@@ -73,6 +73,9 @@ pub struct CiliumClusterwideNetworkPolicySpec {
     /// unique, multiple rules can have overlapping or identical labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<CiliumClusterwideNetworkPolicyLabels>>,
+    /// Log specifies custom policy-specific Hubble logging configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub log: Option<CiliumClusterwideNetworkPolicyLog>,
     /// NodeSelector selects all nodes which should be subject to this rule.
     /// EndpointSelector and NodeSelector cannot be both empty and are mutually
     /// exclusive. Can only be used in CiliumClusterwideNetworkPolicies.
@@ -2784,6 +2787,15 @@ pub struct CiliumClusterwideNetworkPolicyLabels {
     pub value: Option<String>,
 }
 
+/// Log specifies custom policy-specific Hubble logging configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicyLog {
+    /// Value is a free-form string that is included in Hubble flows
+    /// that match this policy. The string is limited to 32 printable characters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
 /// NodeSelector selects all nodes which should be subject to this rule.
 /// EndpointSelector and NodeSelector cannot be both empty and are mutually
 /// exclusive. Can only be used in CiliumClusterwideNetworkPolicies.
@@ -2892,6 +2904,9 @@ pub struct CiliumClusterwideNetworkPolicys {
     /// unique, multiple rules can have overlapping or identical labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<CiliumClusterwideNetworkPolicysLabels>>,
+    /// Log specifies custom policy-specific Hubble logging configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub log: Option<CiliumClusterwideNetworkPolicysLog>,
     /// NodeSelector selects all nodes which should be subject to this rule.
     /// EndpointSelector and NodeSelector cannot be both empty and are mutually
     /// exclusive. Can only be used in CiliumClusterwideNetworkPolicies.
@@ -5599,6 +5614,15 @@ pub struct CiliumClusterwideNetworkPolicysLabels {
     /// Source can be one of the above values (e.g.: LabelSourceContainer).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// Log specifies custom policy-specific Hubble logging configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CiliumClusterwideNetworkPolicysLog {
+    /// Value is a free-form string that is included in Hubble flows
+    /// that match this policy. The string is limited to 32 printable characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }

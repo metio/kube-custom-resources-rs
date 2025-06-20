@@ -30,14 +30,15 @@ pub struct IPAddressClaimSpec {
 /// poolRef is a reference to the pool from which an IP address should be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimPoolRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
-    pub api_group: Option<String>,
-    /// Kind is the type of resource being referenced
+    /// apiGroup of the IPPool.
+    /// apiGroup must be fully qualified domain name.
+    #[serde(rename = "apiGroup")]
+    pub api_group: String,
+    /// kind of the IPPool.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
-    /// Name is the name of resource being referenced
+    /// name of the IPPool.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
 }
 
@@ -59,13 +60,9 @@ pub struct IPAddressClaimStatus {
 /// addressRef is a reference to the address that was created for this claim.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimStatusAddressRef {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// name of the IPAddress.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// deprecated groups all the status fields that are deprecated and will be removed when all the nested field are removed.

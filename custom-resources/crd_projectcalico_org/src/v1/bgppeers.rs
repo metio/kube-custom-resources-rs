@@ -15,8 +15,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BGPPeerSpec {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "NextHopMode")]
-    pub next_hop_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "asNumber")]
     pub as_number: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -27,6 +25,8 @@ pub struct BGPPeerSpec {
     pub local_workload_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestartTime")]
     pub max_restart_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextHopMode")]
+    pub next_hop_mode: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub node: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]

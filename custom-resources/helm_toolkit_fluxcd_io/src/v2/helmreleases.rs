@@ -28,6 +28,11 @@ pub struct HelmReleaseSpec {
     /// Helm chart artifact.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartRef")]
     pub chart_ref: Option<HelmReleaseChartRef>,
+    /// CommonMetadata specifies the common labels and annotations that are
+    /// applied to all resources. Any existing label or annotation will be
+    /// overridden if its key matches a common one.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonMetadata")]
+    pub common_metadata: Option<HelmReleaseCommonMetadata>,
     /// DependsOn may contain a meta.NamespacedObjectReference slice with
     /// references to HelmRelease resources that must be ready before this HelmRelease
     /// can be reconciled.
@@ -278,6 +283,19 @@ pub enum HelmReleaseChartRefKind {
     #[serde(rename = "OCIRepository")]
     OciRepository,
     HelmChart,
+}
+
+/// CommonMetadata specifies the common labels and annotations that are
+/// applied to all resources. Any existing label or annotation will be
+/// overridden if its key matches a common one.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseCommonMetadata {
+    /// Annotations to be added to the object's metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels to be added to the object's metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any
@@ -902,6 +920,10 @@ pub struct HelmReleaseStatus {
     /// Deprecated: Use History instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReleaseRevision")]
     pub last_release_revision: Option<i64>,
+    /// ObservedCommonMetadataDigest is the digest for the common metadata of
+    /// the last successful reconciliation attempt.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedCommonMetadataDigest")]
+    pub observed_common_metadata_digest: Option<String>,
     /// ObservedGeneration is the last observed generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,

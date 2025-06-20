@@ -1885,7 +1885,7 @@ spec:
                             type: "object"
                           azure:
                             properties:
-                              containerName:
+                              container:
                                 type: "string"
                               credentialsSecret:
                                 type: "string"
@@ -1896,7 +1896,7 @@ spec:
                               storageClass:
                                 type: "string"
                             required:
-                              - "containerName"
+                              - "container"
                               - "credentialsSecret"
                             type: "object"
                           containerSecurityContext:
@@ -6412,6 +6412,8 @@ spec:
                       type: "string"
                     imagePullPolicy:
                       type: "string"
+                    mysqlParams:
+                      type: "string"
                     resources:
                       properties:
                         claims:
@@ -6448,8 +6450,6 @@ spec:
                     runtimeClassName:
                       type: "string"
                     serverHost:
-                      type: "string"
-                    serverUser:
                       type: "string"
                   required:
                     - "image"
@@ -9396,6 +9396,12 @@ spec:
                   rule: "!(self.mysql.clusterType == 'async') || self.unsafeFlags.proxy || self.proxy.haproxy.enabled"
                 - message: "Invalid configuration: When 'mysql.clusterType' is set to 'async', 'proxy.router.enabled' must be disabled"
                   rule: "!(self.mysql.clusterType == 'async') || self.proxy.router == null || !has(self.proxy.router.enabled) || !self.proxy.router.enabled"
+                - message: "Invalid configuration: Scaling MySQL replicas below 3 requires 'unsafeFlags.mysqlSize: true'"
+                  rule: "!(has(self.mysql.size) && self.mysql.size < 3) || self.unsafeFlags.mysqlSize"
+                - message: "Invalid configuration: For 'group replication', scaling MySQL replicas above 9 requires 'unsafeFlags.mysqlSize: true'"
+                  rule: "!(self.mysql.clusterType == 'group-replication' && has(self.mysql.size) && self.mysql.size >= 9) || self.unsafeFlags.mysqlSize"
+                - message: "Invalid configuration: For 'group replication', using an even number of MySQL replicas requires 'unsafeFlags.mysqlSize: true'"
+                  rule: "!(self.mysql.clusterType == 'group-replication' && has(self.mysql.size) && self.mysql.size % 2 == 0) || self.unsafeFlags.mysqlSize"
             status:
               properties:
                 backupVersion:
@@ -9438,6 +9444,8 @@ spec:
                   type: "array"
                 haproxy:
                   properties:
+                    imageID:
+                      type: "string"
                     ready:
                       format: "int32"
                       type: "integer"
@@ -9453,6 +9461,8 @@ spec:
                   type: "string"
                 mysql:
                   properties:
+                    imageID:
+                      type: "string"
                     ready:
                       format: "int32"
                       type: "integer"
@@ -9466,6 +9476,8 @@ spec:
                   type: "object"
                 orchestrator:
                   properties:
+                    imageID:
+                      type: "string"
                     ready:
                       format: "int32"
                       type: "integer"
@@ -9481,6 +9493,8 @@ spec:
                   type: "string"
                 router:
                   properties:
+                    imageID:
+                      type: "string"
                     ready:
                       format: "int32"
                       type: "integer"

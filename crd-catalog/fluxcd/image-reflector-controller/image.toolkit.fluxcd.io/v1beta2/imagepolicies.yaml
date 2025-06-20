@@ -10,6 +10,9 @@ spec:
     kind: "ImagePolicy"
     listKind: "ImagePolicyList"
     plural: "imagepolicies"
+    shortNames:
+      - "imgpol"
+      - "imagepol"
     singular: "imagepolicy"
   scope: "Namespaced"
   versions:

@@ -385,8 +385,7 @@ pub struct PerconaServerMySQLRestoreBackupSourceStorageAffinityPodAntiAffinityRe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLRestoreBackupSourceStorageAzure {
-    #[serde(rename = "containerName")]
-    pub container_name: String,
+    pub container: String,
     #[serde(rename = "credentialsSecret")]
     pub credentials_secret: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]

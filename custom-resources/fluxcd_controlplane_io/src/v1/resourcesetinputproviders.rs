@@ -36,6 +36,9 @@ pub struct ResourceSetInputProviderSpec {
     /// Filter defines the filter to apply to the input provider response.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filter: Option<ResourceSetInputProviderFilter>,
+    /// Schedule defines the schedules for the input provider to run.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schedule: Option<Vec<ResourceSetInputProviderSchedule>>,
     /// SecretRef specifies the Kubernetes Secret containing the basic-auth credentials
     /// to access the input provider. The secret must contain the keys
     /// 'username' and 'password'.
@@ -86,6 +89,23 @@ pub struct ResourceSetInputProviderFilter {
     /// When not set, the default limit is 100.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
+    /// Semver specifies the semantic version range to filter and order the tags.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub semver: Option<String>,
+}
+
+/// Schedule defines a schedule for something to run.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetInputProviderSchedule {
+    /// Cron specifies the cron expression for the schedule.
+    pub cron: String,
+    /// TimeZone specifies the time zone for the cron schedule. Defaults to UTC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
+    /// Window defines the time window during which the execution is allowed.
+    /// Defaults to 0s, meaning no window is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window: Option<String>,
 }
 
 /// SecretRef specifies the Kubernetes Secret containing the basic-auth credentials
@@ -113,9 +133,14 @@ pub struct ResourceSetInputProviderSkip {
 pub enum ResourceSetInputProviderType {
     Static,
     GitHubBranch,
+    GitHubTag,
     GitHubPullRequest,
     GitLabBranch,
+    GitLabTag,
     GitLabMergeRequest,
+    AzureDevOpsBranch,
+    AzureDevOpsTag,
+    AzureDevOpsPullRequest,
 }
 
 /// ResourceSetInputProviderStatus defines the observed state of ResourceSetInputProvider.
@@ -131,10 +156,34 @@ pub struct ResourceSetInputProviderStatus {
     /// inputs that were last reconcile.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastExportedRevision")]
     pub last_exported_revision: Option<String>,
+    /// LastHandledForceAt holds the value of the most recent
+    /// force request value, so a change of the annotation value
+    /// can be detected.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
+    pub last_handled_force_at: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
+    /// NextSchedule is the next schedule when the input provider will run.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextSchedule")]
+    pub next_schedule: Option<ResourceSetInputProviderStatusNextSchedule>,
+}
+
+/// NextSchedule is the next schedule when the input provider will run.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetInputProviderStatusNextSchedule {
+    /// Cron specifies the cron expression for the schedule.
+    pub cron: String,
+    /// TimeZone specifies the time zone for the cron schedule. Defaults to UTC.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
+    pub time_zone: Option<String>,
+    /// When is the next time the schedule will run.
+    pub when: String,
+    /// Window defines the time window during which the execution is allowed.
+    /// Defaults to 0s, meaning no window is applied.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub window: Option<String>,
 }
 

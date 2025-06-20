@@ -26,6 +26,7 @@ pub struct InstanceSetSpec {
     pub configs: Option<Vec<InstanceSetConfigs>>,
     /// Specifies the desired Ordinals of the default template.
     /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
     /// 
     /// 
     /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -36,6 +37,13 @@ pub struct InstanceSetSpec {
     /// Specifies whether to create the default headless service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultHeadlessService")]
     pub disable_default_headless_service: Option<bool>,
+    /// flatInstanceOrdinal controls whether the naming of instances(pods) under this component uses a flattened,
+    /// globally uniquely ordinal scheme, regardless of the instance template.
+    /// 
+    /// 
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flatInstanceOrdinal")]
+    pub flat_instance_ordinal: Option<bool>,
     /// Provides fine-grained control over the spec update process of all instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
     pub instance_update_strategy: Option<InstanceSetInstanceUpdateStrategy>,
@@ -50,8 +58,6 @@ pub struct InstanceSetSpec {
     /// allowing the InstanceSet to manage instances from different templates.
     /// 
     /// 
-    /// The naming convention for instances (pods) based on the InstanceSet Name, InstanceTemplate Name, and ordinal.
-    /// The constructed instance name follows the pattern: $(instance_set.name)-$(template.name)-$(ordinal).
     /// By default, the ordinal starts from 0 for each InstanceTemplate.
     /// It is important to ensure that the Name of each InstanceTemplate is unique.
     /// 
@@ -438,6 +444,7 @@ pub struct InstanceSetConfigsReconfigureRetryPolicy {
 
 /// Specifies the desired Ordinals of the default template.
 /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under the default template.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
 /// 
 /// 
 /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -451,7 +458,7 @@ pub struct InstanceSetDefaultTemplateOrdinals {
     pub ranges: Option<Vec<InstanceSetDefaultTemplateOrdinalsRanges>>,
 }
 
-/// Range represents a range with a start and an end value.
+/// Range represents a range with a start and an end value. Both start and end are included.
 /// It is used to define a continuous segment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetDefaultTemplateOrdinalsRanges {
@@ -661,7 +668,7 @@ pub struct InstanceSetInstancesOrdinals {
     pub ranges: Option<Vec<InstanceSetInstancesOrdinalsRanges>>,
 }
 
-/// Range represents a range with a start and an end value.
+/// Range represents a range with a start and an end value. Both start and end are included.
 /// It is used to define a continuous segment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstanceSetInstancesOrdinalsRanges {
@@ -9328,6 +9335,9 @@ pub struct InstanceSetStatus {
     /// InstanceSet's generation, which is updated on mutation by the API Server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
+    /// Ordinals is the ordinals used by the instances of the InstanceSet except the template instances.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<Vec<i64>>,
     /// Represents the number of instances that have already reached the MembersStatus during the cluster initialization stage.
     /// This value remains constant once it equals InitReplicas.
     /// Used only when spec.roles set.
@@ -9444,6 +9454,9 @@ pub struct InstanceSetStatusTemplatesStatus {
     pub current_replicas: Option<i32>,
     /// Name, the name of the InstanceTemplate.
     pub name: String,
+    /// Ordinals is the ordinals used by the instances of the InstanceTemplate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<Vec<i64>>,
     /// ReadyReplicas is the number of Pods that have a Ready Condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
