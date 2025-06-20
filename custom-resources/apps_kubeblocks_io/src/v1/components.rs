@@ -47,6 +47,13 @@ pub struct ComponentSpec {
     /// List of environment variables to add.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentEnv>>,
+    /// flatInstanceOrdinal controls whether the naming of instances(pods) under this component uses a flattened,
+    /// globally uniquely ordinal scheme, regardless of the instance template.
+    /// 
+    /// 
+    /// Defaults to false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flatInstanceOrdinal")]
+    pub flat_instance_ordinal: Option<bool>,
     /// Provides fine-grained control over the spec update process of all instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
     pub instance_update_strategy: Option<ComponentInstanceUpdateStrategy>,
@@ -727,10 +734,11 @@ pub struct ComponentInstances {
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate.
     /// This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
-    /// The specified name overrides any default naming conventions or patterns.
+    /// The name can't be empty.
     pub name: String,
     /// Specifies the desired Ordinals of this InstanceTemplate.
     /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
     /// 
     /// 
     /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -860,6 +868,7 @@ pub struct ComponentInstancesEnvValueFromSecretKeyRef {
 
 /// Specifies the desired Ordinals of this InstanceTemplate.
 /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
 /// 
 /// 
 /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -874,7 +883,7 @@ pub struct ComponentInstancesOrdinals {
     pub ranges: Option<Vec<ComponentInstancesOrdinalsRanges>>,
 }
 
-/// Range represents a range with a start and an end value.
+/// Range represents a range with a start and an end value. Both start and end are included.
 /// It is used to define a continuous segment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentInstancesOrdinalsRanges {

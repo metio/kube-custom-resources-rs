@@ -41,7 +41,7 @@ pub struct InstallationSpec {
     /// CalicoWindowsUpgradeDaemonSet configures the calico-windows-upgrade DaemonSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoWindowsUpgradeDaemonSet")]
     pub calico_windows_upgrade_daemon_set: Option<InstallationCalicoWindowsUpgradeDaemonSet>,
-    /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+    /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
     /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
     /// pods will be stuck during initialization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateManagement")]
@@ -4166,7 +4166,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations 
     pub value: Option<String>,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4189,7 +4189,7 @@ pub struct InstallationCertificateManagement {
     pub signer_name: String,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -4210,7 +4210,7 @@ pub enum InstallationCertificateManagementKeyAlgorithm {
     EcdsaWithCurve521,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -6881,7 +6881,7 @@ pub struct InstallationStatusComputed {
     /// CalicoWindowsUpgradeDaemonSet configures the calico-windows-upgrade DaemonSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoWindowsUpgradeDaemonSet")]
     pub calico_windows_upgrade_daemon_set: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSet>,
-    /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+    /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
     /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
     /// pods will be stuck during initialization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateManagement")]
@@ -11006,7 +11006,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
     pub value: Option<String>,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -11029,7 +11029,7 @@ pub struct InstallationStatusComputedCertificateManagement {
     pub signer_name: String,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -11050,7 +11050,7 @@ pub enum InstallationStatusComputedCertificateManagementKeyAlgorithm {
     EcdsaWithCurve521,
 }
 
-/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
+/// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1 API in order
 /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
 /// pods will be stuck during initialization.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

@@ -329,7 +329,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ObjectReference>,
+    pub remediation_template: Option<ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
@@ -353,38 +353,17 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the remediation template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the remediation template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the remediation template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout
@@ -612,7 +591,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ObjectReference>,
+    pub remediation_template: Option<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
@@ -636,38 +615,17 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the remediation template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the remediation template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the remediation template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout

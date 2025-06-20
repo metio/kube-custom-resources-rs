@@ -62,8 +62,14 @@ pub enum BackupStorageType {
 /// BackupStorageStatus defines the observed state of BackupStorage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupStorageStatus {
+    /// InUse is a flag that indicates if any DB cluster uses the backup storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inUse")]
+    pub in_use: Option<bool>,
+    /// LastObservedGeneration is the most recent generation observed for this BackupStorage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastObservedGeneration")]
+    pub last_observed_generation: Option<i64>,
     /// Deprecated: BackupStorages are now used only in the namespaces where they are created.
-    #[serde(rename = "usedNamespaces")]
-    pub used_namespaces: BTreeMap<String, bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usedNamespaces")]
+    pub used_namespaces: Option<BTreeMap<String, bool>>,
 }
 

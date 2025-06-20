@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    config.couchbase.com/version: "2.8.0"
+    config.couchbase.com/version: "2.8.1"
     controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "couchbaseclusters.couchbase.com"
 spec:
@@ -297,7 +297,7 @@ spec:
                       properties:
                         databaseFragmentationThreshold:
                           default: {}
-                          description: "DatabaseFragmentationThreshold defines triggers for when database compaction should start."
+                          description: "DatabaseFragmentationThreshold defines the default database fragmentation level to determine the point when compaction is triggered for buckets with a couchstore storage backend."
                           properties:
                             percent:
                               default: 30
@@ -881,6 +881,32 @@ spec:
                       description: "MaxConcurrentMigrations is the maximum number of nodes migrations the operator will run concurrently."
                       minimum: 1.0
                       type: "integer"
+                    migrationOrderOverride:
+                      description: "MigrationOrderOverride defines the strategy for migration order. If not set then the operator will choose nodes at random."
+                      properties:
+                        migrationOrderOverrideStrategy:
+                          description: "MigrationOrderOverrideStrategy defines the strategy for migration order. When not set, the operator will choose nodes at random.\nWhen ByServerGroup is set, the operator will migrate nodes in the order of the server groups defined in spec.migration.migrationOrderOverride.serverGroupOrder.\nIf spec.migration.migrationOrderOverride.serverGroupOrder is not set, the operator will migrate the server groups in alphabetical order.\nWhen ByServerClass is set, the operator will migrate nodes in the order of the server classes defined in spec.migration.migrationOrderOverride.serverClassOrder.\nIf spec.migration.migrationOrderOverride.serverClassOrder is not set, the operator will migrate the server classes in the order of the server classes defined in spec.servers.\nWhen ByNode is set, the operator will migrate nodes in the order of the nodes defined in spec.migration.migrationOrderOverride.nodeOrder.\nIf spec.migration.migrationOrderOverride.nodeOrder is not set, the operator will migrate the nodes in alphabetical order."
+                          enum:
+                            - "ByServerGroup"
+                            - "ByServerClass"
+                            - "ByNode"
+                          type: "string"
+                        nodeOrder:
+                          description: "NodeOrder defines the order of nodes for migration."
+                          items:
+                            type: "string"
+                          type: "array"
+                        serverClassOrder:
+                          description: "ServerClassOrder defines the order of server classes for migration."
+                          items:
+                            type: "string"
+                          type: "array"
+                        serverGroupOrder:
+                          description: "ServerGroupOrder defines the order of server groups for migration."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                     numUnmanagedNodes:
                       description: "NumUnmanagedNodes is the number of nodes the operator will leave in the cluster unmigrated.\nThis is useful for controlling how much of the cluster to migrate over at a time. If not specified\nthe operator will migrate all nodes.\ne.g. if the unmanaged cluster has 10 nodes and NumUnmanagedNodes is set to 2, then the operator will\nmigrate 8 nodes to Kubernetes and leave 2 nodes."
                       type: "integer"
@@ -1403,7 +1429,7 @@ spec:
                   type: "boolean"
                 perServiceClassPDB:
                   default: false
-                  description: "PerServiceClassPDB allows pod disruption budgets to be created on a\nper-serviceClass basis."
+                  description: "PerServiceClassPDB determines whether a pod disruption budget (PDB) should be created for each service class.\nBy default, a single PDB will be created for the cluster with a minAvailable value of one less than the total number of requested Couchbase nodes in the cluster,\nmeaning only a single Couchbase node can be voluntarily disrupted at a time. When this field is set to true, a PDB will be created for each\nservice class, with a minAvailable value of one less than the service class size. This allows for a more granular\ncontrol over the number of Couchbase nodes that can be voluntarily disrupted at a time, such as during a Kubernetes upgrade.\nIn order to enable this feature, the size of each service class must be at least 2 and the maximum number of Couchbase nodes\nthat the PDB's would allow to be disrupted at once cannot exceed 50% of the total number of Couchbase nodes requested in the cluster specification.\nFurthermore, the requested number of replicas for both the index and data services must remain less than the minimum number\nof Couchbase nodes that the server class PDB's will cumulatively allow for."
                   type: "boolean"
                 platform:
                   description: "Platform gives a hint as to what platform we are running on and how\nto configure services.  This field must be one of \"aws\", \"gke\" or \"azure\"."
@@ -2755,7 +2781,7 @@ spec:
                         type: "array"
                         x-kubernetes-list-type: "set"
                       services:
-                        description: "Services is the set of Couchbase services to run on this server class.\nAt least one class must contain the data service.  The field may contain\nany of \"data\", \"index\", \"query\", \"search\", \"eventing\" or \"analytics\".\nEach service may only be specified once. An empty list can also be specified\nfor a serviceless class (\"[]\")."
+                        description: "Services is the set of Couchbase services to run on this server class.\nAt least one class must contain the data service.  The field may contain\nany of \"data\", \"index\", \"query\", \"search\", \"eventing\" or \"analytics\".\nEach service may only be specified once. An empty list can also be specified\nfor a serviceless class (\"[]\") if Couchbase version is 7.6.0 or greater."
                         items:
                           description: "Supported services"
                           enum:

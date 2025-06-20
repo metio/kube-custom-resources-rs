@@ -576,6 +576,8 @@ pub struct TestRunInitializerInitContainers {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<TestRunInitializerInitContainersVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
@@ -2214,6 +2216,8 @@ pub struct TestRunRunnerInitContainers {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<TestRunRunnerInitContainersVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
@@ -3888,6 +3892,8 @@ pub struct TestRunStarterInitContainers {
     pub image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
+    pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<TestRunStarterInitContainersVolumeMounts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]

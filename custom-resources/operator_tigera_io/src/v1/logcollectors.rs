@@ -94,8 +94,18 @@ pub struct LogCollectorAdditionalStoresS3 {
     /// Path in the S3 bucket where to send logs
     #[serde(rename = "bucketPath")]
     pub bucket_path: String,
+    /// The set of hosts that will forward their logs to this store.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostScope")]
+    pub host_scope: Option<LogCollectorAdditionalStoresS3HostScope>,
     /// AWS Region of the S3 bucket
     pub region: String,
+}
+
+/// If specified, enables exporting of flow, audit, and DNS logs to Amazon S3 storage.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorAdditionalStoresS3HostScope {
+    All,
+    NonClusterOnly,
 }
 
 /// If specified, enables exporting of flow, audit, and DNS logs to splunk.
@@ -103,6 +113,16 @@ pub struct LogCollectorAdditionalStoresS3 {
 pub struct LogCollectorAdditionalStoresSplunk {
     /// Location for splunk's http event collector end point. example `https://1.2.3.4:8088`
     pub endpoint: String,
+    /// The set of hosts that will forward their logs to this store
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostScope")]
+    pub host_scope: Option<LogCollectorAdditionalStoresSplunkHostScope>,
+}
+
+/// If specified, enables exporting of flow, audit, and DNS logs to splunk.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorAdditionalStoresSplunkHostScope {
+    All,
+    NonClusterOnly,
 }
 
 /// If specified, enables exporting of flow, audit, and DNS logs to syslog.
@@ -114,6 +134,9 @@ pub struct LogCollectorAdditionalStoresSyslog {
     pub encryption: Option<LogCollectorAdditionalStoresSyslogEncryption>,
     /// Location of the syslog server. example: tcp://1.2.3.4:601
     pub endpoint: String,
+    /// The set of hosts that will forward their logs to this store.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostScope")]
+    pub host_scope: Option<LogCollectorAdditionalStoresSyslogHostScope>,
     /// If no values are provided, the list will be updated to include log types Audit, DNS and Flows.
     /// Default: Audit, DNS, Flows
     #[serde(rename = "logTypes")]
@@ -131,6 +154,13 @@ pub enum LogCollectorAdditionalStoresSyslogEncryption {
     None,
     #[serde(rename = "TLS")]
     Tls,
+}
+
+/// If specified, enables exporting of flow, audit, and DNS logs to syslog.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum LogCollectorAdditionalStoresSyslogHostScope {
+    All,
+    NonClusterOnly,
 }
 
 /// Specification of the desired state for Tigera log collection.

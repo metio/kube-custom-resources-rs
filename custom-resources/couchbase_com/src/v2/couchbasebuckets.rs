@@ -136,10 +136,10 @@ pub struct CouchbaseBucketSpec {
 /// Excluding this field (which is the default), will set the autoCompactionSettings to false and the bucket will use cluster defaults.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseBucketAutoCompaction {
-    /// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+    /// DatabaseFragmentationThreshold defines triggers for when database compaction should start on buckets with a couchstore storage backend. This field will be ignored if the bucket has a magma storage backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseFragmentationThreshold")]
     pub database_fragmentation_threshold: Option<CouchbaseBucketAutoCompactionDatabaseFragmentationThreshold>,
-    /// TimeWindow allows restriction of when compaction can occur.
+    /// TimeWindow allows restriction of when compaction can occur. This field will be ignored if the bucket has a magma storage backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeWindow")]
     pub time_window: Option<CouchbaseBucketAutoCompactionTimeWindow>,
     /// TombstonePurgeInterval controls how long to wait before purging tombstones.
@@ -147,16 +147,16 @@ pub struct CouchbaseBucketAutoCompaction {
     /// More info:  https://golang.org/pkg/time/#ParseDuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tombstonePurgeInterval")]
     pub tombstone_purge_interval: Option<String>,
-    /// ViewFragmentationThreshold defines triggers for when view compaction should start.
+    /// ViewFragmentationThreshold defines triggers for when view compaction should start. This field will be ignored if the bucket has a magma storage backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "viewFragmentationThreshold")]
     pub view_fragmentation_threshold: Option<CouchbaseBucketAutoCompactionViewFragmentationThreshold>,
 }
 
-/// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+/// DatabaseFragmentationThreshold defines triggers for when database compaction should start on buckets with a couchstore storage backend. This field will be ignored if the bucket has a magma storage backend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseBucketAutoCompactionDatabaseFragmentationThreshold {
     /// Percent specifies the level of view fragmentation that must be reached for View compaction to be automatically triggered.
-    /// This field must be in the range 0-100, defaulting to the cluster level value.
+    /// This field must be in the range 2-100, defaulting to the cluster level value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<i64>,
     /// Size the level of database fragmentation that must be reached for data compaction to be automatically triggered on the bucket.
@@ -166,7 +166,7 @@ pub struct CouchbaseBucketAutoCompactionDatabaseFragmentationThreshold {
     pub size: Option<String>,
 }
 
-/// TimeWindow allows restriction of when compaction can occur.
+/// TimeWindow allows restriction of when compaction can occur. This field will be ignored if the bucket has a magma storage backend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseBucketAutoCompactionTimeWindow {
     /// AbortCompactionOutsideWindow stops compaction processes when the
@@ -181,11 +181,11 @@ pub struct CouchbaseBucketAutoCompactionTimeWindow {
     pub start: Option<String>,
 }
 
-/// ViewFragmentationThreshold defines triggers for when view compaction should start.
+/// ViewFragmentationThreshold defines triggers for when view compaction should start. This field will be ignored if the bucket has a magma storage backend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseBucketAutoCompactionViewFragmentationThreshold {
     /// Percent specifies the percentage level of View fragmentation that must be reached for View compaction to be automatically triggered on the bucket
-    /// This field must be in the range 0-100, defaulting to the cluster level value.
+    /// This field must be in the range 2-100, defaulting to the cluster level value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<i64>,
     /// Size is the level of View fragmentation that must be reached for view compaction to be automatically triggered on the bucket.

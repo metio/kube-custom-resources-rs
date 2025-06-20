@@ -18,7 +18,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GatewayAPISpec {
-    /// Configure how to manage and update Gateway API CRDs.  The default behaviour - which is
+    /// Configures how to manage and update Gateway API CRDs.  The default behaviour - which is
     /// used when this field is not set, or is set to "PreferExisting" - is that the Tigera
     /// operator will create the Gateway API CRDs if they do not already exist, but will not
     /// overwrite any existing Gateway API CRDs.  This setting may be preferable if the customer
@@ -31,15 +31,36 @@ pub struct GatewayAPISpec {
     /// does not yet have any version of those CRDs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crdManagement")]
     pub crd_management: Option<GatewayAPICrdManagement>,
-    /// Allow optional customization of the gateway certgen job.
+    /// Reference to a custom EnvoyGateway YAML to use as the base EnvoyGateway configuration for
+    /// the gateway controller.  When specified, must identify a ConfigMap resource with an
+    /// "envoy-gateway.yaml" key whose value is the desired EnvoyGateway YAML (i.e. following the
+    /// same pattern as the default `envoy-gateway-config` ConfigMap).
+    /// When not specified, the Tigera operator uses the `envoy-gateway-config` from the Envoy
+    /// Gateway helm chart as its base.
+    /// Starting from that base, the Tigera operator copies and modifies the EnvoyGateway
+    /// resource as follows:
+    /// 1. If not already specified, it sets the ControllerName to
+    /// "gateway.envoyproxy.io/gatewayclass-controller".
+    /// 2. It configures the `tigera/envoy-gateway` and `tigera/envoy-ratelimit` images that will
+    /// be used (according to the current Calico version, private registry and image set
+    /// settings) and any pull secrets that are needed to pull those images.
+    /// 3. It enables use of the Backend API.
+    /// The resulting EnvoyGateway is provisioned as the `envoy-gateway-config` ConfigMap (which
+    /// the gateway controller then uses as its config).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyGatewayConfigRef")]
+    pub envoy_gateway_config_ref: Option<GatewayAPIEnvoyGatewayConfigRef>,
+    /// Allows customization of the gateway certgen job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayCertgenJob")]
     pub gateway_certgen_job: Option<GatewayAPIGatewayCertgenJob>,
-    /// Allow optional customization of the gateway controller deployment.
+    /// Configures the GatewayClasses that will be available; please see GatewayClassSpec for
+    /// more detail.  If GatewayClasses is nil, the Tigera operator defaults to provisioning a
+    /// single GatewayClass named "tigera-gateway-class", without any of the detailed
+    /// customizations that are allowed within GatewayClassSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayClasses")]
+    pub gateway_classes: Option<Vec<GatewayAPIGatewayClasses>>,
+    /// Allows customization of the gateway controller deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayControllerDeployment")]
     pub gateway_controller_deployment: Option<GatewayAPIGatewayControllerDeployment>,
-    /// Allow optional customization of gateway deployments.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayDeployment")]
-    pub gateway_deployment: Option<GatewayAPIGatewayDeployment>,
 }
 
 /// GatewayAPISpec has fields that can be used to customize our GatewayAPI support.
@@ -49,19 +70,42 @@ pub enum GatewayAPICrdManagement {
     PreferExisting,
 }
 
-/// Allow optional customization of the gateway certgen job.
+/// Reference to a custom EnvoyGateway YAML to use as the base EnvoyGateway configuration for
+/// the gateway controller.  When specified, must identify a ConfigMap resource with an
+/// "envoy-gateway.yaml" key whose value is the desired EnvoyGateway YAML (i.e. following the
+/// same pattern as the default `envoy-gateway-config` ConfigMap).
+/// When not specified, the Tigera operator uses the `envoy-gateway-config` from the Envoy
+/// Gateway helm chart as its base.
+/// Starting from that base, the Tigera operator copies and modifies the EnvoyGateway
+/// resource as follows:
+/// 1. If not already specified, it sets the ControllerName to
+/// "gateway.envoyproxy.io/gatewayclass-controller".
+/// 2. It configures the `tigera/envoy-gateway` and `tigera/envoy-ratelimit` images that will
+/// be used (according to the current Calico version, private registry and image set
+/// settings) and any pull secrets that are needed to pull those images.
+/// 3. It enables use of the Backend API.
+/// The resulting EnvoyGateway is provisioned as the `envoy-gateway-config` ConfigMap (which
+/// the gateway controller then uses as its config).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIEnvoyGatewayConfigRef {
+    pub name: String,
+    pub namespace: String,
+}
+
+/// Allows customization of the gateway certgen job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJob {
-    /// Metadata contains the standard Kubernetes labels and annotations fields.
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into the
+    /// job's top-level metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<GatewayAPIGatewayCertgenJobMetadata>,
     /// GatewayCertgenJobSpec allows customization of the gateway certgen job spec.
-    /// For customization of the job template see GatewayCertgenJobPodTemplate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<GatewayAPIGatewayCertgenJobSpec>,
 }
 
-/// Metadata contains the standard Kubernetes labels and annotations fields.
+/// If non-nil, non-clashing labels and annotations from this metadata are added into the
+/// job's top-level metadata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobMetadata {
     /// Annotations is a map of arbitrary non-identifying metadata. Each of these
@@ -77,39 +121,27 @@ pub struct GatewayAPIGatewayCertgenJobMetadata {
 }
 
 /// GatewayCertgenJobSpec allows customization of the gateway certgen job spec.
-/// For customization of the job template see GatewayCertgenJobPodTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpec {
     /// GatewayCertgenJobPodTemplate allows customization of the gateway certgen job's pod template.
-    /// If GatewayCertgenJob.Spec.Template.Metadata is non-nil, non-clashing labels and
-    /// annotations from that metadata are added into the job's pod template.
-    /// For customization of the pod template spec see GatewayCertgenJobPodSpec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<GatewayAPIGatewayCertgenJobSpecTemplate>,
 }
 
 /// GatewayCertgenJobPodTemplate allows customization of the gateway certgen job's pod template.
-/// If GatewayCertgenJob.Spec.Template.Metadata is non-nil, non-clashing labels and
-/// annotations from that metadata are added into the job's pod template.
-/// For customization of the pod template spec see GatewayCertgenJobPodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplate {
-    /// Metadata contains the standard Kubernetes labels and annotations fields.
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into the
+    /// job's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<GatewayAPIGatewayCertgenJobSpecTemplateMetadata>,
     /// GatewayCertgenJobPodSpec allows customization of the gateway certgen job's pod spec.
-    /// If GatewayCertgenJob.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field of the
-    /// job's pod template.
-    /// If GatewayCertgenJob.Spec.Template.Spec.NodeSelector is non-nil, it sets a node selector for
-    /// where job pods may be scheduled.
-    /// If GatewayCertgenJob.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations field of
-    /// the job's pod template.
-    /// For customization of job container resources see GatewayCertgenJobContainer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<GatewayAPIGatewayCertgenJobSpecTemplateSpec>,
 }
 
-/// Metadata contains the standard Kubernetes labels and annotations fields.
+/// If non-nil, non-clashing labels and annotations from this metadata are added into the
+/// job's pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplateMetadata {
     /// Annotations is a map of arbitrary non-identifying metadata. Each of these
@@ -125,27 +157,22 @@ pub struct GatewayAPIGatewayCertgenJobSpecTemplateMetadata {
 }
 
 /// GatewayCertgenJobPodSpec allows customization of the gateway certgen job's pod spec.
-/// If GatewayCertgenJob.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field of the
-/// job's pod template.
-/// If GatewayCertgenJob.Spec.Template.Spec.NodeSelector is non-nil, it sets a node selector for
-/// where job pods may be scheduled.
-/// If GatewayCertgenJob.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations field of
-/// the job's pod template.
-/// For customization of job container resources see GatewayCertgenJobContainer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpec {
-    /// Affinity is a group of affinity scheduling rules.
+    /// If non-nil, Affinity sets the affinity field of the job's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<GatewayAPIGatewayCertgenJobSpecTemplateSpecAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<GatewayAPIGatewayCertgenJobSpecTemplateSpecContainers>>,
+    /// If non-nil, NodeSelector sets the node selector for where job pods may be scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// If non-nil, Tolerations sets the tolerations field of the job's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<GatewayAPIGatewayCertgenJobSpecTemplateSpecTolerations>>,
 }
 
-/// Affinity is a group of affinity scheduling rules.
+/// If non-nil, Affinity sets the affinity field of the job's pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -848,27 +875,25 @@ pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpecAffinityPodAntiAffinityReq
 
 /// GatewayCertgenJobContainer allows customization of the gateway certgen job's resource
 /// requirements.
-/// If GatewayCertgenJob.Spec.Template.Spec.Containers["envoy-gateway-certgen"].Resources is non-nil,
-/// it overrides the ResourceRequirements of the job's "envoy-gateway-certgen" container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpecContainers {
     pub name: GatewayAPIGatewayCertgenJobSpecTemplateSpecContainersName,
-    /// ResourceRequirements describes the compute resource requirements.
+    /// If non-nil, Resources sets the ResourceRequirements of the job's "envoy-gateway-certgen"
+    /// container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<GatewayAPIGatewayCertgenJobSpecTemplateSpecContainersResources>,
 }
 
 /// GatewayCertgenJobContainer allows customization of the gateway certgen job's resource
 /// requirements.
-/// If GatewayCertgenJob.Spec.Template.Spec.Containers["envoy-gateway-certgen"].Resources is non-nil,
-/// it overrides the ResourceRequirements of the job's "envoy-gateway-certgen" container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum GatewayAPIGatewayCertgenJobSpecTemplateSpecContainersName {
     #[serde(rename = "envoy-gateway-certgen")]
     EnvoyGatewayCertgen,
 }
 
-/// ResourceRequirements describes the compute resource requirements.
+/// If non-nil, Resources sets the ResourceRequirements of the job's "envoy-gateway-certgen"
+/// container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -934,21 +959,2171 @@ pub struct GatewayAPIGatewayCertgenJobSpecTemplateSpecTolerations {
     pub value: Option<String>,
 }
 
-/// Allow optional customization of the gateway controller deployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClasses {
+    /// Reference to a custom EnvoyProxy resource to use as the base EnvoyProxy configuration for
+    /// this GatewayClass.  When specified, must identify an EnvoyProxy resource.
+    /// When not specified, the Tigera operator uses an empty EnvoyProxy resource as its base.
+    /// Starting from that base, the Tigera operator copies and modifies the EnvoyProxy resource
+    /// as follows, in the order described:
+    /// 1. It configures the `tigera/envoy-proxy` image that will be used (according to the
+    /// current Calico version, private registry and image set settings) and any pull secrets
+    /// that are needed to pull that image.
+    /// 2. It applies customizations as specified by the following `GatewayKind`,
+    /// `GatewayDeployment`, `GatewayDaemonSet` and `GatewayService` fields.
+    /// The resulting EnvoyProxy is provisioned in the `tigera-gateway` namespace, together with
+    /// a GatewayClass that references it.
+    /// If a custom EnvoyProxy resource is specified and uses `EnvoyDaemonSet` instead of the
+    /// default `EnvoyDeployment`, deployment-related customizations will be applied within
+    /// `EnvoyDaemonSet` instead of within `EnvoyDeployment`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyProxyRef")]
+    pub envoy_proxy_ref: Option<GatewayAPIGatewayClassesEnvoyProxyRef>,
+    /// Allows customization of Gateways when deployed as Kubernetes DaemonSets, for Gateways in
+    /// this GatewayClass.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayDaemonSet")]
+    pub gateway_daemon_set: Option<GatewayAPIGatewayClassesGatewayDaemonSet>,
+    /// Allows customization of Gateways when deployed as Kubernetes Deployments, for Gateways in
+    /// this GatewayClass.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayDeployment")]
+    pub gateway_deployment: Option<GatewayAPIGatewayClassesGatewayDeployment>,
+    /// Specifies whether Gateways in this class are deployed as Deployments (default) or as
+    /// DaemonSets.  It is an error for GatewayKind to specify a choice that is incompatible with
+    /// the custom EnvoyProxy, when EnvoyProxyRef is also specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayKind")]
+    pub gateway_kind: Option<GatewayAPIGatewayClassesGatewayKind>,
+    /// Allows customization of gateway services, for Gateways in this GatewayClass.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayService")]
+    pub gateway_service: Option<GatewayAPIGatewayClassesGatewayService>,
+    /// The name of this GatewayClass.
+    pub name: String,
+}
+
+/// Reference to a custom EnvoyProxy resource to use as the base EnvoyProxy configuration for
+/// this GatewayClass.  When specified, must identify an EnvoyProxy resource.
+/// When not specified, the Tigera operator uses an empty EnvoyProxy resource as its base.
+/// Starting from that base, the Tigera operator copies and modifies the EnvoyProxy resource
+/// as follows, in the order described:
+/// 1. It configures the `tigera/envoy-proxy` image that will be used (according to the
+/// current Calico version, private registry and image set settings) and any pull secrets
+/// that are needed to pull that image.
+/// 2. It applies customizations as specified by the following `GatewayKind`,
+/// `GatewayDeployment`, `GatewayDaemonSet` and `GatewayService` fields.
+/// The resulting EnvoyProxy is provisioned in the `tigera-gateway` namespace, together with
+/// a GatewayClass that references it.
+/// If a custom EnvoyProxy resource is specified and uses `EnvoyDaemonSet` instead of the
+/// default `EnvoyDeployment`, deployment-related customizations will be applied within
+/// `EnvoyDaemonSet` instead of within `EnvoyDeployment`.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesEnvoyProxyRef {
+    pub name: String,
+    pub namespace: String,
+}
+
+/// Allows customization of Gateways when deployed as Kubernetes DaemonSets, for Gateways in
+/// this GatewayClass.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSet {
+    /// GatewayDeploymentSpec allows customization of the spec of gateway daemonsets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpec>,
+}
+
+/// GatewayDeploymentSpec allows customization of the spec of gateway daemonsets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpec {
+    /// GatewayDeploymentPodTemplate allows customization of the pod template of gateway daemonsets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplate>,
+}
+
+/// GatewayDeploymentPodTemplate allows customization of the pod template of gateway daemonsets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplate {
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into each
+    /// daemonset's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateMetadata>,
+    /// GatewayDaemonSetPodSpec allows customization of the pod spec of gateway daemonsets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpec>,
+}
+
+/// If non-nil, non-clashing labels and annotations from this metadata are added into each
+/// daemonset's pod template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateMetadata {
+    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
+    /// key/value pairs are added to the object's annotations provided the key does not
+    /// already exist in the object's annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a map of string keys and values that may match replicaset and
+    /// service selectors. Each of these key/value pairs are added to the
+    /// object's labels provided the key does not already exist in the object's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// GatewayDaemonSetPodSpec allows customization of the pod spec of gateway daemonsets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpec {
+    /// If non-nil, Affinity sets the affinity field of the daemonset's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainers>>,
+    /// If non-nil, NodeSelector sets the node selector for where daemonset pods may be
+    /// scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If non-nil, Tolerations sets the tolerations field of the daemonset's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTolerations>>,
+    /// If non-nil, TopologySpreadConstraints sets the topology spread constraints of the
+    /// daemonset's pod template.  TopologySpreadConstraints describes how a group of pods ought
+    /// to spread across topology domains. Scheduler will schedule pods in a way which abides by
+    /// the constraints.  All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraints>>,
+}
+
+/// If non-nil, Affinity sets the affinity field of the daemonset's pod template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// GatewayDaemonSetContainer allows customization of the resource requirements of gateway
+/// daemonsets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainers {
+    pub name: GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersName,
+    /// If non-nil, Resources sets the ResourceRequirements of the daemonset's "envoy"
+    /// container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersResources>,
+}
+
+/// GatewayDaemonSetContainer allows customization of the resource requirements of gateway
+/// daemonsets.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersName {
+    #[serde(rename = "envoy")]
+    Envoy,
+}
+
+/// If non-nil, Resources sets the ResourceRequirements of the daemonset's "envoy"
+/// container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDaemonSetSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Allows customization of Gateways when deployed as Kubernetes Deployments, for Gateways in
+/// this GatewayClass.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeployment {
+    /// GatewayDeploymentSpec allows customization of the spec of gateway deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<GatewayAPIGatewayClassesGatewayDeploymentSpec>,
+}
+
+/// GatewayDeploymentSpec allows customization of the spec of gateway deployments.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpec {
+    /// If non-nil, Replicas sets the number of replicas for the deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// The deployment strategy to use to replace existing pods with new ones.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecStrategy>,
+    /// GatewayDeploymentPodTemplate allows customization of the pod template of gateway deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplate>,
+}
+
+/// The deployment strategy to use to replace existing pods with new ones.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecStrategy {
+    /// Spec to control the desired behavior of rolling update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecStrategyRollingUpdate>,
+}
+
+/// Spec to control the desired behavior of rolling update.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecStrategyRollingUpdate {
+    /// The maximum number of pods that can be scheduled above the desired number of
+    /// pods.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// This can not be 0 if MaxUnavailable is 0.
+    /// Absolute number is calculated from percentage by rounding up.
+    /// Defaults to 25%.
+    /// Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when
+    /// the rolling update starts, such that the total number of old and new pods do not exceed
+    /// 130% of desired pods. Once old pods have been killed,
+    /// new ReplicaSet can be scaled up further, ensuring that total number of pods running
+    /// at any time during the update is at most 130% of desired pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
+    pub max_surge: Option<IntOrString>,
+    /// The maximum number of pods that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding down.
+    /// This can not be 0 if MaxSurge is 0.
+    /// Defaults to 25%.
+    /// Example: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods
+    /// immediately when the rolling update starts. Once new pods are ready, old ReplicaSet
+    /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
+    /// that the total number of pods available at all times during the update is at
+    /// least 70% of desired pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+}
+
+/// GatewayDeploymentPodTemplate allows customization of the pod template of gateway deployments.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplate {
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into each
+    /// deployment's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateMetadata>,
+    /// GatewayDeploymentPodSpec allows customization of the pod spec of gateway deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpec>,
+}
+
+/// If non-nil, non-clashing labels and annotations from this metadata are added into each
+/// deployment's pod template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateMetadata {
+    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
+    /// key/value pairs are added to the object's annotations provided the key does not
+    /// already exist in the object's annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a map of string keys and values that may match replicaset and
+    /// service selectors. Each of these key/value pairs are added to the
+    /// object's labels provided the key does not already exist in the object's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// GatewayDeploymentPodSpec allows customization of the pod spec of gateway deployments.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpec {
+    /// If non-nil, Affinity sets the affinity field of the deployment's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub containers: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainers>>,
+    /// If non-nil, NodeSelector sets the node selector for where deployment pods may be
+    /// scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If non-nil, Tolerations sets the tolerations field of the deployment's pod template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTolerations>>,
+    /// If non-nil, TopologySpreadConstraints sets the topology spread constraints of the
+    /// deployment's pod template.  TopologySpreadConstraints describes how a group of pods ought
+    /// to spread across topology domains. Scheduler will schedule pods in a way which abides by
+    /// the constraints.  All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
+}
+
+/// If non-nil, Affinity sets the affinity field of the deployment's pod template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
+    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
+    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// GatewayDeploymentContainer allows customization of the resource requirements of gateway
+/// deployments.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainers {
+    pub name: GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersName,
+    /// If non-nil, Resources sets the ResourceRequirements of the deployment's "envoy"
+    /// container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersResources>,
+}
+
+/// GatewayDeploymentContainer allows customization of the resource requirements of gateway
+/// deployments.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersName {
+    #[serde(rename = "envoy")]
+    Envoy,
+}
+
+/// If non-nil, Resources sets the ResourceRequirements of the deployment's "envoy"
+/// container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecContainersResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum GatewayAPIGatewayClassesGatewayKind {
+    Deployment,
+    DaemonSet,
+}
+
+/// Allows customization of gateway services, for Gateways in this GatewayClass.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayService {
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into the
+    /// each Gateway Service's metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<GatewayAPIGatewayClassesGatewayServiceMetadata>,
+    /// GatewayServiceSpec allows customization of the services that front gateway deployments.
+    /// The LoadBalancer fields allow customization of the corresponding fields in the Kubernetes
+    /// ServiceSpec.  These can be used for some cloud-independent control of the external load balancer
+    /// that is provisioned for each Gateway.  For finer-grained cloud-specific control please use
+    /// the Metadata.Annotations field in GatewayService.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<GatewayAPIGatewayClassesGatewayServiceSpec>,
+}
+
+/// If non-nil, non-clashing labels and annotations from this metadata are added into the
+/// each Gateway Service's metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayServiceMetadata {
+    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
+    /// key/value pairs are added to the object's annotations provided the key does not
+    /// already exist in the object's annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels is a map of string keys and values that may match replicaset and
+    /// service selectors. Each of these key/value pairs are added to the
+    /// object's labels provided the key does not already exist in the object's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// GatewayServiceSpec allows customization of the services that front gateway deployments.
+/// The LoadBalancer fields allow customization of the corresponding fields in the Kubernetes
+/// ServiceSpec.  These can be used for some cloud-independent control of the external load balancer
+/// that is provisioned for each Gateway.  For finer-grained cloud-specific control please use
+/// the Metadata.Annotations field in GatewayService.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct GatewayAPIGatewayClassesGatewayServiceSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
+    pub allocate_load_balancer_node_ports: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
+    pub load_balancer_source_ranges: Option<Vec<String>>,
+}
+
+/// Allows customization of the gateway controller deployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeployment {
-    /// Metadata contains the standard Kubernetes labels and annotations fields.
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into the
+    /// deployment's top-level metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<GatewayAPIGatewayControllerDeploymentMetadata>,
     /// GatewayControllerDeploymentSpec allows customization of the gateway controller deployment spec.
-    /// If GatewayControllerDeployment.Spec.MinReadySeconds is non-nil, it sets the minReadySeconds field
-    /// for the deployment.
-    /// For customization of the pod template see GatewayControllerDeploymentPodTemplate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<GatewayAPIGatewayControllerDeploymentSpec>,
 }
 
-/// Metadata contains the standard Kubernetes labels and annotations fields.
+/// If non-nil, non-clashing labels and annotations from this metadata are added into the
+/// deployment's top-level metadata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentMetadata {
     /// Annotations is a map of arbitrary non-identifying metadata. Each of these
@@ -964,46 +3139,36 @@ pub struct GatewayAPIGatewayControllerDeploymentMetadata {
 }
 
 /// GatewayControllerDeploymentSpec allows customization of the gateway controller deployment spec.
-/// If GatewayControllerDeployment.Spec.MinReadySeconds is non-nil, it sets the minReadySeconds field
-/// for the deployment.
-/// For customization of the pod template see GatewayControllerDeploymentPodTemplate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpec {
+    /// If non-nil, MinReadySeconds sets the minReadySeconds field for the deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// If non-nil, Replicas sets the number of replicas for the deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
     /// GatewayControllerDeploymentPodTemplate allows customization of the gateway controller deployment
     /// pod template.
-    /// If GatewayControllerDeployment.Spec.Template.Metadata is non-nil, non-clashing labels and
-    /// annotations from that metadata are added into the deployment's pod template.
-    /// For customization of the pod template spec see GatewayControllerDeploymentPodSpec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<GatewayAPIGatewayControllerDeploymentSpecTemplate>,
 }
 
 /// GatewayControllerDeploymentPodTemplate allows customization of the gateway controller deployment
 /// pod template.
-/// If GatewayControllerDeployment.Spec.Template.Metadata is non-nil, non-clashing labels and
-/// annotations from that metadata are added into the deployment's pod template.
-/// For customization of the pod template spec see GatewayControllerDeploymentPodSpec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplate {
-    /// Metadata contains the standard Kubernetes labels and annotations fields.
+    /// If non-nil, non-clashing labels and annotations from this metadata are added into the
+    /// deployment's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<GatewayAPIGatewayControllerDeploymentSpecTemplateMetadata>,
     /// GatewayControllerDeploymentPodSpec allows customization of the gateway controller deployment pod
     /// spec.
-    /// If GatewayControllerDeployment.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field
-    /// of the deployment's pod template.
-    /// If GatewayControllerDeployment.Spec.Template.Spec.NodeSelector is non-nil, it sets a node
-    /// selector for where controller pods may be scheduled.
-    /// If GatewayControllerDeployment.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations
-    /// field of the deployment's pod template.
-    /// For customization of container resources see GatewayControllerDeploymentContainer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<GatewayAPIGatewayControllerDeploymentSpecTemplateSpec>,
 }
 
-/// Metadata contains the standard Kubernetes labels and annotations fields.
+/// If non-nil, non-clashing labels and annotations from this metadata are added into the
+/// deployment's pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateMetadata {
     /// Annotations is a map of arbitrary non-identifying metadata. Each of these
@@ -1020,27 +3185,29 @@ pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateMetadata {
 
 /// GatewayControllerDeploymentPodSpec allows customization of the gateway controller deployment pod
 /// spec.
-/// If GatewayControllerDeployment.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field
-/// of the deployment's pod template.
-/// If GatewayControllerDeployment.Spec.Template.Spec.NodeSelector is non-nil, it sets a node
-/// selector for where controller pods may be scheduled.
-/// If GatewayControllerDeployment.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations
-/// field of the deployment's pod template.
-/// For customization of container resources see GatewayControllerDeploymentContainer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpec {
-    /// Affinity is a group of affinity scheduling rules.
+    /// If non-nil, Affinity sets the affinity field of the deployment's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainers>>,
+    /// If non-nil, NodeSelector sets the node selector for where deployment pods may be
+    /// scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
+    /// If non-nil, Tolerations sets the tolerations field of the deployment's pod template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTolerations>>,
+    /// If non-nil, TopologySpreadConstraints sets the topology spread constraints of the
+    /// deployment's pod template.  TopologySpreadConstraints describes how a group of pods ought
+    /// to spread across topology domains. Scheduler will schedule pods in a way which abides by
+    /// the constraints.  All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
 }
 
-/// Affinity is a group of affinity scheduling rules.
+/// If non-nil, Affinity sets the affinity field of the deployment's pod template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
@@ -1743,27 +3910,25 @@ pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecAffinityPodAntiA
 
 /// GatewayControllerDeploymentContainer allows customization of the gateway controller's resource
 /// requirements.
-/// If GatewayControllerDeployment.Spec.Template.Spec.Containers["envoy-gateway"].Resources is
-/// non-nil, it overrides the ResourceRequirements of the controller's "envoy-gateway" container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainers {
     pub name: GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainersName,
-    /// ResourceRequirements describes the compute resource requirements.
+    /// If non-nil, Resources sets the ResourceRequirements of the controller's "envoy-gateway"
+    /// container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// GatewayControllerDeploymentContainer allows customization of the gateway controller's resource
 /// requirements.
-/// If GatewayControllerDeployment.Spec.Template.Spec.Containers["envoy-gateway"].Resources is
-/// non-nil, it overrides the ResourceRequirements of the controller's "envoy-gateway" container.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainersName {
     #[serde(rename = "envoy-gateway")]
     EnvoyGateway,
 }
 
-/// ResourceRequirements describes the compute resource requirements.
+/// If non-nil, Resources sets the ResourceRequirements of the controller's "envoy-gateway"
+/// container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
@@ -1829,933 +3994,14 @@ pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTolerations {
     pub value: Option<String>,
 }
 
-/// Allow optional customization of gateway deployments.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeployment {
-    /// GatewayDeploymentSpec allows customization of the spec of gateway deployments.
-    /// For customization of the pod template see GatewayDeploymentPodTemplate.
-    /// For customization of the deployment strategy see GatewayDeploymentStrategy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<GatewayAPIGatewayDeploymentSpec>,
-}
-
-/// GatewayDeploymentSpec allows customization of the spec of gateway deployments.
-/// For customization of the pod template see GatewayDeploymentPodTemplate.
-/// For customization of the deployment strategy see GatewayDeploymentStrategy.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpec {
-    /// The deployment strategy to use to replace existing pods with new ones.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<GatewayAPIGatewayDeploymentSpecStrategy>,
-    /// GatewayDeploymentPodTemplate allows customization of the pod template of gateway deployments.
-    /// If GatewayDeployment.Spec.Template.Metadata is non-nil, non-clashing labels and annotations from
-    /// that metadata are added into each deployment's pod template.
-    /// For customization of the pod template spec see GatewayDeploymentPodSpec.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<GatewayAPIGatewayDeploymentSpecTemplate>,
-}
-
-/// The deployment strategy to use to replace existing pods with new ones.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecStrategy {
-    /// Spec to control the desired behavior of rolling update.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
-    pub rolling_update: Option<GatewayAPIGatewayDeploymentSpecStrategyRollingUpdate>,
-}
-
-/// Spec to control the desired behavior of rolling update.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecStrategyRollingUpdate {
-    /// The maximum number of pods that can be scheduled above the desired number of
-    /// pods.
-    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
-    /// This can not be 0 if MaxUnavailable is 0.
-    /// Absolute number is calculated from percentage by rounding up.
-    /// Defaults to 25%.
-    /// Example: when this is set to 30%, the new ReplicaSet can be scaled up immediately when
-    /// the rolling update starts, such that the total number of old and new pods do not exceed
-    /// 130% of desired pods. Once old pods have been killed,
-    /// new ReplicaSet can be scaled up further, ensuring that total number of pods running
-    /// at any time during the update is at most 130% of desired pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
-    pub max_surge: Option<IntOrString>,
-    /// The maximum number of pods that can be unavailable during the update.
-    /// Value can be an absolute number (ex: 5) or a percentage of desired pods (ex: 10%).
-    /// Absolute number is calculated from percentage by rounding down.
-    /// This can not be 0 if MaxSurge is 0.
-    /// Defaults to 25%.
-    /// Example: when this is set to 30%, the old ReplicaSet can be scaled down to 70% of desired pods
-    /// immediately when the rolling update starts. Once new pods are ready, old ReplicaSet
-    /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
-    /// that the total number of pods available at all times during the update is at
-    /// least 70% of desired pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
-    pub max_unavailable: Option<IntOrString>,
-}
-
-/// GatewayDeploymentPodTemplate allows customization of the pod template of gateway deployments.
-/// If GatewayDeployment.Spec.Template.Metadata is non-nil, non-clashing labels and annotations from
-/// that metadata are added into each deployment's pod template.
-/// For customization of the pod template spec see GatewayDeploymentPodSpec.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplate {
-    /// Metadata contains the standard Kubernetes labels and annotations fields.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<GatewayAPIGatewayDeploymentSpecTemplateMetadata>,
-    /// GatewayDeploymentPodSpec allows customization of the pod spec of gateway deployments.
-    /// If GatewayDeployment.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field of each
-    /// deployment's pod template.
-    /// If GatewayDeployment.Spec.Template.Spec.NodeSelector is non-nil, it sets a node selector for
-    /// where gateway pods may be scheduled.
-    /// If GatewayDeployment.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations field of
-    /// each deployment's pod template.
-    /// If GatewayDeployment.Spec.Template.Spec.TopologySpreadConstraints is non-nil, it sets the
-    /// topology spread constraints of each deployment's pod template.
-    /// For customization of container resources see GatewayControllerDeploymentContainer.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<GatewayAPIGatewayDeploymentSpecTemplateSpec>,
-}
-
-/// Metadata contains the standard Kubernetes labels and annotations fields.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateMetadata {
-    /// Annotations is a map of arbitrary non-identifying metadata. Each of these
-    /// key/value pairs are added to the object's annotations provided the key does not
-    /// already exist in the object's annotations.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels is a map of string keys and values that may match replicaset and
-    /// service selectors. Each of these key/value pairs are added to the
-    /// object's labels provided the key does not already exist in the object's labels.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-}
-
-/// GatewayDeploymentPodSpec allows customization of the pod spec of gateway deployments.
-/// If GatewayDeployment.Spec.Template.Spec.Affinity is non-nil, it sets the affinity field of each
-/// deployment's pod template.
-/// If GatewayDeployment.Spec.Template.Spec.NodeSelector is non-nil, it sets a node selector for
-/// where gateway pods may be scheduled.
-/// If GatewayDeployment.Spec.Template.Spec.Tolerations is non-nil, it sets the tolerations field of
-/// each deployment's pod template.
-/// If GatewayDeployment.Spec.Template.Spec.TopologySpreadConstraints is non-nil, it sets the
-/// topology spread constraints of each deployment's pod template.
-/// For customization of container resources see GatewayControllerDeploymentContainer.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpec {
-    /// Affinity is a group of affinity scheduling rules.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinity>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecContainers>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
-    pub node_selector: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecTolerations>>,
-    /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
-    /// domains. Scheduler will schedule pods in a way which abides by the constraints.
-    /// All topologySpreadConstraints are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
-    pub topology_spread_constraints: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
-}
-
-/// Affinity is a group of affinity scheduling rules.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinity {
-    /// Describes node affinity scheduling rules for the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinity>,
-    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinity>,
-    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
-    pub pod_anti_affinity: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
-}
-
-/// Describes node affinity scheduling rules for the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
-    /// node(s) with the highest sum are the most preferred.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to an update), the system
-    /// may or may not try to eventually evict the pod from its node.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-}
-
-/// An empty preferred scheduling term matches all objects with implicit weight 0
-/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// A node selector term, associated with the corresponding weight.
-    pub preference: GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
-    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
-    pub weight: i32,
-}
-
-/// A node selector term, associated with the corresponding weight.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
-    /// A list of node selector requirements by node's labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// If the affinity requirements specified by this field are not met at
-/// scheduling time, the pod will not be scheduled onto the node.
-/// If the affinity requirements specified by this field cease to be met
-/// at some point during pod execution (e.g. due to an update), the system
-/// may or may not try to eventually evict the pod from its node.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A list of node selector terms. The terms are ORed.
-    #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
-}
-
-/// A null or empty node selector term matches no objects. The requirements of
-/// them are ANDed.
-/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
-    /// A list of node selector requirements by node's labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
-    /// A list of node selector requirements by node's fields.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A node selector requirement is a selector that contains values, a key, and an operator
-/// that relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
-    /// The label key that the selector applies to.
-    pub key: String,
-    /// Represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
-    pub operator: String,
-    /// An array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. If the operator is Gt or Lt, the values
-    /// array must have a single element, which will be interpreted as an integer.
-    /// This array is replaced during a strategic merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
-    /// node(s) with the highest sum are the most preferred.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to a pod label update), the
-    /// system may or may not try to eventually evict the pod from its node.
-    /// When there are multiple elements, the lists of nodes corresponding to each
-    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
-}
-
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
-    #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
-    pub weight: i32,
-}
-
-/// Required. A pod affinity term, associated with the corresponding weight.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-located is defined as running on a node whose value of
-/// the label with key <topologyKey> matches that of any node on which
-/// a pod of the set of pods is running
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy
-    /// the anti-affinity expressions specified by this field, but it may choose
-    /// a node that violates one or more of the expressions. The node that is
-    /// most preferred is the one with the greatest sum of weights, i.e.
-    /// for each node that meets all of the scheduling requirements (resource
-    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
-    /// compute a sum by iterating through the elements of this field and adding
-    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
-    /// node(s) with the highest sum are the most preferred.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at
-    /// scheduling time, the pod will not be scheduled onto the node.
-    /// If the anti-affinity requirements specified by this field cease to be met
-    /// at some point during pod execution (e.g. due to a pod label update), the
-    /// system may or may not try to eventually evict the pod from its node.
-    /// When there are multiple elements, the lists of nodes corresponding to each
-    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
-}
-
-/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
-    /// Required. A pod affinity term, associated with the corresponding weight.
-    #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm,
-    /// in the range 1-100.
-    pub weight: i32,
-}
-
-/// Required. A pod affinity term, associated with the corresponding weight.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// Defines a set of pods (namely those matching the labelSelector
-/// relative to the given namespace(s)) that this pod should be
-/// co-located (affinity) or not co-located (anti-affinity) with,
-/// where co-located is defined as running on a node whose value of
-/// the label with key <topologyKey> matches that of any node on which
-/// a pod of the set of pods is running
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods.
-    /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will
-    /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
-    /// to select the group of existing pods which pods will be taken into consideration
-    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
-    /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
-    pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to.
-    /// The term is applied to the union of the namespaces selected by this field
-    /// and the ones listed in the namespaces field.
-    /// null selector and null or empty namespaces list means "this pod's namespace".
-    /// An empty selector ({}) matches all namespaces.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to.
-    /// The term is applied to the union of the namespaces listed in this field
-    /// and the ones selected by namespaceSelector.
-    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
-    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
-    /// whose value of the label with key topologyKey matches that of any node on which any of the
-    /// selected pods is running.
-    /// Empty topologyKey is not allowed.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-}
-
-/// A label query over a set of resources, in this case pods.
-/// If it's null, this PodAffinityTerm matches with no Pods.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// A label query over the set of namespaces that the term applies to.
-/// The term is applied to the union of the namespaces selected by this field
-/// and the ones listed in the namespaces field.
-/// null selector and null or empty namespaces list means "this pod's namespace".
-/// An empty selector ({}) matches all namespaces.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// GatewayDeploymentContainer allows customization of the resource requirements of gateway
-/// deployments.
-/// If GatewayDeployment.Spec.Template.Spec.Containers["envoy"].Resources is non-nil, it overrides
-/// the ResourceRequirements of the "envoy" container in each gateway deployment.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecContainers {
-    pub name: GatewayAPIGatewayDeploymentSpecTemplateSpecContainersName,
-    /// ResourceRequirements describes the compute resource requirements.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecContainersResources>,
-}
-
-/// GatewayDeploymentContainer allows customization of the resource requirements of gateway
-/// deployments.
-/// If GatewayDeployment.Spec.Template.Spec.Containers["envoy"].Resources is non-nil, it overrides
-/// the ResourceRequirements of the "envoy" container in each gateway deployment.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum GatewayAPIGatewayDeploymentSpecTemplateSpecContainersName {
-    #[serde(rename = "envoy")]
-    Envoy,
-}
-
-/// ResourceRequirements describes the compute resource requirements.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
-    /// Request is the name chosen for a request in the referenced claim.
-    /// If empty, everything from the claim is made available, otherwise
-    /// only the result of this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub request: Option<String>,
-}
-
-/// The pod this Toleration is attached to tolerates any taint that matches
-/// the triple <key,value,effect> using the matching operator <operator>.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTolerations {
-    /// Effect indicates the taint effect to match. Empty means match all taint effects.
-    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub effect: Option<String>,
-    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
-    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    /// Operator represents a key's relationship to the value.
-    /// Valid operators are Exists and Equal. Defaults to Equal.
-    /// Exists is equivalent to wildcard for value, so that a pod can
-    /// tolerate all taints of a particular category.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub operator: Option<String>,
-    /// TolerationSeconds represents the period of time the toleration (which must be
-    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
-    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
-    /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
-    pub toleration_seconds: Option<i64>,
-    /// Value is the taint value the toleration matches to.
-    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
 /// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraints {
+pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    pub label_selector: Option<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -2861,10 +4107,10 @@ pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraints 
 /// Pods that match this label selector are counted to determine the number of pods
 /// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector {
+pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -2875,7 +4121,7 @@ pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsL
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GatewayAPIGatewayDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
+pub struct GatewayAPIGatewayControllerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.

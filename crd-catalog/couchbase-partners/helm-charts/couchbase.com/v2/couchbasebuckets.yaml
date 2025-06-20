@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    config.couchbase.com/version: "2.8.0"
+    config.couchbase.com/version: "2.8.1"
     controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "couchbasebuckets.couchbase.com"
 spec:
@@ -54,12 +54,12 @@ spec:
                   description: "AutoCompaction allows the configuration of auto-compaction settings, including on what\nconditions disk space is reclaimed and when it is allowed to run, on a per-bucket basis.\nIf any of these fields are configured, those that are not configured here will take the value set at the cluster level.\nExcluding this field (which is the default), will set the autoCompactionSettings to false and the bucket will use cluster defaults."
                   properties:
                     databaseFragmentationThreshold:
-                      description: "DatabaseFragmentationThreshold defines triggers for when database compaction should start."
+                      description: "DatabaseFragmentationThreshold defines triggers for when database compaction should start on buckets with a couchstore storage backend. This field will be ignored if the bucket has a magma storage backend."
                       properties:
                         percent:
-                          description: "Percent specifies the level of view fragmentation that must be reached for View compaction to be automatically triggered.\nThis field must be in the range 0-100, defaulting to the cluster level value."
+                          description: "Percent specifies the level of view fragmentation that must be reached for View compaction to be automatically triggered.\nThis field must be in the range 2-100, defaulting to the cluster level value."
                           maximum: 100.0
-                          minimum: 0.0
+                          minimum: 2.0
                           type: "integer"
                         size:
                           anyOf:
@@ -71,7 +71,7 @@ spec:
                           x-kubernetes-int-or-string: true
                       type: "object"
                     timeWindow:
-                      description: "TimeWindow allows restriction of when compaction can occur."
+                      description: "TimeWindow allows restriction of when compaction can occur. This field will be ignored if the bucket has a magma storage backend."
                       properties:
                         abortCompactionOutsideWindow:
                           description: "AbortCompactionOutsideWindow stops compaction processes when the\nprocess moves outside the window, defaulting to false."
@@ -89,12 +89,12 @@ spec:
                       description: "TombstonePurgeInterval controls how long to wait before purging tombstones.\nThis field must be in the range 1h-1440h, defaulting to the cluster level value.\nMore info:  https://golang.org/pkg/time/#ParseDuration"
                       type: "string"
                     viewFragmentationThreshold:
-                      description: "ViewFragmentationThreshold defines triggers for when view compaction should start."
+                      description: "ViewFragmentationThreshold defines triggers for when view compaction should start. This field will be ignored if the bucket has a magma storage backend."
                       properties:
                         percent:
-                          description: "Percent specifies the percentage level of View fragmentation that must be reached for View compaction to be automatically triggered on the bucket\nThis field must be in the range 0-100, defaulting to the cluster level value."
+                          description: "Percent specifies the percentage level of View fragmentation that must be reached for View compaction to be automatically triggered on the bucket\nThis field must be in the range 2-100, defaulting to the cluster level value."
                           maximum: 100.0
-                          minimum: 0.0
+                          minimum: 2.0
                           type: "integer"
                         size:
                           anyOf:

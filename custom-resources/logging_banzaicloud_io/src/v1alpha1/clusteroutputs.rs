@@ -4595,7 +4595,8 @@ pub struct ClusterOutputLmLogs {
     pub http_proxy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub include_metadata: Option<bool>,
-    pub resource_mapping: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource_mapping: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

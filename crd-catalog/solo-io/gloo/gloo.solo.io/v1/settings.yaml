@@ -612,6 +612,8 @@ spec:
                           minimum: 0.0
                           nullable: true
                           type: "integer"
+                        trackRemaining:
+                          type: "boolean"
                       type: "object"
                     disableGrpcWeb:
                       nullable: true

@@ -50,15 +50,6 @@ spec:
                     type: "string"
                   description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
                   type: "object"
-                controllerConfigRef:
-                  description: "ControllerConfigRef references a ControllerConfig resource that will be\nused to configure the packaged controller Deployment.\nDeprecated: Use RuntimeConfigReference instead."
-                  properties:
-                    name:
-                      description: "Name of the ControllerConfig."
-                      type: "string"
-                  required:
-                    - "name"
-                  type: "object"
                 ignoreCrossplaneConstraints:
                   default: false
                   description: "IgnoreCrossplaneConstraints indicates to the package manager whether to\nhonor Crossplane version constrains specified by the package.\nDefault is false."

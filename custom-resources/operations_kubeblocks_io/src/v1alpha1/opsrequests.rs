@@ -586,10 +586,11 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstances {
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate.
     /// This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
-    /// The specified name overrides any default naming conventions or patterns.
+    /// The name can't be empty.
     pub name: String,
     /// Specifies the desired Ordinals of this InstanceTemplate.
     /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
     /// 
     /// 
     /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -719,6 +720,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesEnvValueFromSecretKeyR
 
 /// Specifies the desired Ordinals of this InstanceTemplate.
 /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
 /// 
 /// 
 /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -733,7 +735,7 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstancesOrdinals {
     pub ranges: Option<Vec<OpsRequestHorizontalScalingScaleOutNewInstancesOrdinalsRanges>>,
 }
 
-/// Range represents a range with a start and an end value.
+/// Range represents a range with a start and an end value. Both start and end are included.
 /// It is used to define a continuous segment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestHorizontalScalingScaleOutNewInstancesOrdinalsRanges {
@@ -2675,10 +2677,11 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstances {
     /// Name specifies the unique name of the instance Pod created using this InstanceTemplate.
     /// This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal
     /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
-    /// The specified name overrides any default naming conventions or patterns.
+    /// The name can't be empty.
     pub name: String,
     /// Specifies the desired Ordinals of this InstanceTemplate.
     /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
     /// 
     /// 
     /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -2808,6 +2811,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesEnvValueFromSecre
 
 /// Specifies the desired Ordinals of this InstanceTemplate.
 /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
 /// 
 /// 
 /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
@@ -2822,7 +2826,7 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstancesOrdinals {
     pub ranges: Option<Vec<OpsRequestStatusLastConfigurationComponentsInstancesOrdinalsRanges>>,
 }
 
-/// Range represents a range with a start and an end value.
+/// Range represents a range with a start and an end value. Both start and end are included.
 /// It is used to define a continuous segment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OpsRequestStatusLastConfigurationComponentsInstancesOrdinalsRanges {

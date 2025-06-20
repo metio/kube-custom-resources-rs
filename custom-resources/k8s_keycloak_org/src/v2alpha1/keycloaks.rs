@@ -57,12 +57,18 @@ pub struct KeycloakSpec {
     /// Number of Keycloak instances. Default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<i64>,
+    /// Configuration for liveness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<KeycloakLivenessProbe>,
     /// Controls the ingress traffic flow into Keycloak pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
     pub network_policy: Option<KeycloakNetworkPolicy>,
     /// In this section you can configure Keycloak's reverse proxy setting
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<KeycloakProxy>,
+    /// Configuration for readiness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<KeycloakReadinessProbe>,
     /// Compute Resources required by Keycloak container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KeycloakResources>,
@@ -72,6 +78,9 @@ pub struct KeycloakSpec {
     /// Set to force the behavior of the --optimized flag for the start command. If left unspecified the operator will assume custom images have already been augmented.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startOptimized")]
     pub start_optimized: Option<bool>,
+    /// Configuration for startup probe, by default it is 1 for periodSeconds and 600 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<KeycloakStartupProbe>,
     /// In this section you can configure OpenTelemetry Tracing for Keycloak.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<KeycloakTracing>,
@@ -251,6 +260,9 @@ pub struct KeycloakHostname {
 /// In this section you can configure Keycloak features related to HTTP and HTTPS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakHttp {
+    /// Annotations to be appended to the Service object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Enables the HTTP listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpEnabled")]
     pub http_enabled: Option<bool>,
@@ -260,6 +272,9 @@ pub struct KeycloakHttp {
     /// The used HTTPS port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsPort")]
     pub https_port: Option<i64>,
+    /// Labels to be appended to the Service object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// A secret containing the TLS configuration for HTTPS. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<String>,
@@ -290,6 +305,15 @@ pub struct KeycloakIngress {
     pub class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+}
+
+/// Configuration for liveness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakLivenessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
 }
 
 /// Controls the ingress traffic flow into Keycloak pods.
@@ -477,6 +501,15 @@ pub struct KeycloakProxy {
     /// The proxy headers that should be accepted by the server. Misconfiguration might leave the server exposed to security vulnerabilities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<String>,
+}
+
+/// Configuration for readiness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakReadinessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
 }
 
 /// Compute Resources required by Keycloak container
@@ -889,6 +922,15 @@ pub struct KeycloakSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressi
     pub operator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Configuration for startup probe, by default it is 1 for periodSeconds and 600 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakStartupProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
 }
 
 /// In this section you can configure OpenTelemetry Tracing for Keycloak.

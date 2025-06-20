@@ -83,7 +83,7 @@ spec:
                     - message: "Singular name must be lowercase"
                       rule: "!has(self.singular) || self.singular == self.singular.lowerAscii()"
                 connectionSecretKeys:
-                  description: "ConnectionSecretKeys is the list of keys that will be exposed to the end\nuser of the defined kind.\nIf the list is empty, all keys will be published."
+                  description: "ConnectionSecretKeys is the list of connection secret keys the\ndefined XR can publish. If the list is empty, all keys will be\npublished. If the list isn't empty, any connection secret keys that\ndon't appear in the list will be filtered out. Only LegacyCluster XRs\nsupport connection secrets."
                   items:
                     type: "string"
                   type: "array"
@@ -319,6 +319,8 @@ spec:
               x-kubernetes-validations:
                 - message: "Only LegacyCluster composite resources can offer claims"
                   rule: "self.scope == 'LegacyCluster' || !has(self.claimNames)"
+                - message: "Only LegacyCluster composite resources support connection secrets"
+                  rule: "self.scope == 'LegacyCluster' || !has(self.connectionSecretKeys)"
             status:
               description: "CompositeResourceDefinitionStatus shows the observed state of the definition."
               properties:

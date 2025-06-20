@@ -102,6 +102,10 @@ pub enum PodVolumeBackupUploaderType {
 /// PodVolumeBackupStatus is the current status of a PodVolumeBackup.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodVolumeBackupStatus {
+    /// AcceptedTimestamp records the time the pod volume backup is to be prepared.
+    /// The server's time is used for AcceptedTimestamp
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "acceptedTimestamp")]
+    pub accepted_timestamp: Option<String>,
     /// CompletionTimestamp records the time a backup was completed.
     /// Completion time is recorded even on failed backups.
     /// Completion time is recorded before uploading the backup object.
@@ -137,7 +141,11 @@ pub struct PodVolumeBackupStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PodVolumeBackupStatusPhase {
     New,
+    Accepted,
+    Prepared,
     InProgress,
+    Canceling,
+    Canceled,
     Completed,
     Failed,
 }

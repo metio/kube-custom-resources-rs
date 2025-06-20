@@ -131,8 +131,15 @@ pub struct CouchbaseClusterSpec {
     /// taking any action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
-    /// PerServiceClassPDB allows pod disruption budgets to be created on a
-    /// per-serviceClass basis.
+    /// PerServiceClassPDB determines whether a pod disruption budget (PDB) should be created for each service class.
+    /// By default, a single PDB will be created for the cluster with a minAvailable value of one less than the total number of requested Couchbase nodes in the cluster,
+    /// meaning only a single Couchbase node can be voluntarily disrupted at a time. When this field is set to true, a PDB will be created for each
+    /// service class, with a minAvailable value of one less than the service class size. This allows for a more granular
+    /// control over the number of Couchbase nodes that can be voluntarily disrupted at a time, such as during a Kubernetes upgrade.
+    /// In order to enable this feature, the size of each service class must be at least 2 and the maximum number of Couchbase nodes
+    /// that the PDB's would allow to be disrupted at once cannot exceed 50% of the total number of Couchbase nodes requested in the cluster specification.
+    /// Furthermore, the requested number of replicas for both the index and data services must remain less than the minimum number
+    /// of Couchbase nodes that the server class PDB's will cumulatively allow for.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "perServiceClassPDB")]
     pub per_service_class_pdb: Option<bool>,
     /// Platform gives a hint as to what platform we are running on and how
@@ -603,7 +610,7 @@ pub struct CouchbaseClusterCluster {
 /// to all existing buckets that have not had their auto-compaction settings individually modified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterClusterAutoCompaction {
-    /// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+    /// DatabaseFragmentationThreshold defines the default database fragmentation level to determine the point when compaction is triggered for buckets with a couchstore storage backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseFragmentationThreshold")]
     pub database_fragmentation_threshold: Option<CouchbaseClusterClusterAutoCompactionDatabaseFragmentationThreshold>,
     /// ParallelCompaction controls whether database and view compactions can happen
@@ -623,7 +630,7 @@ pub struct CouchbaseClusterClusterAutoCompaction {
     pub view_fragmentation_threshold: Option<CouchbaseClusterClusterAutoCompactionViewFragmentationThreshold>,
 }
 
-/// DatabaseFragmentationThreshold defines triggers for when database compaction should start.
+/// DatabaseFragmentationThreshold defines the default database fragmentation level to determine the point when compaction is triggered for buckets with a couchstore storage backend.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseClusterClusterAutoCompactionDatabaseFragmentationThreshold {
     /// Percent is the percentage of disk fragmentation after which to decompaction will be
@@ -1210,6 +1217,9 @@ pub struct CouchbaseClusterMigration {
     /// MaxConcurrentMigrations is the maximum number of nodes migrations the operator will run concurrently.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentMigrations")]
     pub max_concurrent_migrations: Option<i64>,
+    /// MigrationOrderOverride defines the strategy for migration order. If not set then the operator will choose nodes at random.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrationOrderOverride")]
+    pub migration_order_override: Option<CouchbaseClusterMigrationMigrationOrderOverride>,
     /// NumUnmanagedNodes is the number of nodes the operator will leave in the cluster unmigrated.
     /// This is useful for controlling how much of the cluster to migrate over at a time. If not specified
     /// the operator will migrate all nodes.
@@ -1225,6 +1235,37 @@ pub struct CouchbaseClusterMigration {
     /// that the operator will connect to to start the migration process.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unmanagedClusterHost")]
     pub unmanaged_cluster_host: Option<String>,
+}
+
+/// MigrationOrderOverride defines the strategy for migration order. If not set then the operator will choose nodes at random.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CouchbaseClusterMigrationMigrationOrderOverride {
+    /// MigrationOrderOverrideStrategy defines the strategy for migration order. When not set, the operator will choose nodes at random.
+    /// When ByServerGroup is set, the operator will migrate nodes in the order of the server groups defined in spec.migration.migrationOrderOverride.serverGroupOrder.
+    /// If spec.migration.migrationOrderOverride.serverGroupOrder is not set, the operator will migrate the server groups in alphabetical order.
+    /// When ByServerClass is set, the operator will migrate nodes in the order of the server classes defined in spec.migration.migrationOrderOverride.serverClassOrder.
+    /// If spec.migration.migrationOrderOverride.serverClassOrder is not set, the operator will migrate the server classes in the order of the server classes defined in spec.servers.
+    /// When ByNode is set, the operator will migrate nodes in the order of the nodes defined in spec.migration.migrationOrderOverride.nodeOrder.
+    /// If spec.migration.migrationOrderOverride.nodeOrder is not set, the operator will migrate the nodes in alphabetical order.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrationOrderOverrideStrategy")]
+    pub migration_order_override_strategy: Option<CouchbaseClusterMigrationMigrationOrderOverrideMigrationOrderOverrideStrategy>,
+    /// NodeOrder defines the order of nodes for migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeOrder")]
+    pub node_order: Option<Vec<String>>,
+    /// ServerClassOrder defines the order of server classes for migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverClassOrder")]
+    pub server_class_order: Option<Vec<String>>,
+    /// ServerGroupOrder defines the order of server groups for migration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverGroupOrder")]
+    pub server_group_order: Option<Vec<String>>,
+}
+
+/// MigrationOrderOverride defines the strategy for migration order. If not set then the operator will choose nodes at random.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CouchbaseClusterMigrationMigrationOrderOverrideMigrationOrderOverrideStrategy {
+    ByServerGroup,
+    ByServerClass,
+    ByNode,
 }
 
 /// DEPRECATED - By Couchbase Server metrics endpoint on version 7.0+
@@ -3060,7 +3101,7 @@ pub struct CouchbaseClusterServers {
     /// At least one class must contain the data service.  The field may contain
     /// any of "data", "index", "query", "search", "eventing" or "analytics".
     /// Each service may only be specified once. An empty list can also be specified
-    /// for a serviceless class ("[]").
+    /// for a serviceless class ("[]") if Couchbase version is 7.6.0 or greater.
     pub services: Vec<String>,
     /// Size is the expected requested of the server class.  This field
     /// must be greater than or equal to 1.

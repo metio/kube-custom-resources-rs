@@ -1346,6 +1346,11 @@ spec:
                   required:
                     - "content"
                   type: "object"
+                cmdParams:
+                  additionalProperties:
+                    type: "string"
+                  description: "CmdParams specifies command-line parameters for the Argo CD components."
+                  type: "object"
                 configManagementPlugins:
                   description: "Deprecated: ConfigManagementPlugins field is no longer supported. Argo CD now requires plugins to be defined as sidecar containers of repo server component. See '.spec.repo.sidecarContainers'. ConfigManagementPlugins was previously used to specify additional config management plugins."
                   type: "string"

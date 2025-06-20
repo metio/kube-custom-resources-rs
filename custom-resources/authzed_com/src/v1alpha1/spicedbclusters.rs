@@ -20,6 +20,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct SpiceDBClusterSpec {
+    /// BaseImage specifies the base container image to use for SpiceDB.
+    /// If not specified, will fall back to the operator's --base-image flag,
+    /// then to the imageName defined in the update graph.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImage")]
+    pub base_image: Option<String>,
     /// Channel is a defined series of updates that operator should follow.
     /// The operator is configured with a datasource that configures available
     /// channels and update paths.

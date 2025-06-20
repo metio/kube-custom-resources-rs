@@ -29,9 +29,11 @@ pub struct CompositeResourceDefinitionSpec {
     /// be changed or removed once they have been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimNames")]
     pub claim_names: Option<CompositeResourceDefinitionClaimNames>,
-    /// ConnectionSecretKeys is the list of keys that will be exposed to the end
-    /// user of the defined kind.
-    /// If the list is empty, all keys will be published.
+    /// ConnectionSecretKeys is the list of connection secret keys the
+    /// defined XR can publish. If the list is empty, all keys will be
+    /// published. If the list isn't empty, any connection secret keys that
+    /// don't appear in the list will be filtered out. Only LegacyCluster XRs
+    /// support connection secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionSecretKeys")]
     pub connection_secret_keys: Option<Vec<String>>,
     /// Conversion defines all conversion settings for the defined Composite resource.

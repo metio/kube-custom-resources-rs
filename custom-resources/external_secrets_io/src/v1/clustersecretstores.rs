@@ -2201,7 +2201,7 @@ pub struct ClusterSecretStoreProviderOnepasswordSdk {
     /// If you don't know which name and version to use, use `DefaultIntegrationName` and `DefaultIntegrationVersion`, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "integrationInfo")]
     pub integration_info: Option<ClusterSecretStoreProviderOnepasswordSdkIntegrationInfo>,
-    /// Vault defines the vault's name to access. Do NOT add op:// prefix. This will be done automatically.
+    /// Vault defines the vault's name or uuid to access. Do NOT add op:// prefix. This will be done automatically.
     pub vault: String,
 }
 

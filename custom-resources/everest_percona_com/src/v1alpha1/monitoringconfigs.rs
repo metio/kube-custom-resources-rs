@@ -13,6 +13,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "everest.percona.com", version = "v1alpha1", kind = "MonitoringConfig", plural = "monitoringconfigs")]
 #[kube(namespaced)]
+#[kube(status = "MonitoringConfigStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct MonitoringConfigSpec {
@@ -53,5 +54,11 @@ pub enum MonitoringConfigType {
 /// MonitoringConfigStatus defines the observed state of MonitoringConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitoringConfigStatus {
+    /// InUse is a flag that indicates if any DB cluster uses the monitoring config.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inUse")]
+    pub in_use: Option<bool>,
+    /// LastObservedGeneration is the most recent generation observed for this MonitoringConfig.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastObservedGeneration")]
+    pub last_observed_generation: Option<i64>,
 }
 

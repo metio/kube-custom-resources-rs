@@ -26,11 +26,6 @@ pub struct ProviderSpec {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonLabels")]
     pub common_labels: Option<BTreeMap<String, String>>,
-    /// ControllerConfigRef references a ControllerConfig resource that will be
-    /// used to configure the packaged controller Deployment.
-    /// Deprecated: Use RuntimeConfigReference instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerConfigRef")]
-    pub controller_config_ref: Option<ProviderControllerConfigRef>,
     /// IgnoreCrossplaneConstraints indicates to the package manager whether to
     /// honor Crossplane version constrains specified by the package.
     /// Default is false.
@@ -66,15 +61,6 @@ pub struct ProviderSpec {
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipDependencyResolution")]
     pub skip_dependency_resolution: Option<bool>,
-}
-
-/// ControllerConfigRef references a ControllerConfig resource that will be
-/// used to configure the packaged controller Deployment.
-/// Deprecated: Use RuntimeConfigReference instead.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ProviderControllerConfigRef {
-    /// Name of the ControllerConfig.
-    pub name: String,
 }
 
 /// LocalObjectReference contains enough information to let you locate the

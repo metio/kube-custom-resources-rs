@@ -131,6 +131,9 @@ pub struct PediaClusterStatusSyncResourcesResources {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PediaClusterStatusSyncResourcesResourcesSyncConditions {
+    /// optional
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialListPhase")]
+    pub initial_list_phase: Option<bool>,
     #[serde(rename = "lastTransitionTime")]
     pub last_transition_time: String,
     /// optional

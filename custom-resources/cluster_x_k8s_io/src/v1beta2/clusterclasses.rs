@@ -9,7 +9,6 @@ mod prelude {
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
@@ -136,7 +135,7 @@ pub struct ClusterClassControlPlane {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassControlPlaneRef,
 }
 
 /// machineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
@@ -170,7 +169,7 @@ pub struct ClusterClassControlPlaneMachineHealthCheck {
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ObjectReference>,
+    pub remediation_template: Option<ClusterClassControlPlaneMachineHealthCheckRemediationTemplate>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
@@ -194,38 +193,17 @@ pub struct ClusterClassControlPlaneMachineHealthCheck {
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineHealthCheckRemediationTemplate {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the remediation template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the remediation template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the remediation template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout
@@ -256,45 +234,23 @@ pub struct ClusterClassControlPlaneMachineInfrastructure {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassControlPlaneMachineInfrastructureRef,
 }
 
 /// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructureRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
@@ -362,38 +318,16 @@ pub enum ClusterClassControlPlaneReadinessGatesPolarity {
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// infrastructure is a reference to a local struct that holds the details
@@ -406,7 +340,7 @@ pub struct ClusterClassInfrastructure {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassInfrastructureRef,
 }
 
 /// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
@@ -427,38 +361,16 @@ pub struct ClusterClassInfrastructureNamingStrategy {
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructureRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// ClusterClassPatch defines a patch which is applied to customize the referenced templates.
@@ -558,9 +470,11 @@ pub struct ClusterClassPatchesDefinitionsJsonPatchesValueFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassPatchesDefinitionsSelector {
     /// apiVersion filters templates by apiVersion.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
     /// kind filters templates by kind.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
     pub kind: String,
     /// matchResources selects templates based on where they are referenced.
     #[serde(rename = "matchResources")]
@@ -1066,7 +980,7 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ObjectReference>,
+    pub remediation_template: Option<ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate>,
     /// unhealthyNodeConditions contains a list of conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
@@ -1090,38 +1004,17 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheck {
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the remediation template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the remediation template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the remediation template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// UnhealthyNodeCondition represents a Node condition type and value with a timeout
@@ -1303,45 +1196,23 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrap {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef,
 }
 
 /// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// infrastructure contains the infrastructure template reference to be used
@@ -1351,45 +1222,23 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructure {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef,
 }
 
 /// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
@@ -1493,45 +1342,23 @@ pub struct ClusterClassWorkersMachinePoolsTemplateBootstrap {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassWorkersMachinePoolsTemplateBootstrapRef,
 }
 
 /// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// infrastructure contains the infrastructure template reference to be used
@@ -1541,45 +1368,23 @@ pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructure {
     /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
-    pub r#ref: ObjectReference,
+    pub r#ref: ClusterClassWorkersMachinePoolsTemplateInfrastructureRef,
 }
 
 /// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureRef {
-    /// API version of the referent.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// If referring to a piece of an object instead of an entire object, this string
-    /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
-    /// For example, if the object reference is to a container within a pod, this would take on a value like:
-    /// "spec.containers{name}" (where "name" refers to the name of the container that triggered
-    /// the event) or if no container name is specified "spec.containers[2]" (container with
-    /// index 2 in this pod). This syntax is chosen only to have some well-defined way of
-    /// referencing a part of an object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
-    /// Kind of the referent.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kind: Option<String>,
-    /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Namespace of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-    /// Specific resourceVersion to which this reference is made, if any.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
-    pub resource_version: Option<String>,
-    /// UID of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub uid: Option<String>,
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// metadata is the metadata applied to the MachinePool.
