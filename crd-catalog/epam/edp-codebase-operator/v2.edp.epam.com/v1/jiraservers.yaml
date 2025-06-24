@@ -1,0 +1,75 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "jiraservers.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "JiraServer"
+    listKind: "JiraServerList"
+    plural: "jiraservers"
+    shortNames:
+      - "jrs"
+    singular: "jiraserver"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Is resource available"
+          jsonPath: ".status.available"
+          name: "Available"
+          type: "boolean"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "JiraServer is the Schema for the JiraServers API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "JiraServerSpec defines the desired state of JiraServer."
+              properties:
+                apiUrl:
+                  type: "string"
+                credentialName:
+                  type: "string"
+                rootUrl:
+                  type: "string"
+              required:
+                - "apiUrl"
+                - "credentialName"
+                - "rootUrl"
+              type: "object"
+            status:
+              description: "JiraServerStatus defines the observed state of JiraServer."
+              properties:
+                available:
+                  description: "This flag indicates neither JiraServer are initialized and ready to work. Defaults to false."
+                  type: "boolean"
+                detailed_message:
+                  description: "Detailed information regarding action result\nwhich were performed"
+                  type: "string"
+                last_time_updated:
+                  description: "Information when the last time the action were performed."
+                  format: "date-time"
+                  type: "string"
+                status:
+                  description: "Specifies a current status of JiraServer."
+                  type: "string"
+              required:
+                - "available"
+                - "last_time_updated"
+                - "status"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

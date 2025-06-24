@@ -6,6 +6,18 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## v2.edp.epam.com/v1
 - `CDPipeline`
 - `Stage`
+- `CDStageDeploy`
+- `CodebaseBranch`
+- `CodebaseImageStream`
+- `Codebase`
+- `GitServer`
+- `JiraIssueMetadata`
+- `JiraServer`
+- `QuickLink`
+## v2.edp.epam.com/v1alpha1
+- `Template`
 */
 #[cfg(feature = "v1")]
 pub mod v1;
+#[cfg(feature = "v1alpha1")]
+pub mod v1alpha1;

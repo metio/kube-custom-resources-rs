@@ -1327,6 +1327,22 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "epam/edp-codebase-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_cdstagedeployments.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_codebasebranches.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_codebaseimagestreams.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_codebases.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gitservers.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_jiraissuemetadatas.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_jiraservers.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_quicklinks.yaml",
+            "https://github.com/epam/edp-codebase-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_templates.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "eryalito/kubensync-operator",
         license: APACHE_V2,
         urls: &[

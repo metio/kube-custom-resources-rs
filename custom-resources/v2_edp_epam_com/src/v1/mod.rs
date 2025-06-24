@@ -1,2 +1,10 @@
 pub mod cdpipelines;
+pub mod cdstagedeployments;
+pub mod codebasebranches;
+pub mod codebaseimagestreams;
+pub mod codebases;
+pub mod gitservers;
+pub mod jiraissuemetadatas;
+pub mod jiraservers;
+pub mod quicklinks;
 pub mod stages;

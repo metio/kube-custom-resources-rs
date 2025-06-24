@@ -1,0 +1,100 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "gitservers.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "GitServer"
+    listKind: "GitServerList"
+    plural: "gitservers"
+    shortNames:
+      - "gs"
+    singular: "gitserver"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Is connected to git server"
+          jsonPath: ".status.connected"
+          name: "Connected"
+          type: "boolean"
+        - description: "GitSever host"
+          jsonPath: ".spec.gitHost"
+          name: "Host"
+          type: "string"
+        - description: "Git Provider type"
+          jsonPath: ".spec.gitProvider"
+          name: "Git Provider"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GitServer is the Schema for the gitservers API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GitServerSpec defines the desired state of GitServer."
+              properties:
+                gitHost:
+                  type: "string"
+                gitProvider:
+                  default: "github"
+                  description: "GitProvider is a git provider type. It can be gerrit, github or gitlab. Default value is gerrit."
+                  enum:
+                    - "gerrit"
+                    - "gitlab"
+                    - "github"
+                    - "bitbucket"
+                  type: "string"
+                gitUser:
+                  default: "git"
+                  description: "GitUser is a user name for git server."
+                  type: "string"
+                httpsPort:
+                  format: "int32"
+                  type: "integer"
+                nameSshKeySecret:
+                  type: "string"
+                skipWebhookSSLVerification:
+                  description: "SkipWebhookSSLVerification is a flag to skip webhook tls verification."
+                  type: "boolean"
+                sshPort:
+                  format: "int32"
+                  type: "integer"
+                webhookUrl:
+                  description: "WebhookUrl is a URL for webhook that will be created in the git provider.\nIf not set, a new EventListener and Ingress will be created and used for webhooks."
+                  example: "https://webhook-url.com"
+                  type: "string"
+              required:
+                - "gitHost"
+                - "httpsPort"
+                - "nameSshKeySecret"
+                - "sshPort"
+              type: "object"
+            status:
+              description: "GitServerStatus defines the observed state of GitServer."
+              properties:
+                connected:
+                  description: "Connected shows if operator is connected to git server."
+                  type: "boolean"
+                error:
+                  description: "Error represents error message if something went wrong."
+                  type: "string"
+                status:
+                  description: "Status indicates the current status of the GitServer.\nPossible values are: ok, failed."
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

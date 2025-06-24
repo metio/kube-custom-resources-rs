@@ -1,0 +1,109 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "cdstagedeployments.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "CDStageDeploy"
+    listKind: "CDStageDeployList"
+    plural: "cdstagedeployments"
+    shortNames:
+      - "csd"
+    singular: "cdstagedeploy"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Pipeline name"
+          jsonPath: ".spec.pipeline"
+          name: "Pipeline"
+          type: "string"
+        - description: "Stage name"
+          jsonPath: ".spec.stage"
+          name: "Stage"
+          type: "string"
+        - description: "Pipeline status"
+          jsonPath: ".status.status"
+          name: "Status"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "CDStageDeploy is the Schema for the CDStageDeployments API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "CDStageDeploySpec defines the desired state of CDStageDeploy."
+              properties:
+                pipeline:
+                  description: "Name of related pipeline"
+                  type: "string"
+                stage:
+                  description: "Name of related stage"
+                  type: "string"
+                strategy:
+                  default: "Auto"
+                  description: "TriggerType specifies a strategy for auto-deploy."
+                  type: "string"
+                tag:
+                  description: "Specifies a latest available tag"
+                  properties:
+                    codebase:
+                      type: "string"
+                    tag:
+                      type: "string"
+                  required:
+                    - "codebase"
+                    - "tag"
+                  type: "object"
+                tags:
+                  description: "A list of available tags.\nDeprecated: Use tag instead."
+                  items:
+                    properties:
+                      codebase:
+                        type: "string"
+                      tag:
+                        type: "string"
+                    required:
+                      - "codebase"
+                      - "tag"
+                    type: "object"
+                  type: "array"
+              required:
+                - "pipeline"
+                - "stage"
+                - "tag"
+              type: "object"
+            status:
+              default:
+                status: "pending"
+              description: "CDStageDeployStatus defines the observed state of CDStageDeploy."
+              properties:
+                message:
+                  description: "Descriptive message for current status."
+                  type: "string"
+                status:
+                  default: "pending"
+                  description: "Specifies a current status of CDStageDeploy."
+                  enum:
+                    - "failed"
+                    - "running"
+                    - "pending"
+                    - "completed"
+                    - "in-queue"
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

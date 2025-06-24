@@ -1,0 +1,215 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "codebases.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "Codebase"
+    listKind: "CodebaseList"
+    plural: "codebases"
+    shortNames:
+      - "cdbs"
+    singular: "codebase"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Codebase type"
+          jsonPath: ".spec.type"
+          name: "Type"
+          type: "string"
+        - description: "Is resource available"
+          jsonPath: ".status.available"
+          name: "Available"
+          type: "boolean"
+        - description: "Result of last action"
+          jsonPath: ".status.result"
+          name: "Result"
+          type: "string"
+        - description: "Default Branch"
+          jsonPath: ".spec.defaultBranch"
+          name: "Default Branch"
+          type: "string"
+        - description: "Repository Web URL"
+          jsonPath: ".status.gitWebUrl"
+          name: "GitWebUrl"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "Codebase is the Schema for the Codebases API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "CodebaseSpec defines the desired state of Codebase."
+              properties:
+                branchToCopyInDefaultBranch:
+                  description: "While we clone new codebase we can select specific branch to clone.\nSelected branch will become a default branch for a new codebase (e.g. master, main)."
+                  type: "string"
+                buildTool:
+                  description: "A build tool which is used on codebase."
+                  type: "string"
+                ciTool:
+                  default: "tekton"
+                  description: "A name of tool which should be used as CI."
+                  type: "string"
+                commitMessagePattern:
+                  nullable: true
+                  type: "string"
+                defaultBranch:
+                  description: "Name of default branch."
+                  type: "string"
+                deploymentScript:
+                  default: "helm-chart"
+                  type: "string"
+                description:
+                  description: "A short description of codebase."
+                  nullable: true
+                  type: "string"
+                disablePutDeployTemplates:
+                  description: "Controller must skip step \"put deploy templates\" in action chain."
+                  type: "boolean"
+                emptyProject:
+                  description: "A flag indicating how project should be provisioned. Default: false"
+                  type: "boolean"
+                framework:
+                  description: "A framework used in codebase."
+                  type: "string"
+                gitServer:
+                  description: "A name of git server which will be used as VCS.\nExample: \"gerrit\"."
+                  type: "string"
+                gitUrlPath:
+                  description: "A relative path for git repository. Should start from /. Example: /company/api-app."
+                  type: "string"
+                jiraIssueMetadataPayload:
+                  nullable: true
+                  type: "string"
+                jiraServer:
+                  nullable: true
+                  type: "string"
+                lang:
+                  description: "Programming language used in codebase."
+                  type: "string"
+                private:
+                  default: true
+                  description: "Private indicates if we need to create private repository."
+                  type: "boolean"
+                repository:
+                  nullable: true
+                  properties:
+                    url:
+                      type: "string"
+                  required:
+                    - "url"
+                  type: "object"
+                strategy:
+                  description: "integration strategy for a codebase, e.g. clone, import, etc."
+                  enum:
+                    - "create"
+                    - "clone"
+                    - "import"
+                  type: "string"
+                testReportFramework:
+                  nullable: true
+                  type: "string"
+                ticketNamePattern:
+                  nullable: true
+                  type: "string"
+                type:
+                  description: "Type of codebase. E.g. application, autotest or library."
+                  type: "string"
+                versioning:
+                  properties:
+                    startFrom:
+                      description: "StartFrom is required when versioning type is not default."
+                      nullable: true
+                      type: "string"
+                    type:
+                      type: "string"
+                  required:
+                    - "type"
+                  type: "object"
+              required:
+                - "buildTool"
+                - "defaultBranch"
+                - "emptyProject"
+                - "framework"
+                - "gitServer"
+                - "gitUrlPath"
+                - "lang"
+                - "strategy"
+                - "type"
+                - "versioning"
+              type: "object"
+            status:
+              description: "CodebaseStatus defines the observed state of Codebase."
+              properties:
+                action:
+                  description: "The last Action was performed."
+                  type: "string"
+                available:
+                  description: "This flag indicates neither Codebase are initialized and ready to work. Defaults to false."
+                  type: "boolean"
+                detailedMessage:
+                  description: "Detailed information regarding action result\nwhich were performed"
+                  type: "string"
+                failureCount:
+                  description: "Amount of times, operator fail to serve with existing CR."
+                  format: "int64"
+                  type: "integer"
+                git:
+                  description: "Specifies a status of action for git."
+                  type: "string"
+                gitWebUrl:
+                  description: "Stores GitWebUrl of codebase."
+                  type: "string"
+                lastTimeUpdated:
+                  description: "Information when the last time the action were performed."
+                  format: "date-time"
+                  type: "string"
+                result:
+                  description: "A result of an action which were performed.\n- \"success\": action where performed successfully;\n- \"error\": error has occurred;"
+                  enum:
+                    - "success"
+                    - "error"
+                  type: "string"
+                status:
+                  description: "Specifies a current status of Codebase."
+                  type: "string"
+                username:
+                  description: "Name of user who made a last change."
+                  type: "string"
+                value:
+                  description: "Specifies a current state of Codebase."
+                  type: "string"
+                webHookID:
+                  description: "Stores ID of webhook which was created for a codebase.\nDeprecated: Because the webhook id can be more than just an integer. Use WebHookRef instead."
+                  type: "integer"
+                webHookRef:
+                  description: "WebHookRef stores unique reference to webhook which was created for a codebase."
+                  type: "string"
+              required:
+                - "action"
+                - "available"
+                - "failureCount"
+                - "git"
+                - "lastTimeUpdated"
+                - "result"
+                - "status"
+                - "username"
+                - "value"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
