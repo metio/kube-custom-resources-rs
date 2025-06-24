@@ -167,6 +167,7 @@ The following groups are available:
 - [dynamodb.services.k8s.aws](https://crates.io/crates/kcr_dynamodb_services_k8s_aws)
 - [ec2.services.k8s.aws](https://crates.io/crates/kcr_ec2_services_k8s_aws)
 - [ecr.services.k8s.aws](https://crates.io/crates/kcr_ecr_services_k8s_aws)
+- [edp.epam.com](https://crates.io/crates/kcr_edp_epam_com)
 - [efs.services.k8s.aws](https://crates.io/crates/kcr_efs_services_k8s_aws)
 - [egressgateway.spidernet.io](https://crates.io/crates/kcr_egressgateway_spidernet_io)
 - [eks.services.k8s.aws](https://crates.io/crates/kcr_eks_services_k8s_aws)

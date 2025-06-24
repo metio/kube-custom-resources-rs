@@ -1357,6 +1357,20 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "epam/edp-nexus-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexusblobstores.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexuscleanuppolicies.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexuses.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexusrepositories.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexusroles.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexusscripts.yaml",
+            "https://github.com/epam/edp-nexus-operator/blob/master/deploy-templates/crds/edp.epam.com_nexususers.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "eryalito/kubensync-operator",
         license: APACHE_V2,
         urls: &[
