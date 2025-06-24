@@ -1019,6 +1019,10 @@ Files: crd-catalog/NetApp/trident/*
 Copyright: The NetApp/trident Authors
 License: Apache-2.0
 
+Files: crd-catalog/netbirdio/kubernetes-operator/*
+Copyright: The netbirdio/kubernetes-operator Authors
+License: BSD-3-Clause
+
 Files: crd-catalog/netobserv/network-observability-operator/*
 Copyright: The netobserv/network-observability-operator Authors
 License: Apache-2.0

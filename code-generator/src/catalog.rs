@@ -2785,6 +2785,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "netbirdio/kubernetes-operator",
+        license: BSD3,
+        urls: &[
+            "https://github.com/netbirdio/kubernetes-operator/blob/main/crds/netbird.io_nbgroups.yaml",
+            "https://github.com/netbirdio/kubernetes-operator/blob/main/crds/netbird.io_nbpolicies.yaml",
+            "https://github.com/netbirdio/kubernetes-operator/blob/main/crds/netbird.io_nbresources.yaml",
+            "https://github.com/netbirdio/kubernetes-operator/blob/main/crds/netbird.io_nbroutingpeers.yaml",
+            "https://github.com/netbirdio/kubernetes-operator/blob/main/crds/netbird.io_nbsetupkeys.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "netobserv/network-observability-operator",
         license: APACHE_V2,
         urls: &[
@@ -3881,3 +3893,4 @@ const MPL_V2: &'static str = "MPL-2.0";
 const KUBEMOD: &'static str = "LicenseRef-Kubemod";
 const HASHICORP: &'static str = "LicenseRef-HashiCorp";
 const OSL_V3: &'static str = "OSL-3.0";
+const BSD3: &'static str = "BSD-3-Clause";
