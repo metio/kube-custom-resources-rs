@@ -95,6 +95,7 @@ The following groups are available:
 - [azure.microsoft.com](https://crates.io/crates/kcr_azure_microsoft_com)
 - [b3scale.infra.run](https://crates.io/crates/kcr_b3scale_infra_run)
 - [b3scale.io](https://crates.io/crates/kcr_b3scale_io)
+- [barmancloud.cnpg.io](https://crates.io/crates/kcr_barmancloud_cnpg_io)
 - [batch.volcano.sh](https://crates.io/crates/kcr_batch_volcano_sh)
 - [beat.k8s.elastic.co](https://crates.io/crates/kcr_beat_k8s_elastic_co)
 - [beegfs.csi.netapp.com](https://crates.io/crates/kcr_beegfs_csi_netapp_com)

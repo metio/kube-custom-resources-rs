@@ -383,6 +383,10 @@ Files: crd-catalog/cloudnative-pg/cloudnative-pg/*
 Copyright: The cloudnative-pg/cloudnative-pg Authors
 License: Apache-2.0
 
+Files: crd-catalog/cloudnative-pg/plugin-barman-cloud/*
+Copyright: The cloudnative-pg/plugin-barman-cloud Authors
+License: Apache-2.0
+
 Files: crd-catalog/clusternet/clusternet/*
 Copyright: The clusternet/clusternet Authors
 License: Apache-2.0
