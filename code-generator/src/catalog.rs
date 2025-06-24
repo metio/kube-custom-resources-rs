@@ -1371,6 +1371,19 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "epam/edp-sonar-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonargroups.yaml",
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonarpermissiontemplates.yaml",
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonarqualitygates.yaml",
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonarqualityprofiles.yaml",
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonars.yaml",
+            "https://github.com/epam/edp-sonar-operator/blob/master/deploy-templates/crds/edp.epam.com_sonarusers.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "eryalito/kubensync-operator",
         license: APACHE_V2,
         urls: &[
