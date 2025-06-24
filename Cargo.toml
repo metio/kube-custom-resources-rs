@@ -381,6 +381,7 @@ members = [
     "custom-resources/stunner_l7mp_io",
     "custom-resources/submariner_io",
     "custom-resources/superset_stackable_tech",
+    "custom-resources/tackle_konveyor_io",
     "custom-resources/telemetry_istio_io",
     "custom-resources/templates_gatekeeper_sh",
     "custom-resources/tempo_grafana_com",

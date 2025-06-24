@@ -2025,6 +2025,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "konveyor/operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/konveyor/operator/blob/main/helm/templates/crds/tackle.konveyor.io_addons.yaml",
+            "https://github.com/konveyor/operator/blob/main/helm/templates/crds/tackle.konveyor.io_extensions.yaml",
+            "https://github.com/konveyor/operator/blob/main/helm/templates/crds/tackle.konveyor.io_tackles.yaml",
+            "https://github.com/konveyor/operator/blob/main/helm/templates/crds/tackle.konveyor.io_tasks.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "koordinator-sh/koordinator",
         license: APACHE_V2,
         urls: &[
