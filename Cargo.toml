@@ -360,6 +360,7 @@ members = [
     "custom-resources/services_k8s_aws",
     "custom-resources/serving_kubedl_io",
     "custom-resources/sfn_services_k8s_aws",
+    "custom-resources/shipwright_io",
     "custom-resources/site_superedge_io",
     "custom-resources/slinky_slurm_net",
     "custom-resources/slo_koordinator_sh",

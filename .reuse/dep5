@@ -1243,6 +1243,10 @@ Files: crd-catalog/sematext/sematext-operator/*
 Copyright: The sematext/sematext-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/shipwright-io/build/*
+Copyright: The shipwright-io/build Authors
+License: Apache-2.0
+
 Files: crd-catalog/shipwright-io/operator/*
 Copyright: The shipwright-io/operator Authors
 License: Apache-2.0

@@ -400,6 +400,7 @@ The following groups are available:
 - [services.k8s.aws](https://crates.io/crates/kcr_services_k8s_aws)
 - [serving.kubedl.io](https://crates.io/crates/kcr_serving_kubedl_io)
 - [sfn.services.k8s.aws](https://crates.io/crates/kcr_sfn_services_k8s_aws)
+- [shipwright.io](https://crates.io/crates/kcr_shipwright_io)
 - [site.superedge.io](https://crates.io/crates/kcr_site_superedge_io)
 - [slinky.slurm.net](https://crates.io/crates/kcr_slinky_slurm_net)
 - [slo.koordinator.sh](https://crates.io/crates/kcr_slo_koordinator_sh)
