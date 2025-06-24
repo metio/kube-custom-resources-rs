@@ -14,3 +14,13 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 ### v2.edp.epam.com/v1
 - `CDPipeline`
 - `Stage`
+- `CDStageDeploy`
+- `CodebaseBranch`
+- `CodebaseImageStream`
+- `Codebase`
+- `GitServer`
+- `JiraIssueMetadata`
+- `JiraServer`
+- `QuickLink`
+### v2.edp.epam.com/v1alpha1
+- `Template`
