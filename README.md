@@ -300,6 +300,7 @@ The following groups are available:
 - [multicluster.x-k8s.io](https://crates.io/crates/kcr_multicluster_x_k8s_io)
 - [mutations.gatekeeper.sh](https://crates.io/crates/kcr_mutations_gatekeeper_sh)
 - [nativestor.alauda.io](https://crates.io/crates/kcr_nativestor_alauda_io)
+- [netbird.io](https://crates.io/crates/kcr_netbird_io)
 - [netchecks.io](https://crates.io/crates/kcr_netchecks_io)
 - [networkfirewall.services.k8s.aws](https://crates.io/crates/kcr_networkfirewall_services_k8s_aws)
 - [networking.gke.io](https://crates.io/crates/kcr_networking_gke_io)

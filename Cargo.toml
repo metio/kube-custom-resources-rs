@@ -260,6 +260,7 @@ members = [
     "custom-resources/multicluster_x_k8s_io",
     "custom-resources/mutations_gatekeeper_sh",
     "custom-resources/nativestor_alauda_io",
+    "custom-resources/netbird_io",
     "custom-resources/netchecks_io",
     "custom-resources/networkfirewall_services_k8s_aws",
     "custom-resources/networking_gke_io",
