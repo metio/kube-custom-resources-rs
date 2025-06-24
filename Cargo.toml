@@ -412,6 +412,7 @@ members = [
     "custom-resources/work_karmada_io",
     "custom-resources/workload_codeflare_dev",
     "custom-resources/workloads_kubeblocks_io",
+    "custom-resources/workspace_devfile_io",
     "custom-resources/workspace_maistra_io",
     "custom-resources/zonecontrol_k8s_aws",
     "custom-resources/zookeeper_pravega_io",

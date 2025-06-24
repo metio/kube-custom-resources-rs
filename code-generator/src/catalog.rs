@@ -1238,6 +1238,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "devfile/api",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/devfile/api/blob/main/crds/workspace.devfile.io_devworkspaces.v1beta1.yaml",
+            "https://github.com/devfile/api/blob/main/crds/workspace.devfile.io_devworkspaces.yaml",
+            "https://github.com/devfile/api/blob/main/crds/workspace.devfile.io_devworkspacetemplates.v1beta1.yaml",
+            "https://github.com/devfile/api/blob/main/crds/workspace.devfile.io_devworkspacetemplates.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "devfile/registry-operator",
         license: APACHE_V2,
         urls: &[

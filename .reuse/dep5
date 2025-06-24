@@ -451,6 +451,10 @@ Files: crd-catalog/datainfrahq/druid-operator/*
 Copyright: The datainfrahq/druid-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/devfile/api/*
+Copyright: The devfile/api Authors
+License: Apache-2.0
+
 Files: crd-catalog/devfile/registry-operator/*
 Copyright: The devfile/registry-operator Authors
 License: Apache-2.0
