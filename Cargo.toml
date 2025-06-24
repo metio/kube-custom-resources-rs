@@ -55,6 +55,7 @@ members = [
     "custom-resources/azure_microsoft_com",
     "custom-resources/b3scale_infra_run",
     "custom-resources/b3scale_io",
+    "custom-resources/barmancloud_cnpg_io",
     "custom-resources/batch_volcano_sh",
     "custom-resources/beat_k8s_elastic_co",
     "custom-resources/beegfs_csi_netapp_com",

@@ -1061,6 +1061,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "cloudnative-pg/plugin-barman-cloud",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/cloudnative-pg/plugin-barman-cloud/blob/main/config/crd/bases/barmancloud.cnpg.io_objectstores.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "clusternet/clusternet",
         license: APACHE_V2,
         urls: &[
