@@ -79,6 +79,14 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "aenix-io/etcd-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/aenix-io/etcd-operator/blob/main/charts/etcd-operator/crds/etcd-cluster.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "aerospike/aerospike-kubernetes-operator",
         license: APACHE_V2,
         urls: &[

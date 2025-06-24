@@ -27,6 +27,10 @@ Files: crd-catalog/actions/actions-runner-controller/*
 Copyright: The actions/actions-runner-controller Authors
 License: Apache-2.0
 
+Files: crd-catalog/aenix-io/etcd-operator/*
+Copyright: The aenix-io/etcd-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/aerospike/aerospike-kubernetes-operator/*
 Copyright: The aerospike/aerospike-kubernetes-operator Authors
 License: Apache-2.0
