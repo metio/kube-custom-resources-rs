@@ -1,0 +1,70 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "gerritprojects.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "GerritProject"
+    listKind: "GerritProjectList"
+    plural: "gerritprojects"
+    singular: "gerritproject"
+  scope: "Namespaced"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GerritProject is the Schema for the gerrit project API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GerritProjectSpec defines the desired state of GerritProject."
+              properties:
+                branches:
+                  type: "string"
+                createEmptyCommit:
+                  type: "boolean"
+                description:
+                  type: "string"
+                name:
+                  type: "string"
+                ownerName:
+                  type: "string"
+                owners:
+                  type: "string"
+                parent:
+                  type: "string"
+                permissionsOnly:
+                  type: "boolean"
+                rejectEmptyCommit:
+                  type: "string"
+                submitType:
+                  type: "string"
+              required:
+                - "name"
+              type: "object"
+            status:
+              description: "GerritProjectStatus defines the observed state of GerritProject."
+              properties:
+                branches:
+                  items:
+                    type: "string"
+                  nullable: true
+                  type: "array"
+                value:
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

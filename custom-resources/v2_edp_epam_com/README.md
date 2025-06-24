@@ -22,5 +22,12 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `JiraIssueMetadata`
 - `JiraServer`
 - `QuickLink`
+- `GerritGroupMember`
+- `GerritGroup`
+- `GerritMergeRequest`
+- `GerritProjectAccess`
+- `GerritProject`
+- `GerritReplicationConfig`
+- `Gerrit`
 ### v2.edp.epam.com/v1alpha1
 - `Template`

@@ -1,0 +1,58 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "gerritgroupmembers.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "GerritGroupMember"
+    listKind: "GerritGroupMemberList"
+    plural: "gerritgroupmembers"
+    singular: "gerritgroupmember"
+  scope: "Namespaced"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GerritGroupMember is the Schema for the gerrit group member API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GerritGroupMemberSpec defines the desired state of GerritGroupMember."
+              properties:
+                accountId:
+                  type: "string"
+                groupId:
+                  type: "string"
+                ownerName:
+                  description: "OwnerName indicates which gerrit CR should be taken to initialize correct client."
+                  nullable: true
+                  type: "string"
+              required:
+                - "accountId"
+                - "groupId"
+              type: "object"
+            status:
+              description: "GerritGroupMemberStatus defines the observed state of GerritGroupMember."
+              properties:
+                failureCount:
+                  description: "Preserves Number of Failures during reconciliation phase. Used for exponential back-off calculation"
+                  format: "int64"
+                  type: "integer"
+                value:
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}
