@@ -3818,6 +3818,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
             "https://github.com/volcano-sh/volcano/blob/master/config/crd/volcano/bases/nodeinfo.volcano.sh_numatopologies.yaml",
             "https://github.com/volcano-sh/volcano/blob/master/config/crd/volcano/bases/scheduling.volcano.sh_podgroups.yaml",
             "https://github.com/volcano-sh/volcano/blob/master/config/crd/volcano/bases/scheduling.volcano.sh_queues.yaml",
+            "https://github.com/volcano-sh/volcano/blob/master/config/crd/volcano/bases/topology.volcano.sh_hypernodes.yaml",
             "https://github.com/volcano-sh/volcano/blob/master/config/crd/jobflow/bases/flow.volcano.sh_jobflows.yaml",
             "https://github.com/volcano-sh/volcano/blob/master/config/crd/jobflow/bases/flow.volcano.sh_jobtemplates.yaml",
         ],
