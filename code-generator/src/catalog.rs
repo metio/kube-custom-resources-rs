@@ -3151,6 +3151,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "radius-project/radius",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/radius-project/radius/blob/main/deploy/Chart/crds/radius/radapp.io_deploymentresources.yaml",
+            "https://github.com/radius-project/radius/blob/main/deploy/Chart/crds/radius/radapp.io_deploymenttemplates.yaml",
+            "https://github.com/radius-project/radius/blob/main/deploy/Chart/crds/radius/radapp.io_recipes.yaml",
+            "https://github.com/radius-project/radius/blob/main/deploy/Chart/crds/ucpd/ucp.dev_queuemessages.yaml",
+            "https://github.com/radius-project/radius/blob/main/deploy/Chart/crds/ucpd/ucp.dev_resources.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "rancher/system-upgrade-controller",
         license: APACHE_V2,
         urls: &[
