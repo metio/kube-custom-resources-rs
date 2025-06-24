@@ -1,0 +1,199 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "stages.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "Stage"
+    listKind: "StageList"
+    plural: "stages"
+    singular: "stage"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "Is resource available"
+          jsonPath: ".status.available"
+          name: "Available"
+          type: "boolean"
+        - description: "CDPipeline that owns the Stage"
+          jsonPath: ".spec.cdPipeline"
+          name: "CDPipeline Name"
+          type: "string"
+        - description: "Stage deployment trigger type. E.g. Manual, Auto"
+          jsonPath: ".spec.triggerType"
+          name: "Trigger Type"
+          type: "string"
+        - description: "The order in the CDPipeline promotion flow (starts from 0)"
+          jsonPath: ".spec.order"
+          name: "Order"
+          type: "integer"
+        - description: "The name of cluster where the application will be deployed"
+          jsonPath: ".spec.clusterName"
+          name: "Cluster Name"
+          type: "string"
+        - description: "The name of Tekton TriggerTemplate used as a blueprint for deployment pipeline"
+          jsonPath: ".spec.triggerTemplate"
+          name: "Trigger Template"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "Stage is the Schema for the stages API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "StageSpec defines the desired state of Stage.\nNOTE: for deleting the stage use stages order - delete only the latest stage."
+              properties:
+                cdPipeline:
+                  description: "Name of CD pipeline which this Stage will be linked to."
+                  minLength: 2
+                  type: "string"
+                cleanTemplate:
+                  description: "CleanTemplate specifies the name of Tekton TriggerTemplate used for cleanup environment pipeline."
+                  example: "clean"
+                  type: "string"
+                clusterName:
+                  default: "in-cluster"
+                  description: "Specifies a name of cluster where the application will be deployed.\nDefault value is \"in-cluster\" which means that application will be deployed in the same cluster where CD Pipeline is running."
+                  type: "string"
+                description:
+                  description: "A description of a stage."
+                  minLength: 0
+                  type: "string"
+                name:
+                  description: "Name of a stage."
+                  minLength: 2
+                  type: "string"
+                namespace:
+                  description: "Namespace where the application will be deployed."
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable"
+                      rule: "self == oldSelf"
+                order:
+                  description: "The order to lay out Stages.\nThe order should start from 0, and the next stages should use +1 for the order."
+                  type: "integer"
+                qualityGates:
+                  description: "A list of quality gates to be processed"
+                  items:
+                    description: "QualityGate defines a single quality for a release."
+                    properties:
+                      autotestName:
+                        description: "A name of autotests to run with quality gate"
+                        nullable: true
+                        type: "string"
+                      branchName:
+                        description: "A branch name to use from autotests repository"
+                        nullable: true
+                        type: "string"
+                      qualityGateType:
+                        description: "A type of quality gate, e.g. \"Manual\", \"Autotests\""
+                        type: "string"
+                      stepName:
+                        description: "Specifies a name of particular"
+                        minLength: 2
+                        type: "string"
+                    required:
+                      - "qualityGateType"
+                      - "stepName"
+                    type: "object"
+                  type: "array"
+                source:
+                  default:
+                    type: "default"
+                  description: "Specifies a source of a pipeline library which will run release"
+                  properties:
+                    library:
+                      description: "A reference to a non default source library"
+                      nullable: true
+                      properties:
+                        branch:
+                          description: "Branch which should be used for a library"
+                          type: "string"
+                        name:
+                          description: "A name of a library"
+                          type: "string"
+                      type: "object"
+                    type:
+                      default: "default"
+                      description: "Type of pipeline library, e.g. default, library"
+                      type: "string"
+                  type: "object"
+                triggerTemplate:
+                  default: "deploy"
+                  description: "Specifies a name of Tekton TriggerTemplate used as a blueprint for deployment pipeline.\nDefault value is \"deploy\" which means that default TriggerTemplate will be used.\nThe default TriggerTemplate is delivered using edp-tekton helm chart."
+                  type: "string"
+                triggerType:
+                  default: "Manual"
+                  description: "Stage deployment trigger type."
+                  enum:
+                    - "Auto"
+                    - "Manual"
+                    - "Auto-stable"
+                  type: "string"
+              required:
+                - "cdPipeline"
+                - "description"
+                - "name"
+                - "namespace"
+                - "order"
+                - "qualityGates"
+              type: "object"
+            status:
+              description: "StageStatus defines the observed state of Stage."
+              properties:
+                action:
+                  description: "The last Action was performed."
+                  type: "string"
+                available:
+                  description: "This flag indicates neither Stage are initialized and ready to work. Defaults to false."
+                  type: "boolean"
+                detailed_message:
+                  description: "Detailed information regarding action result\nwhich were performed"
+                  type: "string"
+                last_time_updated:
+                  description: "Information when  the last time the action were performed."
+                  format: "date-time"
+                  type: "string"
+                result:
+                  description: "A result of an action which were performed.\n- \"success\": action where performed successfully;\n- \"error\": error has occurred;"
+                  enum:
+                    - "success"
+                    - "error"
+                  type: "string"
+                shouldBeHandled:
+                  description: "Should update of status be handled. Defaults to false."
+                  type: "boolean"
+                status:
+                  description: "Specifies a current status of Stage."
+                  type: "string"
+                username:
+                  description: "Name of user who made a last change."
+                  type: "string"
+                value:
+                  description: "Specifies a current state of Stage."
+                  type: "string"
+              required:
+                - "action"
+                - "available"
+                - "last_time_updated"
+                - "result"
+                - "status"
+                - "username"
+                - "value"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

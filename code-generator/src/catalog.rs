@@ -1318,6 +1318,15 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "epam/edp-cd-pipeline-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/epam/edp-cd-pipeline-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_cdpipelines.yaml",
+            "https://github.com/epam/edp-cd-pipeline-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_stages.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "eryalito/kubensync-operator",
         license: APACHE_V2,
         urls: &[

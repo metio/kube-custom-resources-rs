@@ -483,6 +483,10 @@ Files: crd-catalog/emqx/emqx-operator/*
 Copyright: The emqx/emqx-operator Authors
 License: Apache-2.0
 
+Files: crd-catalog/epam/edp-cd-pipeline-operator/*
+Copyright: The epam/edp-cd-pipeline-operator Authors
+License: Apache-2.0
+
 Files: crd-catalog/eryalito/kubensync-operator/*
 Copyright: The eryalito/kubensync-operator Authors
 License: Apache-2.0

@@ -440,6 +440,7 @@ The following groups are available:
 - [ucp.dev](https://crates.io/crates/kcr_ucp_dev)
 - [upgrade.cattle.io](https://crates.io/crates/kcr_upgrade_cattle_io)
 - [upgrade.managed.openshift.io](https://crates.io/crates/kcr_upgrade_managed_openshift_io)
+- [v2.edp.epam.com](https://crates.io/crates/kcr_v2_edp_epam_com)
 - [velero.io](https://crates.io/crates/kcr_velero_io)
 - [virt.virtink.smartx.com](https://crates.io/crates/kcr_virt_virtink_smartx_com)
 - [volsync.backube](https://crates.io/crates/kcr_volsync_backube)
