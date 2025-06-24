@@ -907,6 +907,23 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "buildpacks-community/kpack",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/buildpacks-community/kpack/blob/main/config/build.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/builder.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/buildpack.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/clusterbuilder.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/clusterbuildpack.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/clusterlifecycle.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/clusterstack.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/clusterstore.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/image.yaml",
+            "https://github.com/buildpacks-community/kpack/blob/main/config/sourceresolver.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "carlosedp/lbconfig-operator",
         license: MIT,
         urls: &[

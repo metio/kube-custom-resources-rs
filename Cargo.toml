@@ -217,6 +217,7 @@ members = [
     "custom-resources/kmm_sigs_x_k8s_io",
     "custom-resources/kms_services_k8s_aws",
     "custom-resources/kom_kaiso_github_io",
+    "custom-resources/kpack_io",
     "custom-resources/kuadrant_io",
     "custom-resources/kube_green_com",
     "custom-resources/kubean_io",

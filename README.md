@@ -257,6 +257,7 @@ The following groups are available:
 - [kmm.sigs.x-k8s.io](https://crates.io/crates/kcr_kmm_sigs_x_k8s_io)
 - [kms.services.k8s.aws](https://crates.io/crates/kcr_kms_services_k8s_aws)
 - [kom.kaiso.github.io](https://crates.io/crates/kcr_kom_kaiso_github_io)
+- [kpack.io](https://crates.io/crates/kcr_kpack_io)
 - [kuadrant.io](https://crates.io/crates/kcr_kuadrant_io)
 - [kube-green.com](https://crates.io/crates/kcr_kube_green_com)
 - [kubean.io](https://crates.io/crates/kcr_kubean_io)
