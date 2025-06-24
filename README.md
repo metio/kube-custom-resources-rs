@@ -452,6 +452,7 @@ The following groups are available:
 - [work.karmada.io](https://crates.io/crates/kcr_work_karmada_io)
 - [workload.codeflare.dev](https://crates.io/crates/kcr_workload_codeflare_dev)
 - [workloads.kubeblocks.io](https://crates.io/crates/kcr_workloads_kubeblocks_io)
+- [workspace.devfile.io](https://crates.io/crates/kcr_workspace_devfile_io)
 - [workspace.maistra.io](https://crates.io/crates/kcr_workspace_maistra_io)
 - [zonecontrol.k8s.aws](https://crates.io/crates/kcr_zonecontrol_k8s_aws)
 - [zookeeper.pravega.io](https://crates.io/crates/kcr_zookeeper_pravega_io)
