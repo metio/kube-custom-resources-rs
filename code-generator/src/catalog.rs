@@ -3431,6 +3431,17 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "shipwright-io/build",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/shipwright-io/build/blob/main/deploy/crds/shipwright.io_buildruns.yaml",
+            "https://github.com/shipwright-io/build/blob/main/deploy/crds/shipwright.io_builds.yaml",
+            "https://github.com/shipwright-io/build/blob/main/deploy/crds/shipwright.io_buildstrategies.yaml",
+            "https://github.com/shipwright-io/build/blob/main/deploy/crds/shipwright.io_clusterbuildstrategies.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "shipwright-io/operator",
         license: APACHE_V2,
         urls: &[
