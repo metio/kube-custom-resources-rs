@@ -421,6 +421,7 @@ The following groups are available:
 - [stunner.l7mp.io](https://crates.io/crates/kcr_stunner_l7mp_io)
 - [submariner.io](https://crates.io/crates/kcr_submariner_io)
 - [superset.stackable.tech](https://crates.io/crates/kcr_superset_stackable_tech)
+- [tackle.konveyor.io](https://crates.io/crates/kcr_tackle_konveyor_io)
 - [telemetry.istio.io](https://crates.io/crates/kcr_telemetry_istio_io)
 - [templates.gatekeeper.sh](https://crates.io/crates/kcr_templates_gatekeeper_sh)
 - [tempo.grafana.com](https://crates.io/crates/kcr_tempo_grafana_com)
