@@ -1,0 +1,121 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.16.5"
+  name: "cdpipelines.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "CDPipeline"
+    listKind: "CDPipelineList"
+    plural: "cdpipelines"
+    singular: "cdpipeline"
+  scope: "Namespaced"
+  versions:
+    - additionalPrinterColumns:
+        - description: "This flag indicates neither CDPipeline are initialized and ready to work"
+          jsonPath: ".status.available"
+          name: "Available"
+          type: "string"
+        - description: "Specifies a current status of CDPipeline"
+          jsonPath: ".status.status"
+          name: "Status"
+          type: "string"
+      name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "CDPipeline is the Schema for the cdpipelines API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "CDPipelineSpec defines the desired state of CDPipeline."
+              properties:
+                applications:
+                  description: "A list of applications included in CDPipeline."
+                  items:
+                    type: "string"
+                  minItems: 1
+                  type: "array"
+                applicationsToPromote:
+                  description: "A list of applications which will promote after successful release."
+                  items:
+                    type: "string"
+                  nullable: true
+                  type: "array"
+                deploymentType:
+                  default: "container"
+                  description: "Type of workload to be deployed, e.g., container, custom."
+                  type: "string"
+                description:
+                  description: "Description of CD pipeline."
+                  example: "This is a CD pipeline for deploying applications"
+                  type: "string"
+                inputDockerStreams:
+                  description: "A list of docker streams"
+                  items:
+                    type: "string"
+                  minItems: 1
+                  type: "array"
+                name:
+                  description: "Name of CD pipeline"
+                  minLength: 2
+                  type: "string"
+              required:
+                - "applications"
+                - "deploymentType"
+                - "inputDockerStreams"
+                - "name"
+              type: "object"
+            status:
+              description: "CDPipelineStatus defines the observed state of CDPipeline."
+              properties:
+                action:
+                  description: "The last Action was performed."
+                  type: "string"
+                available:
+                  description: "This flag indicates neither CDPipeline are initialized and ready to work. Defaults to false."
+                  type: "boolean"
+                detailed_message:
+                  description: "Detailed information regarding action result\nwhich were performed"
+                  type: "string"
+                last_time_updated:
+                  description: "Information when the last time the action were performed."
+                  format: "date-time"
+                  type: "string"
+                result:
+                  description: "A result of an action which were performed.\n- \"success\": action where performed successfully;\n- \"error\": error has occurred;"
+                  enum:
+                    - "success"
+                    - "error"
+                  type: "string"
+                status:
+                  description: "Specifies a current status of CDPipeline."
+                  type: "string"
+                username:
+                  description: "Name of user who made a last change."
+                  type: "string"
+                value:
+                  description: "Specifies a current state of CDPipeline."
+                  type: "string"
+              required:
+                - "action"
+                - "available"
+                - "last_time_updated"
+                - "result"
+                - "status"
+                - "username"
+                - "value"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

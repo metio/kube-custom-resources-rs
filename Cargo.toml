@@ -400,6 +400,7 @@ members = [
     "custom-resources/ucp_dev",
     "custom-resources/upgrade_cattle_io",
     "custom-resources/upgrade_managed_openshift_io",
+    "custom-resources/v2_edp_epam_com",
     "custom-resources/velero_io",
     "custom-resources/virt_virtink_smartx_com",
     "custom-resources/volsync_backube",
