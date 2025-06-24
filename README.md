@@ -425,6 +425,7 @@ The following groups are available:
 - [theketch.io](https://crates.io/crates/kcr_theketch_io)
 - [tinkerbell.org](https://crates.io/crates/kcr_tinkerbell_org)
 - [topology.node.k8s.io](https://crates.io/crates/kcr_topology_node_k8s_io)
+- [topology.volcano.sh](https://crates.io/crates/kcr_topology_volcano_sh)
 - [topolvm.cybozu.com](https://crates.io/crates/kcr_topolvm_cybozu_com)
 - [trace.kubeblocks.io](https://crates.io/crates/kcr_trace_kubeblocks_io)
 - [traefik.io](https://crates.io/crates/kcr_traefik_io)

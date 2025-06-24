@@ -385,6 +385,7 @@ members = [
     "custom-resources/theketch_io",
     "custom-resources/tinkerbell_org",
     "custom-resources/topology_node_k8s_io",
+    "custom-resources/topology_volcano_sh",
     "custom-resources/topolvm_cybozu_com",
     "custom-resources/trace_kubeblocks_io",
     "custom-resources/traefik_io",
