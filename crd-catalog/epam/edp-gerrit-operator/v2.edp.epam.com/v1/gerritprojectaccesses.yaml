@@ -1,0 +1,84 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "gerritprojectaccesses.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "GerritProjectAccess"
+    listKind: "GerritProjectAccessList"
+    plural: "gerritprojectaccesses"
+    singular: "gerritprojectaccess"
+  scope: "Namespaced"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GerritProjectAccess is the Schema for the gerrit project access API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GerritProjectAccessSpec defines the desired state of GerritProjectAccess."
+              properties:
+                ownerName:
+                  description: "OwnerName indicates which gerrit CR should be taken to initialize correct client."
+                  nullable: true
+                  type: "string"
+                parent:
+                  description: "Parent is parent project."
+                  type: "string"
+                projectName:
+                  description: "ProjectName is gerrit project name."
+                  type: "string"
+                references:
+                  description: "References contains gerrit references."
+                  items:
+                    properties:
+                      action:
+                        type: "string"
+                      force:
+                        description: "Force indicates whether the force flag is set."
+                        type: "boolean"
+                      groupName:
+                        type: "string"
+                      max:
+                        description: "Max is the max value of the permission range."
+                        type: "integer"
+                      min:
+                        description: "Min is the min value of the permission range."
+                        type: "integer"
+                      permissionLabel:
+                        type: "string"
+                      permissionName:
+                        type: "string"
+                      refPattern:
+                        description: "Patter is reference pattern, example: refs/heads/*."
+                        type: "string"
+                    type: "object"
+                  nullable: true
+                  type: "array"
+              required:
+                - "projectName"
+              type: "object"
+            status:
+              description: "GerritProjectAccessStatus defines the observed state of GerritProjectAccess."
+              properties:
+                created:
+                  type: "boolean"
+                value:
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

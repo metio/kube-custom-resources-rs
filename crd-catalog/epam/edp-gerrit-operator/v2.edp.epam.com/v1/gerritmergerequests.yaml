@@ -1,0 +1,90 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: "v0.15.0"
+  name: "gerritmergerequests.v2.edp.epam.com"
+spec:
+  group: "v2.edp.epam.com"
+  names:
+    kind: "GerritMergeRequest"
+    listKind: "GerritMergeRequestList"
+    plural: "gerritmergerequests"
+    singular: "gerritmergerequest"
+  scope: "Namespaced"
+  versions:
+    - name: "v1"
+      schema:
+        openAPIV3Schema:
+          description: "GerritMergeRequest is the Schema for the gerrit merge request API."
+          properties:
+            apiVersion:
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              type: "string"
+            kind:
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              type: "string"
+            metadata:
+              type: "object"
+            spec:
+              description: "GerritMergeRequestSpec defines the desired state of GerritMergeRequest."
+              properties:
+                additionalArguments:
+                  description: "AdditionalArguments contains merge command additional command line arguments."
+                  items:
+                    type: "string"
+                  nullable: true
+                  type: "array"
+                authorEmail:
+                  description: "AuthorEmail is the email of the user who creates the merge request."
+                  example: "john.foe@mail.com"
+                  type: "string"
+                authorName:
+                  description: "AuthorName is the name of the user who creates the merge request."
+                  example: "John Doe"
+                  type: "string"
+                changesConfigMap:
+                  description: "ChangesConfigMap is the name of the ConfigMap, which contains files contents that should be merged.\nConfigMap should contain eny data keys with content in the json\nformat: {\"path\": \"/controllers/user.go\", \"contents\": \"some code here\"} - to add file\nor format: {\"path\": \"/controllers/user.go\"} - to remove file.\nIf files already exist in the project, they will be overwritten.\nIf empty, sourceBranch should be set."
+                  example: "config-map-new-feature"
+                  type: "string"
+                commitMessage:
+                  description: "CommitMessage is the commit message for the merge request.\nIf empty, the operator will generate the commit message."
+                  example: "merge new-feature to master"
+                  type: "string"
+                ownerName:
+                  description: "OwnerName is the name of Gerrit CR, which should be used to initialize the client.\nIf empty, the operator will get first Gerrit CR from the namespace."
+                  example: "gerrit"
+                  type: "string"
+                projectName:
+                  description: "ProjectName is gerrit project name."
+                  example: "my-project"
+                  type: "string"
+                sourceBranch:
+                  description: "SourceBranch is the name of the branch from which the changes should be merged.\nIf empty, changesConfigMap should be set."
+                  example: "new-feature"
+                  type: "string"
+                targetBranch:
+                  default: "master"
+                  description: "TargetBranch is the name of the branch to which the changes should be merged.\nIf changesConfigMap is set, the targetBranch can be only the origin HEAD branch."
+                  example: "master"
+                  type: "string"
+              required:
+                - "authorEmail"
+                - "authorName"
+                - "projectName"
+              type: "object"
+            status:
+              description: "GerritMergeRequestStatus defines the observed state of GerritMergeRequest."
+              properties:
+                changeId:
+                  type: "string"
+                changeUrl:
+                  type: "string"
+                value:
+                  type: "string"
+              type: "object"
+          type: "object"
+      served: true
+      storage: true
+      subresources:
+        status: {}

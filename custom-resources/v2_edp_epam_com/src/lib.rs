@@ -14,6 +14,13 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `JiraIssueMetadata`
 - `JiraServer`
 - `QuickLink`
+- `GerritGroupMember`
+- `GerritGroup`
+- `GerritMergeRequest`
+- `GerritProjectAccess`
+- `GerritProject`
+- `GerritReplicationConfig`
+- `Gerrit`
 ## v2.edp.epam.com/v1alpha1
 - `Template`
 */

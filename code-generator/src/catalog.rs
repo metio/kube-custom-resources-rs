@@ -1343,6 +1343,20 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "epam/edp-gerrit-operator",
+        license: APACHE_V2,
+        urls: &[
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritgroupmembers.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritgroups.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritmergerequests.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritprojectaccesses.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritprojects.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerritreplicationconfigs.yaml",
+            "https://github.com/epam/edp-gerrit-operator/blob/master/deploy-templates/crds/v2.edp.epam.com_gerrits.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "eryalito/kubensync-operator",
         license: APACHE_V2,
         urls: &[
