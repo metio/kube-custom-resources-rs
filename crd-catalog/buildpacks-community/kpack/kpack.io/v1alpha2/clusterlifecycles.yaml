@@ -1,0 +1,28 @@
+apiVersion: "apiextensions.k8s.io/v1"
+kind: "CustomResourceDefinition"
+metadata:
+  name: "clusterlifecycles.kpack.io"
+spec:
+  group: "kpack.io"
+  names:
+    categories:
+      - "kpack"
+    kind: "ClusterLifecycle"
+    listKind: "ClusterLifecycleList"
+    plural: "clusterlifecycles"
+    singular: "clusterlifecycle"
+  scope: "Cluster"
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+          name: "Ready"
+          type: "string"
+      name: "v1alpha2"
+      schema:
+        openAPIV3Schema:
+          type: "object"
+          x-kubernetes-preserve-unknown-fields: true
+      served: true
+      storage: true
+      subresources:
+        status: {}
