@@ -58,8 +58,9 @@ pub struct CiliumGatewayClassConfigService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
     pub traffic_distribution: Option<String>,
     /// Sets the Service.Spec.Type in generated Service objects to the given value.
+    /// Only LoadBalancer and NodePort are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    pub r#type: Option<CiliumGatewayClassConfigServiceType>,
 }
 
 /// Service specifies the configuration for the generated Service.
@@ -68,6 +69,14 @@ pub struct CiliumGatewayClassConfigService {
 pub enum CiliumGatewayClassConfigServiceLoadBalancerSourceRangesPolicy {
     Allow,
     Deny,
+}
+
+/// Service specifies the configuration for the generated Service.
+/// Note that not all fields from upstream Service.Spec are supported
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CiliumGatewayClassConfigServiceType {
+    LoadBalancer,
+    NodePort,
 }
 
 /// Status is the status of the policy.

@@ -779,7 +779,7 @@ spec:
                   description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\nDeprecated: Use LastAttemptedConfigDigest instead."
                   type: "string"
                 lastHandledForceAt:
-                  description: "LastHandledForceAt holds the value of the most recent force request\nvalue, so a change of the annotation value can be detected."
+                  description: "LastHandledForceAt holds the value of the most recent\nforce request value, so a change of the annotation value\ncan be detected."
                   type: "string"
                 lastHandledReconcileAt:
                   description: "LastHandledReconcileAt holds the value of the most recent\nreconcile request value, so a change of the annotation value\ncan be detected."

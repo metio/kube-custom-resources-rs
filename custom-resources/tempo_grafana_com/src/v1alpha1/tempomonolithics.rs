@@ -898,6 +898,9 @@ pub struct TempoMonolithicJaegerui {
     /// ServicesQueryDuration defines how long the services will be available in the services list
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicesQueryDuration")]
     pub services_query_duration: Option<String>,
+    /// Resources defines the compute resource requirements of the Tempo Query container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tempoQueryResources")]
+    pub tempo_query_resources: Option<TempoMonolithicJaegeruiTempoQueryResources>,
 }
 
 /// Authentication defines the options for the oauth proxy used to protect jaeger UI
@@ -1037,6 +1040,44 @@ pub enum TempoMonolithicJaegeruiRouteTermination {
     Passthrough,
     #[serde(rename = "reencrypt")]
     Reencrypt,
+}
+
+/// Resources defines the compute resource requirements of the Tempo Query container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoMonolithicJaegeruiTempoQueryResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<TempoMonolithicJaegeruiTempoQueryResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TempoMonolithicJaegeruiTempoQueryResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// TempoMonolithicSpec defines the desired state of TempoMonolithic.

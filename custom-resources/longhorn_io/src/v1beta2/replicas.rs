@@ -116,9 +116,6 @@ pub struct ReplicaStatus {
     pub current_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentState")]
     pub current_state: Option<String>,
-    /// Deprecated: Replaced by field `spec.evictionRequested`.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
-    pub eviction_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]
     pub instance_manager_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

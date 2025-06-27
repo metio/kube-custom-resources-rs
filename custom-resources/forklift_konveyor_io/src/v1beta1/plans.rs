@@ -696,6 +696,9 @@ pub struct PlanStatusMigrationVms {
     /// The new name of the VM after matching DNS1123 requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "newName")]
     pub new_name: Option<String>,
+    /// OffloadSnapshot shows snapshot creation and deletion task ID which MTV will monitor and snapshot name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "offloadSnapshot")]
+    pub offload_snapshot: Option<PlanStatusMigrationVmsOffloadSnapshot>,
     /// The Operating System detected by virt-v2v.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatingSystem")]
     pub operating_system: Option<String>,
@@ -840,6 +843,17 @@ pub struct PlanStatusMigrationVmsLuks {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// OffloadSnapshot shows snapshot creation and deletion task ID which MTV will monitor and snapshot name
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PlanStatusMigrationVmsOffloadSnapshot {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createTaskId")]
+    pub create_task_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeTaskId")]
+    pub remove_task_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub snapshot: Option<String>,
 }
 
 /// Pipeline step.

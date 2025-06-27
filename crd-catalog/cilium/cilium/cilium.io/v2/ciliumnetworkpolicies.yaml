@@ -249,7 +249,7 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       toEntities:
-                        description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,\n`health`,`unmanaged` and `all`."
+                        description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                         items:
                           description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                           enum:
@@ -908,7 +908,7 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       toEntities:
-                        description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,\n`health`,`unmanaged` and `all`."
+                        description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                         items:
                           description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                           enum:
@@ -1336,7 +1336,7 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       fromEntities:
-                        description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster` and `host`"
+                        description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                         items:
                           description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                           enum:
@@ -1906,7 +1906,7 @@ spec:
                           x-kubernetes-map-type: "atomic"
                         type: "array"
                       fromEntities:
-                        description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster` and `host`"
+                        description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                         items:
                           description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                           enum:
@@ -2382,7 +2382,7 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         toEntities:
-                          description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,\n`health`,`unmanaged` and `all`."
+                          description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                           items:
                             description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                             enum:
@@ -3041,7 +3041,7 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         toEntities:
-                          description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,\n`health`,`unmanaged` and `all`."
+                          description: "ToEntities is a list of special entities to which the endpoint subject\nto the rule is allowed to initiate connections. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                           items:
                             description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                             enum:
@@ -3469,7 +3469,7 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         fromEntities:
-                          description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster` and `host`"
+                          description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                           items:
                             description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                             enum:
@@ -4039,7 +4039,7 @@ spec:
                             x-kubernetes-map-type: "atomic"
                           type: "array"
                         fromEntities:
-                          description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster` and `host`"
+                          description: "FromEntities is a list of special entities which the endpoint subject\nto the rule is allowed to receive connections from. Supported entities are\n`world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,\n`health`, `unmanaged`, `none` and `all`."
                           items:
                             description: "Entity specifies the class of receiver/sender endpoints that do not have\nindividual identities.  Entities are used to describe \"outside of cluster\",\n\"host\", etc."
                             enum:

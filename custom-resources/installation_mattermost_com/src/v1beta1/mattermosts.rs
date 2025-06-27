@@ -275,6 +275,10 @@ pub struct MattermostDatabaseOperatorManagedResourcesClaims {
 /// DeploymentTemplate defines configuration for the template for Mattermost deployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MattermostDeploymentTemplate {
+    /// Defines the deployment strategy type for the mattermost deployment.
+    /// Accepted values are: "Recreate" or "RollingUpdate". Default is RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategyType")]
+    pub deployment_strategy_type: Option<String>,
     /// Defines the revision history limit for the mattermost deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i32>,

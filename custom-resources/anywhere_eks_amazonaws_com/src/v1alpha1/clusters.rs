@@ -651,6 +651,9 @@ pub struct ClusterStatus {
     /// subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "childrenReconciledGeneration")]
     pub children_reconciled_generation: Option<i64>,
+    /// ClusterCertificateInfo contains information about all the control plane and external etcd certificates
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCertificateInfo")]
+    pub cluster_certificate_info: Option<Vec<ClusterStatusClusterCertificateInfo>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// EksdReleaseRef defines the properties of the EKS-D object on the cluster
@@ -674,6 +677,16 @@ pub struct ClusterStatus {
     /// subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciledGeneration")]
     pub reconciled_generation: Option<i64>,
+}
+
+/// ClusterCertificateInfo contains information about certificate expiration for cluster components.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusClusterCertificateInfo {
+    /// Component defines the component name (e.g., control-plane-1, etcd-1)
+    pub component: String,
+    /// ExpiresInDays defines the number of days until the certificate expires
+    #[serde(rename = "expiresInDays")]
+    pub expires_in_days: i64,
 }
 
 /// EksdReleaseRef defines the properties of the EKS-D object on the cluster

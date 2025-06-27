@@ -317,6 +317,10 @@ pub struct ExternalSecretDataFromFindName {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExternalSecretDataFromRewrite {
+    /// Used to merge key/values in one single Secret
+    /// The resulting key will contain all values from the specified secrets
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub merge: Option<ExternalSecretDataFromRewriteMerge>,
     /// Used to rewrite with regular expressions.
     /// The resulting key will be the output of a regexp.ReplaceAll operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -325,6 +329,25 @@ pub struct ExternalSecretDataFromRewrite {
     /// The resulting key will be the output of the template applied by the operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub transform: Option<ExternalSecretDataFromRewriteTransform>,
+}
+
+/// Used to merge key/values in one single Secret
+/// The resulting key will contain all values from the specified secrets
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ExternalSecretDataFromRewriteMerge {
+    /// Used to define the policy to use in conflict resolution.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conflictPolicy")]
+    pub conflict_policy: Option<String>,
+    /// Used to define the target key of the merge operation.
+    /// Required if strategy is JSON. Ignored otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub into: Option<String>,
+    /// Used to define key priority in conflict resolution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub priority: Option<Vec<String>>,
+    /// Used to define the strategy to use in the merge operation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<String>,
 }
 
 /// Used to rewrite with regular expressions.

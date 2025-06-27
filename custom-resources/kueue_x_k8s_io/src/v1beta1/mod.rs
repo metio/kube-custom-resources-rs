@@ -1,5 +1,6 @@
 pub mod admissionchecks;
 pub mod clusterqueues;
+pub mod cohorts;
 pub mod localqueues;
 pub mod multikueueclusters;
 pub mod multikueueconfigs;

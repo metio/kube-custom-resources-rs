@@ -1696,6 +1696,13 @@ pub struct ClusterSecretStoreProviderGithubAuthPrivateKey {
 pub struct ClusterSecretStoreProviderGitlab {
     /// Auth configures how secret-manager authenticates with a GitLab instance.
     pub auth: ClusterSecretStoreProviderGitlabAuth,
+    /// Base64 encoded certificate for the GitLab server sdk. The sdk MUST run with HTTPS to make sure no MITM attack
+    /// can be performed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
+    pub ca_bundle: Option<String>,
+    /// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
+    pub ca_provider: Option<ClusterSecretStoreProviderGitlabCaProvider>,
     /// Environment environment_scope of gitlab CI/CD variables (Please see https://docs.gitlab.com/ee/ci/environments/#create-a-static-environment on how to create environments)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<String>,
@@ -1741,6 +1748,30 @@ pub struct ClusterSecretStoreProviderGitlabAuthSecretRefAccessToken {
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterSecretStoreProviderGitlabCaProvider {
+    /// The key where the CA certificate can be found in the Secret or ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the object located at the provider type.
+    pub name: String,
+    /// The namespace the Provider type is in.
+    /// Can only be defined when used in a ClusterSecretStore.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+    /// The type of provider to use such as "Secret", or "ConfigMap".
+    #[serde(rename = "type")]
+    pub r#type: ClusterSecretStoreProviderGitlabCaProviderType,
+}
+
+/// see: https://external-secrets.io/latest/spec/#external-secrets.io/v1alpha1.CAProvider
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterSecretStoreProviderGitlabCaProviderType {
+    Secret,
+    ConfigMap,
 }
 
 /// IBM configures this store to sync secrets using IBM Cloud provider

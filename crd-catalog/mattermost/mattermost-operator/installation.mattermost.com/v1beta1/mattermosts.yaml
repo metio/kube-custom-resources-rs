@@ -170,6 +170,9 @@ spec:
                 deploymentTemplate:
                   description: "DeploymentTemplate defines configuration for the template for Mattermost deployment."
                   properties:
+                    deploymentStrategyType:
+                      description: "Defines the deployment strategy type for the mattermost deployment.\nAccepted values are: \"Recreate\" or \"RollingUpdate\". Default is RollingUpdate."
+                      type: "string"
                     revisionHistoryLimit:
                       description: "Defines the revision history limit for the mattermost deployment."
                       format: "int32"

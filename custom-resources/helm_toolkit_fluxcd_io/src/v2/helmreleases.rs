@@ -903,8 +903,9 @@ pub struct HelmReleaseStatus {
     /// Deprecated: Use LastAttemptedConfigDigest instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedValuesChecksum")]
     pub last_attempted_values_checksum: Option<String>,
-    /// LastHandledForceAt holds the value of the most recent force request
-    /// value, so a change of the annotation value can be detected.
+    /// LastHandledForceAt holds the value of the most recent
+    /// force request value, so a change of the annotation value
+    /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledForceAt")]
     pub last_handled_force_at: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent

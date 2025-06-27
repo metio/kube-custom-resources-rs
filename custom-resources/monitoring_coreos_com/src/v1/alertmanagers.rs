@@ -1138,6 +1138,9 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// Configures global SMTP parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub smtp: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtp>,
+    /// The default Telegram config
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub telegram: Option<AlertmanagerAlertmanagerConfigurationGlobalTelegram>,
 }
 
 /// HTTP client configuration.
@@ -2055,6 +2058,16 @@ pub enum AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigMinVersion {
     Tls12,
     #[serde(rename = "TLS13")]
     Tls13,
+}
+
+/// The default Telegram config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalTelegram {
+    /// The default Telegram API URL.
+    /// 
+    /// It requires Alertmanager >= v0.24.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
 }
 
 /// SecretOrConfigMap allows to specify data as a Secret or ConfigMap. Fields are mutually exclusive.

@@ -67,7 +67,7 @@ pub struct BaselineAdminNetworkPolicyEgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<BaselineAdminNetworkPolicyEgressPorts>>,
     /// To is the list of destinations whose traffic this rule applies to.
-    /// If any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing
+    /// If any element matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     pub to: Vec<BaselineAdminNetworkPolicyEgressTo>,
@@ -278,7 +278,7 @@ pub struct BaselineAdminNetworkPolicyIngress {
     /// Deny: denies the selected traffic
     pub action: BaselineAdminNetworkPolicyIngressAction,
     /// From is the list of sources whose traffic this rule applies to.
-    /// If any AdminNetworkPolicyIngressPeer matches the source of incoming
+    /// If any element matches the source of incoming
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     pub from: Vec<BaselineAdminNetworkPolicyIngressFrom>,

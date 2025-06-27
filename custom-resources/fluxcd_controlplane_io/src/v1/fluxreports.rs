@@ -27,6 +27,9 @@ pub struct FluxReportSpec {
     pub components: Option<Vec<FluxReportComponents>>,
     /// Distribution is the version information of the Flux installation.
     pub distribution: FluxReportDistribution,
+    /// Operator is the version information of the Flux Operator.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<FluxReportOperator>,
     /// ReconcilersStatus is the list of Flux reconcilers and
     /// their statistics grouped by API kind.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -44,11 +47,10 @@ pub struct FluxReportCluster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<i64>,
     /// Platform is the os/arch of the Kubernetes control plane.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub platform: Option<String>,
+    pub platform: String,
     /// ServerVersion is the version of the Kubernetes API server.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverVersion")]
-    pub server_version: Option<String>,
+    #[serde(rename = "serverVersion")]
+    pub server_version: String,
 }
 
 /// FluxComponentStatus defines the observed state of a Flux component.
@@ -79,6 +81,18 @@ pub struct FluxReportDistribution {
     /// Version is the version of the Flux instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// Operator is the version information of the Flux Operator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct FluxReportOperator {
+    /// APIVersion is the API version of the Flux Operator.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// Platform is the os/arch of Flux Operator.
+    pub platform: String,
+    /// Version is the version number of Flux Operator.
+    pub version: String,
 }
 
 /// FluxReconcilerStatus defines the observed state of a Flux reconciler.

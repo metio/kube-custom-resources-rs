@@ -391,17 +391,24 @@ pub struct MariaDBAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// BootstrapFrom defines a source to bootstrap from.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFrom {
-    /// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
+    /// BackupContentType is the backup content type available in the source to bootstrap from.
+    /// It is inferred based on the BackupRef and VolumeSnapshotRef fields. If inference is not possible, it defaults to Logical.
+    /// Set this field explicitly when using physical backups from S3 or Volume sources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupContentType")]
+    pub backup_content_type: Option<MariaDBBootstrapFromBackupContentType>,
+    /// BackupRef is reference to a backup object. If the Kind is not specified, a logical Backup is assumed.
+    /// This field takes precedence over S3 and Volume sources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRef")]
     pub backup_ref: Option<MariaDBBootstrapFromBackupRef>,
-    /// RestoreJob defines additional properties for the Job used to perform the Restore.
+    /// RestoreJob defines additional properties for the Job used to perform the restoration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreJob")]
     pub restore_job: Option<MariaDBBootstrapFromRestoreJob>,
-    /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+    /// S3 defines the configuration to restore backups from a S3 compatible storage.
+    /// This field takes precedence over the Volume source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<MariaDBBootstrapFromS3>,
     /// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
-    /// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
+    /// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Job is scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingStorage")]
     pub staging_storage: Option<MariaDBBootstrapFromStagingStorage>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective.
@@ -411,16 +418,32 @@ pub struct MariaDBBootstrapFrom {
     /// Volume is a Kubernetes Volume object that contains a backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volume: Option<MariaDBBootstrapFromVolume>,
+    /// VolumeSnapshotRef is a reference to a VolumeSnapshot object.
+    /// This field takes precedence over S3 and Volume sources.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotRef")]
+    pub volume_snapshot_ref: Option<MariaDBBootstrapFromVolumeSnapshotRef>,
 }
 
-/// BackupRef is a reference to a Backup object. It has priority over S3 and Volume.
+/// BootstrapFrom defines a source to bootstrap from.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MariaDBBootstrapFromBackupContentType {
+    Logical,
+    Physical,
+}
+
+/// BackupRef is reference to a backup object. If the Kind is not specified, a logical Backup is assumed.
+/// This field takes precedence over S3 and Volume sources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromBackupRef {
+    /// Kind of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<String>,
+    /// Name of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// RestoreJob defines additional properties for the Job used to perform the Restore.
+/// RestoreJob defines additional properties for the Job used to perform the restoration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromRestoreJob {
     /// Affinity to be used in the Pod.
@@ -673,7 +696,8 @@ pub struct MariaDBBootstrapFromRestoreJobTolerations {
     pub value: Option<String>,
 }
 
-/// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
+/// S3 defines the configuration to restore backups from a S3 compatible storage.
+/// This field takes precedence over the Volume source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromS3 {
     /// AccessKeyIdSecretKeyRef is a reference to a Secret key containing the S3 access key id.
@@ -746,7 +770,7 @@ pub struct MariaDBBootstrapFromS3TlsCaSecretKeyRef {
 }
 
 /// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
-/// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
+/// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Job is scheduled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromStagingStorage {
     /// PersistentVolumeClaim is a Kubernetes PVC specification.
@@ -975,6 +999,14 @@ pub struct MariaDBBootstrapFromVolumePersistentVolumeClaim {
     pub claim_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+}
+
+/// VolumeSnapshotRef is a reference to a VolumeSnapshot object.
+/// This field takes precedence over S3 and Volume sources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromVolumeSnapshotRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Connection defines a template to configure the general Connection object.

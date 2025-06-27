@@ -24,6 +24,8 @@ pub struct PerconaServerMySQLSpec {
     pub backup: Option<PerconaServerMySQLBackup>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
     pub cr_version: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableVolumeExpansion")]
+    pub enable_volume_expansion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreAnnotations")]
     pub ignore_annotations: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreLabels")]

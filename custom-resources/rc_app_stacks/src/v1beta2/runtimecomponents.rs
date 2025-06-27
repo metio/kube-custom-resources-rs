@@ -3716,6 +3716,9 @@ pub struct RuntimeComponentService {
     /// An array consisting of service ports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<RuntimeComponentServicePorts>>,
+    /// Configure service session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
+    pub session_affinity: Option<RuntimeComponentServiceSessionAffinity>,
     /// The port that the operator assigns to containers inside pods. Defaults to the value of spec.service.port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i32>,
@@ -3781,6 +3784,11 @@ pub struct RuntimeComponentServicePorts {
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
+}
+
+/// Configure service session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentServiceSessionAffinity {
 }
 
 /// A single application container that you want to run within a pod.

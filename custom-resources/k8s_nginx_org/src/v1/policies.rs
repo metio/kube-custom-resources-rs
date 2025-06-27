@@ -201,12 +201,15 @@ pub struct PolicyRateLimit {
 /// RateLimitCondition defines a condition for a rate limit policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRateLimitCondition {
-    /// sets the rate limit in this policy to be the default if no conditions are met. In a group of policies with the same JWT condition, only one policy can be the default.
+    /// sets the rate limit in this policy to be the default if no conditions are met. In a group of policies with the same condition, only one policy can be the default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub default: Option<bool>,
     /// defines a JWT condition to rate limit against.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<PolicyRateLimitConditionJwt>,
+    /// defines a Variables condition to rate limit against.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<Vec<PolicyRateLimitConditionVariables>>,
 }
 
 /// defines a JWT condition to rate limit against.
@@ -217,6 +220,16 @@ pub struct PolicyRateLimitConditionJwt {
     /// the value of the claim to match against.
     #[serde(rename = "match")]
     pub r#match: String,
+}
+
+/// VariableCondition defines a condition to rate limit by a variable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PolicyRateLimitConditionVariables {
+    /// the value of the variable to match against.
+    #[serde(rename = "match")]
+    pub r#match: String,
+    /// the name of the variable to match against.
+    pub name: String,
 }
 
 /// WAF defines an WAF policy.

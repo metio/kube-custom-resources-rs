@@ -575,6 +575,9 @@ pub struct OpsRequestHorizontalScalingScaleOutNewInstances {
     /// Indicate whether the instances belonging to this template are canary instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canary: Option<bool>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2666,6 +2669,9 @@ pub struct OpsRequestStatusLastConfigurationComponentsInstances {
     /// Indicate whether the instances belonging to this template are canary instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canary: Option<bool>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]

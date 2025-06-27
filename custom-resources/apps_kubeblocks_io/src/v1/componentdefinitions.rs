@@ -16352,6 +16352,10 @@ pub struct ComponentDefinitionSystemAccountsPasswordGenerationPolicy {
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seed: Option<String>,
+    /// The set of symbols allowed when generating password. If empty, kubeblocks will
+    /// use a default symbol set, which is "!@#&*".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "symbolCharacters")]
+    pub symbol_characters: Option<String>,
 }
 
 /// Specifies the policy for generating the account's password.

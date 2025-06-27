@@ -20,7 +20,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct APIServerSpec {
-    /// APIServerDeployment configures the calico-apiserver (or tigera-apiserver in Enterprise) Deployment. If
+    /// APIServerDeployment configures the calico-apiserver Deployment. If
     /// used in conjunction with ControlPlaneNodeSelector or ControlPlaneTolerations, then these overrides
     /// take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerDeployment")]
@@ -29,7 +29,7 @@ pub struct APIServerSpec {
     pub logging: Option<APIServerLogging>,
 }
 
-/// APIServerDeployment configures the calico-apiserver (or tigera-apiserver in Enterprise) Deployment. If
+/// APIServerDeployment configures the calico-apiserver Deployment. If
 /// used in conjunction with ControlPlaneNodeSelector or ControlPlaneTolerations, then these overrides
 /// take precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
