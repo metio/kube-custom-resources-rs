@@ -3987,6 +3987,9 @@ pub struct RuntimeComponentService {
     /// An array consisting of service ports.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<RuntimeComponentServicePorts>>,
+    /// Configure service session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
+    pub session_affinity: Option<RuntimeComponentServiceSessionAffinity>,
     /// The port that the operator assigns to containers inside pods. Defaults to the value of .spec.service.port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i32>,
@@ -4060,6 +4063,35 @@ pub struct RuntimeComponentServicePorts {
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
+}
+
+/// Configure service session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentServiceSessionAffinity {
+    /// Configurations of session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<RuntimeComponentServiceSessionAffinityConfig>,
+    /// Setting to maintain session affinity. Must be ClientIP or None. Defaults to None.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+/// Configurations of session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentServiceSessionAffinityConfig {
+    /// clientIP contains the configurations of Client IP based session affinity.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientIP")]
+    pub client_ip: Option<RuntimeComponentServiceSessionAffinityConfigClientIp>,
+}
+
+/// clientIP contains the configurations of Client IP based session affinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentServiceSessionAffinityConfigClientIp {
+    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
+    /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
+    /// Default value is 10800(for 3 hours).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
 }
 
 /// The service account to use for deploying the application. A service account is automatically created if this is not specifed.

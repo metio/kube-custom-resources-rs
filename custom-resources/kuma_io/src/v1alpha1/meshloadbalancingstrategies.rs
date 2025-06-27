@@ -98,12 +98,92 @@ pub struct MeshLoadBalancingStrategyTo {
 /// 'targetRef'
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefault {
+    /// HashPolicies specify a list of request/connection properties that are used to calculate a hash.
+    /// These hash policies are executed in the specified order. If a hash policy has the “terminal” attribute
+    /// set to true, and there is already a hash generated, the hash is returned immediately,
+    /// ignoring the rest of the hash policy list.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashPolicies")]
+    pub hash_policies: Option<Vec<MeshLoadBalancingStrategyToDefaultHashPolicies>>,
     /// LoadBalancer allows to specify load balancing algorithm.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<MeshLoadBalancingStrategyToDefaultLoadBalancer>,
     /// LocalityAwareness contains configuration for locality aware load balancing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityAwareness")]
     pub locality_awareness: Option<MeshLoadBalancingStrategyToDefaultLocalityAwareness>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPolicies {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub connection: Option<MeshLoadBalancingStrategyToDefaultHashPoliciesConnection>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cookie: Option<MeshLoadBalancingStrategyToDefaultHashPoliciesCookie>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterState")]
+    pub filter_state: Option<MeshLoadBalancingStrategyToDefaultHashPoliciesFilterState>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub header: Option<MeshLoadBalancingStrategyToDefaultHashPoliciesHeader>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameter")]
+    pub query_parameter: Option<MeshLoadBalancingStrategyToDefaultHashPoliciesQueryParameter>,
+    /// Terminal is a flag that short-circuits the hash computing. This field provides
+    /// a ‘fallback’ style of configuration: “if a terminal policy doesn’t work, fallback
+    /// to rest of the policy list”, it saves time when the terminal policy works.
+    /// If true, and there is already a hash computed, ignore rest of the list of hash polices.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub terminal: Option<bool>,
+    #[serde(rename = "type")]
+    pub r#type: MeshLoadBalancingStrategyToDefaultHashPoliciesType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPoliciesConnection {
+    /// Hash on source IP address.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceIP")]
+    pub source_ip: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPoliciesCookie {
+    /// The name of the cookie that will be used to obtain the hash key.
+    pub name: String,
+    /// The name of the path for the cookie.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    /// If specified, a cookie with the TTL will be generated if the cookie is not present.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPoliciesFilterState {
+    /// The name of the Object in the per-request filterState, which is
+    /// an Envoy::Hashable object. If there is no data associated with the key,
+    /// or the stored object is not Envoy::Hashable, no hash will be produced.
+    pub key: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPoliciesHeader {
+    /// The name of the request header that will be used to obtain the hash key.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshLoadBalancingStrategyToDefaultHashPoliciesQueryParameter {
+    /// The name of the URL query parameter that will be used to obtain the hash key.
+    /// If the parameter is not present, no hash will be produced. Query parameter names
+    /// are case-sensitive.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshLoadBalancingStrategyToDefaultHashPoliciesType {
+    Header,
+    Cookie,
+    Connection,
+    #[serde(rename = "SourceIP")]
+    SourceIp,
+    QueryParameter,
+    FilterState,
 }
 
 /// LoadBalancer allows to specify load balancing algorithm.

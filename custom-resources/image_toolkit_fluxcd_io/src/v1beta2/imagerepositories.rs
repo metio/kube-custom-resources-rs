@@ -187,10 +187,18 @@ pub struct ImageRepositoryStatus {
 /// LastScanResult contains the number of fetched tags.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageRepositoryStatusLastScanResult {
+    /// LatestTags is a small sample of the tags found in the last scan.
+    /// It's the first 10 tags when sorting all the tags in descending
+    /// alphabetical order.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestTags")]
     pub latest_tags: Option<Vec<String>>,
+    /// Revision is a stable hash of the scanned tags.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+    /// ScanTime is the time when the last scan was performed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scanTime")]
     pub scan_time: Option<String>,
+    /// TagCount is the number of tags found in the last scan.
     #[serde(rename = "tagCount")]
     pub tag_count: i64,
 }

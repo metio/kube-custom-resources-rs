@@ -65,6 +65,9 @@ pub struct DestinationRuleSubsetsTrafficPolicy {
     /// The upstream PROXY protocol settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<DestinationRuleSubsetsTrafficPolicyProxyProtocol>,
+    /// Specifies a limit on concurrent retries in relation to the number of active requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryBudget")]
+    pub retry_budget: Option<DestinationRuleSubsetsTrafficPolicyRetryBudget>,
     /// TLS related settings for connections to the upstream service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<DestinationRuleSubsetsTrafficPolicyTls>,
@@ -669,6 +672,17 @@ pub enum DestinationRuleSubsetsTrafficPolicyProxyProtocolVersion {
     V2,
 }
 
+/// Specifies a limit on concurrent retries in relation to the number of active requests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DestinationRuleSubsetsTrafficPolicyRetryBudget {
+    /// Specifies the minimum retry concurrency allowed for the retry budget.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryConcurrency")]
+    pub min_retry_concurrency: Option<i64>,
+    /// Specifies the limit on concurrent retries as a percentage of the sum of active requests and active pending requests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<f64>,
+}
+
 /// TLS related settings for connections to the upstream service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyTls {
@@ -746,6 +760,9 @@ pub struct DestinationRuleTrafficPolicy {
     /// The upstream PROXY protocol settings.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<DestinationRuleTrafficPolicyProxyProtocol>,
+    /// Specifies a limit on concurrent retries in relation to the number of active requests.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryBudget")]
+    pub retry_budget: Option<DestinationRuleTrafficPolicyRetryBudget>,
     /// TLS related settings for connections to the upstream service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<DestinationRuleTrafficPolicyTls>,
@@ -1348,6 +1365,17 @@ pub struct DestinationRuleTrafficPolicyProxyProtocol {
 pub enum DestinationRuleTrafficPolicyProxyProtocolVersion {
     V1,
     V2,
+}
+
+/// Specifies a limit on concurrent retries in relation to the number of active requests.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DestinationRuleTrafficPolicyRetryBudget {
+    /// Specifies the minimum retry concurrency allowed for the retry budget.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryConcurrency")]
+    pub min_retry_concurrency: Option<i64>,
+    /// Specifies the limit on concurrent retries as a percentage of the sum of active requests and active pending requests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub percent: Option<f64>,
 }
 
 /// TLS related settings for connections to the upstream service.

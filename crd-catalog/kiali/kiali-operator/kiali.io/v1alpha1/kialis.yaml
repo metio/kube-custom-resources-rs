@@ -1196,6 +1196,15 @@ spec:
                             - "5m"
                             - "15m"
                           type: "string"
+                        tracing:
+                          description: "Default settings for the Tracing UI."
+                          properties:
+                            limit:
+                              description: "The default limit for the number of traces that will be fetched. It can be customized in the UI. 100 by default, must be a number between 10 and 1000."
+                              maximum: 1000.0
+                              minimum: 10.0
+                              type: "integer"
+                          type: "object"
                       type: "object"
                     validations:
                       description: "Features specific to the validations subsystem."

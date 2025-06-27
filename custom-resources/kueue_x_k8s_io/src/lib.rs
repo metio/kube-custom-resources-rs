@@ -10,6 +10,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 ## kueue.x-k8s.io/v1beta1
 - `AdmissionCheck`
 - `ClusterQueue`
+- `Cohort`
 - `LocalQueue`
 - `MultiKueueCluster`
 - `MultiKueueConfig`

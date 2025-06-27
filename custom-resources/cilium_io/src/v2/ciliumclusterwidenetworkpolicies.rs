@@ -148,8 +148,8 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
-    /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
-    /// `health`,`unmanaged` and `all`.
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToFQDN allows whitelisting DNS names in place of IPs. The IPs that result
@@ -1079,8 +1079,8 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
-    /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
-    /// `health`,`unmanaged` and `all`.
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToGroups is a directive that allows the integration with multiple outside
@@ -1619,7 +1619,8 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
-    /// `world`, `cluster` and `host`
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
@@ -2432,7 +2433,8 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
-    /// `world`, `cluster` and `host`
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
@@ -2979,8 +2981,8 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
-    /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
-    /// `health`,`unmanaged` and `all`.
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToFQDN allows whitelisting DNS names in place of IPs. The IPs that result
@@ -3910,8 +3912,8 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
-    /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
-    /// `health`,`unmanaged` and `all`.
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToGroups is a directive that allows the integration with multiple outside
@@ -4450,7 +4452,8 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
-    /// `world`, `cluster` and `host`
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
@@ -5263,7 +5266,8 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
-    /// `world`, `cluster` and `host`
+    /// `world`, `cluster`, `host`, `remote-node`, `kube-apiserver`, `ingress`, `init`,
+    /// `health`, `unmanaged`, `none` and `all`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside

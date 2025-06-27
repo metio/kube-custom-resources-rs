@@ -884,6 +884,9 @@ pub struct ClusterComponentSpecsInstances {
     /// Indicate whether the instances belonging to this template are canary instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canary: Option<bool>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3550,6 +3553,10 @@ pub struct ClusterComponentSpecsSystemAccountsPasswordConfig {
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seed: Option<String>,
+    /// The set of symbols allowed when generating password. If empty, kubeblocks will
+    /// use a default symbol set, which is "!@#&*".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "symbolCharacters")]
+    pub symbol_characters: Option<String>,
 }
 
 /// Specifies the policy for generating the account's password.
@@ -7458,6 +7465,9 @@ pub struct ClusterShardingsTemplateInstances {
     /// Indicate whether the instances belonging to this template are canary instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub canary: Option<bool>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10134,6 +10144,10 @@ pub struct ClusterShardingsTemplateSystemAccountsPasswordConfig {
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub seed: Option<String>,
+    /// The set of symbols allowed when generating password. If empty, kubeblocks will
+    /// use a default symbol set, which is "!@#&*".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "symbolCharacters")]
+    pub symbol_characters: Option<String>,
 }
 
 /// Specifies the policy for generating the account's password.

@@ -24,8 +24,10 @@ pub struct ResourceSetInputProviderSpec {
     /// - a PEM-encoded CA certificate (`ca.crt`)
     /// - a PEM-encoded client certificate (`tls.crt`) and private key (`tls.key`)
     /// 
-    /// When connecting to a Git provider that uses self-signed certificates, the CA certificate
+    /// When connecting to a Git or OCI provider that uses self-signed certificates, the CA certificate
     /// must be set in the Secret under the 'ca.crt' key to establish the trust relationship.
+    /// When connecting to an OCI provider that supports client certificates (mTLS), the client certificate
+    /// and private key must be set in the Secret under the 'tls.crt' and 'tls.key' keys, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ResourceSetInputProviderCertSecretRef>,
     /// DefaultValues contains the default values for the inputs.
@@ -40,20 +42,30 @@ pub struct ResourceSetInputProviderSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<Vec<ResourceSetInputProviderSchedule>>,
     /// SecretRef specifies the Kubernetes Secret containing the basic-auth credentials
-    /// to access the input provider. The secret must contain the keys
-    /// 'username' and 'password'.
-    /// When connecting to a Git provider, the password should be a personal access token
+    /// to access the input provider.
+    /// When connecting to a Git provider, the secret must contain the keys
+    /// 'username' and 'password', and the password should be a personal access token
     /// that grants read-only access to the repository.
+    /// When connecting to an OCI provider, the secret must contain a Kubernetes
+    /// Image Pull Secret, as if created by `kubectl create secret docker-registry`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ResourceSetInputProviderSecretRef>,
+    /// ServiceAccountName specifies the name of the Kubernetes ServiceAccount
+    /// used for authentication with AWS, Azure or GCP services through
+    /// workload identity federation features. If not specified, the
+    /// authentication for these cloud providers will use the ServiceAccount
+    /// of the operator (or any other environment authentication configuration).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// Skip defines whether we need to skip input provider response updates.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skip: Option<ResourceSetInputProviderSkip>,
     /// Type specifies the type of the input provider.
     #[serde(rename = "type")]
     pub r#type: ResourceSetInputProviderType,
-    /// URL specifies the HTTP/S address of the input provider API.
+    /// URL specifies the HTTP/S or OCI address of the input provider API.
     /// When connecting to a Git provider, the URL should point to the repository address.
+    /// When connecting to an OCI provider, the URL should point to the OCI repository address.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
@@ -63,8 +75,10 @@ pub struct ResourceSetInputProviderSpec {
 /// - a PEM-encoded CA certificate (`ca.crt`)
 /// - a PEM-encoded client certificate (`tls.crt`) and private key (`tls.key`)
 /// 
-/// When connecting to a Git provider that uses self-signed certificates, the CA certificate
+/// When connecting to a Git or OCI provider that uses self-signed certificates, the CA certificate
 /// must be set in the Secret under the 'ca.crt' key to establish the trust relationship.
+/// When connecting to an OCI provider that supports client certificates (mTLS), the client certificate
+/// and private key must be set in the Secret under the 'tls.crt' and 'tls.key' keys, respectively.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceSetInputProviderCertSecretRef {
     /// Name of the referent.
@@ -109,10 +123,12 @@ pub struct ResourceSetInputProviderSchedule {
 }
 
 /// SecretRef specifies the Kubernetes Secret containing the basic-auth credentials
-/// to access the input provider. The secret must contain the keys
-/// 'username' and 'password'.
-/// When connecting to a Git provider, the password should be a personal access token
+/// to access the input provider.
+/// When connecting to a Git provider, the secret must contain the keys
+/// 'username' and 'password', and the password should be a personal access token
 /// that grants read-only access to the repository.
+/// When connecting to an OCI provider, the secret must contain a Kubernetes
+/// Image Pull Secret, as if created by `kubectl create secret docker-registry`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceSetInputProviderSecretRef {
     /// Name of the referent.
@@ -141,6 +157,14 @@ pub enum ResourceSetInputProviderType {
     AzureDevOpsBranch,
     AzureDevOpsTag,
     AzureDevOpsPullRequest,
+    #[serde(rename = "OCIArtifactTag")]
+    OciArtifactTag,
+    #[serde(rename = "ACRArtifactTag")]
+    AcrArtifactTag,
+    #[serde(rename = "ECRArtifactTag")]
+    EcrArtifactTag,
+    #[serde(rename = "GARArtifactTag")]
+    GarArtifactTag,
 }
 
 /// ResourceSetInputProviderStatus defines the observed state of ResourceSetInputProvider.

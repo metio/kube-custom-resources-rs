@@ -104,7 +104,7 @@ spec:
                         minItems: 1
                         type: "array"
                       to:
-                        description: "To is the list of destinations whose traffic this rule applies to.\nIf any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
+                        description: "To is the list of destinations whose traffic this rule applies to.\nIf any element matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
                         items:
                           description: "BaselineAdminNetworkPolicyEgressPeer defines a peer to allow traffic to.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Allow\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
                           maxProperties: 1
@@ -251,7 +251,7 @@ spec:
                           - "Deny"
                         type: "string"
                       from:
-                        description: "From is the list of sources whose traffic this rule applies to.\nIf any AdminNetworkPolicyIngressPeer matches the source of incoming\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
+                        description: "From is the list of sources whose traffic this rule applies to.\nIf any element matches the source of incoming\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item."
                         items:
                           description: "AdminNetworkPolicyIngressPeer defines a peer to allow traffic to.\n\nExactly one of the fields must be set for a given peer and this is enforced\nby the validation rules on the CRD. If an implementation sees no fields are\nset then it can infer that the deployed CRD is of an incompatible version\nwith an unknown field.  In that case it should fail closed.\n\nFor \"Allow\" rules, \"fail closed\" means: \"treat the rule as matching no\ntraffic\". For \"Deny\" and \"Pass\" rules, \"fail closed\" means: \"treat the rule\nas a 'Deny all' rule\"."
                           maxProperties: 1

@@ -184,13 +184,19 @@ spec:
                   description: "LastScanResult contains the number of fetched tags."
                   properties:
                     latestTags:
+                      description: "LatestTags is a small sample of the tags found in the last scan.\nIt's the first 10 tags when sorting all the tags in descending\nalphabetical order."
                       items:
                         type: "string"
                       type: "array"
+                    revision:
+                      description: "Revision is a stable hash of the scanned tags."
+                      type: "string"
                     scanTime:
+                      description: "ScanTime is the time when the last scan was performed."
                       format: "date-time"
                       type: "string"
                     tagCount:
+                      description: "TagCount is the number of tags found in the last scan."
                       type: "integer"
                   required:
                     - "tagCount"

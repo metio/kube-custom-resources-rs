@@ -80,7 +80,7 @@ pub struct AdminNetworkPolicyEgress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<AdminNetworkPolicyEgressPorts>>,
     /// To is the List of destinations whose traffic this rule applies to.
-    /// If any AdminNetworkPolicyEgressPeer matches the destination of outgoing
+    /// If any element matches the destination of outgoing
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     pub to: Vec<AdminNetworkPolicyEgressTo>,
@@ -296,7 +296,7 @@ pub struct AdminNetworkPolicyIngress {
     /// is passed to any BaselineAdminNetworkPolicies that select the pod.
     pub action: AdminNetworkPolicyIngressAction,
     /// From is the list of sources whose traffic this rule applies to.
-    /// If any AdminNetworkPolicyIngressPeer matches the source of incoming
+    /// If any element matches the source of incoming
     /// traffic then the specified action is applied.
     /// This field must be defined and contain at least one item.
     pub from: Vec<AdminNetworkPolicyIngressFrom>,

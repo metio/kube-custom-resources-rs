@@ -56,6 +56,9 @@ pub struct DataUploadSpec {
 /// If SnapshotType is CSI, CSISnapshot provides the information of the CSI snapshot.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DataUploadCsiSnapshot {
+    /// Driver is the driver used by the VolumeSnapshotContent
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub driver: Option<String>,
     /// SnapshotClass is the name of the snapshot class that the volume snapshot is created with
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotClass")]
     pub snapshot_class: Option<String>,

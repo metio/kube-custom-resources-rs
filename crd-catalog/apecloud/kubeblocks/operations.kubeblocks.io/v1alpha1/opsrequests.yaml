@@ -388,6 +388,10 @@ spec:
                                 canary:
                                   description: "Indicate whether the instances belonging to this template are canary instances."
                                   type: "boolean"
+                                compDef:
+                                  description: "Specifies the name of the referenced ComponentDefinition."
+                                  maxLength: 64
+                                  type: "string"
                                 env:
                                   description: "Defines Env to override.\nAdd new or override existing envs."
                                   items:
@@ -2158,6 +2162,10 @@ spec:
                                 canary:
                                   description: "Indicate whether the instances belonging to this template are canary instances."
                                   type: "boolean"
+                                compDef:
+                                  description: "Specifies the name of the referenced ComponentDefinition."
+                                  maxLength: 64
+                                  type: "string"
                                 env:
                                   description: "Defines Env to override.\nAdd new or override existing envs."
                                   items:

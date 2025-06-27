@@ -1430,6 +1430,14 @@ spec:
                                   type: "string"
                               type: "object"
                           type: "object"
+                        telegram:
+                          description: "The default Telegram config"
+                          properties:
+                            apiURL:
+                              description: "The default Telegram API URL.\n\nIt requires Alertmanager >= v0.24.0."
+                              pattern: "^(http|https)://.+$"
+                              type: "string"
+                          type: "object"
                       type: "object"
                     name:
                       description: "The name of the AlertmanagerConfig resource which is used to generate the Alertmanager configuration.\nIt must be defined in the same namespace as the Alertmanager object.\nThe operator will not enforce a `namespace` label for routes and inhibition rules."

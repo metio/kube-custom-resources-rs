@@ -3645,6 +3645,9 @@ pub struct ClusterOutputS3 {
     /// Use the S3 PutObject API, instead of the multipart upload API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "UsePutObject")]
     pub use_put_object: Option<bool>,
+    /// Specify number of worker threads to use to output to S3
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "Workers")]
+    pub workers: Option<i32>,
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ClusterOutputS3Tls>,
