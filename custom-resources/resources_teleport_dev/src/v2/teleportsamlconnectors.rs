@@ -77,6 +77,9 @@ pub struct TeleportSAMLConnectorSpec {
     /// SSO is the URL of the identity provider's SSO service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sso: Option<String>,
+    /// UserMatchers is a set of glob patterns to narrow down which username(s) this auth connector should match for identifier-first login.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_matchers: Option<Vec<String>>,
 }
 
 /// EncryptionKeyPair is a key pair used for decrypting SAML assertions.

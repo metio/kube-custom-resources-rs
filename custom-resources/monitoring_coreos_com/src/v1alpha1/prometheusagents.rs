@@ -559,6 +559,10 @@ pub struct PrometheusAgentSpec {
     /// in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
     pub scrape_classes: Option<Vec<PrometheusAgentScrapeClasses>>,
+    /// Whether to scrape a classic histogram that is also exposed as a native histogram.
+    /// It requires Prometheus >= v3.5.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
+    pub scrape_classic_histograms: Option<bool>,
     /// Namespaces to match for ScrapeConfig discovery. An empty label selector
     /// matches all namespaces. A null label selector matches the current
     /// namespace only.
@@ -1514,6 +1518,27 @@ pub struct PrometheusAgentApiserverConfig {
     /// Kubernetes API address consisting of a hostname or IP address followed
     /// by an optional port number.
     pub host: String,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PrometheusAgentApiserverConfigProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
+    pub proxy_url: Option<String>,
     /// TLS Config to use for the API server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusAgentApiserverConfigTlsConfig>,
@@ -1595,6 +1620,23 @@ pub struct PrometheusAgentApiserverConfigBasicAuthPassword {
 /// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentApiserverConfigBasicAuthUsername {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusAgentApiserverConfigProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.

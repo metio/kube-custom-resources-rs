@@ -27,7 +27,7 @@ pub struct CassandraTaskSpec {
     /// The "Allow" property is only valid if all the other active Tasks have "Allow" as well.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<String>,
-    /// Which datacenter this task is targetting. Note, this must be a datacenter which the current cass-operator
+    /// Which datacenter this task is targeting. Note, this must be a datacenter which the current cass-operator
     /// can access
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<ObjectReference>,
@@ -48,7 +48,7 @@ pub struct CassandraTaskSpec {
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
-/// Which datacenter this task is targetting. Note, this must be a datacenter which the current cass-operator
+/// Which datacenter this task is targeting. Note, this must be a datacenter which the current cass-operator
 /// can access
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraTaskDatacenter {

@@ -204,6 +204,8 @@ pub struct EngineStatusPurgeStatus {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EngineStatusRebuildStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedRebuildingMBps")]
+    pub applied_rebuilding_m_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromReplicaAddress")]

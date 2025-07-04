@@ -557,8 +557,7 @@ pub struct PerconaPGClusterBackupsPgbackrestInitContainer {
     /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaPGClusterBackupsPgbackrestInitContainerContainerSecurityContext>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    pub image: String,
     /// ResourceRequirements describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaPGClusterBackupsPgbackrestInitContainerResources>,
@@ -6833,8 +6832,7 @@ pub struct PerconaPGClusterInitContainer {
     /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaPGClusterInitContainerContainerSecurityContext>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    pub image: String,
     /// ResourceRequirements describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaPGClusterInitContainerResources>,
@@ -8092,8 +8090,7 @@ pub struct PerconaPGClusterInstancesInitContainer {
     /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaPGClusterInstancesInitContainerContainerSecurityContext>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    pub image: String,
     /// ResourceRequirements describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaPGClusterInstancesInitContainerResources>,

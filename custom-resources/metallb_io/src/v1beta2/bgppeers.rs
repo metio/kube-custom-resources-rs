@@ -25,8 +25,13 @@ pub struct BGPPeerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTime")]
     pub connect_time: Option<String>,
     /// To set if we want to disable MP BGP that will separate IPv4 and IPv6 route exchanges into distinct BGP sessions.
+    /// Deprecated: DisableMP is deprecated in favor of dualStackAddressFamily.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMP")]
     pub disable_mp: Option<bool>,
+    /// To set if we want to enable the neighbor not only for the ipfamily related to its session,
+    /// but also the other one. This allows to advertise/receive IPv4 prefixes over IPv6 sessions and vice versa.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dualStackAddressFamily")]
+    pub dual_stack_address_family: Option<bool>,
     /// DynamicASN detects the AS number to use for the remote end of the session
     /// without explicitly setting it via the ASN field. Limited to:
     /// internal - if the neighbor's ASN is different than MyASN connection is denied.

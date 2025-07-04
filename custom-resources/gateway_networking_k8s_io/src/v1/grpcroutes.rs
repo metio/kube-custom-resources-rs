@@ -342,6 +342,11 @@ pub struct GRPCRouteRules {
     /// the above criteria.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<GRPCRouteRulesMatches>>,
+    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// GRPCBackendRef defines how a GRPCRoute forwards a gRPC request.

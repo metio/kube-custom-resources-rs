@@ -12124,6 +12124,8 @@ spec:
                             type: "string"
                           exclude:
                             type: "BoolString"
+                          includeAllData:
+                            type: "boolean"
                           includeValue:
                             type: "boolean"
                           key:

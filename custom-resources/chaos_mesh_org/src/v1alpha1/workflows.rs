@@ -5692,7 +5692,6 @@ pub struct WorkflowTemplatesStatusCheckHttp {
     pub criteria: WorkflowTemplatesStatusCheckHttpCriteria,
     /// A Header represents the key-value pairs in an HTTP header.
     /// 
-    /// 
     /// The keys should be in canonical form, as returned by
     /// [CanonicalHeaderKey].
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6118,8 +6117,10 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -6159,8 +6160,10 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -6168,13 +6171,13 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<WorkflowTemplatesTaskContainerEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -6186,8 +6189,10 @@ pub struct WorkflowTemplatesTaskContainerEnvFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvFromConfigMapRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap must be defined
@@ -6199,8 +6204,10 @@ pub struct WorkflowTemplatesTaskContainerEnvFromConfigMapRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvFromSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret must be defined
@@ -6229,6 +6236,11 @@ pub struct WorkflowTemplatesTaskContainerLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<WorkflowTemplatesTaskContainerLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -6237,20 +6249,23 @@ pub struct WorkflowTemplatesTaskContainerLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerLifecyclePostStartHttpGet>,
+    /// Sleep represents a duration that the container should sleep.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<WorkflowTemplatesTaskContainerLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -6262,7 +6277,7 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePostStartExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -6295,9 +6310,16 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePostStartHttpGetHttpHeaders {
     pub value: String,
 }
 
+/// Sleep represents a duration that the container should sleep.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskContainerLifecyclePostStartSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -6320,20 +6342,23 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePostStartTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerLifecyclePreStopHttpGet>,
+    /// Sleep represents a duration that the container should sleep.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sleep: Option<WorkflowTemplatesTaskContainerLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -6345,7 +6370,7 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePreStopExec {
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -6378,9 +6403,16 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePreStopHttpGetHttpHeaders {
     pub value: String,
 }
 
+/// Sleep represents a duration that the container should sleep.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskContainerLifecyclePreStopSleep {
+    /// Seconds is the number of seconds to sleep.
+    pub seconds: i64,
+}
+
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -6398,17 +6430,17 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePreStopTcpSocket {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<WorkflowTemplatesTaskContainerLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -6423,7 +6455,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -6445,7 +6477,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -6457,7 +6489,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -6465,13 +6497,12 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -6504,7 +6535,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -6549,17 +6580,17 @@ pub struct WorkflowTemplatesTaskContainerPorts {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<WorkflowTemplatesTaskContainerReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -6574,7 +6605,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -6596,7 +6627,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -6608,7 +6639,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -6616,13 +6647,12 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -6655,7 +6685,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -6688,10 +6718,8 @@ pub struct WorkflowTemplatesTaskContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
-    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6715,6 +6743,11 @@ pub struct WorkflowTemplatesTaskContainerResourcesClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// SecurityContext defines the security options the container should be run with.
@@ -6731,6 +6764,11 @@ pub struct WorkflowTemplatesTaskContainerSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<WorkflowTemplatesTaskContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -6743,7 +6781,7 @@ pub struct WorkflowTemplatesTaskContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     /// procMount denotes the type of proc mount to use for the containers.
-    /// The default is DefaultProcMount which uses the container runtime defaults for
+    /// The default value is Default which uses the container runtime defaults for
     /// readonly paths and masked paths.
     /// This requires the ProcMountType feature flag to be enabled.
     /// Note that this field cannot be set when spec.os.name is windows.
@@ -6797,6 +6835,26 @@ pub struct WorkflowTemplatesTaskContainerSecurityContext {
     pub windows_options: Option<WorkflowTemplatesTaskContainerSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskContainerSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
+    pub localhost_profile: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
 /// The capabilities to add/drop when running containers.
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
@@ -6846,7 +6904,6 @@ pub struct WorkflowTemplatesTaskContainerSecurityContextSeccompProfile {
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
     /// 
-    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -6891,17 +6948,17 @@ pub struct WorkflowTemplatesTaskContainerSecurityContextWindowsOptions {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<WorkflowTemplatesTaskContainerStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -6916,7 +6973,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -6938,7 +6995,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -6950,7 +7007,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -6958,13 +7015,12 @@ pub struct WorkflowTemplatesTaskContainerStartupProbeGrpc {
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
     /// 
-    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -6997,7 +7053,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbeHttpGetHttpHeaders {
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -7030,6 +7086,8 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
+    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
+    /// (which defaults to None).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
@@ -7038,6 +7096,24 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
+    /// RecursiveReadOnly specifies whether read-only mounts should be handled
+    /// recursively.
+    /// 
+    /// If ReadOnly is false, this field has no meaning and must be unspecified.
+    /// 
+    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
+    /// recursively read-only.  If this field is set to IfPossible, the mount is made
+    /// recursively read-only, if it is supported by the container runtime.  If this
+    /// field is set to Enabled, the mount is made recursively read-only if it is
+    /// supported by the container runtime, otherwise the pod will not be started and
+    /// an error will be generated to indicate the reason.
+    /// 
+    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
+    /// None (or be unspecified, which defaults to None).
+    /// 
+    /// If this field is not specified, it is treated as an equivalent of Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
+    pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
@@ -7055,26 +7131,35 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
 pub struct WorkflowTemplatesTaskVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<WorkflowTemplatesTaskVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<WorkflowTemplatesTaskVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<WorkflowTemplatesTaskVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<WorkflowTemplatesTaskVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<WorkflowTemplatesTaskVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<WorkflowTemplatesTaskVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<WorkflowTemplatesTaskVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -7088,7 +7173,6 @@ pub struct WorkflowTemplatesTaskVolumes {
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
     /// 
-    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -7099,16 +7183,13 @@ pub struct WorkflowTemplatesTaskVolumes {
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
     /// 
-    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
     /// 
-    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    /// 
     /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
@@ -7119,23 +7200,28 @@ pub struct WorkflowTemplatesTaskVolumes {
     pub fc: Option<WorkflowTemplatesTaskVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<WorkflowTemplatesTaskVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<WorkflowTemplatesTaskVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<WorkflowTemplatesTaskVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<WorkflowTemplatesTaskVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<WorkflowTemplatesTaskVolumesGlusterfs>,
@@ -7144,11 +7230,24 @@ pub struct WorkflowTemplatesTaskVolumes {
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-    /// ---
-    /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-    /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<WorkflowTemplatesTaskVolumesHostPath>,
+    /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+    /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+    /// 
+    /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// 
+    /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+    /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+    /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+    /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+    /// The volume will be mounted read-only (ro) and non-executable files (noexec).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<WorkflowTemplatesTaskVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://examples.k8s.io/volumes/iscsi/README.md
@@ -7167,23 +7266,30 @@ pub struct WorkflowTemplatesTaskVolumes {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<WorkflowTemplatesTaskVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<WorkflowTemplatesTaskVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<WorkflowTemplatesTaskVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<WorkflowTemplatesTaskVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<WorkflowTemplatesTaskVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<WorkflowTemplatesTaskVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<WorkflowTemplatesTaskVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -7191,15 +7297,20 @@ pub struct WorkflowTemplatesTaskVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<WorkflowTemplatesTaskVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<WorkflowTemplatesTaskVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<WorkflowTemplatesTaskVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesAwsElasticBlockStore {
@@ -7207,7 +7318,6 @@ pub struct WorkflowTemplatesTaskVolumesAwsElasticBlockStore {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -7227,6 +7337,8 @@ pub struct WorkflowTemplatesTaskVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -7253,6 +7365,8 @@ pub struct WorkflowTemplatesTaskVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -7267,7 +7381,8 @@ pub struct WorkflowTemplatesTaskVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -7300,13 +7415,17 @@ pub struct WorkflowTemplatesTaskVolumesCephfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCephfsSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCinder {
@@ -7336,8 +7455,10 @@ pub struct WorkflowTemplatesTaskVolumesCinder {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCinderSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7364,8 +7485,10 @@ pub struct WorkflowTemplatesTaskVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WorkflowTemplatesTaskVolumesConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -7393,7 +7516,7 @@ pub struct WorkflowTemplatesTaskVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -7429,8 +7552,10 @@ pub struct WorkflowTemplatesTaskVolumesCsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -7456,7 +7581,7 @@ pub struct WorkflowTemplatesTaskVolumesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<WorkflowTemplatesTaskVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -7475,7 +7600,7 @@ pub struct WorkflowTemplatesTaskVolumesDownwardApiItems {
     pub resource_field_ref: Option<WorkflowTemplatesTaskVolumesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -7524,7 +7649,6 @@ pub struct WorkflowTemplatesTaskVolumesEmptyDir {
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
 /// 
-/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -7535,16 +7659,13 @@ pub struct WorkflowTemplatesTaskVolumesEmptyDir {
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
 /// 
-/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
 /// 
-/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-/// 
 /// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
@@ -7558,7 +7679,6 @@ pub struct WorkflowTemplatesTaskVolumesEphemeral {
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
     /// 
-    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -7568,10 +7688,8 @@ pub struct WorkflowTemplatesTaskVolumesEphemeral {
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
     /// 
-    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    /// 
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
@@ -7586,7 +7704,6 @@ pub struct WorkflowTemplatesTaskVolumesEphemeral {
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
 /// 
-/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -7596,10 +7713,8 @@ pub struct WorkflowTemplatesTaskVolumesEphemeral {
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
 /// 
-/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-/// 
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7682,6 +7797,20 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpec {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
+    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
@@ -7760,17 +7889,6 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecDataSourc
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7781,15 +7899,6 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResources
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -7828,7 +7937,6 @@ pub struct WorkflowTemplatesTaskVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// lun is Optional: FC target lun number
@@ -7849,6 +7957,7 @@ pub struct WorkflowTemplatesTaskVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -7882,13 +7991,16 @@ pub struct WorkflowTemplatesTaskVolumesFlexVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesFlexVolumeSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -7902,6 +8014,8 @@ pub struct WorkflowTemplatesTaskVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesGcePersistentDisk {
@@ -7909,7 +8023,6 @@ pub struct WorkflowTemplatesTaskVolumesGcePersistentDisk {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// partition is the partition in the volume that you want to mount.
@@ -7931,7 +8044,7 @@ pub struct WorkflowTemplatesTaskVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7950,6 +8063,7 @@ pub struct WorkflowTemplatesTaskVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesGlusterfs {
@@ -7971,9 +8085,6 @@ pub struct WorkflowTemplatesTaskVolumesGlusterfs {
 /// used for system agents or other privileged things that are allowed
 /// to see the host machine. Most containers will NOT need this.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
-/// ---
-/// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
-/// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesHostPath {
     /// path of the directory on the host.
@@ -7985,6 +8096,39 @@ pub struct WorkflowTemplatesTaskVolumesHostPath {
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+/// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
+/// The volume is resolved at pod startup depending on which PullPolicy value is provided:
+/// 
+/// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+/// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+/// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+/// 
+/// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
+/// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
+/// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
+/// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
+/// The volume will be mounted read-only (ro) and non-executable files (noexec).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskVolumesImage {
+    /// Policy for pulling OCI objects. Possible values are:
+    /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
+    /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
+    /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
+    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Required: Image or artifact reference to be used.
+    /// Behaves in the same way as pod.spec.containers[*].image.
+    /// Pull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.
+    /// More info: https://kubernetes.io/docs/concepts/containers/images
+    /// This field is optional to allow higher level config management to default or override
+    /// container images in workload controllers like Deployments and StatefulSets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 /// iscsi represents an ISCSI Disk resource that is attached to a
@@ -8002,7 +8146,6 @@ pub struct WorkflowTemplatesTaskVolumesIscsi {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name.
@@ -8039,8 +8182,10 @@ pub struct WorkflowTemplatesTaskVolumesIscsi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesIscsiSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8077,7 +8222,8 @@ pub struct WorkflowTemplatesTaskVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -8090,7 +8236,10 @@ pub struct WorkflowTemplatesTaskVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -8118,14 +8267,31 @@ pub struct WorkflowTemplatesTaskVolumesProjected {
     /// mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
-    /// sources is the list of volume projections
+    /// sources is the list of volume projections. Each entry in this list
+    /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sources: Option<Vec<WorkflowTemplatesTaskVolumesProjectedSources>>,
 }
 
-/// Projection that may be projected along with other supported volume types
+/// Projection that may be projected along with other supported volume types.
+/// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjectedSources {
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+    /// of ClusterTrustBundle objects in an auto-updating file.
+    /// 
+    /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+    /// 
+    /// ClusterTrustBundle objects can either be selected by name, or by the
+    /// combination of signer name and a label selector.
+    /// 
+    /// Kubelet performs aggressive normalization of the PEM contents written
+    /// into the pod filesystem.  Esoteric PEM features such as inter-block
+    /// comments and block headers are stripped.  Certificates are deduplicated.
+    /// The ordering of certificates within the file is arbitrary, and Kubelet
+    /// may change the order over time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<WorkflowTemplatesTaskVolumesProjectedSourcesConfigMap>,
@@ -8138,6 +8304,80 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSources {
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<WorkflowTemplatesTaskVolumesProjectedSourcesServiceAccountToken>,
+}
+
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
+/// of ClusterTrustBundle objects in an auto-updating file.
+/// 
+/// Alpha, gated by the ClusterTrustBundleProjection feature gate.
+/// 
+/// ClusterTrustBundle objects can either be selected by name, or by the
+/// combination of signer name and a label selector.
+/// 
+/// Kubelet performs aggressive normalization of the PEM contents written
+/// into the pod filesystem.  Esoteric PEM features such as inter-block
+/// comments and block headers are stripped.  Certificates are deduplicated.
+/// The ordering of certificates within the file is arbitrary, and Kubelet
+/// may change the order over time.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundle {
+    /// Select all ClusterTrustBundles that match this label selector.  Only has
+    /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+    /// interpreted as "match nothing".  If set but empty, interpreted as "match
+    /// everything".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
+    /// with signerName and labelSelector.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// If true, don't block pod startup if the referenced ClusterTrustBundle(s)
+    /// aren't available.  If using name, then the named ClusterTrustBundle is
+    /// allowed not to exist.  If using signerName, then the combination of
+    /// signerName and labelSelector is allowed to match zero
+    /// ClusterTrustBundles.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+    /// Relative path from the volume root to write the bundle.
+    pub path: String,
+    /// Select all ClusterTrustBundles that match this signer name.
+    /// Mutually-exclusive with name.  The contents of all selected
+    /// ClusterTrustBundles will be unified and deduplicated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
+    pub signer_name: Option<String>,
+}
+
+/// Select all ClusterTrustBundles that match this label selector.  Only has
+/// effect if signerName is set.  Mutually-exclusive with name.  If unset,
+/// interpreted as "match nothing".  If set but empty, interpreted as "match
+/// everything".
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowTemplatesTaskVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// configMap information about the configMap data to project
@@ -8153,8 +8393,10 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WorkflowTemplatesTaskVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional specify whether the ConfigMap or its keys must be defined
@@ -8193,7 +8435,7 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApi {
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItems {
-    /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+    /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
@@ -8212,7 +8454,7 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItems {
     pub resource_field_ref: Option<WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
-/// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
+/// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
@@ -8250,8 +8492,10 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<WorkflowTemplatesTaskVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// optional field specify whether the Secret or its key must be defined
@@ -8301,7 +8545,8 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesServiceAccountToken {
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesQuobyte {
     /// group to map volume access to
@@ -8329,6 +8574,7 @@ pub struct WorkflowTemplatesTaskVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesRbd {
@@ -8336,7 +8582,6 @@ pub struct WorkflowTemplatesTaskVolumesRbd {
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#rbd
-    /// TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// image is the rados image name.
@@ -8380,13 +8625,16 @@ pub struct WorkflowTemplatesTaskVolumesRbd {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesRbdSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -8431,8 +8679,10 @@ pub struct WorkflowTemplatesTaskVolumesScaleIo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesScaleIoSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8489,6 +8739,7 @@ pub struct WorkflowTemplatesTaskVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -8523,13 +8774,17 @@ pub struct WorkflowTemplatesTaskVolumesStorageos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesStorageosSecretRef {
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesVsphereVolume {
     /// fsType is filesystem type to mount.

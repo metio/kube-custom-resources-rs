@@ -131,7 +131,11 @@ spec:
                                       rule: "duration(self).getMilliseconds() % 1000 == 0"
                                 disableMP:
                                   default: false
-                                  description: "To set if we want to disable MP BGP that will separate IPv4 and IPv6 route exchanges into distinct BGP sessions."
+                                  description: "To set if we want to disable MP BGP that will separate IPv4 and IPv6 route exchanges into distinct BGP sessions.\nDeprecated: DisableMP is deprecated in favor of dualStackAddressFamily."
+                                  type: "boolean"
+                                dualStackAddressFamily:
+                                  default: false
+                                  description: "To set if we want to enable the neighbor not only for the ipfamily related to its session,\nbut also the other one. This allows to advertise/receive IPv4 prefixes over IPv6 sessions and vice versa."
                                   type: "boolean"
                                 dynamicASN:
                                   description: "DynamicASN detects the AS number to use for the local end of the session\nwithout explicitly setting it via the ASN field. Limited to:\ninternal - if the neighbor's ASN is different than the router's the connection is denied.\nexternal - if the neighbor's ASN is the same as the router's the connection is denied.\nASN and DynamicASN are mutually exclusive and one of them must be specified."
@@ -149,7 +153,7 @@ spec:
                                   description: "HoldTime is the requested BGP hold time, per RFC4271.\nDefaults to 180s."
                                   type: "string"
                                 interface:
-                                  description: "Interface is the node interface over which the unnumbered BGP peering will\nbe established. No API validation takes place as that string value\nrepresents an interface name on the host and if user provides an invalid\nvalue, only the actual BGP session will not be established.\nAddress and Interface are mutually exclusive and one of them must be specified."
+                                  description: "Interface is the node interface over which the unnumbered BGP peering will\nbe established. No API validation takes place as that string value\nrepresents an interface name on the host and if user provides an invalid\nvalue, only the actual BGP session will not be established.\nAddress and Interface are mutually exclusive and one of them must be specified.\nNote: when enabling unnumbered, the neighbor will be enabled for both\nIPv4 and IPv6 address families."
                                   type: "string"
                                 keepaliveTime:
                                   description: "KeepaliveTime is the requested BGP keepalive time, per RFC4271.\nDefaults to 60s."

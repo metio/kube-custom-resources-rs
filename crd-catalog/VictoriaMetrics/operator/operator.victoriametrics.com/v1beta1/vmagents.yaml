@@ -760,7 +760,7 @@ spec:
                 inlineRelabelConfig:
                   description: "InlineRelabelConfig - defines GlobalRelabelConfig for vmagent, can be defined directly at CRD."
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -781,7 +781,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -827,13 +827,13 @@ spec:
                       type: "string"
                   type: "object"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise)"
                   properties:
                     forceOffline:
                       description: "Enforce offline verification of the license key."
                       type: "boolean"
                     key:
-                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
+                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/victoriametrics/enterprise/).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
                     keyRef:
                       description: "KeyRef is reference to secret with license key for enterprise features."
@@ -935,7 +935,7 @@ spec:
                 nodeScrapeRelabelTemplate:
                   description: "NodeScrapeRelabelTemplate defines relabel config, that will be added to each VMNodeScrape.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -956,7 +956,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1103,7 +1103,7 @@ spec:
                 podScrapeRelabelTemplate:
                   description: "PodScrapeRelabelTemplate defines relabel config, that will be added to each VMPodScrape.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -1124,7 +1124,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1225,7 +1225,7 @@ spec:
                 probeScrapeRelabelTemplate:
                   description: "ProbeScrapeRelabelTemplate defines relabel config, that will be added to each VMProbeScrape.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -1246,7 +1246,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1339,7 +1339,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 remoteWrite:
-                  description: "RemoteWrite list of victoria metrics /some other remote write system\nfor vm it must looks like: http://victoria-metrics-single:8429/api/v1/write\nor for cluster different url\nhttps://github.com/VictoriaMetrics/VictoriaMetrics/tree/master/app/vmagent#splitting-data-streams-among-multiple-systems"
+                  description: "RemoteWrite list of victoria metrics /some other remote write system\nfor vm it must looks like: http://victoria-metrics-single:8429/api/v1/write\nor for cluster different url\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#splitting-data-streams-among-multiple-systems"
                   items:
                     description: "VMAgentRemoteWriteSpec defines the remote storage configuration for VmAgent"
                     properties:
@@ -1412,7 +1412,7 @@ spec:
                       inlineUrlRelabelConfig:
                         description: "InlineUrlRelabelConfig defines relabeling config for remoteWriteURL, it can be defined at crd spec."
                         items:
-                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                           properties:
                             action:
                               description: "Action to perform based on regex matching. Default is 'replace'"
@@ -1433,7 +1433,7 @@ spec:
                               format: "int64"
                               type: "integer"
                             regex:
-                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                               x-kubernetes-preserve-unknown-fields: true
                             replacement:
                               description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1629,7 +1629,7 @@ spec:
                                 input_relabel_configs:
                                   description: "InputRelabelConfigs is an optional relabeling rules, which are applied on the input\nbefore aggregation."
                                   items:
-                                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                                     properties:
                                       action:
                                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -1650,7 +1650,7 @@ spec:
                                         format: "int64"
                                         type: "integer"
                                       regex:
-                                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                                         x-kubernetes-preserve-unknown-fields: true
                                       replacement:
                                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1691,7 +1691,7 @@ spec:
                                 output_relabel_configs:
                                   description: "OutputRelabelConfigs is an optional relabeling rules, which are applied\non the aggregated output before being sent to remote storage."
                                   items:
-                                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                                     properties:
                                       action:
                                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -1712,7 +1712,7 @@ spec:
                                         format: "int64"
                                         type: "integer"
                                       regex:
-                                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                                         x-kubernetes-preserve-unknown-fields: true
                                       replacement:
                                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -1923,7 +1923,7 @@ spec:
                       description: "Path to directory where temporary data for remote write component is stored (default vmagent-remotewrite-data)"
                       type: "string"
                     useMultiTenantMode:
-                      description: "Configures vmagent accepting data via the same multitenant endpoints as vminsert at VictoriaMetrics cluster does,\nsee [here](https://docs.victoriametrics.com/vmagent/#multitenancy).\nit's global setting and affects all remote storage configurations"
+                      description: "Configures vmagent accepting data via the same multitenant endpoints as vminsert at VictoriaMetrics cluster does,\nsee [here](https://docs.victoriametrics.com/victoriametrics/vmagent/#multitenancy).\nit's global setting and affects all remote storage configurations"
                       type: "boolean"
                   type: "object"
                 replicaCount:
@@ -2032,7 +2032,7 @@ spec:
                 scrapeConfigRelabelTemplate:
                   description: "ScrapeConfigRelabelTemplate defines relabel config, that will be added to each VMScrapeConfig.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -2053,7 +2053,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -2171,7 +2171,7 @@ spec:
                 serviceScrapeRelabelTemplate:
                   description: "ServiceScrapeRelabelTemplate defines relabel config, that will be added to each VMServiceScrape.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -2192,7 +2192,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -2288,7 +2288,7 @@ spec:
                     - "spec"
                   type: "object"
                 shardCount:
-                  description: "ShardCount - numbers of shards of VMAgent\nin this case operator will use 1 deployment/sts per shard with\nreplicas count according to spec.replicas,\nsee [here](https://docs.victoriametrics.com/vmagent/#scraping-big-number-of-targets)"
+                  description: "ShardCount - numbers of shards of VMAgent\nin this case operator will use 1 deployment/sts per shard with\nreplicas count according to spec.replicas,\nsee [here](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-big-number-of-targets)"
                   type: "integer"
                 startupProbe:
                   description: "StartupProbe that will be added to CRD pod"
@@ -2583,7 +2583,7 @@ spec:
                 staticScrapeRelabelTemplate:
                   description: "StaticScrapeRelabelTemplate defines relabel config, that will be added to each VMStaticScrape.\nit's useful for adding specific labels to all targets"
                   items:
-                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                    description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                     properties:
                       action:
                         description: "Action to perform based on regex matching. Default is 'replace'"
@@ -2604,7 +2604,7 @@ spec:
                         format: "int64"
                         type: "integer"
                       regex:
-                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                        description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                         x-kubernetes-preserve-unknown-fields: true
                       replacement:
                         description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -2738,7 +2738,7 @@ spec:
                           input_relabel_configs:
                             description: "InputRelabelConfigs is an optional relabeling rules, which are applied on the input\nbefore aggregation."
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                               properties:
                                 action:
                                   description: "Action to perform based on regex matching. Default is 'replace'"
@@ -2759,7 +2759,7 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                                   x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -2800,7 +2800,7 @@ spec:
                           output_relabel_configs:
                             description: "OutputRelabelConfigs is an optional relabeling rules, which are applied\non the aggregated output before being sent to remote storage."
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                               properties:
                                 action:
                                   description: "Action to perform based on regex matching. Default is 'replace'"
@@ -2821,7 +2821,7 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                                   x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"

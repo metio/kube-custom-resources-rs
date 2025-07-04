@@ -10,13 +10,27 @@ spec:
     kind: "ImageUpdateAutomation"
     listKind: "ImageUpdateAutomationList"
     plural: "imageupdateautomations"
+    shortNames:
+      - "iua"
+      - "imgupd"
+      - "imgauto"
     singular: "imageupdateautomation"
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+          name: "Ready"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"Ready\")].message"
+          name: "Status"
+          type: "string"
         - jsonPath: ".status.lastAutomationRunTime"
           name: "Last run"
+          priority: 1
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta2"
       schema:
         openAPIV3Schema:
@@ -77,7 +91,7 @@ spec:
                             - "email"
                           type: "object"
                         messageTemplate:
-                          description: "MessageTemplate provides a template for the commit message,\ninto which will be interpolated the details of the change made."
+                          description: "MessageTemplate provides a template for the commit message,\ninto which will be interpolated the details of the change made.\nNote: The `Updated` template field has been removed. Use `Changed` instead."
                           type: "string"
                         messageTemplateValues:
                           additionalProperties:

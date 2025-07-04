@@ -682,11 +682,11 @@ pub struct ClusterStatus {
 /// ClusterCertificateInfo contains information about certificate expiration for cluster components.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusClusterCertificateInfo {
-    /// Component defines the component name (e.g., control-plane-1, etcd-1)
-    pub component: String,
-    /// ExpiresInDays defines the number of days until the certificate expires
+    /// ExpiresInDays defines the number of days until the certificate expires.
     #[serde(rename = "expiresInDays")]
     pub expires_in_days: i64,
+    /// Machine defines the machine name.
+    pub machine: String,
 }
 
 /// EksdReleaseRef defines the properties of the EKS-D object on the cluster

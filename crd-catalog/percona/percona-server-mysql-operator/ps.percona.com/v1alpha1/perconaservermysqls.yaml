@@ -2979,6 +2979,29 @@ spec:
                         type:
                           type: "string"
                       type: "object"
+                    exposePrimary:
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: "string"
+                          type: "object"
+                        enabled:
+                          type: "boolean"
+                        externalTrafficPolicy:
+                          type: "string"
+                        internalTrafficPolicy:
+                          type: "string"
+                        labels:
+                          additionalProperties:
+                            type: "string"
+                          type: "object"
+                        loadBalancerSourceRanges:
+                          items:
+                            type: "string"
+                          type: "array"
+                        type:
+                          type: "string"
+                      type: "object"
                     gracePeriod:
                       format: "int64"
                       type: "integer"
@@ -6449,8 +6472,6 @@ spec:
                             x-kubernetes-int-or-string: true
                           type: "object"
                       type: "object"
-                    runtimeClassName:
-                      type: "string"
                     serverHost:
                       type: "string"
                   required:

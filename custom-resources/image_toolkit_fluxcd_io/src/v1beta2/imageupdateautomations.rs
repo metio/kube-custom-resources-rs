@@ -111,6 +111,7 @@ pub struct ImageUpdateAutomationGitCommit {
     pub author: ImageUpdateAutomationGitCommitAuthor,
     /// MessageTemplate provides a template for the commit message,
     /// into which will be interpolated the details of the change made.
+    /// Note: The `Updated` template field has been removed. Use `Changed` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageTemplate")]
     pub message_template: Option<String>,
     /// MessageTemplateValues provides additional values to be available to the

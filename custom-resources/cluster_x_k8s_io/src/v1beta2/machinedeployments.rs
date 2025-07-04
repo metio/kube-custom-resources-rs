@@ -232,8 +232,7 @@ pub struct MachineDeploymentTemplate {
     pub metadata: Option<MachineDeploymentTemplateMetadata>,
     /// spec is the specification of the desired behavior of the machine.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<MachineDeploymentTemplateSpec>,
+    pub spec: MachineDeploymentTemplateSpec,
 }
 
 /// metadata is the standard object's metadata.

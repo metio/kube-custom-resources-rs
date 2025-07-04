@@ -172,7 +172,7 @@ spec:
                       metricRelabelConfigs:
                         description: "MetricRelabelConfigs to apply to samples after scrapping."
                         items:
-                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                           properties:
                             action:
                               description: "Action to perform based on regex matching. Default is 'replace'"
@@ -193,7 +193,7 @@ spec:
                               format: "int64"
                               type: "integer"
                             regex:
-                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                               x-kubernetes-preserve-unknown-fields: true
                             replacement:
                               description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -323,7 +323,7 @@ spec:
                       relabelConfigs:
                         description: "RelabelConfigs to apply to samples during service discovery."
                         items:
-                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
+                          description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
                           properties:
                             action:
                               description: "Action to perform based on regex matching. Default is 'replace'"
@@ -344,7 +344,7 @@ spec:
                               format: "int64"
                               type: "integer"
                             regex:
-                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
+                              description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
                               x-kubernetes-preserve-unknown-fields: true
                             replacement:
                               description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -517,7 +517,7 @@ spec:
                             description: "DisableCompression"
                             type: "boolean"
                           disable_keep_alive:
-                            description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be reused.\nSee https://docs.victoriametrics.com/vmagent#scrape_config-enhancements"
+                            description: "disable_keepalive allows disabling HTTP keep-alive when scraping targets.\nBy default, HTTP keep-alive is enabled, so TCP connections to scrape targets\ncould be reused.\nSee https://docs.victoriametrics.com/victoriametrics/vmagent#scrape_config-enhancements"
                             type: "boolean"
                           headers:
                             description: "Headers allows sending custom headers to scrape targets\nmust be in of semicolon separated header with it's value\neg:\nheaderName: headerValue\nvmagent supports since 1.79.0 version"
@@ -527,7 +527,7 @@ spec:
                           no_stale_markers:
                             type: "boolean"
                           proxy_client_config:
-                            description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy"
+                            description: "ProxyClientConfig configures proxy auth settings for scraping\nSee feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy"
                             properties:
                               basic_auth:
                                 description: "BasicAuth allow an endpoint to authenticate over basic authentication"

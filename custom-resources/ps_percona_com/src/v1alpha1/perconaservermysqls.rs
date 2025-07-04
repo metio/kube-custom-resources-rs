@@ -1890,6 +1890,8 @@ pub struct PerconaServerMySQLMysql {
     pub env_from: Option<Vec<PerconaServerMySQLMysqlEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expose: Option<PerconaServerMySQLMysqlExpose>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposePrimary")]
+    pub expose_primary: Option<PerconaServerMySQLMysqlExposePrimary>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     pub image: String,
@@ -2404,6 +2406,24 @@ pub struct PerconaServerMySQLMysqlEnvFromSecretRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLMysqlExpose {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
+    pub internal_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
+    pub load_balancer_source_ranges: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLMysqlExposePrimary {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5169,8 +5189,6 @@ pub struct PerconaServerMySQLPmm {
     pub mysql_params: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<PerconaServerMySQLPmmResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
-    pub runtime_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHost")]
     pub server_host: Option<String>,
 }

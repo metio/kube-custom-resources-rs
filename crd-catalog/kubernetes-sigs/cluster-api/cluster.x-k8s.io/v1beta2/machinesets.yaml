@@ -271,13 +271,17 @@ spec:
                         - "clusterName"
                         - "infrastructureRef"
                       type: "object"
+                  required:
+                    - "spec"
                   type: "object"
               required:
                 - "clusterName"
                 - "selector"
+                - "template"
               type: "object"
             status:
               description: "status is the observed state of MachineSet."
+              minProperties: 1
               properties:
                 availableReplicas:
                   description: "availableReplicas is the number of available replicas for this MachineSet. A machine is considered available when Machine's Available condition is true."
@@ -399,6 +403,7 @@ spec:
                 observedGeneration:
                   description: "observedGeneration reflects the generation of the most recently observed MachineSet."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
                 readyReplicas:
                   description: "readyReplicas is the number of ready replicas for this MachineSet. A machine is considered ready when Machine's Ready condition is true."
@@ -418,6 +423,8 @@ spec:
                   format: "int32"
                   type: "integer"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

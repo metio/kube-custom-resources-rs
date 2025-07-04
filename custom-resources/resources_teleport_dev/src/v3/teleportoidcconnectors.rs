@@ -73,6 +73,9 @@ pub struct TeleportOIDCConnectorSpec {
     /// Scope specifies additional scopes set by provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,
+    /// UserMatchers is a set of glob patterns to narrow down which username(s) this auth connector should match for identifier-first login.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_matchers: Option<Vec<String>>,
     /// UsernameClaim specifies the name of the claim from the OIDC connector to be used as the user's username.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub username_claim: Option<String>,

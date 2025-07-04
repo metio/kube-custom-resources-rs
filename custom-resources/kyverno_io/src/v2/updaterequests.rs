@@ -260,6 +260,8 @@ pub enum UpdateRequestRequestType {
     Generate,
     #[serde(rename = "cel-generate")]
     CelGenerate,
+    #[serde(rename = "cel-mutate")]
+    CelMutate,
 }
 
 /// ResourceSpec is the information to identify the trigger resource.

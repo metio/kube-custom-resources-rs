@@ -7,10 +7,12 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
+/// PlanSpec represents the user-configurable details of a Plan.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "upgrade.cattle.io", version = "v1", kind = "Plan", plural = "plans")]
 #[kube(namespaced)]
@@ -19,39 +21,63 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PlanSpec {
+    /// A URL that returns HTTP 302 with the last path element of the value returned in the Location header assumed to be an image tag (after munging "+" to "-").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel: Option<String>,
+    /// The maximum number of concurrent nodes to apply this update on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub concurrency: Option<i64>,
+    /// If Cordon is true, the node is cordoned before the upgrade container is run.
+    /// If drain is specified, the value for cordon is ignored, and the node is cordoned.
+    /// If neither drain nor cordon are specified and the node is marked as schedulable=false it will not be marked as schedulable=true when the Job completes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cordon: Option<bool>,
+    /// Configuration for draining nodes prior to upgrade. If left unspecified, no drain will be performed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drain: Option<PlanDrain>,
+    /// Jobs for exclusive plans cannot be run alongside any other exclusive plan.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclusive: Option<bool>,
+    /// Image Pull Secrets, used to pull images for the Job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<PlanImagePullSecrets>>,
+    /// Sets ActiveDeadlineSeconds on Jobs generated to apply this Plan.
+    /// If the Job does not complete within this time, the Plan will stop processing until it is updated to trigger a redeploy.
+    /// If set to 0, Jobs have no deadline. If not set, the controller default value is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobActiveDeadlineSecs")]
     pub job_active_deadline_secs: Option<i64>,
+    /// Select which nodes this plan can be applied to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<PlanNodeSelector>,
+    /// Time after a Job for one Node is complete before a new Job will be created for the next Node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postCompleteDelay")]
     pub post_complete_delay: Option<String>,
+    /// The prepare init container, if specified, is run before cordon/drain which is run before the upgrade container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prepare: Option<PlanPrepare>,
+    /// Secrets to be mounted into the Job Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<PlanSecrets>>,
+    /// The service account for the pod to use. As with normal pods, if not specified the default service account from the namespace will be assigned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// Specify which node taints should be tolerated by pods applying the upgrade.
+    /// Anything specified here is appended to the default of:
+    /// - `{key: node.kubernetes.io/unschedulable, effect: NoSchedule, operator: Exists}`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<PlanTolerations>>,
+    /// The upgrade container; must be specified.
     pub upgrade: PlanUpgrade,
+    /// Providing a value for version will prevent polling/resolution of the channel if specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+    /// A time window in which to execute Jobs for this Plan.
+    /// Jobs will not be generated outside this time window, but may continue executing into the window once started.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub window: Option<PlanWindow>,
 }
 
+/// Configuration for draining nodes prior to upgrade. If left unspecified, no drain will be performed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanDrain {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteEmptydirData")]
@@ -63,59 +89,99 @@ pub struct PlanDrain {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
-    pub grace_period: Option<i64>,
+    pub grace_period: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDaemonSets")]
     pub ignore_daemon_sets: Option<bool>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<PlanDrainPodSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipWaitForDeleteTimeout")]
     pub skip_wait_for_delete_timeout: Option<i64>,
+    /// A Duration represents the elapsed time between two instants
+    /// as an int64 nanosecond count. The representation limits the
+    /// largest representable duration to approximately 290 years.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
 }
 
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanDrainPodSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PlanDrainPodSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanDrainPodSelectorMatchExpressions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub operator: Option<String>,
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanImagePullSecrets {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
+/// Select which nodes this plan can be applied to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanNodeSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PlanNodeSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanNodeSelectorMatchExpressions {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub operator: Option<String>,
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
+/// The prepare init container, if specified, is run before cordon/drain which is run before the upgrade container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepare {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -126,210 +192,404 @@ pub struct PlanPrepare {
     pub env_from: Option<Vec<PlanPrepareEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envs: Option<Vec<PlanPrepareEnvs>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    /// Image name. If the tag is omitted, the value from .status.latestVersion will be used.
+    pub image: String,
+    /// SecurityContext holds security configuration that will be applied to a container.
+    /// Some fields are present in both SecurityContext and PodSecurityContext.  When both
+    /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PlanPrepareSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PlanPrepareVolumes>>,
 }
 
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvFrom {
+    /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PlanPrepareEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
+    /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<PlanPrepareEnvFromSecretRef>,
 }
 
+/// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvFromSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvs {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<PlanPrepareEnvsValueFrom>,
 }
 
+/// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvsValueFrom {
+    /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PlanPrepareEnvsValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PlanPrepareEnvsValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PlanPrepareEnvsValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PlanPrepareEnvsValueFromSecretKeyRef>,
 }
 
+/// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvsValueFromConfigMapKeyRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvsValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
 }
 
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvsValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
 }
 
+/// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareEnvsValueFromSecretKeyRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// SecurityContext holds security configuration that will be applied to a container.
+/// Some fields are present in both SecurityContext and PodSecurityContext.  When both
+/// are set, the values in SecurityContext take precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<PlanPrepareSecurityContextAppArmorProfile>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<PlanPrepareSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default value is Default which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PlanPrepareSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PlanPrepareSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PlanPrepareSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContextCapabilities {
+    /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
+    /// Removed capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop: Option<Vec<String>>,
 }
 
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
+/// HostPath volume to mount into the pod
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanPrepareVolumes {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub destination: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
+    /// Path to mount the Volume at within the Pod.
+    pub destination: String,
+    /// Name of the Volume as it will appear within the Pod spec.
+    pub name: String,
+    /// Path on the host to mount.
+    pub source: String,
 }
 
+/// SecretSpec describes a Secret to be mounted for prepare/upgrade containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanSecrets {
+    /// If set to true, the Secret contents will not be hashed, and changes to the Secret will not trigger new application of the Plan.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreUpdates")]
     pub ignore_updates: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
+    /// Secret name
+    pub name: String,
+    /// Path to mount the Secret volume within the Pod.
+    pub path: String,
 }
 
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
+/// The upgrade container; must be specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgrade {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -340,206 +600,394 @@ pub struct PlanUpgrade {
     pub env_from: Option<Vec<PlanUpgradeEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envs: Option<Vec<PlanUpgradeEnvs>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
+    /// Image name. If the tag is omitted, the value from .status.latestVersion will be used.
+    pub image: String,
+    /// SecurityContext holds security configuration that will be applied to a container.
+    /// Some fields are present in both SecurityContext and PodSecurityContext.  When both
+    /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<PlanUpgradeSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<PlanUpgradeVolumes>>,
 }
 
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvFrom {
+    /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PlanUpgradeEnvFromConfigMapRef>,
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
+    /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<PlanUpgradeEnvFromSecretRef>,
 }
 
+/// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvFromConfigMapRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvFromSecretRef {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvs {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
     pub value_from: Option<PlanUpgradeEnvsValueFrom>,
 }
 
+/// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvsValueFrom {
+    /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PlanUpgradeEnvsValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<PlanUpgradeEnvsValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PlanUpgradeEnvsValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PlanUpgradeEnvsValueFromSecretKeyRef>,
 }
 
+/// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvsValueFromConfigMapKeyRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvsValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
-    pub field_path: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
 }
 
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvsValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resource: Option<String>,
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
 }
 
+/// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeEnvsValueFromSecretKeyRef {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub key: Option<String>,
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
 
+/// SecurityContext holds security configuration that will be applied to a container.
+/// Some fields are present in both SecurityContext and PodSecurityContext.  When both
+/// are set, the values in SecurityContext take precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContext {
+    /// AllowPrivilegeEscalation controls whether a process can gain more
+    /// privileges than its parent process. This bool directly controls if
+    /// the no_new_privs flag will be set on the container process.
+    /// AllowPrivilegeEscalation is true always when the container is:
+    /// 1) run as Privileged
+    /// 2) has CAP_SYS_ADMIN
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
+    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+    /// overrides the pod's appArmorProfile.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<PlanUpgradeSecurityContextAppArmorProfile>,
+    /// The capabilities to add/drop when running containers.
+    /// Defaults to the default set of capabilities granted by the container runtime.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capabilities: Option<PlanUpgradeSecurityContextCapabilities>,
+    /// Run container in privileged mode.
+    /// Processes in privileged containers are essentially equivalent to root on the host.
+    /// Defaults to false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
+    /// procMount denotes the type of proc mount to use for the containers.
+    /// The default value is Default which uses the container runtime defaults for
+    /// readonly paths and masked paths.
+    /// This requires the ProcMountType feature flag to be enabled.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
+    /// Whether this container has a read-only root filesystem.
+    /// Default is false.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
+    /// The GID to run the entrypoint of the container process.
+    /// Uses runtime default if unset.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
+    /// Indicates that the container must run as a non-root user.
+    /// If true, the Kubelet will validate the image at runtime to ensure that it
+    /// does not run as UID 0 (root) and fail to start the container if it does.
+    /// If unset or false, no such validation will be performed.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
+    /// The UID to run the entrypoint of the container process.
+    /// Defaults to user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// The SELinux context to be applied to the container.
+    /// If unspecified, the container runtime will allocate a random SELinux context for each
+    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<PlanUpgradeSecurityContextSeLinuxOptions>,
+    /// The seccomp options to use by this container. If seccomp options are
+    /// provided at both the pod & container level, the container options
+    /// override the pod options.
+    /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<PlanUpgradeSecurityContextSeccompProfile>,
+    /// The Windows specific settings applied to all containers.
+    /// If unspecified, the options from the PodSecurityContext will be used.
+    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+    /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<PlanUpgradeSecurityContextWindowsOptions>,
 }
 
+/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
+/// overrides the pod's appArmorProfile.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContextAppArmorProfile {
+    /// localhostProfile indicates a profile loaded on the node that should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must match the loaded name of the profile.
+    /// Must be set if and only if type is "Localhost".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    /// type indicates which kind of AppArmor profile will be applied.
+    /// Valid options are:
+    ///   Localhost - a profile pre-loaded on the node.
+    ///   RuntimeDefault - the container runtime's default profile.
+    ///   Unconfined - no AppArmor enforcement.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
+/// The capabilities to add/drop when running containers.
+/// Defaults to the default set of capabilities granted by the container runtime.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContextCapabilities {
+    /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
+    /// Removed capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop: Option<Vec<String>>,
 }
 
+/// The SELinux context to be applied to the container.
+/// If unspecified, the container runtime will allocate a random SELinux context for each
+/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
+/// PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContextSeLinuxOptions {
+    /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
+    /// Role is a SELinux role label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
+    /// Type is a SELinux type label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+    /// User is a SELinux user label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
+/// The seccomp options to use by this container. If seccomp options are
+/// provided at both the pod & container level, the container options
+/// override the pod options.
+/// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContextSeccompProfile {
+    /// localhostProfile indicates a profile defined in a file on the node should be used.
+    /// The profile must be preconfigured on the node to work.
+    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
+    /// Must be set if type is "Localhost". Must NOT be set for any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    /// type indicates which kind of seccomp profile will be applied.
+    /// Valid options are:
+    /// 
+    /// Localhost - a profile defined in a file on the node should be used.
+    /// RuntimeDefault - the container runtime default profile should be used.
+    /// Unconfined - no profile should be applied.
+    #[serde(rename = "type")]
+    pub r#type: String,
 }
 
+/// The Windows specific settings applied to all containers.
+/// If unspecified, the options from the PodSecurityContext will be used.
+/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
+/// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeSecurityContextWindowsOptions {
+    /// GMSACredentialSpec is where the GMSA admission webhook
+    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
+    /// GMSA credential spec named by the GMSACredentialSpecName field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
+    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
+    /// HostProcess determines if a container should be run as a 'Host Process' container.
+    /// All of a Pod's containers must have the same effective HostProcess value
+    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
+    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
+    /// The UserName in Windows to run the entrypoint of the container process.
+    /// Defaults to the user specified in image metadata if unspecified.
+    /// May also be set in PodSecurityContext. If set in both SecurityContext and
+    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
+/// HostPath volume to mount into the pod
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanUpgradeVolumes {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub destination: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<String>,
+    /// Path to mount the Volume at within the Pod.
+    pub destination: String,
+    /// Name of the Volume as it will appear within the Pod spec.
+    pub name: String,
+    /// Path on the host to mount.
+    pub source: String,
 }
 
+/// A time window in which to execute Jobs for this Plan.
+/// Jobs will not be generated outside this time window, but may continue executing into the window once started.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanWindow {
+    /// Days that this time window is valid for
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days: Option<Vec<String>>,
+    /// End of the time window.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endTime")]
     pub end_time: Option<String>,
+    /// Start of the time window.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
+    /// Time zone for the time window; if not specified UTC will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeZone")]
     pub time_zone: Option<String>,
 }
 
+/// PlanStatus represents the resulting state from processing Plan events.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanStatus {
+    /// List of Node names that the Plan is currently being applied on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub applying: Option<Vec<String>>,
+    /// `LatestResolved` indicates that the latest version as per the spec has been determined.
+    /// `Validated` indicates that the plan spec has been validated.
+    /// `Complete` indicates that the latest version of the plan has completed on all selected nodes. If any Jobs for the Plan fail to complete, this condition will remain false, and the reason and message will reflect the source of the error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// The hash of the most recently applied plan .spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestHash")]
     pub latest_hash: Option<String>,
+    /// The latest version, as resolved from .spec.version, or the channel server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestVersion")]
     pub latest_version: Option<String>,
 }

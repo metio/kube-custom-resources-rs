@@ -265,10 +265,18 @@ pub struct ThanosRulerSpec {
     /// The route prefix ThanosRuler registers HTTP handlers for. This allows thanos UI to be served on a sub-path.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routePrefix")]
     pub route_prefix: Option<String>,
+    /// How many rules can be evaluated concurrently.
+    /// It requires Thanos >= v0.37.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConcurrentEval")]
+    pub rule_concurrent_eval: Option<i32>,
     /// Namespaces to be selected for Rules discovery. If unspecified, only
     /// the same namespace as the ThanosRuler object is in is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]
     pub rule_namespace_selector: Option<ThanosRulerRuleNamespaceSelector>,
+    /// Max time to tolerate prometheus outage for restoring "for" state of alert.
+    /// It requires Thanos >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleOutageTolerance")]
+    pub rule_outage_tolerance: Option<String>,
     /// The default rule group's query offset duration to use.
     /// It requires Thanos >= v0.38.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleQueryOffset")]

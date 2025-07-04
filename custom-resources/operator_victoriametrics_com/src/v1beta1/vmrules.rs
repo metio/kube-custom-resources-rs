@@ -47,7 +47,7 @@ pub struct VMRuleGroups {
     pub eval_offset: Option<String>,
     /// ExtraFilterLabels optional list of label filters applied to every rule's
     /// request within a group. Is compatible only with VM datasource.
-    /// See more details [here](https://docs.victoriametrics.com/#prometheus-querying-api-enhancements)
+    /// See more details [here](https://docs.victoriametrics.com/victoriametrics/#prometheus-querying-api-enhancements)
     /// Deprecated: use params instead
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extra_filter_labels: Option<BTreeMap<String, String>>,
@@ -88,7 +88,7 @@ pub struct VMRuleGroups {
     /// Rules list of alert rules
     pub rules: Vec<VMRuleGroupsRules>,
     /// Tenant id for group, can be used only with enterprise version of vmalert.
-    /// See more details [here](https://docs.victoriametrics.com/vmalert#multitenancy).
+    /// See more details [here](https://docs.victoriametrics.com/victoriametrics/vmalert#multitenancy).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tenant: Option<String>,
     /// Type defines datasource type for enterprise version of vmalert

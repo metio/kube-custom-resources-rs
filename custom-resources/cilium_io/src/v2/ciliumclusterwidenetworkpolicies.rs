@@ -603,9 +603,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -624,6 +627,10 @@ pub enum CiliumClusterwideNetworkPolicyEgressToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -1355,9 +1362,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -1376,6 +1386,10 @@ pub enum CiliumClusterwideNetworkPolicyEgressDenyToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -2076,9 +2090,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -2097,6 +2114,10 @@ pub enum CiliumClusterwideNetworkPolicyIngressToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -2753,9 +2774,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -2774,6 +2798,10 @@ pub enum CiliumClusterwideNetworkPolicyIngressDenyToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -3436,9 +3464,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -3457,6 +3488,10 @@ pub enum CiliumClusterwideNetworkPolicysEgressToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -4188,9 +4223,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -4209,6 +4247,10 @@ pub enum CiliumClusterwideNetworkPolicysEgressDenyToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -4909,9 +4951,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -4930,6 +4975,10 @@ pub enum CiliumClusterwideNetworkPolicysIngressToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }
@@ -5586,9 +5635,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyToPortsPorts {
     pub end_port: Option<i32>,
     /// Port can be an L4 port number, or a name in the form of "http"
     /// or "http-8080".
-    pub port: String,
-    /// Protocol is the L4 protocol. If omitted or empty, any protocol
-    /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<String>,
+    /// Protocol is the L4 protocol. If "ANY", omitted or empty, any protocols
+    /// with transport ports (TCP, UDP, SCTP) match.
+    /// 
+    /// Accepted values: "TCP", "UDP", "SCTP", "VRRP", "IGMP", "ANY"
     /// 
     /// Matching on ICMP is not supported.
     /// 
@@ -5607,6 +5659,10 @@ pub enum CiliumClusterwideNetworkPolicysIngressDenyToPortsPortsProtocol {
     Udp,
     #[serde(rename = "SCTP")]
     Sctp,
+    #[serde(rename = "VRRP")]
+    Vrrp,
+    #[serde(rename = "IGMP")]
+    Igmp,
     #[serde(rename = "ANY")]
     Any,
 }

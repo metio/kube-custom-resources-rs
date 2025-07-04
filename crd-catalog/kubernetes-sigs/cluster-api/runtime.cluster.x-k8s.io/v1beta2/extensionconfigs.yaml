@@ -40,6 +40,7 @@ spec:
               properties:
                 clientConfig:
                   description: "clientConfig defines how to communicate with the Extension server."
+                  minProperties: 1
                   properties:
                     caBundle:
                       description: "caBundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate."
@@ -122,6 +123,7 @@ spec:
               type: "object"
             status:
               description: "status is the current state of the ExtensionConfig"
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a ExtensionConfig's current state.\nKnown condition types are Discovered, Paused."
@@ -263,6 +265,8 @@ spec:
                     - "name"
                   x-kubernetes-list-type: "map"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

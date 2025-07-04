@@ -11,23 +11,20 @@ mod prelude {
 use self::prelude::*;
 
 /// DatadogMonitorSpec defines the desired state of DatadogMonitor
-#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "datadoghq.com", version = "v1alpha1", kind = "DatadogMonitor", plural = "datadogmonitors")]
 #[kube(namespaced)]
 #[kube(status = "DatadogMonitorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DatadogMonitorSpec {
     /// ControllerOptions are the optional parameters in the DatadogMonitor controller
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerOptions")]
     pub controller_options: Option<DatadogMonitorControllerOptions>,
     /// Message is a message to include with notifications for this monitor
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub message: Option<String>,
+    pub message: String,
     /// Name is the monitor name
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub name: String,
     /// Options are the optional parameters associated with your monitor
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<DatadogMonitorOptions>,
@@ -35,8 +32,7 @@ pub struct DatadogMonitorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// Query is the Datadog monitor query
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub query: Option<String>,
+    pub query: String,
     /// RestrictedRoles is a list of unique role identifiers to define which roles are allowed to edit the monitor.
     /// `restricted_roles` is the successor of `locked`. For more information about `locked` and `restricted_roles`,
     /// see the [monitor options docs](https://docs.datadoghq.com/monitors/guide/monitor_api_options/#permissions-options).
@@ -46,8 +42,8 @@ pub struct DatadogMonitorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
     /// Type is the monitor type
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: DatadogMonitorType,
 }
 
 /// ControllerOptions are the optional parameters in the DatadogMonitor controller
@@ -127,6 +123,9 @@ pub struct DatadogMonitorOptions {
     /// recommend you set this to false for sparse metrics, otherwise some evaluations are skipped. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireFullWindow")]
     pub require_full_window: Option<bool>,
+    /// Configuration options for scheduling.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingOptions")]
+    pub scheduling_options: Option<DatadogMonitorOptionsSchedulingOptions>,
     /// A struct of the alerting time window options.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "thresholdWindows")]
     pub threshold_windows: Option<DatadogMonitorOptionsThresholdWindows>,
@@ -136,6 +135,30 @@ pub struct DatadogMonitorOptions {
     /// The number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutH")]
     pub timeout_h: Option<i64>,
+}
+
+/// Configuration options for scheduling.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogMonitorOptionsSchedulingOptions {
+    /// Configuration options for the evaluation window. If hour_starts is set, no other fields may be set.
+    /// Otherwise, day_starts and month_starts must be set together.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationWindow")]
+    pub evaluation_window: Option<DatadogMonitorOptionsSchedulingOptionsEvaluationWindow>,
+}
+
+/// Configuration options for the evaluation window. If hour_starts is set, no other fields may be set.
+/// Otherwise, day_starts and month_starts must be set together.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogMonitorOptionsSchedulingOptionsEvaluationWindow {
+    /// The time of the day at which a one day cumulative evaluation window starts. Must be defined in UTC time in HH:mm format.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dayStarts")]
+    pub day_starts: Option<String>,
+    /// The minute of the hour at which a one hour cumulative evaluation window starts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hourStarts")]
+    pub hour_starts: Option<i32>,
+    /// The day of the month at which a one month cumulative evaluation window starts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "monthStarts")]
+    pub month_starts: Option<i32>,
 }
 
 /// A struct of the alerting time window options.
@@ -170,6 +193,35 @@ pub struct DatadogMonitorOptionsThresholds {
     /// The monitor WARNING recovery threshold.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "warningRecovery")]
     pub warning_recovery: Option<String>,
+}
+
+/// DatadogMonitorSpec defines the desired state of DatadogMonitor
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum DatadogMonitorType {
+    #[serde(rename = "metric alert")]
+    MetricAlert,
+    #[serde(rename = "query alert")]
+    QueryAlert,
+    #[serde(rename = "service check")]
+    ServiceCheck,
+    #[serde(rename = "event alert")]
+    EventAlert,
+    #[serde(rename = "log alert")]
+    LogAlert,
+    #[serde(rename = "process alert")]
+    ProcessAlert,
+    #[serde(rename = "rum alert")]
+    RumAlert,
+    #[serde(rename = "trace-analytics alert")]
+    TraceAnalyticsAlert,
+    #[serde(rename = "slo alert")]
+    SloAlert,
+    #[serde(rename = "event-v2 alert")]
+    EventV2Alert,
+    #[serde(rename = "audit alert")]
+    AuditAlert,
+    #[serde(rename = "composite")]
+    Composite,
 }
 
 /// DatadogMonitorStatus defines the observed state of DatadogMonitor

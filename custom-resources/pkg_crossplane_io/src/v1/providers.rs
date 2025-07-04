@@ -32,6 +32,8 @@ pub struct ProviderSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCrossplaneConstraints")]
     pub ignore_crossplane_constraints: Option<bool>,
     /// Package is the name of the package that is being requested.
+    /// must be a fully qualified image name, including the registry,
+    /// repository, and tag. for example, "registry.example.com/repo/package:tag".
     pub package: String,
     /// PackagePullPolicy defines the pull policy for the package.
     /// Default is IfNotPresent.

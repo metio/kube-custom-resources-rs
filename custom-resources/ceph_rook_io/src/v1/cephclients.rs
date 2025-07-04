@@ -22,6 +22,14 @@ pub struct CephClientSpec {
     pub caps: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// RemoveSecret indicates whether the current secret for this ceph client should be removed or not.
+    /// If true, the K8s secret will be deleted, but the cephx keyring will remain until the CR is deleted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeSecret")]
+    pub remove_secret: Option<bool>,
+    /// SecretName is the name of the secret created for this ceph client.
+    /// If not specified, the default name is "rook-ceph-client-" as a prefix to the CR name.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 /// Status represents the status of a Ceph Client

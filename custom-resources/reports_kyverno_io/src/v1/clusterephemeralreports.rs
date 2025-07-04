@@ -57,7 +57,7 @@ pub struct ClusterEphemeralReportOwner {
     pub uid: String,
 }
 
-/// PolicyReportResult provides the result for an individual policy
+/// ReportResult provides the result for an individual policy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterEphemeralReportResults {
     /// Category indicates policy category
@@ -71,10 +71,10 @@ pub struct ClusterEphemeralReportResults {
     /// Properties provides additional information for the policy rule
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
-    /// SubjectSelector is an optional label selector for checked Kubernetes resources.
+    /// ResourceSelector is an optional label selector for checked Kubernetes resources.
     /// For example, a policy result may apply to all pods that match a label.
-    /// Either a Subject or a SubjectSelector can be specified.
-    /// If neither are provided, the result is assumed to be for the policy report scope.
+    /// Either a Subject or a ResourceSelector can be specified. If neither are provided, the
+    /// result is assumed to be for the policy report scope.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceSelector")]
     pub resource_selector: Option<ClusterEphemeralReportResultsResourceSelector>,
     /// Subjects is an optional reference to the checked Kubernetes resources
@@ -93,6 +93,8 @@ pub struct ClusterEphemeralReportResults {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub severity: Option<ClusterEphemeralReportResultsSeverity>,
     /// Source is an identifier for the policy engine that manages this report
+    /// If the Source is specified at this level, it will override the Source
+    /// field set at the Report level
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
     /// Timestamp indicates the time the result was found
@@ -100,10 +102,10 @@ pub struct ClusterEphemeralReportResults {
     pub timestamp: Option<ClusterEphemeralReportResultsTimestamp>,
 }
 
-/// SubjectSelector is an optional label selector for checked Kubernetes resources.
+/// ResourceSelector is an optional label selector for checked Kubernetes resources.
 /// For example, a policy result may apply to all pods that match a label.
-/// Either a Subject or a SubjectSelector can be specified.
-/// If neither are provided, the result is assumed to be for the policy report scope.
+/// Either a Subject or a ResourceSelector can be specified. If neither are provided, the
+/// result is assumed to be for the policy report scope.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterEphemeralReportResultsResourceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
@@ -133,7 +135,7 @@ pub struct ClusterEphemeralReportResultsResourceSelectorMatchExpressions {
     pub values: Option<Vec<String>>,
 }
 
-/// PolicyReportResult provides the result for an individual policy
+/// ReportResult provides the result for an individual policy
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterEphemeralReportResultsResult {
     #[serde(rename = "pass")]
@@ -148,7 +150,7 @@ pub enum ClusterEphemeralReportResultsResult {
     Skip,
 }
 
-/// PolicyReportResult provides the result for an individual policy
+/// ReportResult provides the result for an individual policy
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterEphemeralReportResultsSeverity {
     #[serde(rename = "critical")]

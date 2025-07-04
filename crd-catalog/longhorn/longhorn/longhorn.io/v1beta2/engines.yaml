@@ -229,6 +229,9 @@ spec:
                 rebuildStatus:
                   additionalProperties:
                     properties:
+                      appliedRebuildingMBps:
+                        format: "int64"
+                        type: "integer"
                       error:
                         type: "string"
                       fromReplicaAddress:

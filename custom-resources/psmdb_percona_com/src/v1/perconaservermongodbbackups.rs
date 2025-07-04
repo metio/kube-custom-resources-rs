@@ -56,6 +56,8 @@ pub struct PerconaServerMongoDBBackupStatus {
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filesystem: Option<PerconaServerMongoDBBackupStatusFilesystem>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gcs: Option<PerconaServerMongoDBBackupStatusGcs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastWriteAt")]
@@ -102,6 +104,29 @@ pub struct PerconaServerMongoDBBackupStatusFilesystem {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDBBackupStatusGcs {
+    pub bucket: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSize")]
+    pub chunk_size: Option<i64>,
+    #[serde(rename = "credentialsSecret")]
+    pub credentials_secret: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub prefix: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub retryer: Option<PerconaServerMongoDBBackupStatusGcsRetryer>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMongoDBBackupStatusGcsRetryer {
+    #[serde(rename = "backoffInitial")]
+    pub backoff_initial: i64,
+    #[serde(rename = "backoffMax")]
+    pub backoff_max: i64,
+    #[serde(rename = "backoffMultiplier")]
+    pub backoff_multiplier: f64,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDBBackupStatusS3 {
     pub bucket: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
@@ -115,7 +140,7 @@ pub struct PerconaServerMongoDBBackupStatusS3 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUploadParts")]
-    pub max_upload_parts: Option<i64>,
+    pub max_upload_parts: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

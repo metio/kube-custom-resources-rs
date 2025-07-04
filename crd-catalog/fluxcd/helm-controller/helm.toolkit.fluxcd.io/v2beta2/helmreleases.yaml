@@ -385,7 +385,7 @@ spec:
                               type: "object"
                             type: "array"
                           patchesJson6902:
-                            description: "JSON 6902 patches, defined as inline YAML objects.\nDeprecated: use Patches instead."
+                            description: "JSON 6902 patches, defined as inline YAML objects.\n\nDeprecated: use Patches instead."
                             items:
                               description: "JSON6902Patch contains a JSON6902 patch and the target the patch should be applied to."
                               properties:
@@ -449,7 +449,7 @@ spec:
                               type: "object"
                             type: "array"
                           patchesStrategicMerge:
-                            description: "Strategic merge patches, defined as inline YAML objects.\nDeprecated: use Patches instead."
+                            description: "Strategic merge patches, defined as inline YAML objects.\n\nDeprecated: use Patches instead."
                             items:
                               x-kubernetes-preserve-unknown-fields: true
                             type: "array"
@@ -805,7 +805,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 lastAppliedRevision:
-                  description: "LastAppliedRevision is the revision of the last successfully applied\nsource.\nDeprecated: the revision can now be found in the History."
+                  description: "LastAppliedRevision is the revision of the last successfully applied\nsource.\n\nDeprecated: the revision can now be found in the History."
                   type: "string"
                 lastAttemptedConfigDigest:
                   description: "LastAttemptedConfigDigest is the digest for the config (better known as\n\"values\") of the last reconciliation attempt."
@@ -827,7 +827,7 @@ spec:
                   description: "LastAttemptedRevisionDigest is the digest of the last reconciliation attempt.\nThis is only set for OCIRepository sources."
                   type: "string"
                 lastAttemptedValuesChecksum:
-                  description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\nDeprecated: Use LastAttemptedConfigDigest instead."
+                  description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\n\nDeprecated: Use LastAttemptedConfigDigest instead."
                   type: "string"
                 lastHandledForceAt:
                   description: "LastHandledForceAt holds the value of the most recent force request\nvalue, so a change of the annotation value can be detected."
@@ -839,7 +839,7 @@ spec:
                   description: "LastHandledResetAt holds the value of the most recent reset request\nvalue, so a change of the annotation value can be detected."
                   type: "string"
                 lastReleaseRevision:
-                  description: "LastReleaseRevision is the revision of the last successful Helm release.\nDeprecated: Use History instead."
+                  description: "LastReleaseRevision is the revision of the last successful Helm release.\n\nDeprecated: Use History instead."
                   type: "integer"
                 observedGeneration:
                   description: "ObservedGeneration is the last observed generation."

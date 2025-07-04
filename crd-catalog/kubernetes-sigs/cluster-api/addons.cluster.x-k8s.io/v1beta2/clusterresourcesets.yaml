@@ -102,6 +102,7 @@ spec:
               type: "object"
             status:
               description: "status is the observed state of ClusterResourceSet."
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a ClusterResourceSet's current state.\nKnown condition types are ResourcesApplied."
@@ -199,8 +200,11 @@ spec:
                 observedGeneration:
                   description: "observedGeneration reflects the generation of the most recently observed ClusterResourceSet."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

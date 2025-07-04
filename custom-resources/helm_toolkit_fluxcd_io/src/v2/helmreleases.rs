@@ -900,6 +900,7 @@ pub struct HelmReleaseStatus {
     pub last_attempted_revision_digest: Option<String>,
     /// LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last
     /// reconciliation attempt.
+    /// 
     /// Deprecated: Use LastAttemptedConfigDigest instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedValuesChecksum")]
     pub last_attempted_values_checksum: Option<String>,
@@ -918,6 +919,7 @@ pub struct HelmReleaseStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledResetAt")]
     pub last_handled_reset_at: Option<String>,
     /// LastReleaseRevision is the revision of the last successful Helm release.
+    /// 
     /// Deprecated: Use History instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastReleaseRevision")]
     pub last_release_revision: Option<i64>,

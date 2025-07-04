@@ -55,8 +55,11 @@ spec:
                   description: "IgnoreCrossplaneConstraints indicates to the package manager whether to\nhonor Crossplane version constrains specified by the package.\nDefault is false."
                   type: "boolean"
                 package:
-                  description: "Package is the name of the package that is being requested."
+                  description: "Package is the name of the package that is being requested.\nmust be a fully qualified image name, including the registry,\nrepository, and tag. for example, \"registry.example.com/repo/package:tag\"."
                   type: "string"
+                  x-kubernetes-validations:
+                    - message: "must be a fully qualified image name, including the registry, repository, and tag or digest. For example, 'registry.example.com/repo/package:tag' or 'registry.example.com/repo/package[:tag]@sha256:1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef'."
+                      rule: "self.matches('^[^\\\\.\\\\/]+(\\\\.[^\\\\.\\\\/]+)+(\\\\/[^\\\\/:@]+)+(:[^:@]+(@sha256.+)?|@sha256.+)$')"
                 packagePullPolicy:
                   default: "IfNotPresent"
                   description: "PackagePullPolicy defines the pull policy for the package.\nDefault is IfNotPresent."

@@ -75,12 +75,18 @@ spec:
                       - "timeout"
                     type: "object"
                   type: "array"
+                maxUnhealthy:
+                  anyOf:
+                    - type: "integer"
+                    - type: "string"
+                  description: "Remediation is allowed if no more than \"MaxUnhealthy\" nodes selected by \"selector\" are not healthy.\nExpects either a non-negative integer value or a percentage value.\nPercentage values must be positive whole numbers and are capped at 100%.\n0% is valid and will block all remediation.\nMaxUnhealthy should not be used with remediators that delete nodes (e.g. MachineDeletionRemediation),\nas this breaks the logic for counting healthy and unhealthy nodes.\nMinHealthy and MaxUnhealthy are configuring the same aspect,\nand they cannot be used at the same time."
+                  pattern: "^((100|[0-9]{1,2})%|[0-9]+)$"
+                  x-kubernetes-int-or-string: true
                 minHealthy:
                   anyOf:
                     - type: "integer"
                     - type: "string"
-                  default: "51%"
-                  description: "Remediation is allowed if at least \"MinHealthy\" nodes selected by \"selector\" are healthy.\nExpects either a positive integer value or a percentage value.\nPercentage values must be positive whole numbers and are capped at 100%.\n100% is valid and will block all remediation."
+                  description: "Remediation is allowed if at least \"MinHealthy\" nodes selected by \"selector\" are healthy.\nExpects either a non-negative integer value or a percentage value.\nPercentage values must be positive whole numbers and are capped at 100%.\n100% is valid and will block all remediation.\nMinHealthy and MaxUnhealthy are configuring the same aspect,\nand they cannot be used at the same time."
                   pattern: "^((100|[0-9]{1,2})%|[0-9]+)$"
                   x-kubernetes-int-or-string: true
                 pauseRequests:

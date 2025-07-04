@@ -234,6 +234,8 @@ spec:
                         - "clusterName"
                         - "infrastructureRef"
                       type: "object"
+                  required:
+                    - "spec"
                   type: "object"
               required:
                 - "clusterName"
@@ -241,6 +243,7 @@ spec:
               type: "object"
             status:
               description: "status is the observed state of MachinePool."
+              minProperties: 1
               properties:
                 availableReplicas:
                   description: "availableReplicas is the number of available replicas for this MachinePool. A machine is considered available when Machine's Available condition is true."
@@ -402,6 +405,7 @@ spec:
                 observedGeneration:
                   description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
                 phase:
                   description: "phase represents the current phase of cluster actuation."
@@ -430,6 +434,8 @@ spec:
                   format: "int32"
                   type: "integer"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

@@ -30,10 +30,22 @@ pub struct NodeHealthCheckSpec {
     /// Mutually exclusive with RemediationTemplate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "escalatingRemediations")]
     pub escalating_remediations: Option<Vec<NodeHealthCheckEscalatingRemediations>>,
+    /// Remediation is allowed if no more than "MaxUnhealthy" nodes selected by "selector" are not healthy.
+    /// Expects either a non-negative integer value or a percentage value.
+    /// Percentage values must be positive whole numbers and are capped at 100%.
+    /// 0% is valid and will block all remediation.
+    /// MaxUnhealthy should not be used with remediators that delete nodes (e.g. MachineDeletionRemediation),
+    /// as this breaks the logic for counting healthy and unhealthy nodes.
+    /// MinHealthy and MaxUnhealthy are configuring the same aspect,
+    /// and they cannot be used at the same time.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
+    pub max_unhealthy: Option<IntOrString>,
     /// Remediation is allowed if at least "MinHealthy" nodes selected by "selector" are healthy.
-    /// Expects either a positive integer value or a percentage value.
+    /// Expects either a non-negative integer value or a percentage value.
     /// Percentage values must be positive whole numbers and are capped at 100%.
     /// 100% is valid and will block all remediation.
+    /// MinHealthy and MaxUnhealthy are configuring the same aspect,
+    /// and they cannot be used at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthy")]
     pub min_healthy: Option<IntOrString>,
     /// PauseRequests will prevent any new remediation to start, while in-flight remediations

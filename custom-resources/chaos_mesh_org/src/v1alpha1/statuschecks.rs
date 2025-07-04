@@ -67,7 +67,6 @@ pub struct StatusCheckHttp {
     pub criteria: StatusCheckHttpCriteria,
     /// A Header represents the key-value pairs in an HTTP header.
     /// 
-    /// 
     /// The keys should be in canonical form, as returned by
     /// [CanonicalHeaderKey].
     #[serde(default, skip_serializing_if = "Option::is_none")]

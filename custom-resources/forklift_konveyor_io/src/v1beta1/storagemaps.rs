@@ -99,6 +99,8 @@ pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
     Ontap,
     #[serde(rename = "primera3par")]
     Primera3par,
+    #[serde(rename = "pureFlashArray")]
+    PureFlashArray,
 }
 
 /// Source storage.
