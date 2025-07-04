@@ -510,7 +510,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
     /// The resourceRequirements of an init container are taken into account during scheduling
     /// by finding the highest request/limit for each resource type, and then using the max of
-    /// of that value or the sum of the normal containers. Limits are applied to init containers
+    /// that value or the sum of the normal containers. Limits are applied to init containers
     /// in a similar fashion.
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
@@ -608,6 +608,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecResourceClaims>>,
+    /// Resources is the total amount of CPU and Memory resources required by all
+    /// containers in the pod. It supports specifying Requests and Limits for
+    /// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+    /// 
+    /// This field enables fine-grained control over resource allocation for the
+    /// entire pod, allowing resource sharing among containers in a pod.
+    /// 
+    /// This is an alpha field and requires enabling the PodLevelResources feature
+    /// gate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<CassandraDatacenterPodTemplateSpecSpecResources>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
@@ -892,7 +903,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -903,7 +913,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1013,7 +1022,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1024,7 +1032,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1165,7 +1172,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferre
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1176,7 +1182,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferre
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1286,7 +1291,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequired
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1297,7 +1301,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequired
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1654,13 +1657,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromSecretKey
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1719,6 +1722,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -1727,23 +1735,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1755,7 +1763,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartExe
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1788,7 +1796,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHtt
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1796,8 +1804,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartSle
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1820,23 +1828,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartTcp
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1848,7 +1856,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopExec 
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -1881,7 +1889,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpG
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -1889,8 +1897,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopSleep
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -1908,17 +1916,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopTcpSo
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -1933,7 +1941,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -1955,7 +1963,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -1967,7 +1975,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -1980,7 +1988,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2013,7 +2021,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGetH
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2058,17 +2066,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersPorts {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2083,7 +2091,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2105,7 +2113,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2117,7 +2125,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2130,7 +2138,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2163,7 +2171,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGet
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2426,17 +2434,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextWindow
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -2451,7 +2459,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -2473,7 +2481,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2485,7 +2493,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeExec {
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -2498,7 +2506,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeGrpc {
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -2531,7 +2539,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGetHt
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -2630,9 +2638,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecDnsConfig {
 /// PodDNSConfigOption defines DNS resolver options of a pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecDnsConfigOptions {
+    /// Name is this DNS resolver option's name.
     /// Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Value is this DNS resolver option's value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -2884,13 +2894,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFrom
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2948,6 +2958,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -2956,23 +2971,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -2984,7 +2999,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePos
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3017,7 +3032,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePos
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -3025,8 +3040,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePos
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3049,23 +3064,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePos
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3077,7 +3092,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3110,7 +3125,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -3118,8 +3133,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3134,17 +3149,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3159,7 +3174,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3181,7 +3196,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3193,7 +3208,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3206,7 +3221,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3239,7 +3254,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3281,17 +3296,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersPorts {
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3306,7 +3321,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3328,7 +3343,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3340,7 +3355,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3353,7 +3368,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3386,7 +3401,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -3641,17 +3656,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
 /// Probes are not allowed for ephemeral containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -3666,7 +3681,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -3688,7 +3703,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -3700,7 +3715,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -3713,7 +3728,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -3746,7 +3761,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4110,13 +4125,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromSecre
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4175,6 +4190,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4183,23 +4203,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecycle {
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStart {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4211,7 +4231,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4244,7 +4264,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4252,8 +4272,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4276,23 +4296,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
 /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStop {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents the duration that the container should sleep before being terminated.
+    /// Sleep represents a duration that the container should sleep.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for the backward compatibility. There are no validation of this field and
-    /// lifecycle hooks will fail in runtime when tcp handler is specified.
+    /// for backward compatibility. There is no validation of this field and
+    /// lifecycle hooks will fail at runtime when it is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4304,7 +4324,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopE
     pub command: Option<Vec<String>>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4337,7 +4357,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopH
     pub value: String,
 }
 
-/// Sleep represents the duration that the container should sleep before being terminated.
+/// Sleep represents a duration that the container should sleep.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopSleep {
     /// Seconds is the number of seconds to sleep.
@@ -4345,8 +4365,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopS
 }
 
 /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for the backward compatibility. There are no validation of this field and
-/// lifecycle hooks will fail in runtime when tcp handler is specified.
+/// for backward compatibility. There is no validation of this field and
+/// lifecycle hooks will fail at runtime when it is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4364,17 +4384,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopT
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4389,7 +4409,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4411,7 +4431,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4423,7 +4443,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeExec
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4436,7 +4456,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeGrpc
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4469,7 +4489,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttp
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4514,17 +4534,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersPorts {
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4539,7 +4559,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4561,7 +4581,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4573,7 +4593,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeExe
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4586,7 +4606,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeGrp
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4619,7 +4639,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHtt
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -4882,17 +4902,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextWi
 /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
-    /// Exec specifies the action to take.
+    /// Exec specifies a command to execute in the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
-    /// GRPC specifies an action involving a GRPC port.
+    /// GRPC specifies a GRPC HealthCheckRequest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies the http request to perform.
+    /// HTTPGet specifies an HTTP GET request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
@@ -4907,7 +4927,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
-    /// TCPSocket specifies an action involving a TCP port.
+    /// TCPSocket specifies a connection to a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
@@ -4929,7 +4949,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
     pub timeout_seconds: Option<i32>,
 }
 
-/// Exec specifies the action to take.
+/// Exec specifies a command to execute in the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeExec {
     /// Command is the command line to execute inside the container, the working directory for the
@@ -4941,7 +4961,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeExec 
     pub command: Option<Vec<String>>,
 }
 
-/// GRPC specifies an action involving a GRPC port.
+/// GRPC specifies a GRPC HealthCheckRequest.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
@@ -4954,7 +4974,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeGrpc 
     pub service: Option<String>,
 }
 
-/// HTTPGet specifies the http request to perform.
+/// HTTPGet specifies an HTTP GET request to perform.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpGet {
     /// Host name to connect to, defaults to the pod IP. You probably want to set
@@ -4987,7 +5007,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpG
     pub value: String,
 }
 
-/// TCPSocket specifies an action involving a TCP port.
+/// TCPSocket specifies a connection to a TCP port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
@@ -5145,6 +5165,52 @@ pub struct CassandraDatacenterPodTemplateSpecSpecResourceClaims {
     pub resource_claim_template_name: Option<String>,
 }
 
+/// Resources is the total amount of CPU and Memory resources required by all
+/// containers in the pod. It supports specifying Requests and Limits for
+/// "cpu" and "memory" resource names only. ResourceClaims are not supported.
+/// 
+/// This field enables fine-grained control over resource allocation for the
+/// entire pod, allowing resource sharing among containers in a pod.
+/// 
+/// This is an alpha field and requires enabling the PodLevelResources feature
+/// gate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CassandraDatacenterPodTemplateSpecSpecResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CassandraDatacenterPodTemplateSpecSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+    /// Request is the name chosen for a request in the referenced claim.
+    /// If empty, everything from the claim is made available, otherwise
+    /// only the result of this request.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
+}
+
 /// PodSchedulingGate is associated to a Pod to guard its scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecSchedulingGates {
@@ -5206,6 +5272,31 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    /// seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.
+    /// It has no effect on nodes that do not support SELinux or to volumes does not support SELinux.
+    /// Valid values are "MountOption" and "Recursive".
+    /// 
+    /// "Recursive" means relabeling of all files on all Pod volumes by the container runtime.
+    /// This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
+    /// 
+    /// "MountOption" mounts all eligible Pod volumes with `-o context` mount option.
+    /// This requires all Pods that share the same volume to use the same SELinux label.
+    /// It is not possible to share the same volume among privileged and unprivileged Pods.
+    /// Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes
+    /// whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their
+    /// CSIDriver instance. Other volumes are always re-labelled recursively.
+    /// "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
+    /// 
+    /// If not specified and SELinuxMount feature gate is enabled, "MountOption" is used.
+    /// If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes
+    /// and "Recursive" for all other volumes.
+    /// 
+    /// This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
+    /// 
+    /// All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.
+    /// Note that this field cannot be set when spec.os.name is windows.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     /// The SELinux context to be applied to all containers.
     /// If unspecified, the container runtime will allocate a random SELinux context for each
     /// container.  May also be set in SecurityContext.  If set in
@@ -5443,7 +5534,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -5453,7 +5543,6 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -5527,26 +5616,35 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelS
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<CassandraDatacenterPodTemplateSpecSpecVolumesAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<CassandraDatacenterPodTemplateSpecSpecVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<CassandraDatacenterPodTemplateSpecSpecVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CassandraDatacenterPodTemplateSpecSpecVolumesConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<CassandraDatacenterPodTemplateSpecSpecVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -5587,23 +5685,28 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     pub fc: Option<CassandraDatacenterPodTemplateSpecSpecVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<CassandraDatacenterPodTemplateSpecSpecVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<CassandraDatacenterPodTemplateSpecSpecVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<CassandraDatacenterPodTemplateSpecSpecVolumesGlusterfs>,
@@ -5626,7 +5729,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<CassandraDatacenterPodTemplateSpecSpecVolumesImage>,
@@ -5648,23 +5751,30 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<CassandraDatacenterPodTemplateSpecSpecVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<CassandraDatacenterPodTemplateSpecSpecVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<CassandraDatacenterPodTemplateSpecSpecVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -5672,15 +5782,20 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CassandraDatacenterPodTemplateSpecSpecVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<CassandraDatacenterPodTemplateSpecSpecVolumesStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore {
@@ -5707,6 +5822,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore {
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -5733,6 +5850,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAzureDisk {
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -5747,7 +5866,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAzureFile {
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -5789,6 +5909,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCephfsSecretRef {
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCinder {
@@ -5879,7 +6001,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesConfigMapItems {
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -6330,6 +6452,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -6371,7 +6494,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlexVolumeSecretRef {
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -6385,6 +6509,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlocker {
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesGcePersistentDisk {
@@ -6413,7 +6539,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesGcePersistentDisk {
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6432,6 +6558,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesGitRepo {
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesGlusterfs {
@@ -6478,7 +6605,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesImage {
@@ -6590,7 +6717,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -6603,7 +6731,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesPhotonPersistentDisk {
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -6909,7 +7040,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesServiceA
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesQuobyte {
     /// group to map volume access to
@@ -6937,6 +7069,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesQuobyte {
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesRbd {
@@ -6996,6 +7129,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesRbdSecretRef {
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesScaleIo {
     /// fsType is the filesystem type to mount.
@@ -7100,6 +7234,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesSecretItems {
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesStorageos {
     /// fsType is the filesystem type to mount.
@@ -7142,7 +7277,9 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesStorageosSecretRef {
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesVsphereVolume {
     /// fsType is filesystem type to mount.
@@ -7385,7 +7522,6 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7396,7 +7532,6 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingI
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7506,7 +7641,6 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIg
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7517,7 +7651,6 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIg
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7658,7 +7791,6 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedul
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7669,7 +7801,6 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedul
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -7779,7 +7910,6 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringScheduli
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -7790,7 +7920,6 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringScheduli
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -8151,26 +8280,35 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecSelectorMatch
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+    /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+    /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+    /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+    /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+    /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
     pub azure_file: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureFile>,
-    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+    /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+    /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cephfs: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+    /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+    /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cinder: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMap>,
-    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+    /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
@@ -8211,23 +8349,28 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     pub fc: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
+    /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolume>,
-    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+    /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+    /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
+    /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+    /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
-    /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+    /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+    /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub glusterfs: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGlusterfs>,
@@ -8250,7 +8393,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceImage>,
@@ -8268,23 +8411,30 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePersistentVolumeClaim>,
-    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+    /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+    /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePhotonPersistentDisk>,
-    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+    /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+    /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+    /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+    /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjected>,
-    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+    /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+    /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quobyte: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+    /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rbd: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
     pub scale_io: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceScaleIo>,
     /// secret represents a secret that should populate this volume.
@@ -8292,15 +8442,20 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+    /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageos>,
-    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+    /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+    /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+    /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
+/// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElasticBlockStore {
@@ -8327,6 +8482,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElast
 }
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
+/// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
+/// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
@@ -8353,6 +8510,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureDis
 }
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
+/// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
+/// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
@@ -8367,7 +8526,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureFil
     pub share_name: String,
 }
 
-/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
+/// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
+/// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
@@ -8409,6 +8569,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfsSe
 }
 
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
+/// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
+/// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCinder {
@@ -8499,7 +8661,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMa
     pub path: String,
 }
 
-/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
+/// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsi {
     /// driver is the name of the CSI driver that handles this volume.
@@ -8950,6 +9112,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFc {
 
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
+/// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolume {
     /// driver is the name of the driver to use for this volume.
@@ -8991,7 +9154,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolu
     pub name: Option<String>,
 }
 
-/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
+/// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
+/// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
@@ -9005,6 +9169,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlocker 
 
 /// gcePersistentDisk represents a GCE Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
+/// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
+/// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGcePersistentDisk {
@@ -9033,7 +9199,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGcePersi
 }
 
 /// gitRepo represents a git repository at a particular revision.
-/// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
+/// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9052,6 +9218,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGitRepo 
 }
 
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
+/// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGlusterfs {
@@ -9098,7 +9265,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceHostPath
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceImage {
@@ -9210,7 +9377,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePersiste
     pub read_only: Option<bool>,
 }
 
-/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
+/// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
+/// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
@@ -9223,7 +9391,10 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePhotonPe
     pub pd_id: String,
 }
 
-/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
+/// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
+/// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
+/// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
+/// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePortworxVolume {
     /// fSType represents the filesystem type to mount
@@ -9529,7 +9700,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
     pub path: String,
 }
 
-/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
+/// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
+/// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceQuobyte {
     /// group to map volume access to
@@ -9557,6 +9729,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceQuobyte 
 }
 
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
+/// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbd {
@@ -9616,6 +9789,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbdSecre
 }
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
+/// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceScaleIo {
     /// fsType is the filesystem type to mount.
@@ -9720,6 +9894,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecretIt
 }
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
+/// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageos {
     /// fsType is the filesystem type to mount.
@@ -9762,7 +9937,9 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageo
     pub name: Option<String>,
 }
 
-/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
+/// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
+/// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
+/// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereVolume {
     /// fsType is filesystem type to mount.

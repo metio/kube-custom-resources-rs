@@ -475,6 +475,12 @@ pub struct ComponentDefinitionAvailable {
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "withProbe")]
     pub with_probe: Option<ComponentDefinitionAvailableWithProbe>,
+    /// Specifies the role that the component will go through to be considered available.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRole")]
+    pub with_role: Option<String>,
 }
 
 /// Specifies the strategies for determining whether the component is available based on the available probe.
@@ -5852,7 +5858,7 @@ pub struct ComponentDefinitionLifecycleActionsAvailableProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// Specifies the frequency at which the probe is conducted. This value is expressed in seconds.
-    /// Default to 10 seconds. Minimum value is 1.
+    /// Default to 60 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Specifies the state that the cluster must reach before the Action is executed.
@@ -8633,7 +8639,7 @@ pub struct ComponentDefinitionLifecycleActionsRoleProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// Specifies the frequency at which the probe is conducted. This value is expressed in seconds.
-    /// Default to 10 seconds. Minimum value is 1.
+    /// Default to 60 seconds. Minimum value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Specifies the state that the cluster must reach before the Action is executed.

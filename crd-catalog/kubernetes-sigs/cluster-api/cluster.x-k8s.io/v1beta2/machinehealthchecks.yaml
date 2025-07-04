@@ -167,6 +167,7 @@ spec:
               type: "object"
             status:
               description: "status is the most recently observed status of MachineHealthCheck resource"
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a MachineHealthCheck's current state.\nKnown condition types are RemediationAllowed, Paused."
@@ -274,6 +275,7 @@ spec:
                 observedGeneration:
                   description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
                 remediationsAllowed:
                   description: "remediationsAllowed is the number of further remediations allowed by this machine health check before\nmaxUnhealthy short circuiting will be applied"
@@ -289,6 +291,8 @@ spec:
                   maxItems: 10000
                   type: "array"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

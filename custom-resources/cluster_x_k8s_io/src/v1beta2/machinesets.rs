@@ -58,8 +58,7 @@ pub struct MachineSetSpec {
     /// template is the object that describes the machine that will be created if
     /// insufficient replicas are detected.
     /// Object references to custom resources are treated as templates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<MachineSetTemplate>,
+    pub template: MachineSetTemplate,
 }
 
 /// spec is the desired state of MachineSet.
@@ -138,8 +137,7 @@ pub struct MachineSetTemplate {
     pub metadata: Option<MachineSetTemplateMetadata>,
     /// spec is the specification of the desired behavior of the machine.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<MachineSetTemplateSpec>,
+    pub spec: MachineSetTemplateSpec,
 }
 
 /// metadata is the standard object's metadata.

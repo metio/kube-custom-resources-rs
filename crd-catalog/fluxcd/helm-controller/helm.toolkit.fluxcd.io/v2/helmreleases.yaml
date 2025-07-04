@@ -776,7 +776,7 @@ spec:
                   description: "LastAttemptedRevisionDigest is the digest of the last reconciliation attempt.\nThis is only set for OCIRepository sources."
                   type: "string"
                 lastAttemptedValuesChecksum:
-                  description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\nDeprecated: Use LastAttemptedConfigDigest instead."
+                  description: "LastAttemptedValuesChecksum is the SHA1 checksum for the values of the last\nreconciliation attempt.\n\nDeprecated: Use LastAttemptedConfigDigest instead."
                   type: "string"
                 lastHandledForceAt:
                   description: "LastHandledForceAt holds the value of the most recent\nforce request value, so a change of the annotation value\ncan be detected."
@@ -788,7 +788,7 @@ spec:
                   description: "LastHandledResetAt holds the value of the most recent reset request\nvalue, so a change of the annotation value can be detected."
                   type: "string"
                 lastReleaseRevision:
-                  description: "LastReleaseRevision is the revision of the last successful Helm release.\nDeprecated: Use History instead."
+                  description: "LastReleaseRevision is the revision of the last successful Helm release.\n\nDeprecated: Use History instead."
                   type: "integer"
                 observedCommonMetadataDigest:
                   description: "ObservedCommonMetadataDigest is the digest for the common metadata of\nthe last successful reconciliation attempt."

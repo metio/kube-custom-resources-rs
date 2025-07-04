@@ -100,7 +100,7 @@ pub struct VSphereVMSpec {
     /// virtual machine is cloned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numCPUs")]
     pub num_cp_us: Option<i32>,
-    /// NumCPUs is the number of cores among which to distribute CPUs in this
+    /// NumCoresPerSocket is the number of cores among which to distribute CPUs in this
     /// virtual machine.
     /// Defaults to the eponymous property value in the template from which the
     /// virtual machine is cloned.

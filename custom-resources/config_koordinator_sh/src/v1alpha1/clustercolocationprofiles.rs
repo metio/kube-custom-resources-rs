@@ -19,7 +19,7 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct ClusterColocationProfileSpec {
     /// AnnotationKeysMapping describes the annotations that needs to inject into Pod.Annotations with the same values.
-    /// It sets the Pod.Annotations[AnnotationsToAnnotations[k]] = Pod.Annotations[k] for each key k.
+    /// It sets the Pod.Annotations[AnnotationKeysMapping[k]] = Pod.Annotations[k] for each key k.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationKeysMapping")]
     pub annotation_keys_mapping: Option<BTreeMap<String, String>>,
     /// Annotations describes the k/v pair that needs to inject into Pod.Annotations
@@ -34,9 +34,13 @@ pub struct ClusterColocationProfileSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "koordinatorPriority")]
     pub koordinator_priority: Option<i32>,
     /// LabelKeysMapping describes the labels that needs to inject into Pod.Labels with the same values.
-    /// It sets the Pod.Labels[LabelsToLabels[k]] = Pod.Labels[k] for each key k.
+    /// It sets the Pod.Labels[LabelKeysMapping[k]] = Pod.Labels[k] for each key k.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelKeysMapping")]
     pub label_keys_mapping: Option<BTreeMap<String, String>>,
+    /// LabelSuffixes describes the labels that needs to inject into Pod.Labels with the same values.
+    /// It appends the suffix to the Pod.Labels[k] as Pod.Labels[k]+LabelSuffixes[k].
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSuffixes")]
+    pub label_suffixes: Option<BTreeMap<String, String>>,
     /// Labels describes the k/v pair that needs to inject into Pod.Labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

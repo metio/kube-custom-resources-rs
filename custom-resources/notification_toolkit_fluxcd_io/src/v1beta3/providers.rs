@@ -44,8 +44,15 @@ pub struct ProviderSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Proxy the HTTP/S address of the proxy server.
+    /// Deprecated: Use ProxySecretRef instead. Will be removed in v1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<String>,
+    /// ProxySecretRef specifies the Secret containing the proxy configuration
+    /// for this Provider. The Secret should contain an 'address' key with the
+    /// HTTP/S address of the proxy server. Optional 'username' and 'password'
+    /// keys can be provided for proxy authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
+    pub proxy_secret_ref: Option<ProviderProxySecretRef>,
     /// SecretRef specifies the Secret containing the authentication
     /// credentials for this Provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -78,6 +85,16 @@ pub struct ProviderSpec {
 /// been deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProviderCertSecretRef {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// ProxySecretRef specifies the Secret containing the proxy configuration
+/// for this Provider. The Secret should contain an 'address' key with the
+/// HTTP/S address of the proxy server. Optional 'username' and 'password'
+/// keys can be provided for proxy authentication.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProviderProxySecretRef {
     /// Name of the referent.
     pub name: String,
 }

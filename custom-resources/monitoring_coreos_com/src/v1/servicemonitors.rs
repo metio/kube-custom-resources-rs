@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -16,6 +17,7 @@ use self::prelude::*;
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "monitoring.coreos.com", version = "v1", kind = "ServiceMonitor", plural = "servicemonitors")]
 #[kube(namespaced)]
+#[kube(status = "ServiceMonitorStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -210,6 +212,13 @@ pub struct ServiceMonitorEndpoints {
     /// samples before ingestion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<ServiceMonitorEndpointsMetricRelabelings>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// `oauth2` configures the OAuth2 settings to use when scraping the target.
     /// 
     /// It requires Prometheus >= 2.27.0.
@@ -230,8 +239,18 @@ pub struct ServiceMonitorEndpoints {
     /// It takes precedence over `targetPort`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
-    /// `proxyURL` configures the HTTP Proxy URL (e.g.
-    /// "http://proxyserver:2195") to go through when scraping the target.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ServiceMonitorEndpointsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `relabelings` configures the relabeling rules to apply the target's
@@ -774,6 +793,23 @@ pub enum ServiceMonitorEndpointsOauth2TlsConfigMinVersion {
     Tls13,
 }
 
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ServiceMonitorEndpointsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
 /// 
@@ -1112,5 +1148,47 @@ pub struct ServiceMonitorSelectorMatchExpressions {
 pub enum ServiceMonitorSelectorMechanism {
     RelabelConfig,
     RoleSelector,
+}
+
+/// Most recent observed status of the ServiceMonitor. Read-only.
+/// More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ServiceMonitorStatus {
+    /// The list of workload resources (Prometheus or PrometheusAgent) which select the service monitor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub bindings: Option<Vec<ServiceMonitorStatusBindings>>,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ServiceMonitorStatusBindings {
+    /// The current state of the configuration resource when bound to the referenced Prometheus object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
+    /// The group of the referenced resource.
+    pub group: ServiceMonitorStatusBindingsGroup,
+    /// The name of the referenced object.
+    pub name: String,
+    /// The namespace of the referenced object.
+    pub namespace: String,
+    /// The type of resource being referenced (e.g. Prometheus or PrometheusAgent).
+    pub resource: ServiceMonitorStatusBindingsResource,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorStatusBindingsGroup {
+    #[serde(rename = "monitoring.coreos.com")]
+    MonitoringCoreosCom,
+}
+
+/// WorkloadBinding is a link between a configuration resource and a workload resource.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ServiceMonitorStatusBindingsResource {
+    #[serde(rename = "prometheuses")]
+    Prometheuses,
+    #[serde(rename = "prometheusagents")]
+    Prometheusagents,
 }
 

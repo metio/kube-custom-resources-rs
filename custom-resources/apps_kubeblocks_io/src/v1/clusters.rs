@@ -6702,6 +6702,10 @@ pub struct ClusterShardings {
     /// Specifies the names of shards (components) to be transitioned to offline status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub offline: Option<Vec<String>>,
+    /// Specifies a list of heterogeneous shard templates, allowing different groups of shards
+    /// to be created with distinct configurations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardTemplates")]
+    pub shard_templates: Option<Vec<ClusterShardingsShardTemplates>>,
     /// Specifies the ShardingDefinition custom resource (CR) that defines the sharding's characteristics and behavior.
     /// 
     /// 
@@ -6724,7 +6728,7 @@ pub struct ClusterShardings {
     ///   Resources and data associated with the corresponding Component will also be deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
-    /// The template for generating Components for shards, where each shard consists of one Component.
+    /// The default template for generating Components for shards, where each shard consists of one Component.
     /// 
     /// 
     /// This field is of type ClusterComponentSpec, which encapsulates all the required details and
@@ -6735,10 +6739,2700 @@ pub struct ClusterShardings {
     /// 
     /// This allows for the creation of multiple Components with consistent configurations,
     /// enabling sharding and distribution of workloads across Components.
-    pub template: ClusterShardingsTemplate,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<ClusterShardingsTemplate>,
 }
 
-/// The template for generating Components for shards, where each shard consists of one Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplates {
+    /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// Defines Env to override.
+    /// Add new or override existing envs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterShardingsShardTemplatesEnv>>,
+    /// Specifies an override for the instance naming of the shard.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flatInstanceOrdinal")]
+    pub flat_instance_ordinal: Option<bool>,
+    /// Specifies an override for the custom instances of the shard.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub instances: Option<Vec<ClusterShardingsShardTemplatesInstances>>,
+    /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// The unique name of this ShardTemplate.
+    /// 
+    /// 
+    /// The name can't be empty.
+    pub name: String,
+    /// Specifies the desired number of replicas for the shard which are created from this template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// Specifies an override for the resource requirements of the shard.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterShardingsShardTemplatesResources>,
+    /// Specifies the scheduling policy for the shard.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or default template.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
+    pub scheduling_policy: Option<ClusterShardingsShardTemplatesSchedulingPolicy>,
+    /// ServiceVersion specifies the version of the Service expected to be provisioned by this template.
+    /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
+    pub service_version: Option<String>,
+    /// Specifies the shard IDs to take over from the existing shards.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardIDs")]
+    pub shard_i_ds: Option<Vec<String>>,
+    /// Specifies the ShardingDefinition custom resource (CR) that defines the sharding's characteristics and behavior.
+    /// 
+    /// 
+    /// The full name or regular expression is supported to match the ShardingDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingDef")]
+    pub sharding_def: Option<String>,
+    /// The number of shards to create from this ShardTemplate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shards: Option<i32>,
+    /// Specifies an override for the storage requirements of the shard.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<ClusterShardingsShardTemplatesVolumeClaimTemplates>>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterShardingsShardTemplatesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterShardingsShardTemplatesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterShardingsShardTemplatesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterShardingsShardTemplatesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterShardingsShardTemplatesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// InstanceTemplate allows customization of individual replica configurations in a Component.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstances {
+    /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations.
+    /// Existing keys will have their values overwritten, while new keys will be added to the annotations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Indicate whether the instances belonging to this template are canary instances.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub canary: Option<bool>,
+    /// Specifies the name of the referenced ComponentDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compDef")]
+    pub comp_def: Option<String>,
+    /// Defines Env to override.
+    /// Add new or override existing envs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ClusterShardingsShardTemplatesInstancesEnv>>,
+    /// Specifies a map of key-value pairs that will be merged into the Pod's existing labels.
+    /// Values for existing keys will be overwritten, and new keys will be added.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Name specifies the unique name of the instance Pod created using this InstanceTemplate.
+    /// This name is constructed by concatenating the Component's name, the template's name, and the instance's ordinal
+    /// using the pattern: $(cluster.name)-$(component.name)-$(template.name)-$(ordinal). Ordinals start from 0.
+    /// The name can't be empty.
+    pub name: String,
+    /// Specifies the desired Ordinals of this InstanceTemplate.
+    /// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+    /// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+    /// 
+    /// 
+    /// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+    /// then the instance names generated under this InstanceTemplate would be
+    /// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+    /// $(cluster.name)-$(component.name)-$(template.name)-7
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ordinals: Option<ClusterShardingsShardTemplatesInstancesOrdinals>,
+    /// Specifies the number of instances (Pods) to create from this InstanceTemplate.
+    /// This field allows setting how many replicated instances of the Component,
+    /// with the specific overrides in the InstanceTemplate, are created.
+    /// The default value is 1. A value of 0 disables instance creation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// Specifies an override for the resource requirements of the first container in the Pod.
+    /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterShardingsShardTemplatesInstancesResources>,
+    /// Specifies the scheduling policy for the instance.
+    /// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
+    pub scheduling_policy: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicy>,
+    /// ServiceVersion specifies the version of the Service expected to be provisioned by this InstanceTemplate.
+    /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
+    pub service_version: Option<String>,
+    /// Specifies an override for the storage requirements of the instances.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
+    pub volume_claim_templates: Option<Vec<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplates>>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ClusterShardingsShardTemplatesInstancesEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ClusterShardingsShardTemplatesInstancesEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ClusterShardingsShardTemplatesInstancesEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ClusterShardingsShardTemplatesInstancesEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterShardingsShardTemplatesInstancesEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Specifies the desired Ordinals of this InstanceTemplate.
+/// The Ordinals used to specify the ordinal of the instance (pod) names to be generated under this InstanceTemplate.
+/// If Ordinals are defined, their number must be equal to or more than the corresponding replicas.
+/// 
+/// 
+/// For example, if Ordinals is {ranges: [{start: 0, end: 1}], discrete: [7]},
+/// then the instance names generated under this InstanceTemplate would be
+/// $(cluster.name)-$(component.name)-$(template.name)-0、$(cluster.name)-$(component.name)-$(template.name)-1 and
+/// $(cluster.name)-$(component.name)-$(template.name)-7
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesOrdinals {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub discrete: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ranges: Option<Vec<ClusterShardingsShardTemplatesInstancesOrdinalsRanges>>,
+}
+
+/// Range represents a range with a start and an end value. Both start and end are included.
+/// It is used to define a continuous segment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesOrdinalsRanges {
+    pub end: i32,
+    pub start: i32,
+}
+
+/// Specifies an override for the resource requirements of the first container in the Pod.
+/// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ClusterShardingsShardTemplatesInstancesResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// Specifies the scheduling policy for the instance.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or ClusterComponentSpec.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicy {
+    /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinity>,
+    /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty,
+    /// the scheduler simply schedules this Pod onto that node, assuming that it fits resource
+    /// requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
+    pub node_name: Option<String>,
+    /// NodeSelector is a selector which must be true for the Pod to fit on a node.
+    /// Selector which must match a node's labels for the Pod to be scheduled on that node.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If specified, the Pod will be dispatched by specified scheduler.
+    /// If not specified, the Pod will be dispatched by default scheduler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
+    pub scheduler_name: Option<String>,
+    /// Allows Pods to be scheduled onto nodes with matching taints.
+    /// Each toleration in the array allows the Pod to tolerate node taints based on
+    /// specified `key`, `value`, `effect`, and `operator`.
+    /// 
+    /// 
+    /// - The `key`, `value`, and `effect` identify the taint that the toleration matches.
+    /// - The `operator` determines how the toleration matches the taint.
+    /// 
+    /// 
+    /// Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyTolerations>>,
+    /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology
+    /// domains. Scheduler will schedule Pods in a way which abides by the constraints.
+    /// All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraints>>,
+}
+
+/// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// 
+    /// 
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// 
+    /// 
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    /// 
+    /// 
+    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Refers to the name of a volumeMount defined in either:
+    /// 
+    /// 
+    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
+    /// 
+    /// 
+    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
+    pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
+    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+    /// with the mount name specified in the `name` field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpec>,
+}
+
+/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+/// with the mount name specified in the `name` field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesInstancesVolumeClaimTemplatesSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Specifies an override for the resource requirements of the shard.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesResources {
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ClusterShardingsShardTemplatesResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
+    pub name: String,
+}
+
+/// Specifies the scheduling policy for the shard.
+/// If defined, it will overwrite the scheduling policy defined in ClusterSpec and/or default template.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicy {
+    /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub affinity: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinity>,
+    /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty,
+    /// the scheduler simply schedules this Pod onto that node, assuming that it fits resource
+    /// requirements.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
+    pub node_name: Option<String>,
+    /// NodeSelector is a selector which must be true for the Pod to fit on a node.
+    /// Selector which must match a node's labels for the Pod to be scheduled on that node.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
+    pub node_selector: Option<BTreeMap<String, String>>,
+    /// If specified, the Pod will be dispatched by specified scheduler.
+    /// If not specified, the Pod will be dispatched by default scheduler.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
+    pub scheduler_name: Option<String>,
+    /// Allows Pods to be scheduled onto nodes with matching taints.
+    /// Each toleration in the array allows the Pod to tolerate node taints based on
+    /// specified `key`, `value`, `effect`, and `operator`.
+    /// 
+    /// 
+    /// - The `key`, `value`, and `effect` identify the taint that the toleration matches.
+    /// - The `operator` determines how the toleration matches the taint.
+    /// 
+    /// 
+    /// Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyTolerations>>,
+    /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology
+    /// domains. Scheduler will schedule Pods in a way which abides by the constraints.
+    /// All topologySpreadConstraints are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraints>>,
+}
+
+/// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinity {
+    /// Describes node affinity scheduling rules for the pod.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinity>,
+    /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinity>,
+    /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinity>,
+}
+
+/// Describes node affinity scheduling rules for the pod.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+}
+
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// A node selector term, associated with the corresponding weight.
+    pub preference: ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
+    pub weight: i32,
+}
+
+/// A node selector term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A list of node selector terms. The terms are ORed.
+    #[serde(rename = "nodeSelectorTerms")]
+    pub node_selector_terms: Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+}
+
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+    /// A list of node selector requirements by node's labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    /// A list of node selector requirements by node's fields.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
+    pub match_fields: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+    /// The label key that the selector applies to.
+    pub key: String,
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    pub operator: String,
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinity {
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+}
+
+/// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+    /// Required. A pod affinity term, associated with the corresponding weight.
+    #[serde(rename = "podAffinityTerm")]
+    pub pod_affinity_term: ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
+    pub weight: i32,
+}
+
+/// Required. A pod affinity term, associated with the corresponding weight.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
+    pub mismatch_label_keys: Option<Vec<String>>,
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespaces: Option<Vec<String>>,
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+}
+
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// The pod this Toleration is attached to tolerates any taint that matches
+/// the triple <key,value,effect> using the matching operator <operator>.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyTolerations {
+    /// Effect indicates the taint effect to match. Empty means match all taint effects.
+    /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// Key is the taint key that the toleration applies to. Empty means match all taint keys.
+    /// If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// Operator represents a key's relationship to the value.
+    /// Valid operators are Exists and Equal. Defaults to Equal.
+    /// Exists is equivalent to wildcard for value, so that a pod can
+    /// tolerate all taints of a particular category.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// TolerationSeconds represents the period of time the toleration (which must be
+    /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+    /// it is not set, which means tolerate the taint forever (do not evict). Zero and
+    /// negative values will be treated as 0 (evict immediately) by the system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
+    pub toleration_seconds: Option<i64>,
+    /// Value is the taint value the toleration matches to.
+    /// If the operator is Exists, the value should be empty, otherwise just a regular string.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraints {
+    /// LabelSelector is used to find matching pods.
+    /// Pods that match this label selector are counted to determine the number of pods
+    /// in their corresponding topology domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    /// MatchLabelKeys is a set of pod label keys to select the pods over which
+    /// spreading will be calculated. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are ANDed with labelSelector
+    /// to select the group of existing pods over which spreading will be calculated
+    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// Keys that don't exist in the incoming pod labels will
+    /// be ignored. A null or empty list means only match against labelSelector.
+    /// 
+    /// 
+    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
+    pub match_label_keys: Option<Vec<String>>,
+    /// MaxSkew describes the degree to which pods may be unevenly distributed.
+    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
+    /// between the number of matching pods in the target topology and the global minimum.
+    /// The global minimum is the minimum number of matching pods in an eligible domain
+    /// or zero if the number of eligible domains is less than MinDomains.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 2/2/1:
+    /// In this case, the global minimum is 1.
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |   P   |
+    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
+    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
+    /// violate MaxSkew(1).
+    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
+    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
+    /// to topologies that satisfy it.
+    /// It's a required field. Default value is 1 and 0 is not allowed.
+    #[serde(rename = "maxSkew")]
+    pub max_skew: i32,
+    /// MinDomains indicates a minimum number of eligible domains.
+    /// When the number of eligible domains with matching topology keys is less than minDomains,
+    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
+    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
+    /// this value has no effect on scheduling.
+    /// As a result, when the number of eligible domains is less than minDomains,
+    /// scheduler won't schedule more than maxSkew Pods to those domains.
+    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
+    /// Valid values are integers greater than 0.
+    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
+    /// 
+    /// 
+    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
+    /// labelSelector spread as 2/2/2:
+    /// | zone1 | zone2 | zone3 |
+    /// |  P P  |  P P  |  P P  |
+    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
+    /// In this situation, new pod with the same labelSelector cannot be scheduled,
+    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
+    /// it will violate MaxSkew.
+    /// 
+    /// 
+    /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
+    pub min_domains: Option<i32>,
+    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
+    /// when calculating pod topology spread skew. Options are:
+    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
+    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
+    pub node_affinity_policy: Option<String>,
+    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
+    /// pod topology spread skew. Options are:
+    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
+    /// has a toleration, are included.
+    /// - Ignore: node taints are ignored. All nodes are included.
+    /// 
+    /// 
+    /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
+    pub node_taints_policy: Option<String>,
+    /// TopologyKey is the key of node labels. Nodes that have a label with this key
+    /// and identical values are considered to be in the same topology.
+    /// We consider each <key, value> as a "bucket", and try to put balanced number
+    /// of pods into each bucket.
+    /// We define a domain as a particular instance of a topology.
+    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
+    /// nodeAffinityPolicy and nodeTaintsPolicy.
+    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
+    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
+    /// It's a required field.
+    #[serde(rename = "topologyKey")]
+    pub topology_key: String,
+    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
+    /// the spread constraint.
+    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
+    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
+    ///   but giving higher precedence to topologies that would help reduce the
+    ///   skew.
+    /// A constraint is considered "Unsatisfiable" for an incoming pod
+    /// if and only if every possible node assignment for that pod would violate
+    /// "MaxSkew" on some topology.
+    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
+    /// labelSelector spread as 3/1/1:
+    /// | zone1 | zone2 | zone3 |
+    /// | P P P |   P   |   P   |
+    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
+    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
+    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
+    /// won't make it *more* imbalanced.
+    /// It's a required field.
+    #[serde(rename = "whenUnsatisfiable")]
+    pub when_unsatisfiable: String,
+}
+
+/// LabelSelector is used to find matching pods.
+/// Pods that match this label selector are counted to determine the number of pods
+/// in their corresponding topology domain.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplates {
+    /// Specifies the annotations for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the labels for the PVC of the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// Refers to the name of a volumeMount defined in either:
+    /// 
+    /// 
+    /// - `componentDefinition.spec.runtime.containers[*].volumeMounts`
+    /// 
+    /// 
+    /// The value of `name` must match the `name` field of a volumeMount specified in the corresponding `volumeMounts` array.
+    pub name: String,
+    /// Specifies the prefix of the PVC name for the volume.
+    /// 
+    /// 
+    /// For each replica, the final name of the PVC will be in format: <persistentVolumeClaimName>-<ordinal>
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimName")]
+    pub persistent_volume_claim_name: Option<String>,
+    /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+    /// with the mount name specified in the `name` field.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub spec: Option<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpec>,
+}
+
+/// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
+/// with the mount name specified in the `name` field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpec {
+    /// accessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// dataSource field can be used to specify either:
+    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+    /// * An existing PVC (PersistentVolumeClaim)
+    /// If the provisioner or an external controller can support the specified data source,
+    /// it will create a new volume based on the contents of the specified data source.
+    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecDataSource>,
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+    /// volume is desired. This may be any object from a non-empty API group (non
+    /// core object) or a PersistentVolumeClaim object.
+    /// When this field is specified, volume binding will only succeed if the type of
+    /// the specified object matches some installed volume populator or dynamic
+    /// provisioner.
+    /// This field will replace the functionality of the dataSource field and as such
+    /// if both fields are non-empty, they must have the same value. For backwards
+    /// compatibility, when namespace isn't specified in dataSourceRef,
+    /// both fields (dataSource and dataSourceRef) will be set to the same
+    /// value automatically if one of them is empty and the other is non-empty.
+    /// When namespace is specified in dataSourceRef,
+    /// dataSource isn't set to the same value and must be empty.
+    /// There are three important differences between dataSource and dataSourceRef:
+    /// * While dataSource only allows two specific types of objects, dataSourceRef
+    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
+    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+    ///   preserves all values, and generates an error if a disallowed value is
+    ///   specified.
+    /// * While dataSource only allows local objects, dataSourceRef allows objects
+    ///   in any namespaces.
+    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecDataSourceRef>,
+    /// resources represents the minimum resources the volume should have.
+    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+    /// that are lower than previous value but must still be higher than capacity recorded in the
+    /// status field of the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecResources>,
+    /// selector is a label query over volumes to consider for binding.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecSelector>,
+    /// storageClassName is the name of the StorageClass required by the claim.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
+    /// If specified, the CSI driver will create or update the volume with the attributes defined
+    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
+    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
+    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
+    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
+    /// will be set by the persistentvolume controller if it exists.
+    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
+    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
+    /// exists.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+    /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
+    pub volume_attributes_class_name: Option<String>,
+    /// volumeMode defines what type of volume is required by the claim.
+    /// Value of Filesystem is implied when not included in claim spec.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
+    pub volume_mode: Option<String>,
+    /// volumeName is the binding reference to the PersistentVolume backing this claim.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
+    pub volume_name: Option<String>,
+}
+
+/// dataSource field can be used to specify either:
+/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
+/// * An existing PVC (PersistentVolumeClaim)
+/// If the provisioner or an external controller can support the specified data source,
+/// it will create a new volume based on the contents of the specified data source.
+/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
+/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
+/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecDataSource {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+}
+
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
+/// volume is desired. This may be any object from a non-empty API group (non
+/// core object) or a PersistentVolumeClaim object.
+/// When this field is specified, volume binding will only succeed if the type of
+/// the specified object matches some installed volume populator or dynamic
+/// provisioner.
+/// This field will replace the functionality of the dataSource field and as such
+/// if both fields are non-empty, they must have the same value. For backwards
+/// compatibility, when namespace isn't specified in dataSourceRef,
+/// both fields (dataSource and dataSourceRef) will be set to the same
+/// value automatically if one of them is empty and the other is non-empty.
+/// When namespace is specified in dataSourceRef,
+/// dataSource isn't set to the same value and must be empty.
+/// There are three important differences between dataSource and dataSourceRef:
+/// * While dataSource only allows two specific types of objects, dataSourceRef
+///   allows any non-core object, as well as PersistentVolumeClaim objects.
+/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
+///   preserves all values, and generates an error if a disallowed value is
+///   specified.
+/// * While dataSource only allows local objects, dataSourceRef allows objects
+///   in any namespaces.
+/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
+/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecDataSourceRef {
+    /// APIGroup is the group for the resource being referenced.
+    /// If APIGroup is not specified, the specified Kind must be in the core API group.
+    /// For any other third-party types, APIGroup is required.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
+    pub api_group: Option<String>,
+    /// Kind is the type of resource being referenced
+    pub kind: String,
+    /// Name is the name of resource being referenced
+    pub name: String,
+    /// Namespace is the namespace of resource being referenced
+    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
+    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// resources represents the minimum resources the volume should have.
+/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
+/// that are lower than previous value but must still be higher than capacity recorded in the
+/// status field of the claim.
+/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// selector is a label query over volumes to consider for binding.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterShardingsShardTemplatesVolumeClaimTemplatesSpecSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// The default template for generating Components for shards, where each shard consists of one Component.
 /// 
 /// 
 /// This field is of type ClusterComponentSpec, which encapsulates all the required details and
@@ -8959,7 +11653,7 @@ pub enum ClusterShardingsTemplatePersistentVolumeClaimRetentionPolicyWhenScaled 
     Delete,
 }
 
-/// The template for generating Components for shards, where each shard consists of one Component.
+/// The default template for generating Components for shards, where each shard consists of one Component.
 /// 
 /// 
 /// This field is of type ClusterComponentSpec, which encapsulates all the required details and

@@ -371,6 +371,11 @@ pub struct HTTPRouteRules {
     /// parent a request is coming from, a HTTP 404 status code MUST be returned.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<HTTPRouteRulesMatches>>,
+    /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Timeouts defines the timeouts that can be configured for an HTTP request.
     /// 
     /// Support: Extended

@@ -1118,6 +1118,9 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfig>,
+    /// The default configuration for Jira.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jira: Option<AlertmanagerAlertmanagerConfigurationGlobalJira>,
     /// The default OpsGenie API Key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "opsGenieApiKey")]
     pub ops_genie_api_key: Option<AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey>,
@@ -1132,6 +1135,9 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// This has no impact on alerts from Prometheus, as they always include EndsAt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolveTimeout")]
     pub resolve_timeout: Option<String>,
+    /// The default configuration for Rocket Chat.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rocketChat")]
+    pub rocket_chat: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChat>,
     /// The default Slack API URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slackApiUrl")]
     pub slack_api_url: Option<AlertmanagerAlertmanagerConfigurationGlobalSlackApiUrl>,
@@ -1141,6 +1147,12 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// The default Telegram config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram: Option<AlertmanagerAlertmanagerConfigurationGlobalTelegram>,
+    /// The default configuration for Jira.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub webex: Option<AlertmanagerAlertmanagerConfigurationGlobalWebex>,
+    /// The default WeChat Config
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub wechat: Option<AlertmanagerAlertmanagerConfigurationGlobalWechat>,
 }
 
 /// HTTP client configuration.
@@ -1770,6 +1782,16 @@ pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMinVersio
     Tls13,
 }
 
+/// The default configuration for Jira.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalJira {
+    /// The default Jira API URL.
+    /// 
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+}
+
 /// The default OpsGenie API Key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey {
@@ -1790,6 +1812,64 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey {
 /// The default OpsGenie API URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiUrl {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The default configuration for Rocket Chat.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChat {
+    /// The default Rocket Chat API URL.
+    /// 
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+    /// The default Rocket Chat token.
+    /// 
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub token: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChatToken>,
+    /// The default Rocket Chat Token ID.
+    /// 
+    /// It requires Alertmanager >= v0.28.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenID")]
+    pub token_id: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChatTokenId>,
+}
+
+/// The default Rocket Chat token.
+/// 
+/// It requires Alertmanager >= v0.28.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChatToken {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The default Rocket Chat Token ID.
+/// 
+/// It requires Alertmanager >= v0.28.0.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChatTokenId {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2068,6 +2148,48 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalTelegram {
     /// It requires Alertmanager >= v0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
+}
+
+/// The default configuration for Jira.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalWebex {
+    /// The default Webex API URL.
+    /// 
+    /// It requires Alertmanager >= v0.25.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+}
+
+/// The default WeChat Config
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalWechat {
+    /// The default WeChat API Corporate ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCorpID")]
+    pub api_corp_id: Option<String>,
+    /// The default WeChat API Secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiSecret")]
+    pub api_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalWechatApiSecret>,
+    /// The default WeChat API URL.
+    /// The default value is "https://qyapi.weixin.qq.com/cgi-bin/"
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+}
+
+/// The default WeChat API Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalWechatApiSecret {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// SecretOrConfigMap allows to specify data as a Secret or ConfigMap. Fields are mutually exclusive.

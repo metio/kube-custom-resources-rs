@@ -37,6 +37,7 @@ spec:
               type: "object"
             spec:
               description: "spec is the desired state of ClusterClass."
+              minProperties: 1
               properties:
                 availabilityGates:
                   description: "availabilityGates specifies additional conditions to include when evaluating Cluster Available condition.\n\nNOTE: If a Cluster is using this ClusterClass, and this Cluster defines a custom list of availabilityGates,\nsuch list overrides availabilityGates defined in this field."
@@ -1094,6 +1095,7 @@ spec:
               type: "object"
             status:
               description: "status is the observed state of ClusterClass."
+              minProperties: 1
               properties:
                 conditions:
                   description: "conditions represents the observations of a ClusterClass's current state.\nKnown condition types are VariablesReady, RefVersionsUpToDate, Paused."
@@ -1191,6 +1193,7 @@ spec:
                 observedGeneration:
                   description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
+                  minimum: 1.0
                   type: "integer"
                 variables:
                   description: "variables is a list of ClusterClassStatusVariable that are defined for the ClusterClass."
@@ -1425,6 +1428,8 @@ spec:
                   maxItems: 1000
                   type: "array"
               type: "object"
+          required:
+            - "spec"
           type: "object"
       served: true
       storage: true

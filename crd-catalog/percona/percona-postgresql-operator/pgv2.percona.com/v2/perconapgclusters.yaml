@@ -496,6 +496,8 @@ spec:
                                   description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                   type: "object"
                               type: "object"
+                          required:
+                            - "image"
                           type: "object"
                         jobs:
                           description: "Jobs field allows configuration for all backup jobs"
@@ -5191,6 +5193,8 @@ spec:
                           description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                           type: "object"
                       type: "object"
+                  required:
+                    - "image"
                   type: "object"
                 instances:
                   description: "Specifies one or more sets of PostgreSQL pods that replicate data for\nthis cluster."
@@ -6057,6 +6061,8 @@ spec:
                                 description: "Requests describes the minimum amount of compute resources required.\nIf Requests is omitted for a container, it defaults to Limits if that is explicitly specified,\notherwise to an implementation-defined value. Requests cannot exceed Limits.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                                 type: "object"
                             type: "object"
+                        required:
+                          - "image"
                         type: "object"
                       initContainers:
                         description: "Additional init containers for PostgreSQL instance pods. Changing this value causes\nPostgreSQL to restart."

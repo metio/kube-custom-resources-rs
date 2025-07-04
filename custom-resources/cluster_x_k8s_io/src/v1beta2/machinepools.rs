@@ -48,8 +48,7 @@ pub struct MachinePoolTemplate {
     pub metadata: Option<MachinePoolTemplateMetadata>,
     /// spec is the specification of the desired behavior of the machine.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<MachinePoolTemplateSpec>,
+    pub spec: MachinePoolTemplateSpec,
 }
 
 /// metadata is the standard object's metadata.

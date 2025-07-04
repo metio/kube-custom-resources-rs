@@ -318,7 +318,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 numCoresPerSocket:
-                  description: "NumCPUs is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
+                  description: "NumCoresPerSocket is the number of cores among which to distribute CPUs in this\nvirtual machine.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
                   format: "int32"
                   type: "integer"
                 os:

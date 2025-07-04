@@ -43,6 +43,9 @@ pub struct TeleportGithubConnectorSpec {
     /// TeamsToRoles maps Github team memberships onto allowed roles.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub teams_to_roles: Option<Vec<TeleportGithubConnectorTeamsToRoles>>,
+    /// UserMatchers is a set of glob patterns to narrow down which username(s) this auth connector should match for identifier-first login.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_matchers: Option<Vec<String>>,
 }
 
 /// ClientRedirectSettings defines which client redirect URLs are allowed for non-browser SSO logins other than the standard localhost ones.
