@@ -38,7 +38,7 @@ spec:
                   maxLength: 2048
                   type: "string"
                 certSecretRef:
-                  description: "CertSecretRef specifies the Secret containing\na PEM-encoded CA certificate (in the `ca.crt` key).\n\nNote: Support for the `caFile` key has\nbeen deprecated."
+                  description: "CertSecretRef specifies the Secret containing TLS certificates\nfor secure communication.\n\nSupported configurations:\n- CA-only: Server authentication (provide ca.crt only)\n- mTLS: Mutual authentication (provide ca.crt + tls.crt + tls.key)\n- Client-only: Client authentication with system CA (provide tls.crt + tls.key only)\n\nLegacy keys \"caFile\", \"certFile\", \"keyFile\" are supported but deprecated. Use \"ca.crt\", \"tls.crt\", \"tls.key\" instead."
                   properties:
                     name:
                       description: "Name of the referent."

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "argocds.argoproj.io"
 spec:
   group: "argoproj.io"
@@ -61,7 +61,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -110,7 +111,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -145,12 +147,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for ApplicationSet."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -263,7 +268,7 @@ spec:
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 insecureEdgeTerminationPolicy:
-                                  description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                                  description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
                                   enum:
                                     - "Allow"
                                     - "None"
@@ -274,7 +279,7 @@ spec:
                                   description: "key provides key file contents"
                                   type: "string"
                                 termination:
-                                  description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                                  description: "termination indicates termination type.\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\nNote: passthrough termination is incompatible with httpHeader actions"
                                   enum:
                                     - "edge"
                                     - "reencrypt"
@@ -292,6 +297,34 @@ spec:
                           required:
                             - "enabled"
                           type: "object"
+                      type: "object"
+                  type: "object"
+                argoCDAgent:
+                  description: "ArgoCDAgent defines configurations for the ArgoCD Agent component."
+                  properties:
+                    principal:
+                      description: "Principal defines configurations for the Principal component of Argo CD Agent."
+                      properties:
+                        allowedNamespaces:
+                          description: "AllowedNamespaces is the list of namespaces that the Principal component is allowed to access."
+                          items:
+                            type: "string"
+                          type: "array"
+                        auth:
+                          description: "Auth is the authentication method for the Principal component."
+                          type: "string"
+                        enabled:
+                          description: "Enabled is the flag to enable the Principal component during Argo CD installation. (optional, default `false`)"
+                          type: "boolean"
+                        image:
+                          description: "Image is the name of Argo CD Agent image"
+                          type: "string"
+                        jwtAllowGenerate:
+                          description: "JWTAllowGenerate is the flag to enable the JWT generation during Argo CD installation."
+                          type: "boolean"
+                        logLevel:
+                          description: "LogLevel refers to the log level used by the Principal component. Defaults to info if not configured. Valid options are debug, info, trace, error, and warn."
+                          type: "string"
                       type: "object"
                   type: "object"
                 banner:
@@ -313,7 +346,7 @@ spec:
                   description: "Controller defines the Application Controller options for ArgoCD."
                   properties:
                     appSync:
-                      description: "AppSync is used to control the sync frequency, by default the ArgoCD\ncontroller polls Git every 3m.\n\n\nSet this to a duration, e.g. 10m or 600s to control the synchronisation\nfrequency."
+                      description: "AppSync is used to control the sync frequency, by default the ArgoCD\ncontroller polls Git every 3m.\n\nSet this to a duration, e.g. 10m or 600s to control the synchronisation\nfrequency."
                       type: "string"
                     env:
                       description: "Env lets you specify environment for application controller pods"
@@ -336,7 +369,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -385,7 +419,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -425,12 +460,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for the Application Controller."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -511,12 +549,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for Dex."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -554,7 +595,7 @@ spec:
                 extraConfig:
                   additionalProperties:
                     type: "string"
-                  description: "ExtraConfig can be used to add fields to Argo CD configmap that are not supported by Argo CD CRD.\n\n\nNote: ExtraConfig takes precedence over Argo CD CRD.\nFor example, A user sets `argocd.Spec.DisableAdmin` = true and also\n`a.Spec.ExtraConfig[\"admin.enabled\"]` = true. In this case, operator updates\nArgo CD Configmap as follows -> argocd-cm.Data[\"admin.enabled\"] = true."
+                  description: "ExtraConfig can be used to add fields to Argo CD configmap that are not supported by Argo CD CRD.\n\nNote: ExtraConfig takes precedence over Argo CD CRD.\nFor example, A user sets `argocd.Spec.DisableAdmin` = true and also\n`a.Spec.ExtraConfig[\"admin.enabled\"]` = true. In this case, operator updates\nArgo CD Configmap as follows -> argocd-cm.Data[\"admin.enabled\"] = true."
                   type: "object"
                 gaAnonymizeUsers:
                   description: "GAAnonymizeUsers toggles user IDs being hashed before sending to google analytics."
@@ -614,12 +655,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for Grafana."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -687,7 +731,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
                               enum:
                                 - "Allow"
                                 - "None"
@@ -698,7 +742,7 @@ spec:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              description: "termination indicates termination type.\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\nNote: passthrough termination is incompatible with httpHeader actions"
                               enum:
                                 - "edge"
                                 - "reencrypt"
@@ -742,12 +786,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for HA."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -902,7 +949,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -951,7 +999,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -985,12 +1034,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for Argo CD Notifications."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1112,7 +1164,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
                               enum:
                                 - "Allow"
                                 - "None"
@@ -1123,7 +1175,7 @@ spec:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              description: "termination indicates termination type.\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\nNote: passthrough termination is incompatible with httpHeader actions"
                               enum:
                                 - "edge"
                                 - "reencrypt"
@@ -1180,12 +1232,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for Redis."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1244,7 +1299,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1293,7 +1349,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1328,11 +1385,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           command:
                             description: "Entrypoint array. Not executed within a shell.\nThe container image's ENTRYPOINT is used if this is not provided.\nVariable references $(VAR_NAME) are expanded using the container's environment. If a variable\ncannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will\nproduce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless\nof whether the variable exists or not. Cannot be updated.\nMore info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           env:
                             description: "List of environment variables to set in the container.\nCannot be updated."
                             items:
@@ -1354,7 +1413,8 @@ spec:
                                           description: "The key to select."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the ConfigMap or its key must be defined"
@@ -1403,7 +1463,8 @@ spec:
                                           description: "The key of the secret to select from.  Must be a valid secret key."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the Secret or its key must be defined"
@@ -1417,16 +1478,20 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "name"
+                            x-kubernetes-list-type: "map"
                           envFrom:
                             description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                             items:
-                              description: "EnvFromSource represents the source of a set of ConfigMaps"
+                              description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                               properties:
                                 configMapRef:
                                   description: "The ConfigMap to select from"
                                   properties:
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap must be defined"
@@ -1434,13 +1499,14 @@ spec:
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 prefix:
-                                  description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                                  description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
                                   type: "string"
                                 secretRef:
                                   description: "The Secret to select from"
                                   properties:
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret must be defined"
@@ -1449,6 +1515,7 @@ spec:
                                   x-kubernetes-map-type: "atomic"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           image:
                             description: "Container image name.\nMore info: https://kubernetes.io/docs/concepts/containers/images\nThis field is optional to allow higher level config management to default or override\ncontainer images in workload controllers like Deployments and StatefulSets."
                             type: "string"
@@ -1462,16 +1529,17 @@ spec:
                                 description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1492,6 +1560,7 @@ spec:
                                             - "value"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       path:
                                         description: "Path to access on the HTTP server."
                                         type: "string"
@@ -1508,7 +1577,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   sleep:
-                                    description: "Sleep represents the duration that the container should sleep before being terminated."
+                                    description: "Sleep represents a duration that the container should sleep."
                                     properties:
                                       seconds:
                                         description: "Seconds is the number of seconds to sleep."
@@ -1518,7 +1587,7 @@ spec:
                                       - "seconds"
                                     type: "object"
                                   tcpSocket:
-                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1537,16 +1606,17 @@ spec:
                                 description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1567,6 +1637,7 @@ spec:
                                             - "value"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       path:
                                         description: "Path to access on the HTTP server."
                                         type: "string"
@@ -1583,7 +1654,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   sleep:
-                                    description: "Sleep represents the duration that the container should sleep before being terminated."
+                                    description: "Sleep represents a duration that the container should sleep."
                                     properties:
                                       seconds:
                                         description: "Seconds is the number of seconds to sleep."
@@ -1593,7 +1664,7 @@ spec:
                                       - "seconds"
                                     type: "object"
                                   tcpSocket:
-                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1608,38 +1679,43 @@ spec:
                                       - "port"
                                     type: "object"
                                 type: "object"
+                              stopSignal:
+                                description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
+                                type: "string"
                             type: "object"
                           livenessProbe:
                             description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1660,6 +1736,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -1688,7 +1765,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1749,33 +1826,35 @@ spec:
                             description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -1796,6 +1875,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -1824,7 +1904,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -1868,12 +1948,15 @@ spec:
                             description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
                                     name:
                                       description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                      type: "string"
+                                    request:
+                                      description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                       type: "string"
                                   required:
                                     - "name"
@@ -1910,6 +1993,18 @@ spec:
                               allowPrivilegeEscalation:
                                 description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "boolean"
+                              appArmorProfile:
+                                description: "appArmorProfile is the AppArmor options to use by this container. If set, this profile\noverrides the pod's appArmorProfile.\nNote that this field cannot be set when spec.os.name is windows."
+                                properties:
+                                  localhostProfile:
+                                    description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
+                                    type: "string"
+                                  type:
+                                    description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
+                                    type: "string"
+                                required:
+                                  - "type"
+                                type: "object"
                               capabilities:
                                 description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
                                 properties:
@@ -1919,18 +2014,20 @@ spec:
                                       description: "Capability represent POSIX capabilities type"
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   drop:
                                     description: "Removed capabilities"
                                     items:
                                       description: "Capability represent POSIX capabilities type"
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               privileged:
                                 description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "boolean"
                               procMount:
-                                description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "string"
                               readOnlyRootFilesystem:
                                 description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -1969,7 +2066,7 @@ spec:
                                     description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                     type: "string"
                                   type:
-                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                     type: "string"
                                 required:
                                   - "type"
@@ -1995,33 +2092,35 @@ spec:
                             description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2042,6 +2141,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -2070,7 +2170,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2124,6 +2224,9 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "devicePath"
+                            x-kubernetes-list-type: "map"
                           volumeMounts:
                             description: "Pod volumes to mount into the container's filesystem.\nCannot be updated."
                             items:
@@ -2133,7 +2236,7 @@ spec:
                                   description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
                                   type: "string"
                                 mountPropagation:
-                                  description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                                  description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10.\nWhen RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified\n(which defaults to None)."
                                   type: "string"
                                 name:
                                   description: "This must match the Name of a Volume."
@@ -2141,6 +2244,9 @@ spec:
                                 readOnly:
                                   description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
                                   type: "boolean"
+                                recursiveReadOnly:
+                                  description: "RecursiveReadOnly specifies whether read-only mounts should be handled\nrecursively.\n\nIf ReadOnly is false, this field has no meaning and must be unspecified.\n\nIf ReadOnly is true, and this field is set to Disabled, the mount is not made\nrecursively read-only.  If this field is set to IfPossible, the mount is made\nrecursively read-only, if it is supported by the container runtime.  If this\nfield is set to Enabled, the mount is made recursively read-only if it is\nsupported by the container runtime, otherwise the pod will not be started and\nan error will be generated to indicate the reason.\n\nIf this field is set to IfPossible or Enabled, MountPropagation must be set to\nNone (or be unspecified, which defaults to None).\n\nIf this field is not specified, it is treated as an equivalent of Disabled."
+                                  type: "string"
                                 subPath:
                                   description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
                                   type: "string"
@@ -2152,6 +2258,9 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "mountPath"
+                            x-kubernetes-list-type: "map"
                           workingDir:
                             description: "Container's working directory.\nIf not specified, the container runtime's default will be used, which\nmight be configured in the container image.\nCannot be updated."
                             type: "string"
@@ -2176,12 +2285,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for Redis."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -2222,11 +2334,13 @@ spec:
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           command:
                             description: "Entrypoint array. Not executed within a shell.\nThe container image's ENTRYPOINT is used if this is not provided.\nVariable references $(VAR_NAME) are expanded using the container's environment. If a variable\ncannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. \"$$(VAR_NAME)\" will\nproduce the string literal \"$(VAR_NAME)\". Escaped references will never be expanded, regardless\nof whether the variable exists or not. Cannot be updated.\nMore info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell"
                             items:
                               type: "string"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           env:
                             description: "List of environment variables to set in the container.\nCannot be updated."
                             items:
@@ -2248,7 +2362,8 @@ spec:
                                           description: "The key to select."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the ConfigMap or its key must be defined"
@@ -2297,7 +2412,8 @@ spec:
                                           description: "The key of the secret to select from.  Must be a valid secret key."
                                           type: "string"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "Specify whether the Secret or its key must be defined"
@@ -2311,16 +2427,20 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "name"
+                            x-kubernetes-list-type: "map"
                           envFrom:
                             description: "List of sources to populate environment variables in the container.\nThe keys defined within a source must be a C_IDENTIFIER. All invalid keys\nwill be reported as an event when the container is starting. When a key exists in multiple\nsources, the value associated with the last source will take precedence.\nValues defined by an Env with a duplicate key will take precedence.\nCannot be updated."
                             items:
-                              description: "EnvFromSource represents the source of a set of ConfigMaps"
+                              description: "EnvFromSource represents the source of a set of ConfigMaps or Secrets"
                               properties:
                                 configMapRef:
                                   description: "The ConfigMap to select from"
                                   properties:
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap must be defined"
@@ -2328,13 +2448,14 @@ spec:
                                   type: "object"
                                   x-kubernetes-map-type: "atomic"
                                 prefix:
-                                  description: "An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER."
+                                  description: "Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER."
                                   type: "string"
                                 secretRef:
                                   description: "The Secret to select from"
                                   properties:
                                     name:
-                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                      default: ""
+                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret must be defined"
@@ -2343,6 +2464,7 @@ spec:
                                   x-kubernetes-map-type: "atomic"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           image:
                             description: "Container image name.\nMore info: https://kubernetes.io/docs/concepts/containers/images\nThis field is optional to allow higher level config management to default or override\ncontainer images in workload controllers like Deployments and StatefulSets."
                             type: "string"
@@ -2356,16 +2478,17 @@ spec:
                                 description: "PostStart is called immediately after a container is created. If the handler fails,\nthe container is terminated and restarted according to its restart policy.\nOther management of the container blocks until the hook completes.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2386,6 +2509,7 @@ spec:
                                             - "value"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       path:
                                         description: "Path to access on the HTTP server."
                                         type: "string"
@@ -2402,7 +2526,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   sleep:
-                                    description: "Sleep represents the duration that the container should sleep before being terminated."
+                                    description: "Sleep represents a duration that the container should sleep."
                                     properties:
                                       seconds:
                                         description: "Seconds is the number of seconds to sleep."
@@ -2412,7 +2536,7 @@ spec:
                                       - "seconds"
                                     type: "object"
                                   tcpSocket:
-                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2431,16 +2555,17 @@ spec:
                                 description: "PreStop is called immediately before a container is terminated due to an\nAPI request or management event such as liveness/startup probe failure,\npreemption, resource contention, etc. The handler is not called if the\ncontainer crashes or exits. The Pod's termination grace period countdown begins before the\nPreStop hook is executed. Regardless of the outcome of the handler, the\ncontainer will eventually terminate within the Pod's termination grace\nperiod (unless delayed by finalizers). Other management of the container blocks until the hook completes\nor until the termination grace period is reached.\nMore info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks"
                                 properties:
                                   exec:
-                                    description: "Exec specifies the action to take."
+                                    description: "Exec specifies a command to execute in the container."
                                     properties:
                                       command:
                                         description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                   httpGet:
-                                    description: "HTTPGet specifies the http request to perform."
+                                    description: "HTTPGet specifies an HTTP GET request to perform."
                                     properties:
                                       host:
                                         description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2461,6 +2586,7 @@ spec:
                                             - "value"
                                           type: "object"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       path:
                                         description: "Path to access on the HTTP server."
                                         type: "string"
@@ -2477,7 +2603,7 @@ spec:
                                       - "port"
                                     type: "object"
                                   sleep:
-                                    description: "Sleep represents the duration that the container should sleep before being terminated."
+                                    description: "Sleep represents a duration that the container should sleep."
                                     properties:
                                       seconds:
                                         description: "Seconds is the number of seconds to sleep."
@@ -2487,7 +2613,7 @@ spec:
                                       - "seconds"
                                     type: "object"
                                   tcpSocket:
-                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor the backward compatibility. There are no validation of this field and\nlifecycle hooks will fail in runtime when tcp handler is specified."
+                                    description: "Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept\nfor backward compatibility. There is no validation of this field and\nlifecycle hooks will fail at runtime when it is specified."
                                     properties:
                                       host:
                                         description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2502,38 +2628,43 @@ spec:
                                       - "port"
                                     type: "object"
                                 type: "object"
+                              stopSignal:
+                                description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
+                                type: "string"
                             type: "object"
                           livenessProbe:
                             description: "Periodic probe of container liveness.\nContainer will be restarted if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2554,6 +2685,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -2582,7 +2714,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2643,33 +2775,35 @@ spec:
                             description: "Periodic probe of container service readiness.\nContainer will be removed from service endpoints if the probe fails.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2690,6 +2824,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -2718,7 +2853,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -2762,12 +2897,15 @@ spec:
                             description: "Compute Resources required by this container.\nCannot be updated.\nMore info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"
                             properties:
                               claims:
-                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                                description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                                 items:
                                   description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                   properties:
                                     name:
                                       description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                      type: "string"
+                                    request:
+                                      description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                       type: "string"
                                   required:
                                     - "name"
@@ -2804,6 +2942,18 @@ spec:
                               allowPrivilegeEscalation:
                                 description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "boolean"
+                              appArmorProfile:
+                                description: "appArmorProfile is the AppArmor options to use by this container. If set, this profile\noverrides the pod's appArmorProfile.\nNote that this field cannot be set when spec.os.name is windows."
+                                properties:
+                                  localhostProfile:
+                                    description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
+                                    type: "string"
+                                  type:
+                                    description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
+                                    type: "string"
+                                required:
+                                  - "type"
+                                type: "object"
                               capabilities:
                                 description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
                                 properties:
@@ -2813,18 +2963,20 @@ spec:
                                       description: "Capability represent POSIX capabilities type"
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   drop:
                                     description: "Removed capabilities"
                                     items:
                                       description: "Capability represent POSIX capabilities type"
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               privileged:
                                 description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "boolean"
                               procMount:
-                                description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                                description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
                                 type: "string"
                               readOnlyRootFilesystem:
                                 description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -2863,7 +3015,7 @@ spec:
                                     description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
                                     type: "string"
                                   type:
-                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                                    description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                                     type: "string"
                                 required:
                                   - "type"
@@ -2889,33 +3041,35 @@ spec:
                             description: "StartupProbe indicates that the Pod has successfully initialized.\nIf specified, no other probes are executed until this completes successfully.\nIf this probe fails, the Pod will be restarted, just as if the livenessProbe failed.\nThis can be used to provide different probe parameters at the beginning of a Pod's lifecycle,\nwhen it might take a long time to load data or warm a cache, than during steady-state operation.\nThis cannot be updated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                             properties:
                               exec:
-                                description: "Exec specifies the action to take."
+                                description: "Exec specifies a command to execute in the container."
                                 properties:
                                   command:
                                     description: "Command is the command line to execute inside the container, the working directory for the\ncommand  is root ('/') in the container's filesystem. The command is simply exec'd, it is\nnot run inside a shell, so traditional shell instructions ('|', etc) won't work. To use\na shell, you need to explicitly call out to that shell.\nExit status of 0 is treated as live/healthy and non-zero is unhealthy."
                                     items:
                                       type: "string"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                 type: "object"
                               failureThreshold:
                                 description: "Minimum consecutive failures for the probe to be considered failed after having succeeded.\nDefaults to 3. Minimum value is 1."
                                 format: "int32"
                                 type: "integer"
                               grpc:
-                                description: "GRPC specifies an action involving a GRPC port."
+                                description: "GRPC specifies a GRPC HealthCheckRequest."
                                 properties:
                                   port:
                                     description: "Port number of the gRPC service. Number must be in the range 1 to 65535."
                                     format: "int32"
                                     type: "integer"
                                   service:
-                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\n\nIf this is not specified, the default behavior is defined by gRPC."
+                                    default: ""
+                                    description: "Service is the name of the service to place in the gRPC HealthCheckRequest\n(see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).\n\nIf this is not specified, the default behavior is defined by gRPC."
                                     type: "string"
                                 required:
                                   - "port"
                                 type: "object"
                               httpGet:
-                                description: "HTTPGet specifies the http request to perform."
+                                description: "HTTPGet specifies an HTTP GET request to perform."
                                 properties:
                                   host:
                                     description: "Host name to connect to, defaults to the pod IP. You probably want to set\n\"Host\" in httpHeaders instead."
@@ -2936,6 +3090,7 @@ spec:
                                         - "value"
                                       type: "object"
                                     type: "array"
+                                    x-kubernetes-list-type: "atomic"
                                   path:
                                     description: "Path to access on the HTTP server."
                                     type: "string"
@@ -2964,7 +3119,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               tcpSocket:
-                                description: "TCPSocket specifies an action involving a TCP port."
+                                description: "TCPSocket specifies a connection to a TCP port."
                                 properties:
                                   host:
                                     description: "Optional: Host name to connect to, defaults to the pod IP."
@@ -3018,6 +3173,9 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "devicePath"
+                            x-kubernetes-list-type: "map"
                           volumeMounts:
                             description: "Pod volumes to mount into the container's filesystem.\nCannot be updated."
                             items:
@@ -3027,7 +3185,7 @@ spec:
                                   description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
                                   type: "string"
                                 mountPropagation:
-                                  description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                                  description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10.\nWhen RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified\n(which defaults to None)."
                                   type: "string"
                                 name:
                                   description: "This must match the Name of a Volume."
@@ -3035,6 +3193,9 @@ spec:
                                 readOnly:
                                   description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
                                   type: "boolean"
+                                recursiveReadOnly:
+                                  description: "RecursiveReadOnly specifies whether read-only mounts should be handled\nrecursively.\n\nIf ReadOnly is false, this field has no meaning and must be unspecified.\n\nIf ReadOnly is true, and this field is set to Disabled, the mount is not made\nrecursively read-only.  If this field is set to IfPossible, the mount is made\nrecursively read-only, if it is supported by the container runtime.  If this\nfield is set to Enabled, the mount is made recursively read-only if it is\nsupported by the container runtime, otherwise the pod will not be started and\nan error will be generated to indicate the reason.\n\nIf this field is set to IfPossible or Enabled, MountPropagation must be set to\nNone (or be unspecified, which defaults to None).\n\nIf this field is not specified, it is treated as an equivalent of Disabled."
+                                  type: "string"
                                 subPath:
                                   description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
                                   type: "string"
@@ -3046,6 +3207,9 @@ spec:
                                 - "name"
                               type: "object"
                             type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "mountPath"
+                            x-kubernetes-list-type: "map"
                           workingDir:
                             description: "Container's working directory.\nIf not specified, the container runtime's default will be used, which\nmight be configured in the container image.\nCannot be updated."
                             type: "string"
@@ -3068,7 +3232,7 @@ spec:
                             description: "Path within the container at which the volume should be mounted.  Must\nnot contain ':'."
                             type: "string"
                           mountPropagation:
-                            description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10."
+                            description: "mountPropagation determines how mounts are propagated from the host\nto container and the other way around.\nWhen not set, MountPropagationNone is used.\nThis field is beta in 1.10.\nWhen RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified\n(which defaults to None)."
                             type: "string"
                           name:
                             description: "This must match the Name of a Volume."
@@ -3076,6 +3240,9 @@ spec:
                           readOnly:
                             description: "Mounted read-only if true, read-write otherwise (false or unspecified).\nDefaults to false."
                             type: "boolean"
+                          recursiveReadOnly:
+                            description: "RecursiveReadOnly specifies whether read-only mounts should be handled\nrecursively.\n\nIf ReadOnly is false, this field has no meaning and must be unspecified.\n\nIf ReadOnly is true, and this field is set to Disabled, the mount is not made\nrecursively read-only.  If this field is set to IfPossible, the mount is made\nrecursively read-only, if it is supported by the container runtime.  If this\nfield is set to Enabled, the mount is made recursively read-only if it is\nsupported by the container runtime, otherwise the pod will not be started and\nan error will be generated to indicate the reason.\n\nIf this field is set to IfPossible or Enabled, MountPropagation must be set to\nNone (or be unspecified, which defaults to None).\n\nIf this field is not specified, it is treated as an equivalent of Disabled."
+                            type: "string"
                           subPath:
                             description: "Path within the volume from which the container's volume should be mounted.\nDefaults to \"\" (volume's root)."
                             type: "string"
@@ -3093,10 +3260,10 @@ spec:
                         description: "Volume represents a named volume in a pod that may be accessed by any container in the pod."
                         properties:
                           awsElasticBlockStore:
-                            description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
+                            description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nDeprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree\nawsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                                 type: "string"
                               partition:
                                 description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty)."
@@ -3112,7 +3279,7 @@ spec:
                               - "volumeID"
                             type: "object"
                           azureDisk:
-                            description: "azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod."
+                            description: "azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.\nDeprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type\nare redirected to the disk.csi.azure.com CSI driver."
                             properties:
                               cachingMode:
                                 description: "cachingMode is the Host Caching mode: None, Read Only, Read Write."
@@ -3124,12 +3291,14 @@ spec:
                                 description: "diskURI is the URI of data disk in the blob storage"
                                 type: "string"
                               fsType:
+                                default: "ext4"
                                 description: "fsType is Filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
                                 type: "string"
                               kind:
                                 description: "kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared"
                                 type: "string"
                               readOnly:
+                                default: false
                                 description: "readOnly Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
                                 type: "boolean"
                             required:
@@ -3137,7 +3306,7 @@ spec:
                               - "diskURI"
                             type: "object"
                           azureFile:
-                            description: "azureFile represents an Azure File Service mount on the host and bind mount to the pod."
+                            description: "azureFile represents an Azure File Service mount on the host and bind mount to the pod.\nDeprecated: AzureFile is deprecated. All operations for the in-tree azureFile type\nare redirected to the file.csi.azure.com CSI driver."
                             properties:
                               readOnly:
                                 description: "readOnly defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
@@ -3153,13 +3322,14 @@ spec:
                               - "shareName"
                             type: "object"
                           cephfs:
-                            description: "cephFS represents a Ceph FS mount on the host that shares a pod's lifetime"
+                            description: "cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.\nDeprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported."
                             properties:
                               monitors:
                                 description: "monitors is Required: Monitors is a collection of Ceph monitors\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               path:
                                 description: "path is Optional: Used as the mounted root, rather than the full Ceph tree, default is /"
                                 type: "string"
@@ -3173,7 +3343,8 @@ spec:
                                 description: "secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.\nMore info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it"
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3184,7 +3355,7 @@ spec:
                               - "monitors"
                             type: "object"
                           cinder:
-                            description: "cinder represents a cinder volume attached and mounted on kubelets host machine.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
+                            description: "cinder represents a cinder volume attached and mounted on kubelets host machine.\nDeprecated: Cinder is deprecated. All operations for the in-tree cinder type\nare redirected to the cinder.csi.openstack.org CSI driver.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
                             properties:
                               fsType:
                                 description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://examples.k8s.io/mysql-cinder-pd/README.md"
@@ -3196,7 +3367,8 @@ spec:
                                 description: "secretRef is optional: points to a secret object containing parameters used to connect\nto OpenStack."
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3233,8 +3405,10 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -3242,7 +3416,7 @@ spec:
                             type: "object"
                             x-kubernetes-map-type: "atomic"
                           csi:
-                            description: "csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature)."
+                            description: "csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers."
                             properties:
                               driver:
                                 description: "driver is the name of the CSI driver that handles this volume.\nConsult with your admin for the correct name as registered in the cluster."
@@ -3254,7 +3428,8 @@ spec:
                                 description: "nodePublishSecretRef is a reference to the secret object containing\nsensitive information to pass to the CSI driver to complete the CSI\nNodePublishVolume and NodeUnpublishVolume calls.\nThis field is optional, and  may be empty if no secret is required. If the\nsecret object contains more than one secret, all secret references are passed."
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3282,7 +3457,7 @@ spec:
                                   description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                   properties:
                                     fieldRef:
-                                      description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
+                                      description: "Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported."
                                       properties:
                                         apiVersion:
                                           description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
@@ -3325,6 +3500,7 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           emptyDir:
                             description: "emptyDir represents a temporary directory that shares a pod's lifetime.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir"
@@ -3341,10 +3517,10 @@ spec:
                                 x-kubernetes-int-or-string: true
                             type: "object"
                           ephemeral:
-                            description: "ephemeral represents a volume that is handled by a cluster storage driver.\nThe volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,\nand deleted when the pod is removed.\n\n\nUse this if:\na) the volume is only needed while the pod runs,\nb) features of normal volumes like restoring from snapshot or capacity\n   tracking are needed,\nc) the storage driver is specified through a storage class, and\nd) the storage driver supports dynamic volume provisioning through\n   a PersistentVolumeClaim (see EphemeralVolumeSource for more\n   information on the connection between this volume type\n   and PersistentVolumeClaim).\n\n\nUse PersistentVolumeClaim or one of the vendor-specific\nAPIs for volumes that persist for longer than the lifecycle\nof an individual pod.\n\n\nUse CSI for light-weight local ephemeral volumes if the CSI driver is meant to\nbe used that way - see the documentation of the driver for\nmore information.\n\n\nA pod can use both types of ephemeral volumes and\npersistent volumes at the same time."
+                            description: "ephemeral represents a volume that is handled by a cluster storage driver.\nThe volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,\nand deleted when the pod is removed.\n\nUse this if:\na) the volume is only needed while the pod runs,\nb) features of normal volumes like restoring from snapshot or capacity\n   tracking are needed,\nc) the storage driver is specified through a storage class, and\nd) the storage driver supports dynamic volume provisioning through\n   a PersistentVolumeClaim (see EphemeralVolumeSource for more\n   information on the connection between this volume type\n   and PersistentVolumeClaim).\n\nUse PersistentVolumeClaim or one of the vendor-specific\nAPIs for volumes that persist for longer than the lifecycle\nof an individual pod.\n\nUse CSI for light-weight local ephemeral volumes if the CSI driver is meant to\nbe used that way - see the documentation of the driver for\nmore information.\n\nA pod can use both types of ephemeral volumes and\npersistent volumes at the same time."
                             properties:
                               volumeClaimTemplate:
-                                description: "Will be used to create a stand-alone PVC to provision the volume.\nThe pod in which this EphemeralVolumeSource is embedded will be the\nowner of the PVC, i.e. the PVC will be deleted together with the\npod.  The name of the PVC will be `<pod name>-<volume name>` where\n`<volume name>` is the name from the `PodSpec.Volumes` array\nentry. Pod validation will reject the pod if the concatenated name\nis not valid for a PVC (for example, too long).\n\n\nAn existing PVC with that name that is not owned by the pod\nwill *not* be used for the pod to avoid using an unrelated\nvolume by mistake. Starting the pod is then blocked until\nthe unrelated PVC is removed. If such a pre-created PVC is\nmeant to be used by the pod, the PVC has to updated with an\nowner reference to the pod once the pod exists. Normally\nthis should not be necessary, but it may be useful when\nmanually reconstructing a broken cluster.\n\n\nThis field is read-only and no changes will be made by Kubernetes\nto the PVC after it has been created.\n\n\nRequired, must not be nil."
+                                description: "Will be used to create a stand-alone PVC to provision the volume.\nThe pod in which this EphemeralVolumeSource is embedded will be the\nowner of the PVC, i.e. the PVC will be deleted together with the\npod.  The name of the PVC will be `<pod name>-<volume name>` where\n`<volume name>` is the name from the `PodSpec.Volumes` array\nentry. Pod validation will reject the pod if the concatenated name\nis not valid for a PVC (for example, too long).\n\nAn existing PVC with that name that is not owned by the pod\nwill *not* be used for the pod to avoid using an unrelated\nvolume by mistake. Starting the pod is then blocked until\nthe unrelated PVC is removed. If such a pre-created PVC is\nmeant to be used by the pod, the PVC has to updated with an\nowner reference to the pod once the pod exists. Normally\nthis should not be necessary, but it may be useful when\nmanually reconstructing a broken cluster.\n\nThis field is read-only and no changes will be made by Kubernetes\nto the PVC after it has been created.\n\nRequired, must not be nil."
                                 properties:
                                   metadata:
                                     description: "May contain labels and annotations that will be copied into the PVC\nwhen creating it. No other fields are allowed and will be rejected during\nvalidation."
@@ -3357,6 +3533,7 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
+                                        x-kubernetes-list-type: "atomic"
                                       dataSource:
                                         description: "dataSource field can be used to specify either:\n* An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)\n* An existing PVC (PersistentVolumeClaim)\nIf the provisioner or an external controller can support the specified data source,\nit will create a new volume based on the contents of the specified data source.\nWhen the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,\nand dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.\nIf the namespace is specified, then dataSourceRef will not be copied to dataSource."
                                         properties:
@@ -3434,11 +3611,13 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
+                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
+                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -3450,7 +3629,7 @@ spec:
                                         description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                         type: "string"
                                       volumeAttributesClassName:
-                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
                                         type: "string"
                                       volumeMode:
                                         description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -3467,7 +3646,7 @@ spec:
                             description: "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod."
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
                                 type: "string"
                               lun:
                                 description: "lun is Optional: FC target lun number"
@@ -3481,14 +3660,16 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               wwids:
                                 description: "wwids Optional: FC volume world wide identifiers (wwids)\nEither wwids or combination of targetWWNs and lun must be set, but not both simultaneously."
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           flexVolume:
-                            description: "flexVolume represents a generic volume resource that is\nprovisioned/attached using an exec based plugin."
+                            description: "flexVolume represents a generic volume resource that is\nprovisioned/attached using an exec based plugin.\nDeprecated: FlexVolume is deprecated. Consider using a CSIDriver instead."
                             properties:
                               driver:
                                 description: "driver is the name of the driver to use for this volume."
@@ -3508,7 +3689,8 @@ spec:
                                 description: "secretRef is Optional: secretRef is reference to the secret object containing\nsensitive information to pass to the plugin scripts. This may be\nempty if no secret object is specified. If the secret object\ncontains more than one secret, all secrets are passed to the plugin\nscripts."
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3516,7 +3698,7 @@ spec:
                               - "driver"
                             type: "object"
                           flocker:
-                            description: "flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running"
+                            description: "flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.\nDeprecated: Flocker is deprecated and the in-tree flocker type is no longer supported."
                             properties:
                               datasetName:
                                 description: "datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker\nshould be considered as deprecated"
@@ -3526,10 +3708,10 @@ spec:
                                 type: "string"
                             type: "object"
                           gcePersistentDisk:
-                            description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
+                            description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nDeprecated: GCEPersistentDisk is deprecated. All operations for the in-tree\ngcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                             properties:
                               fsType:
-                                description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                                 type: "string"
                               partition:
                                 description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty).\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
@@ -3545,7 +3727,7 @@ spec:
                               - "pdName"
                             type: "object"
                           gitRepo:
-                            description: "gitRepo represents a git repository at a particular revision.\nDEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an\nEmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir\ninto the Pod's container."
+                            description: "gitRepo represents a git repository at a particular revision.\nDeprecated: GitRepo is deprecated. To provision a container with a git repo, mount an\nEmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir\ninto the Pod's container."
                             properties:
                               directory:
                                 description: "directory is the target directory name.\nMust not contain or start with '..'.  If '.' is supplied, the volume directory will be the\ngit repository.  Otherwise, if specified, the volume will contain the git repository in\nthe subdirectory with the given name."
@@ -3560,7 +3742,7 @@ spec:
                               - "repository"
                             type: "object"
                           glusterfs:
-                            description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
+                            description: "glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.\nDeprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md"
                             properties:
                               endpoints:
                                 description: "endpoints is the endpoint name that details Glusterfs topology.\nMore info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod"
@@ -3576,7 +3758,7 @@ spec:
                               - "path"
                             type: "object"
                           hostPath:
-                            description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath\n---\nTODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not\nmount host directories as read/write."
+                            description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
                             properties:
                               path:
                                 description: "path of the directory on the host.\nIf the path is a symlink, it will follow the link to the real path.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
@@ -3586,6 +3768,16 @@ spec:
                                 type: "string"
                             required:
                               - "path"
+                            type: "object"
+                          image:
+                            description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\n\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                            properties:
+                              pullPolicy:
+                                description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
+                                type: "string"
+                              reference:
+                                description: "Required: Image or artifact reference to be used.\nBehaves in the same way as pod.spec.containers[*].image.\nPull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.\nMore info: https://kubernetes.io/docs/concepts/containers/images\nThis field is optional to allow higher level config management to default or override\ncontainer images in workload controllers like Deployments and StatefulSets."
+                                type: "string"
                             type: "object"
                           iscsi:
                             description: "iscsi represents an ISCSI Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://examples.k8s.io/volumes/iscsi/README.md"
@@ -3597,7 +3789,7 @@ spec:
                                 description: "chapAuthSession defines whether support iSCSI Session CHAP authentication"
                                 type: "boolean"
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi"
                                 type: "string"
                               initiatorName:
                                 description: "initiatorName is the custom iSCSI Initiator Name.\nIf initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface\n<target portal>:<volume name> will be created for the connection."
@@ -3606,6 +3798,7 @@ spec:
                                 description: "iqn is the target iSCSI Qualified Name."
                                 type: "string"
                               iscsiInterface:
+                                default: "default"
                                 description: "iscsiInterface is the interface Name that uses an iSCSI transport.\nDefaults to 'default' (tcp)."
                                 type: "string"
                               lun:
@@ -3617,6 +3810,7 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               readOnly:
                                 description: "readOnly here will force the ReadOnly setting in VolumeMounts.\nDefaults to false."
                                 type: "boolean"
@@ -3624,7 +3818,8 @@ spec:
                                 description: "secretRef is the CHAP Secret for iSCSI target and initiator authentication"
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3668,7 +3863,7 @@ spec:
                               - "claimName"
                             type: "object"
                           photonPersistentDisk:
-                            description: "photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine"
+                            description: "photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.\nDeprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported."
                             properties:
                               fsType:
                                 description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -3680,7 +3875,7 @@ spec:
                               - "pdID"
                             type: "object"
                           portworxVolume:
-                            description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine"
+                            description: "portworxVolume represents a portworx volume attached and mounted on kubelets host machine.\nDeprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type\nare redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate\nis on."
                             properties:
                               fsType:
                                 description: "fSType represents the filesystem type to mount\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -3702,12 +3897,12 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               sources:
-                                description: "sources is the list of volume projections"
+                                description: "sources is the list of volume projections. Each entry in this list\nhandles one source."
                                 items:
-                                  description: "Projection that may be projected along with other supported volume types"
+                                  description: "Projection that may be projected along with other supported volume types.\nExactly one of these fields must be set."
                                   properties:
                                     clusterTrustBundle:
-                                      description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
+                                      description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
                                       properties:
                                         labelSelector:
                                           description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
@@ -3728,11 +3923,13 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
+                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
+                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -3778,8 +3975,10 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -3795,7 +3994,7 @@ spec:
                                             description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                             properties:
                                               fieldRef:
-                                                description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
+                                                description: "Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported."
                                                 properties:
                                                   apiVersion:
                                                     description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
@@ -3838,6 +4037,7 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     secret:
                                       description: "secret information about the secret data to project"
@@ -3862,8 +4062,10 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                          default: ""
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "optional field specify whether the Secret or its key must be defined"
@@ -3888,9 +4090,10 @@ spec:
                                       type: "object"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           quobyte:
-                            description: "quobyte represents a Quobyte mount on the host that shares a pod's lifetime"
+                            description: "quobyte represents a Quobyte mount on the host that shares a pod's lifetime.\nDeprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported."
                             properties:
                               group:
                                 description: "group to map volume access to\nDefault is no group"
@@ -3915,15 +4118,16 @@ spec:
                               - "volume"
                             type: "object"
                           rbd:
-                            description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
+                            description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nDeprecated: RBD is deprecated and the in-tree rbd type is no longer supported.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd"
                                 type: "string"
                               image:
                                 description: "image is the rados image name.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               keyring:
+                                default: "/etc/ceph/keyring"
                                 description: "keyring is the path to key ring for RBDUser.\nDefault is /etc/ceph/keyring.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               monitors:
@@ -3931,7 +4135,9 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               pool:
+                                default: "rbd"
                                 description: "pool is the rados pool name.\nDefault is rbd.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               readOnly:
@@ -3941,11 +4147,13 @@ spec:
                                 description: "secretRef is name of the authentication secret for RBDUser. If provided\noverrides keyring.\nDefault is nil.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               user:
+                                default: "admin"
                                 description: "user is the rados user name.\nDefault is admin.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                             required:
@@ -3953,9 +4161,10 @@ spec:
                               - "monitors"
                             type: "object"
                           scaleIO:
-                            description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes."
+                            description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.\nDeprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported."
                             properties:
                               fsType:
+                                default: "xfs"
                                 description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\".\nDefault is \"xfs\"."
                                 type: "string"
                               gateway:
@@ -3971,7 +4180,8 @@ spec:
                                 description: "secretRef references to the secret for ScaleIO user and other\nsensitive information. If this is not provided, Login operation will fail."
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -3979,6 +4189,7 @@ spec:
                                 description: "sslEnabled Flag enable/disable SSL communication with Gateway, default false"
                                 type: "boolean"
                               storageMode:
+                                default: "ThinProvisioned"
                                 description: "storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.\nDefault is ThinProvisioned."
                                 type: "string"
                               storagePool:
@@ -4022,6 +4233,7 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               optional:
                                 description: "optional field specify whether the Secret or its keys must be defined"
                                 type: "boolean"
@@ -4030,7 +4242,7 @@ spec:
                                 type: "string"
                             type: "object"
                           storageos:
-                            description: "storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes."
+                            description: "storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.\nDeprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported."
                             properties:
                               fsType:
                                 description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -4042,7 +4254,8 @@ spec:
                                 description: "secretRef specifies the secret to use for obtaining the StorageOS API\ncredentials.  If not specified, default values will be attempted."
                                 properties:
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -4054,7 +4267,7 @@ spec:
                                 type: "string"
                             type: "object"
                           vsphereVolume:
-                            description: "vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine"
+                            description: "vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.\nDeprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type\nare redirected to the csi.vsphere.vmware.com CSI driver."
                             properties:
                               fsType:
                                 description: "fsType is filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
@@ -4233,7 +4446,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -4282,7 +4496,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -4400,12 +4615,15 @@ spec:
                       description: "Resources defines the Compute Resources required by the container for the Argo CD server component."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -4473,7 +4691,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             insecureEdgeTerminationPolicy:
-                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
+                              description: "insecureEdgeTerminationPolicy indicates the desired behavior for insecure connections to a route. While\neach router may make its own decisions on which ports to expose, this is normally port 80.\n\n* Allow - traffic is sent to the server on the insecure port (edge/reencrypt terminations only) (default).\n* None - no traffic is allowed on the insecure port.\n* Redirect - clients are redirected to the secure port."
                               enum:
                                 - "Allow"
                                 - "None"
@@ -4484,7 +4702,7 @@ spec:
                               description: "key provides key file contents"
                               type: "string"
                             termination:
-                              description: "termination indicates termination type.\n\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\n\nNote: passthrough termination is incompatible with httpHeader actions"
+                              description: "termination indicates termination type.\n\n* edge - TLS termination is done by the router and http is used to communicate with the backend (default)\n* passthrough - Traffic is sent straight to the destination without the router providing TLS termination\n* reencrypt - TLS termination is done by the router and https is used to communicate with the backend\n\nNote: passthrough termination is incompatible with httpHeader actions"
                               enum:
                                 - "edge"
                                 - "reencrypt"
@@ -4541,12 +4759,15 @@ spec:
                           description: "Resources defines the Compute Resources required by the container for Dex."
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
                                   name:
                                     description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                    type: "string"
+                                  request:
+                                    description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                     type: "string"
                                 required:
                                   - "name"
@@ -4594,12 +4815,15 @@ spec:
                           description: "Resources defines the Compute Resources required by the container for Keycloak."
                           properties:
                             claims:
-                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                              description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                               items:
                                 description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                 properties:
                                   name:
                                     description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                    type: "string"
+                                  request:
+                                    description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                     type: "string"
                                 required:
                                   - "name"
@@ -4644,12 +4868,15 @@ spec:
                       description: "Deprecated field. Support dropped in v1beta1 version.\nResources defines the Compute Resources required by the container for SSO."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -4725,7 +4952,7 @@ spec:
                 conditions:
                   description: "Conditions is an array of the ArgoCD's status conditions"
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -4754,7 +4981,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

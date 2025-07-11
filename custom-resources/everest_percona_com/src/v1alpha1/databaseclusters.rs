@@ -107,6 +107,9 @@ pub struct DatabaseClusterDataSource {
     /// BackupSource is the backup source to restore from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSource")]
     pub backup_source: Option<DatabaseClusterDataSourceBackupSource>,
+    /// DataImport allows importing data from an external backup source.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataImport")]
+    pub data_import: Option<DatabaseClusterDataSourceDataImport>,
     /// DBClusterBackupName is the name of the DB cluster backup to restore from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbClusterBackupName")]
     pub db_cluster_backup_name: Option<String>,
@@ -124,6 +127,71 @@ pub struct DatabaseClusterDataSourceBackupSource {
     pub backup_storage_name: String,
     /// Path is the path to the backup file/directory.
     pub path: String,
+}
+
+/// DataImport allows importing data from an external backup source.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterDataSourceDataImport {
+    /// Config defines the configuration for the data import job.
+    /// These options are specific to the DataImporter being used and must conform to
+    /// the schema defined in the DataImporter's .spec.config.openAPIV3Schema.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// DataImporterName is the data importer to use for the import.
+    #[serde(rename = "dataImporterName")]
+    pub data_importer_name: String,
+    /// Source is the source of the data to import.
+    pub source: DatabaseClusterDataSourceDataImportSource,
+}
+
+/// Source is the source of the data to import.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterDataSourceDataImportSource {
+    /// Path is the path to the directory to import the data from.
+    /// This may be a path to a file or a directory, depending on the data importer.
+    /// Only absolute file paths are allowed. Leading and trailing '/' are optional.
+    pub path: String,
+    /// S3 contains the S3 information for the data import.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub s3: Option<DatabaseClusterDataSourceDataImportSourceS3>,
+}
+
+/// S3 contains the S3 information for the data import.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatabaseClusterDataSourceDataImportSourceS3 {
+    /// AccessKeyID allows specifying the S3 access key ID inline.
+    /// It is provided as a write-only input field for convenience.
+    /// When this field is set, a webhook writes this value in the Secret specified by `credentialsSecretName`
+    /// and empties this field.
+    /// This field is not stored in the API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessKeyId")]
+    pub access_key_id: Option<String>,
+    /// Bucket is the name of the S3 bucket.
+    pub bucket: String,
+    /// CredentialsSecreName is the reference to the secret containing the S3 credentials.
+    /// The Secret must contain the keys `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+    #[serde(rename = "credentialsSecretName")]
+    pub credentials_secret_name: String,
+    /// EndpointURL is an endpoint URL of backup storage.
+    #[serde(rename = "endpointURL")]
+    pub endpoint_url: String,
+    /// ForcePathStyle is set to use path-style URLs.
+    /// If unspecified, the default value is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
+    pub force_path_style: Option<bool>,
+    /// Region is the region of the S3 bucket.
+    pub region: String,
+    /// SecretAccessKey allows specifying the S3 secret access key inline.
+    /// It is provided as a write-only input field for convenience.
+    /// When this field is set, a webhook writes this value in the Secret specified by `credentialsSecretName`
+    /// and empties this field.
+    /// This field is not stored in the API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretAccessKey")]
+    pub secret_access_key: Option<String>,
+    /// VerifyTLS is set to ensure TLS/SSL verification.
+    /// If unspecified, the default value is true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyTLS")]
+    pub verify_tls: Option<bool>,
 }
 
 /// PITR is the point-in-time recovery configuration
@@ -366,6 +434,10 @@ pub struct DatabaseClusterStatus {
     /// CRVersion is the observed version of the CR used with the underlying operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crVersion")]
     pub cr_version: Option<String>,
+    /// DataImportJobName refers to the DataImportJob that is used to import data into the cluster.
+    /// This is set only when .spec.dataSource.dataImport is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataImportJobName")]
+    pub data_import_job_name: Option<String>,
     /// Details provides full status of the upstream cluster as a plain text.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,

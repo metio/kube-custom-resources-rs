@@ -117,6 +117,9 @@ pub struct PlanSpec {
     /// The network attachment definition that should be used for disk transfer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transferNetwork")]
     pub transfer_network: Option<ObjectReference>,
+    /// Migration type. e.g. "cold", "warm", "live". Supersedes the `warm` boolean if set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<PlanType>,
     /// List of VMs.
     pub vms: Vec<PlanVms>,
     /// VolumeNameTemplate is a template for generating volume interface names in the target virtual machine.
@@ -337,6 +340,17 @@ pub struct PlanTransferNetwork {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// PlanSpec defines the desired state of Plan.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PlanType {
+    #[serde(rename = "cold")]
+    Cold,
+    #[serde(rename = "warm")]
+    Warm,
+    #[serde(rename = "live")]
+    Live,
 }
 
 /// A VM listed on the plan.

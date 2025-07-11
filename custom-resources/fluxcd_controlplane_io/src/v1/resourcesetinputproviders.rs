@@ -92,10 +92,18 @@ pub struct ResourceSetInputProviderFilter {
     /// that the input provider should exclude.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeBranch")]
     pub exclude_branch: Option<String>,
+    /// ExcludeTag specifies the regular expression to filter the tags
+    /// that the input provider should exclude.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeTag")]
+    pub exclude_tag: Option<String>,
     /// IncludeBranch specifies the regular expression to filter the branches
     /// that the input provider should include.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeBranch")]
     pub include_branch: Option<String>,
+    /// IncludeTag specifies the regular expression to filter the tags
+    /// that the input provider should include.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeTag")]
+    pub include_tag: Option<String>,
     /// Labels specifies the list of labels to filter the input provider response.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<Vec<String>>,
@@ -103,7 +111,10 @@ pub struct ResourceSetInputProviderFilter {
     /// When not set, the default limit is 100.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<i64>,
-    /// Semver specifies the semantic version range to filter and order the tags.
+    /// Semver specifies a semantic version range to filter and sort the tags.
+    /// If this field is not specified, the tags will be sorted in reverse
+    /// alphabetical order.
+    /// Supported only for tags at the moment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub semver: Option<String>,
 }

@@ -30,6 +30,10 @@ pub struct NodeHealthCheckSpec {
     /// Mutually exclusive with RemediationTemplate
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "escalatingRemediations")]
     pub escalating_remediations: Option<Vec<NodeHealthCheckEscalatingRemediations>>,
+    /// HealthyDelay is the time before NHC would allow a node to be healthy again.
+    /// A negative value means that NHC will never consider the node healthy and a manual intervention is expected
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyDelay")]
+    pub healthy_delay: Option<String>,
     /// Remediation is allowed if no more than "MaxUnhealthy" nodes selected by "selector" are not healthy.
     /// Expects either a non-negative integer value or a percentage value.
     /// Percentage values must be positive whole numbers and are capped at 100%.
@@ -300,6 +304,9 @@ pub struct NodeHealthCheckStatusUnhealthyNodes {
     /// remediation CRs are actually deleted, when remediators finished cleanup and removed their finalizers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "conditionsHealthyTimestamp")]
     pub conditions_healthy_timestamp: Option<String>,
+    /// HealthyDelayed notes whether a node should be considered healthy, but isn't due to NodeHealthCheckSpec.HealthyDelay configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyDelayed")]
+    pub healthy_delayed: Option<bool>,
     /// Name is the name of the unhealthy node
     pub name: String,
     /// Remediations tracks the remediations created for this node

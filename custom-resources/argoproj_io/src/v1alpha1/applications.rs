@@ -312,6 +312,9 @@ pub struct ApplicationOperationSyncSourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -319,6 +322,9 @@ pub struct ApplicationOperationSyncSourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -605,6 +611,9 @@ pub struct ApplicationOperationSyncSourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -612,6 +621,9 @@ pub struct ApplicationOperationSyncSourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1011,6 +1023,9 @@ pub struct ApplicationSourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -1018,6 +1033,9 @@ pub struct ApplicationSourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1352,6 +1370,9 @@ pub struct ApplicationSourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -1359,6 +1380,9 @@ pub struct ApplicationSourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -1824,6 +1848,9 @@ pub struct ApplicationStatusHistorySourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -1831,6 +1858,9 @@ pub struct ApplicationStatusHistorySourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2117,6 +2147,9 @@ pub struct ApplicationStatusHistorySourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -2124,6 +2157,9 @@ pub struct ApplicationStatusHistorySourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2547,6 +2583,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -2554,6 +2593,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -2840,6 +2882,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -2847,6 +2892,9 @@ pub struct ApplicationStatusOperationStateOperationSyncSourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3226,6 +3274,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -3233,6 +3284,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3519,6 +3573,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -3526,6 +3583,9 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -3624,37 +3684,46 @@ pub struct ApplicationStatusOperationStateSyncResultSourcesPluginParameters {
     pub string: Option<String>,
 }
 
-/// ResourceStatus holds the current sync and health status of a resource
-/// TODO: describe members of this type
+/// ResourceStatus holds the current synchronization and health status of a Kubernetes resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusResources {
+    /// Group represents the API group of the resource (e.g., "apps" for Deployments).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
-    /// HealthStatus contains information about the currently observed health state of an application or resource
+    /// Health indicates the health status of the resource (e.g., Healthy, Degraded, Progressing).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<ApplicationStatusResourcesHealth>,
+    /// Hook is true if the resource is used as a lifecycle hook in an Argo CD application.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hook: Option<bool>,
+    /// Kind specifies the type of the resource (e.g., "Deployment", "Service").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
+    /// Name is the unique name of the resource within the namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Namespace defines the Kubernetes namespace where the resource is located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// RequiresDeletionConfirmation is true if the resource requires explicit user confirmation before deletion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiresDeletionConfirmation")]
     pub requires_deletion_confirmation: Option<bool>,
+    /// RequiresPruning is true if the resource needs to be pruned (deleted) as part of synchronization.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiresPruning")]
     pub requires_pruning: Option<bool>,
-    /// SyncStatusCode is a type which represents possible comparison results
+    /// Status represents the synchronization state of the resource (e.g., Synced, OutOfSync).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
+    /// SyncWave determines the order in which resources are applied during a sync operation.
+    /// Lower values are applied first.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncWave")]
     pub sync_wave: Option<i64>,
+    /// Version indicates the API version of the resource (e.g., "v1", "v1beta1").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// HealthStatus contains information about the currently observed health state of an application or resource
+/// Health indicates the health status of the resource (e.g., Healthy, Degraded, Progressing).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusResourcesHealth {
     /// LastTransitionTime is the time the HealthStatus was set or updated
@@ -4087,6 +4156,9 @@ pub struct ApplicationStatusSyncComparedToSourceKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -4094,6 +4166,9 @@ pub struct ApplicationStatusSyncComparedToSourceKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,
@@ -4380,6 +4455,9 @@ pub struct ApplicationStatusSyncComparedToSourcesKustomize {
     /// ForceCommonLabels specifies whether to force applying common labels to resources for Kustomize apps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceCommonLabels")]
     pub force_common_labels: Option<bool>,
+    /// IgnoreMissingComponents prevents kustomize from failing when components do not exist locally by not appending them to kustomization file
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreMissingComponents")]
+    pub ignore_missing_components: Option<bool>,
     /// Images is a list of Kustomize image override specifications
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<Vec<String>>,
@@ -4387,6 +4465,9 @@ pub struct ApplicationStatusSyncComparedToSourcesKustomize {
     /// uses the Kubernetes version of the target cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeVersion")]
     pub kube_version: Option<String>,
+    /// LabelIncludeTemplates specifies whether to apply common labels to resource templates or not
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelIncludeTemplates")]
+    pub label_include_templates: Option<bool>,
     /// LabelWithoutSelector specifies whether to apply common labels to resource selectors or not
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelWithoutSelector")]
     pub label_without_selector: Option<bool>,

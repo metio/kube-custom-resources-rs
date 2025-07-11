@@ -4401,6 +4401,9 @@ pub struct MariaDBReplicationPrimary {
     /// AutomaticFailover indicates whether the operator should automatically update PodIndex to perform an automatic primary failover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailover")]
     pub automatic_failover: Option<bool>,
+    /// AutomaticFailoverDelay indicates the duration before performing an automatic primary failover. By default, no extra delay is added.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticFailoverDelay")]
+    pub automatic_failover_delay: Option<String>,
     /// PodIndex is the StatefulSet index of the primary node. The user may change this field to perform a manual switchover.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndex")]
     pub pod_index: Option<i64>,
@@ -5331,6 +5334,9 @@ pub struct MariaDBStatus {
     /// CurrentPrimary is the primary Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimary")]
     pub current_primary: Option<String>,
+    /// CurrentPrimaryFailingSince is the timestamp of the moment when the primary became not ready.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimaryFailingSince")]
+    pub current_primary_failing_since: Option<String>,
     /// CurrentPrimaryPodIndex is the primary Pod index.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrimaryPodIndex")]
     pub current_primary_pod_index: Option<i64>,

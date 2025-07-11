@@ -6631,6 +6631,13 @@ pub struct PerconaPGClusterExpose {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// LoadBalancerClass specifies the class of the load balancer implementation
+    /// to be used. This field is supported for Service Type LoadBalancer only.
+    /// 
+    /// More info:
+    /// https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.
     /// This field will be ignored if the cloud-provider does not support the feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -6662,6 +6669,13 @@ pub struct PerconaPGClusterExposeReplicas {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// LoadBalancerClass specifies the class of the load balancer implementation
+    /// to be used. This field is supported for Service Type LoadBalancer only.
+    /// 
+    /// More info:
+    /// https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.
     /// This field will be ignored if the cloud-provider does not support the feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -13184,6 +13198,13 @@ pub struct PerconaPGClusterProxyPgBouncerExpose {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// LoadBalancerClass specifies the class of the load balancer implementation
+    /// to be used. This field is supported for Service Type LoadBalancer only.
+    /// 
+    /// More info:
+    /// https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
+    pub load_balancer_class: Option<String>,
     /// LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.
     /// This field will be ignored if the cloud-provider does not support the feature.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -15119,6 +15140,8 @@ pub struct PerconaPGClusterStatus {
     pub host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installedCustomExtensions")]
     pub installed_custom_extensions: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
+    pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "patroniVersion")]
     pub patroni_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

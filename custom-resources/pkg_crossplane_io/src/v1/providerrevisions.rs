@@ -96,7 +96,7 @@ pub struct ProviderRevisionRuntimeConfigRef {
     pub name: String,
 }
 
-/// PackageRevisionStatus represents the observed state of a PackageRevision.
+/// ProviderRevisionStatus represents the observed state of a ProviderRevision.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProviderRevisionStatus {
     /// AppliedImageConfigRefs records any image configs that were applied in
@@ -121,6 +121,14 @@ pub struct ProviderRevisionStatus {
     /// image config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvedImage")]
     pub resolved_image: Option<String>,
+    /// TLSClientSecretName is the name of the TLS Secret that stores client
+    /// certificates of the Provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientSecretName")]
+    pub tls_client_secret_name: Option<String>,
+    /// TLSServerSecretName is the name of the TLS Secret that stores server
+    /// certificates of the Provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsServerSecretName")]
+    pub tls_server_secret_name: Option<String>,
 }
 
 /// ImageConfigRef is a reference to an image config that indicates how the

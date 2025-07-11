@@ -22,11 +22,15 @@ pub struct ProviderSpec {
     /// For other Provider types this could be a project ID or a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    /// CertSecretRef specifies the Secret containing
-    /// a PEM-encoded CA certificate (in the `ca.crt` key).
+    /// CertSecretRef specifies the Secret containing TLS certificates
+    /// for secure communication.
     /// 
-    /// Note: Support for the `caFile` key has
-    /// been deprecated.
+    /// Supported configurations:
+    /// - CA-only: Server authentication (provide ca.crt only)
+    /// - mTLS: Mutual authentication (provide ca.crt + tls.crt + tls.key)
+    /// - Client-only: Client authentication with system CA (provide tls.crt + tls.key only)
+    /// 
+    /// Legacy keys "caFile", "certFile", "keyFile" are supported but deprecated. Use "ca.crt", "tls.crt", "tls.key" instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<ProviderCertSecretRef>,
     /// Channel specifies the destination channel where events should be posted.
@@ -78,11 +82,15 @@ pub struct ProviderSpec {
     pub username: Option<String>,
 }
 
-/// CertSecretRef specifies the Secret containing
-/// a PEM-encoded CA certificate (in the `ca.crt` key).
+/// CertSecretRef specifies the Secret containing TLS certificates
+/// for secure communication.
 /// 
-/// Note: Support for the `caFile` key has
-/// been deprecated.
+/// Supported configurations:
+/// - CA-only: Server authentication (provide ca.crt only)
+/// - mTLS: Mutual authentication (provide ca.crt + tls.crt + tls.key)
+/// - Client-only: Client authentication with system CA (provide tls.crt + tls.key only)
+/// 
+/// Legacy keys "caFile", "certFile", "keyFile" are supported but deprecated. Use "ca.crt", "tls.crt", "tls.key" instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProviderCertSecretRef {
     /// Name of the referent.

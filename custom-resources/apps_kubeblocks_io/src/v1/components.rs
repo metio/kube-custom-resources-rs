@@ -3138,31 +3138,13 @@ pub struct ComponentSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchE
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentServiceRefs {
-    /// Specifies the name of the KubeBlocks Cluster being referenced.
-    /// This is used when services from another KubeBlocks Cluster are consumed.
-    /// 
-    /// 
-    /// By default, the referenced KubeBlocks Cluster's `clusterDefinition.spec.connectionCredential`
-    /// will be utilized to bind to the current Component. This credential should include:
-    /// `endpoint`, `port`, `username`, and `password`.
-    /// 
-    /// 
-    /// Note:
-    /// 
-    /// 
-    /// - The `ServiceKind` and `ServiceVersion` specified in the service reference within the
-    ///   ClusterDefinition are not validated when using this approach.
-    /// - If both `cluster` and `serviceDescriptor` are present, `cluster` will take precedence.
-    /// 
-    /// 
-    /// Deprecated since v0.9 since `clusterDefinition.spec.connectionCredential` is deprecated,
-    /// use `clusterServiceSelector` instead.
-    /// This field is maintained for backward compatibility and its use is discouraged.
-    /// Existing usage should be updated to the current preferred approach to avoid compatibility issues in future releases.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cluster: Option<String>,
     /// References a service provided by another KubeBlocks Cluster.
     /// It specifies the ClusterService and the account credentials needed for access.
+    /// The `ServiceKind` and `ServiceVersion` specified in the service reference within the
+    /// ClusterDefinition are not validated when using this approach.
+    /// 
+    /// 
+    /// If both `clusterServiceSelector` and `serviceDescriptor` are specified, the `clusterServiceSelector` takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterServiceSelector")]
     pub cluster_service_selector: Option<ComponentServiceRefsClusterServiceSelector>,
     /// Specifies the identifier of the service reference declaration.
@@ -3186,13 +3168,18 @@ pub struct ComponentServiceRefs {
     /// and serviceVersion declared in the definition.
     /// 
     /// 
-    /// If both `cluster` and `serviceDescriptor` are specified, the `cluster` takes precedence.
+    /// If both `clusterServiceSelector` and `serviceDescriptor` are specified, the `clusterServiceSelector` takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDescriptor")]
     pub service_descriptor: Option<String>,
 }
 
 /// References a service provided by another KubeBlocks Cluster.
 /// It specifies the ClusterService and the account credentials needed for access.
+/// The `ServiceKind` and `ServiceVersion` specified in the service reference within the
+/// ClusterDefinition are not validated when using this approach.
+/// 
+/// 
+/// If both `clusterServiceSelector` and `serviceDescriptor` are specified, the `clusterServiceSelector` takes precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentServiceRefsClusterServiceSelector {
     /// The name of the Cluster being referenced.

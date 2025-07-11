@@ -917,6 +917,16 @@ spec:
                           type: "object"
                           x-kubernetes-preserve-unknown-fields: true
                       type: "object"
+                    persistentVolumeClaimRetentionPolicy:
+                      description: "PersistentVolumeClaimRetentionPolicy allows configuration of PVC rentention policy"
+                      properties:
+                        whenDeleted:
+                          description: "WhenDeleted specifies what happens to PVCs created from StatefulSet\nVolumeClaimTemplates when the StatefulSet is deleted. The default policy\nof `Retain` causes PVCs to not be affected by StatefulSet deletion. The\n`Delete` policy causes those PVCs to be deleted."
+                          type: "string"
+                        whenScaled:
+                          description: "WhenScaled specifies what happens to PVCs created from StatefulSet\nVolumeClaimTemplates when the StatefulSet is scaled down. The default\npolicy of `Retain` causes PVCs to not be affected by a scaledown. The\n`Delete` policy causes the associated PVCs for any excess pods above\nthe replica count to be deleted."
+                          type: "string"
+                      type: "object"
                     podDisruptionBudget:
                       description: "PodDisruptionBudget created by operator"
                       properties:
@@ -1028,6 +1038,16 @@ spec:
                     rollingUpdateStrategy:
                       description: "RollingUpdateStrategy defines strategy for application updates\nDefault is OnDelete, in this case operator handles update process\nCan be changed for RollingUpdate"
                       type: "string"
+                    rollingUpdateStrategyBehavior:
+                      description: "RollingUpdateStrategyBehavior defines customized behavior for rolling updates.\nIt applies if the RollingUpdateStrategy is set to OnDelete, which is the default."
+                      properties:
+                        maxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "MaxUnavailable defines the maximum number of pods that can be unavailable during the update.\nIt can be specified as an absolute number (e.g. 2) or a percentage of the total pods (e.g. \"50%\").\nFor example, if set to 100%, all pods will be upgraded at once, minimizing downtime when needed."
+                          x-kubernetes-int-or-string: true
+                      type: "object"
                     runtimeClassName:
                       description: "RuntimeClassName - defines runtime class for kubernetes pod.\nhttps://kubernetes.io/docs/concepts/containers/runtime-class/"
                       type: "string"
@@ -1654,6 +1674,16 @@ spec:
                     paused:
                       description: "Paused If set to true all actions on the underlying managed objects are not\ngoing to be performed, except for delete actions."
                       type: "boolean"
+                    persistentVolumeClaimRetentionPolicy:
+                      description: "PersistentVolumeClaimRetentionPolicy allows configuration of PVC rentention policy"
+                      properties:
+                        whenDeleted:
+                          description: "WhenDeleted specifies what happens to PVCs created from StatefulSet\nVolumeClaimTemplates when the StatefulSet is deleted. The default policy\nof `Retain` causes PVCs to not be affected by StatefulSet deletion. The\n`Delete` policy causes those PVCs to be deleted."
+                          type: "string"
+                        whenScaled:
+                          description: "WhenScaled specifies what happens to PVCs created from StatefulSet\nVolumeClaimTemplates when the StatefulSet is scaled down. The default\npolicy of `Retain` causes PVCs to not be affected by a scaledown. The\n`Delete` policy causes the associated PVCs for any excess pods above\nthe replica count to be deleted."
+                          type: "string"
+                      type: "object"
                     podDisruptionBudget:
                       description: "PodDisruptionBudget created by operator"
                       properties:
@@ -1765,6 +1795,16 @@ spec:
                     rollingUpdateStrategy:
                       description: "RollingUpdateStrategy defines strategy for application updates\nDefault is OnDelete, in this case operator handles update process\nCan be changed for RollingUpdate"
                       type: "string"
+                    rollingUpdateStrategyBehavior:
+                      description: "RollingUpdateStrategyBehavior defines customized behavior for rolling updates.\nIt applies if the RollingUpdateStrategy is set to OnDelete, which is the default."
+                      properties:
+                        maxUnavailable:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          description: "MaxUnavailable defines the maximum number of pods that can be unavailable during the update.\nIt can be specified as an absolute number (e.g. 2) or a percentage of the total pods (e.g. \"50%\").\nFor example, if set to 100%, all pods will be upgraded at once, minimizing downtime when needed."
+                          x-kubernetes-int-or-string: true
+                      type: "object"
                     runtimeClassName:
                       description: "RuntimeClassName - defines runtime class for kubernetes pod.\nhttps://kubernetes.io/docs/concepts/containers/runtime-class/"
                       type: "string"
@@ -1896,7 +1936,7 @@ spec:
                       description: "VMBackup configuration for backup"
                       properties:
                         acceptEULA:
-                          description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/"
+                          description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/\nDeprecated: use license.key or license.keyRef instead"
                           type: "boolean"
                         concurrency:
                           description: "Defines number of concurrent workers. Higher concurrency may reduce backup duration (default 10)"

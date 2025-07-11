@@ -851,7 +851,7 @@ spec:
                   description: "VMBackup configuration for backup"
                   properties:
                     acceptEULA:
-                      description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/"
+                      description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/\nDeprecated: use license.key or license.keyRef instead"
                       type: "boolean"
                     concurrency:
                       description: "Defines number of concurrent workers. Higher concurrency may reduce backup duration (default 10)"
