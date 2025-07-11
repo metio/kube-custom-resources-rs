@@ -268,6 +268,24 @@ spec:
                       description: "defines image that includes drivers and firmware blobs, don't include tag since it will be fully managed by operator\nfor vanilla k8s the default value is image-registry:5000/$MOD_NAMESPACE/amdgpu_kmod\nfor OpenShift the default value is image-registry.openshift-image-registry.svc:5000/$MOD_NAMESPACE/amdgpu_kmod\nimage tag will be in the format of <linux distro>-<release version>-<kernel version>-<driver version>\nexample tag is coreos-416.94-5.14.0-427.28.1.el9_4.x86_64-6.2.2 and ubuntu-22.04-5.15.0-94-generic-6.1.3\nNOTE: Updating the driver image repository is not supported. Please delete the existing DeviceConfig and create a new one with the updated image repository"
                       pattern: "^([a-z0-9]+(?:[._-][a-z0-9]+)*(:[0-9]+)?)(/[$a-zA-Z0-9_]+(?:[._-][$a-zA-Z0-9_]+)*)*(?::[a-z0-9._-]+)?(?:@[a-zA-Z0-9]+:[a-f0-9]+)?$"
                       type: "string"
+                    imageBuild:
+                      description: "image build configs"
+                      properties:
+                        baseImageRegistry:
+                          default: "docker.io"
+                          description: "image registry to fetch base image for building driver image, default value is docker.io, the builder will search for corresponding OS base image from given registry\ne.g. if your worker node is using Ubuntu 22.04, by default the base image would be docker.io/ubuntu:22.04\nNOTE: this field won't apply for OpenShift since OpenShift is using its own DriverToolKit image to build driver image"
+                          type: "string"
+                        baseImageRegistryTLS:
+                          description: "TLS settings for fetching base image"
+                          properties:
+                            insecure:
+                              description: "If true, check if the container image already exists using plain HTTP."
+                              type: "boolean"
+                            insecureSkipTLSVerify:
+                              description: "If true, skip any TLS server certificate validation"
+                              type: "boolean"
+                          type: "object"
+                      type: "object"
                     imageRegistrySecret:
                       description: "secrets used for pull/push images from/to private registry specified in driversImage"
                       properties:

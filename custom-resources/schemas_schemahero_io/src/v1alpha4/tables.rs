@@ -119,12 +119,15 @@ pub struct TableSchemaCockroachdb {
     pub indexes: Option<Vec<TableSchemaCockroachdbIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
+    /// Deprecated: this field should be avoided and one should use Triggers without json prefix instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "json:triggers")]
     pub json_triggers: Option<Vec<TableSchemaCockroachdbJsonTriggers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<TableSchemaCockroachdbTriggers>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -182,20 +185,121 @@ pub struct TableSchemaCockroachdbIndexes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaCockroachdbJsonTriggers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
-    #[serde(rename = "executeProcedure")]
-    pub execute_procedure: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execute: Option<TableSchemaCockroachdbJsonTriggersExecute>,
+    /// Deprecated: we support multiple execute types from now on.
+    /// You are encouraged to use Execute instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executeProcedure")]
+    pub execute_procedure: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TableSchemaCockroachdbJsonTriggersExecute {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<TableSchemaCockroachdbJsonTriggersExecuteParams>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: TableSchemaCockroachdbJsonTriggersExecuteType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaCockroachdbJsonTriggersExecuteParams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TableSchemaCockroachdbJsonTriggersExecuteParamsMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaCockroachdbJsonTriggersExecuteParamsMode {
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "OUT")]
+    Out,
+    #[serde(rename = "INOUT")]
+    Inout,
+    #[serde(rename = "VARIADIC")]
+    Variadic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaCockroachdbJsonTriggersExecuteType {
+    Procedure,
+    Function,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaCockroachdbTriggers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub condition: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
+    pub constraint_trigger: Option<bool>,
+    pub events: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execute: Option<TableSchemaCockroachdbTriggersExecute>,
+    /// Deprecated: we support multiple execute types from now on.
+    /// You are encouraged to use Execute instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executeProcedure")]
+    pub execute_procedure: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
+    pub for_each_run: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
+    pub for_each_statement: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TableSchemaCockroachdbTriggersExecute {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<TableSchemaCockroachdbTriggersExecuteParams>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: TableSchemaCockroachdbTriggersExecuteType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaCockroachdbTriggersExecuteParams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TableSchemaCockroachdbTriggersExecuteParamsMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaCockroachdbTriggersExecuteParamsMode {
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "OUT")]
+    Out,
+    #[serde(rename = "INOUT")]
+    Inout,
+    #[serde(rename = "VARIADIC")]
+    Variadic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaCockroachdbTriggersExecuteType {
+    Procedure,
+    Function,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -282,12 +386,15 @@ pub struct TableSchemaPostgres {
     pub indexes: Option<Vec<TableSchemaPostgresIndexes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDeleted")]
     pub is_deleted: Option<bool>,
+    /// Deprecated: this field should be avoided and one should use Triggers without json prefix instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "json:triggers")]
     pub json_triggers: Option<Vec<TableSchemaPostgresJsonTriggers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "primaryKey")]
     pub primary_key: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub triggers: Option<Vec<TableSchemaPostgresTriggers>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -345,20 +452,121 @@ pub struct TableSchemaPostgresIndexes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaPostgresJsonTriggers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
-    #[serde(rename = "executeProcedure")]
-    pub execute_procedure: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execute: Option<TableSchemaPostgresJsonTriggersExecute>,
+    /// Deprecated: we support multiple execute types from now on.
+    /// You are encouraged to use Execute instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executeProcedure")]
+    pub execute_procedure: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TableSchemaPostgresJsonTriggersExecute {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<TableSchemaPostgresJsonTriggersExecuteParams>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: TableSchemaPostgresJsonTriggersExecuteType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaPostgresJsonTriggersExecuteParams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TableSchemaPostgresJsonTriggersExecuteParamsMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaPostgresJsonTriggersExecuteParamsMode {
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "OUT")]
+    Out,
+    #[serde(rename = "INOUT")]
+    Inout,
+    #[serde(rename = "VARIADIC")]
+    Variadic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaPostgresJsonTriggersExecuteType {
+    Procedure,
+    Function,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaPostgresTriggers {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub condition: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
+    pub constraint_trigger: Option<bool>,
+    pub events: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execute: Option<TableSchemaPostgresTriggersExecute>,
+    /// Deprecated: we support multiple execute types from now on.
+    /// You are encouraged to use Execute instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executeProcedure")]
+    pub execute_procedure: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
+    pub for_each_run: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
+    pub for_each_statement: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TableSchemaPostgresTriggersExecute {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<TableSchemaPostgresTriggersExecuteParams>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: TableSchemaPostgresTriggersExecuteType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaPostgresTriggersExecuteParams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TableSchemaPostgresTriggersExecuteParamsMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaPostgresTriggersExecuteParamsMode {
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "OUT")]
+    Out,
+    #[serde(rename = "INOUT")]
+    Inout,
+    #[serde(rename = "VARIADIC")]
+    Variadic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaPostgresTriggersExecuteType {
+    Procedure,
+    Function,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -616,20 +824,61 @@ pub struct TableSchemaTimescaledbIndexes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TableSchemaTimescaledbTriggers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub arguments: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintTrigger")]
     pub constraint_trigger: Option<bool>,
     pub events: Vec<String>,
-    #[serde(rename = "executeProcedure")]
-    pub execute_procedure: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub execute: Option<TableSchemaTimescaledbTriggersExecute>,
+    /// Deprecated: we support multiple execute types from now on.
+    /// You are encouraged to use Execute instead.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executeProcedure")]
+    pub execute_procedure: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachRun")]
     pub for_each_run: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forEachStatement")]
     pub for_each_statement: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct TableSchemaTimescaledbTriggersExecute {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<TableSchemaTimescaledbTriggersExecuteParams>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub schema: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: TableSchemaTimescaledbTriggersExecuteType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TableSchemaTimescaledbTriggersExecuteParams {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<TableSchemaTimescaledbTriggersExecuteParamsMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaTimescaledbTriggersExecuteParamsMode {
+    #[serde(rename = "IN")]
+    In,
+    #[serde(rename = "OUT")]
+    Out,
+    #[serde(rename = "INOUT")]
+    Inout,
+    #[serde(rename = "VARIADIC")]
+    Variadic,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TableSchemaTimescaledbTriggersExecuteType {
+    Procedure,
+    Function,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

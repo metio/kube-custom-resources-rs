@@ -29,12 +29,11 @@ pub struct ClusterClassSpec {
     pub availability_gates: Option<Vec<ClusterClassAvailabilityGates>>,
     /// controlPlane is a reference to a local struct that holds the details
     /// for provisioning the Control Plane for the Cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
-    pub control_plane: Option<ClusterClassControlPlane>,
+    #[serde(rename = "controlPlane")]
+    pub control_plane: ClusterClassControlPlane,
     /// infrastructure is a reference to a local struct that holds the details
     /// for provisioning the infrastructure cluster for the Cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub infrastructure: Option<ClusterClassInfrastructure>,
+    pub infrastructure: ClusterClassInfrastructure,
     /// patches defines the patches which are applied to customize
     /// referenced templates of a ClusterClass.
     /// Note: Patches will be applied in the order of the array.
@@ -132,10 +131,9 @@ pub struct ClusterClassControlPlane {
     /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ClusterClassControlPlaneReadinessGates>>,
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassControlPlaneRef,
+    /// templateRef contains the reference to a provider-specific control plane template.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassControlPlaneTemplateRef,
 }
 
 /// machineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
@@ -231,16 +229,14 @@ pub struct ClusterClassControlPlaneMachineHealthCheckUnhealthyNodeConditions {
 /// referenced above is Machine based and supports setting replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructure {
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassControlPlaneMachineInfrastructureRef,
+    /// templateRef is a required reference to the template for a MachineInfrastructure of a ControlPlane.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassControlPlaneMachineInfrastructureTemplateRef,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef is a required reference to the template for a MachineInfrastructure of a ControlPlane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassControlPlaneMachineInfrastructureRef {
+pub struct ClusterClassControlPlaneMachineInfrastructureTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -314,10 +310,9 @@ pub enum ClusterClassControlPlaneReadinessGatesPolarity {
     Negative,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef contains the reference to a provider-specific control plane template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassControlPlaneRef {
+pub struct ClusterClassControlPlaneTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -337,10 +332,9 @@ pub struct ClusterClassInfrastructure {
     /// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassInfrastructureNamingStrategy>,
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassInfrastructureRef,
+    /// templateRef contains the reference to a provider-specific infrastructure cluster template.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassInfrastructureTemplateRef,
 }
 
 /// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
@@ -357,10 +351,9 @@ pub struct ClusterClassInfrastructureNamingStrategy {
     pub template: Option<String>,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef contains the reference to a provider-specific infrastructure cluster template.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassInfrastructureRef {
+pub struct ClusterClassInfrastructureTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -1193,16 +1186,14 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplate {
 /// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrap {
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef,
+    /// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachineDeploymentsTemplateBootstrapTemplateRef,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
+pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -1219,16 +1210,14 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
 /// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructure {
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef,
+    /// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachineDeploymentsTemplateInfrastructureTemplateRef,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
+pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -1339,16 +1328,14 @@ pub struct ClusterClassWorkersMachinePoolsTemplate {
 /// for the creation of the Machines in the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateBootstrap {
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassWorkersMachinePoolsTemplateBootstrapRef,
+    /// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachinePoolsTemplateBootstrapTemplateRef,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapRef {
+pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -1365,16 +1352,14 @@ pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapRef {
 /// for the creation of the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructure {
-    /// ref is a required reference to a custom resource
-    /// offered by a provider.
-    #[serde(rename = "ref")]
-    pub r#ref: ClusterClassWorkersMachinePoolsTemplateInfrastructureRef,
+    /// templateRef is a required reference to the InfrastructureTemplate for a MachinePool.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachinePoolsTemplateInfrastructureTemplateRef,
 }
 
-/// ref is a required reference to a custom resource
-/// offered by a provider.
+/// templateRef is a required reference to the InfrastructureTemplate for a MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureRef {
+pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]

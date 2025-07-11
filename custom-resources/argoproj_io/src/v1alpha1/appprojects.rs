@@ -185,6 +185,9 @@ pub struct AppProjectSignatureKeys {
 /// SyncWindow contains the kind, time, duration and attributes that are used to assign the syncWindows to apps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AppProjectSyncWindows {
+    /// UseAndOperator use AND operator for matching applications, namespaces and clusters instead of the default OR operator
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "andOperator")]
+    pub and_operator: Option<bool>,
     /// Applications contains a list of applications that the window will apply to
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub applications: Option<Vec<String>>,

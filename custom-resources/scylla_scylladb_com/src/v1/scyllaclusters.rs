@@ -3129,6 +3129,9 @@ pub struct ScyllaClusterRepairs {
     /// host specifies a host to repair. If empty, all hosts are repaired.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
+    /// ignoreDownHosts indicates that the nodes in down state should be ignored during repair.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDownHosts")]
+    pub ignore_down_hosts: Option<bool>,
     /// intensity indicates how many token ranges (per shard) to repair in a single Scylla repair job. By default this is 1.
     /// If you set it to 0 the number of token ranges is adjusted to the maximum supported by node (see max_repair_ranges_in_parallel in Scylla logs).
     /// Valid values are 0 and integers >= 1. Higher values will result in increased cluster load and slightly faster repairs.
@@ -3329,6 +3332,9 @@ pub struct ScyllaClusterStatusRepairs {
     /// id reflects identification number of the repair task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
+    /// ignoreDownHosts reflects whether the nodes in down state are ignored during repair.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDownHosts")]
+    pub ignore_down_hosts: Option<bool>,
     /// intensity indicates how many token ranges (per shard) to repair in a single Scylla repair job. By default this is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub intensity: Option<String>,

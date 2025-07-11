@@ -114,9 +114,11 @@ pub struct ClusterClusterNetworkServices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
     /// host is the hostname on which the API server is serving.
-    pub host: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub host: Option<String>,
     /// port is the port on which the API server is serving.
-    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
 }
 
 /// controlPlaneRef is an optional reference to a provider-specific resource that holds

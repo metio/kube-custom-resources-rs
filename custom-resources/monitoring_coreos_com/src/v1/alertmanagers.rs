@@ -1027,6 +1027,7 @@ pub struct AlertmanagerAlertmanagerConfigMatcherStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerAlertmanagerConfigMatcherStrategyType {
     OnNamespace,
+    OnNamespaceExceptForAlertmanagerNamespace,
     None,
 }
 
@@ -1147,6 +1148,9 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// The default Telegram config
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telegram: Option<AlertmanagerAlertmanagerConfigurationGlobalTelegram>,
+    /// The default configuration for VictorOps.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub victorops: Option<AlertmanagerAlertmanagerConfigurationGlobalVictorops>,
     /// The default configuration for Jira.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub webex: Option<AlertmanagerAlertmanagerConfigurationGlobalWebex>,
@@ -2148,6 +2152,34 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalTelegram {
     /// It requires Alertmanager >= v0.24.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
+}
+
+/// The default configuration for VictorOps.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalVictorops {
+    /// The default VictorOps API Key.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
+    pub api_key: Option<AlertmanagerAlertmanagerConfigurationGlobalVictoropsApiKey>,
+    /// The default VictorOps API URL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
+    pub api_url: Option<String>,
+}
+
+/// The default VictorOps API Key.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AlertmanagerAlertmanagerConfigurationGlobalVictoropsApiKey {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// The default configuration for Jira.

@@ -2728,6 +2728,22 @@ spec:
                           description: "Number of seconds after the container has started before liveness probes are initiated.\nMore info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes"
                           format: "int32"
                           type: "integer"
+                        isolationCheck:
+                          description: "Configure the feature that extends the liveness probe for a primary\ninstance. In addition to the basic checks, this verifies whether the\nprimary is isolated from the Kubernetes API server and from its\nreplicas, ensuring that it can be safely shut down if network\npartition or API unavailability is detected. Enabled by default."
+                          properties:
+                            connectionTimeout:
+                              default: 1000
+                              description: "Timeout in milliseconds for connections during the primary isolation check"
+                              type: "integer"
+                            enabled:
+                              default: true
+                              description: "Whether primary isolation checking is enabled for the liveness probe"
+                              type: "boolean"
+                            requestTimeout:
+                              default: 1000
+                              description: "Timeout in milliseconds for requests during the primary isolation check"
+                              type: "integer"
+                          type: "object"
                         periodSeconds:
                           description: "How often (in seconds) to perform the probe.\nDefault to 10 seconds. Minimum value is 1."
                           format: "int32"
@@ -3078,6 +3094,9 @@ spec:
                           description: "Prefix for replication slots managed by the operator for HA.\nIt may only contain lower case letters, numbers, and the underscore character.\nThis can only be set at creation time. By default set to `_cnpg_`."
                           pattern: "^[0-9a-z_]*$"
                           type: "string"
+                        synchronizeLogicalDecoding:
+                          description: "When enabled, the operator automatically manages synchronization of logical\ndecoding (replication) slots across high-availability clusters.\n\nRequires one of the following conditions:\n- PostgreSQL version 17 or later\n- PostgreSQL version < 17 with pg_failover_slots extension enabled"
+                          type: "boolean"
                       type: "object"
                     synchronizeReplicas:
                       description: "Configures the synchronization of the user defined physical replication slots"

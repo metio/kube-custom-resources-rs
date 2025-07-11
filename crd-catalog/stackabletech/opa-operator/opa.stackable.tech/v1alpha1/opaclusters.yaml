@@ -19,7 +19,7 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "Auto-generated derived type for OpaSpec via `CustomResource`"
+          description: "Auto-generated derived type for OpaClusterSpec via `CustomResource`"
           properties:
             spec:
               properties:
@@ -765,11 +765,6 @@ spec:
                     properties:
                       lastTransitionTime:
                         description: "Last time the condition transitioned from one status to another."
-                        format: "date-time"
-                        nullable: true
-                        type: "string"
-                      lastUpdateTime:
-                        description: "The last time this condition was updated."
                         format: "date-time"
                         nullable: true
                         type: "string"

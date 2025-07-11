@@ -102,6 +102,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -321,6 +324,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -553,6 +559,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -735,6 +744,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -880,6 +892,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1067,6 +1082,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1320,6 +1338,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1372,6 +1392,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1500,6 +1522,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       maxAge:
                         type: "string"
                       metrics:
@@ -1579,6 +1604,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1735,6 +1763,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1872,6 +1902,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -1979,6 +2011,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -2070,6 +2105,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -3105,6 +3143,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -3411,6 +3452,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       maxAge:
                         description: "MaxAge the latest object should be younger than defined age"
                         type: "string"
@@ -3713,6 +3757,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -3927,6 +3974,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -4092,6 +4142,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -4289,6 +4341,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       maxSSLExpiry:
                         description: "Maximum number of days until the SSL Certificate expires."
                         type: "integer"
@@ -4636,6 +4691,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -4746,6 +4804,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -4837,6 +4898,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -5262,6 +5326,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -5714,6 +5781,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -5817,6 +5887,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -5961,6 +6034,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6108,6 +6184,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6287,6 +6366,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6477,6 +6559,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6569,6 +6653,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6762,6 +6849,8 @@ spec:
                         additionalProperties:
                           type: "string"
                         type: "object"
+                      markFailOnEmpty:
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -6843,6 +6932,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -7067,6 +7159,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -7489,6 +7584,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       memory:
                         properties:
                           queue:
@@ -7811,6 +7909,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -8005,6 +8106,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       maxAge:
                         description: "MaxAge for backup freshness"
                         type: "string"
@@ -8203,6 +8307,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -8367,6 +8474,9 @@ spec:
                           type: "string"
                         description: "Labels for the check"
                         type: "object"
+                      markFailOnEmpty:
+                        description: "If check or transformation returns empty, that should be marked as failed"
+                        type: "boolean"
                       metrics:
                         items:
                           properties:
@@ -8455,6 +8565,9 @@ spec:
                         type: "string"
                       description: "Labels for the check"
                       type: "object"
+                    markFailOnEmpty:
+                      description: "If check or transformation returns empty, that should be marked as failed"
+                      type: "boolean"
                     metrics:
                       description: "Metrics to expose from check.\nhttps://canarychecker.io/concepts/metrics-exporter"
                       items:

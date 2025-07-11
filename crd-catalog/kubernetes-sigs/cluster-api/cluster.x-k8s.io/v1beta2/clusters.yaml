@@ -19,7 +19,7 @@ spec:
   versions:
     - additionalPrinterColumns:
         - description: "ClusterClass of this Cluster, empty if the Cluster is not using a ClusterClass"
-          jsonPath: ".spec.topology.class"
+          jsonPath: ".spec.topology.classRef.name"
           name: "ClusterClass"
           type: "string"
         - description: "Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed"
@@ -119,18 +119,19 @@ spec:
                   type: "object"
                 controlPlaneEndpoint:
                   description: "controlPlaneEndpoint represents the endpoint used to communicate with the control plane."
+                  minProperties: 1
                   properties:
                     host:
                       description: "host is the hostname on which the API server is serving."
                       maxLength: 512
+                      minLength: 1
                       type: "string"
                     port:
                       description: "port is the port on which the API server is serving."
                       format: "int32"
+                      maximum: 65535.0
+                      minimum: 1.0
                       type: "integer"
-                  required:
-                    - "host"
-                    - "port"
                   type: "object"
                 controlPlaneRef:
                   description: "controlPlaneRef is an optional reference to a provider-specific resource that holds\nthe details for provisioning the Control Plane for a Cluster."
@@ -210,6 +211,7 @@ spec:
                       type: "object"
                     controlPlane:
                       description: "controlPlane describes the cluster control plane."
+                      minProperties: 1
                       properties:
                         machineHealthCheck:
                           description: "machineHealthCheck allows to enable, disable and override\nthe MachineHealthCheck configuration in the ClusterClass for this control plane."
@@ -288,6 +290,7 @@ spec:
                           type: "object"
                         metadata:
                           description: "metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane\nif the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it\nis applied only to the ControlPlane.\nAt runtime this metadata is merged with the corresponding metadata from the ClusterClass."
+                          minProperties: 1
                           properties:
                             annotations:
                               additionalProperties:
@@ -493,6 +496,7 @@ spec:
                                 type: "object"
                               metadata:
                                 description: "metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.\nAt runtime this metadata is merged with the corresponding metadata from the ClusterClass."
+                                minProperties: 1
                                 properties:
                                   annotations:
                                     additionalProperties:
@@ -508,6 +512,7 @@ spec:
                               minReadySeconds:
                                 description: "minReadySeconds is the minimum number of seconds for which a newly created machine should\nbe ready.\nDefaults to 0 (machine will be considered available as soon as it\nis ready)"
                                 format: "int32"
+                                minimum: 0.0
                                 type: "integer"
                               name:
                                 description: "name is the unique identifier for this MachineDeploymentTopology.\nThe value is used with other unique identifiers to create a MachineDeployment's Name\n(e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,\nthe values are hashed together."
@@ -656,6 +661,7 @@ spec:
                                 type: "array"
                               metadata:
                                 description: "metadata is the metadata applied to the MachinePool.\nAt runtime this metadata is merged with the corresponding metadata from the ClusterClass."
+                                minProperties: 1
                                 properties:
                                   annotations:
                                     additionalProperties:
@@ -671,6 +677,7 @@ spec:
                               minReadySeconds:
                                 description: "minReadySeconds is the minimum number of seconds for which a newly created machine pool should\nbe ready.\nDefaults to 0 (machine will be considered available as soon as it\nis ready)"
                                 format: "int32"
+                                minimum: 0.0
                                 type: "integer"
                               name:
                                 description: "name is the unique identifier for this MachinePoolTopology.\nThe value is used with other unique identifiers to create a MachinePool's Name\n(e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,\nthe values are hashed together."

@@ -5247,6 +5247,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffecti
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5262,6 +5264,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffecti
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5277,6 +5281,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyInitMet
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5292,6 +5298,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMet
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5333,6 +5341,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEf
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5348,6 +5358,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEf
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5363,6 +5375,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyIn
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5378,6 +5392,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyWi
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5465,6 +5481,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveInitMeth
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5479,6 +5497,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveWipeMeth
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5530,6 +5550,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -5792,6 +5814,8 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageVolumesWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6598,6 +6622,8 @@ pub enum AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveInitMet
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6613,6 +6639,8 @@ pub enum AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveWipeMet
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6628,6 +6656,8 @@ pub enum AerospikeClusterRackConfigRacksStorageBlockVolumePolicyInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6643,6 +6673,8 @@ pub enum AerospikeClusterRackConfigRacksStorageBlockVolumePolicyWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6684,6 +6716,8 @@ pub enum AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveIn
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6699,6 +6733,8 @@ pub enum AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveWi
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6714,6 +6750,8 @@ pub enum AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyInitMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6729,6 +6767,8 @@ pub enum AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyWipeMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6816,6 +6856,8 @@ pub enum AerospikeClusterRackConfigRacksStorageVolumesEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6830,6 +6872,8 @@ pub enum AerospikeClusterRackConfigRacksStorageVolumesEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -6881,6 +6925,8 @@ pub enum AerospikeClusterRackConfigRacksStorageVolumesInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7143,6 +7189,8 @@ pub enum AerospikeClusterRackConfigRacksStorageVolumesWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7247,6 +7295,8 @@ pub enum AerospikeClusterStorageBlockVolumePolicyEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7262,6 +7312,8 @@ pub enum AerospikeClusterStorageBlockVolumePolicyEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7277,6 +7329,8 @@ pub enum AerospikeClusterStorageBlockVolumePolicyInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7292,6 +7346,8 @@ pub enum AerospikeClusterStorageBlockVolumePolicyWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7333,6 +7389,8 @@ pub enum AerospikeClusterStorageFilesystemVolumePolicyEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7348,6 +7406,8 @@ pub enum AerospikeClusterStorageFilesystemVolumePolicyEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7363,6 +7423,8 @@ pub enum AerospikeClusterStorageFilesystemVolumePolicyInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7378,6 +7440,8 @@ pub enum AerospikeClusterStorageFilesystemVolumePolicyWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7465,6 +7529,8 @@ pub enum AerospikeClusterStorageVolumesEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7479,6 +7545,8 @@ pub enum AerospikeClusterStorageVolumesEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7530,6 +7598,8 @@ pub enum AerospikeClusterStorageVolumesInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -7792,6 +7862,8 @@ pub enum AerospikeClusterStorageVolumesWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13176,6 +13248,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyE
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13191,6 +13265,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyE
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13206,6 +13282,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyI
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13221,6 +13299,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyW
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13262,6 +13342,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePo
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13277,6 +13359,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePo
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13292,6 +13376,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePo
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13307,6 +13393,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePo
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13394,6 +13482,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveIn
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13408,6 +13498,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveWi
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13459,6 +13551,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -13721,6 +13815,8 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesWipeMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14527,6 +14623,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveI
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14542,6 +14640,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveW
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14557,6 +14657,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyInitMethod
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14572,6 +14674,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyWipeMethod
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14613,6 +14717,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffec
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14628,6 +14734,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffec
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14643,6 +14751,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyInitM
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14658,6 +14768,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyWipeM
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14745,6 +14857,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveInitMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14759,6 +14873,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveWipeMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -14810,6 +14926,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageVolumesInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15072,6 +15190,8 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageVolumesWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15216,6 +15336,8 @@ pub enum AerospikeClusterStatusStorageBlockVolumePolicyEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15231,6 +15353,8 @@ pub enum AerospikeClusterStatusStorageBlockVolumePolicyEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15246,6 +15370,8 @@ pub enum AerospikeClusterStatusStorageBlockVolumePolicyInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15261,6 +15387,8 @@ pub enum AerospikeClusterStatusStorageBlockVolumePolicyWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15302,6 +15430,8 @@ pub enum AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveInitMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15317,6 +15447,8 @@ pub enum AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveWipeMethod 
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15332,6 +15464,8 @@ pub enum AerospikeClusterStatusStorageFilesystemVolumePolicyInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15347,6 +15481,8 @@ pub enum AerospikeClusterStatusStorageFilesystemVolumePolicyWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15434,6 +15570,8 @@ pub enum AerospikeClusterStatusStorageVolumesEffectiveInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15448,6 +15586,8 @@ pub enum AerospikeClusterStatusStorageVolumesEffectiveWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15499,6 +15639,8 @@ pub enum AerospikeClusterStatusStorageVolumesInitMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]
@@ -15761,6 +15903,8 @@ pub enum AerospikeClusterStatusStorageVolumesWipeMethod {
     None,
     #[serde(rename = "dd")]
     Dd,
+    #[serde(rename = "headerCleanup")]
+    HeaderCleanup,
     #[serde(rename = "blkdiscard")]
     Blkdiscard,
     #[serde(rename = "blkdiscardWithHeaderCleanup")]

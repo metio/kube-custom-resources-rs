@@ -490,6 +490,12 @@ pub struct MiniClusterPod {
     /// Pod DNS policy (defaults to ClusterFirst)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
+    /// Use Host IPC
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
+    pub host_ipc: Option<bool>,
+    /// Use Host PID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
+    pub host_pid: Option<bool>,
     /// Labels for each pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,

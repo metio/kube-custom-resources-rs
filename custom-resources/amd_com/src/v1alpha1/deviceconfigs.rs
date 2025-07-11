@@ -370,6 +370,9 @@ pub struct DeviceConfigDriver {
     /// NOTE: Updating the driver image repository is not supported. Please delete the existing DeviceConfig and create a new one with the updated image repository
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// image build configs
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageBuild")]
+    pub image_build: Option<DeviceConfigDriverImageBuild>,
     /// secrets used for pull/push images from/to private registry specified in driversImage
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistrySecret")]
     pub image_registry_secret: Option<DeviceConfigDriverImageRegistrySecret>,
@@ -387,6 +390,30 @@ pub struct DeviceConfigDriver {
     /// default value for different OS is: ubuntu: 6.1.3, coreOS: 6.2.2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// image build configs
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigDriverImageBuild {
+    /// image registry to fetch base image for building driver image, default value is docker.io, the builder will search for corresponding OS base image from given registry
+    /// e.g. if your worker node is using Ubuntu 22.04, by default the base image would be docker.io/ubuntu:22.04
+    /// NOTE: this field won't apply for OpenShift since OpenShift is using its own DriverToolKit image to build driver image
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistry")]
+    pub base_image_registry: Option<String>,
+    /// TLS settings for fetching base image
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseImageRegistryTLS")]
+    pub base_image_registry_tls: Option<DeviceConfigDriverImageBuildBaseImageRegistryTls>,
+}
+
+/// TLS settings for fetching base image
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigDriverImageBuildBaseImageRegistryTls {
+    /// If true, check if the container image already exists using plain HTTP.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub insecure: Option<bool>,
+    /// If true, skip any TLS server certificate validation
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
+    pub insecure_skip_tls_verify: Option<bool>,
 }
 
 /// secrets used for pull/push images from/to private registry specified in driversImage

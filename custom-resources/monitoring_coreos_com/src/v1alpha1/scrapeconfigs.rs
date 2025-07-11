@@ -4549,6 +4549,10 @@ pub struct ScrapeConfigHetznerSdConfigs {
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
+    /// Label selector used to filter the servers when fetching them from the API.
+    /// It requires Prometheus >= v3.5.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.

@@ -144,6 +144,8 @@ pub enum ParamConfigRendererConfigsFileFormatConfigFormat {
     Redis,
     #[serde(rename = "props-plus")]
     PropsPlus,
+    #[serde(rename = "props-ultra")]
+    PropsUltra,
 }
 
 /// Holds options specific to the 'ini' file format.

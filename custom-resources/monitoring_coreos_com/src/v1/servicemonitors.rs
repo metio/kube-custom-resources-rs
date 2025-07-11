@@ -1150,12 +1150,15 @@ pub enum ServiceMonitorSelectorMechanism {
     RoleSelector,
 }
 
+/// This Status subresource is under active development and is updated only when the
+/// "StatusForConfigurationResources" feature gate is enabled.
+/// 
 /// Most recent observed status of the ServiceMonitor. Read-only.
 /// More info:
 /// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ServiceMonitorStatus {
-    /// The list of workload resources (Prometheus or PrometheusAgent) which select the service monitor.
+    /// The list of workload resources (Prometheus or PrometheusAgent) which select the configuration resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ServiceMonitorStatusBindings>>,
 }

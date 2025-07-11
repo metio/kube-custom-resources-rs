@@ -4898,6 +4898,9 @@ spec:
                       additionalProperties:
                         type: "string"
                       type: "object"
+                    loadBalancerClass:
+                      description: "LoadBalancerClass specifies the class of the load balancer implementation\nto be used. This field is supported for Service Type LoadBalancer only.\n\nMore info:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class"
+                      type: "string"
                     loadBalancerSourceRanges:
                       description: "LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.\nThis field will be ignored if the cloud-provider does not support the feature."
                       items:
@@ -4927,6 +4930,9 @@ spec:
                       additionalProperties:
                         type: "string"
                       type: "object"
+                    loadBalancerClass:
+                      description: "LoadBalancerClass specifies the class of the load balancer implementation\nto be used. This field is supported for Service Type LoadBalancer only.\n\nMore info:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class"
+                      type: "string"
                     loadBalancerSourceRanges:
                       description: "LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.\nThis field will be ignored if the cloud-provider does not support the feature."
                       items:
@@ -9530,6 +9536,9 @@ spec:
                               additionalProperties:
                                 type: "string"
                               type: "object"
+                            loadBalancerClass:
+                              description: "LoadBalancerClass specifies the class of the load balancer implementation\nto be used. This field is supported for Service Type LoadBalancer only.\n\nMore info:\nhttps://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class"
+                              type: "string"
                             loadBalancerSourceRanges:
                               description: "LoadBalancerSourceRanges is a list of IP CIDRs allowed access to load.\nThis field will be ignored if the cloud-provider does not support the feature."
                               items:
@@ -10963,6 +10972,9 @@ spec:
                   items:
                     type: "string"
                   type: "array"
+                observedGeneration:
+                  format: "int64"
+                  type: "integer"
                 patroniVersion:
                   type: "string"
                 pgbouncer:

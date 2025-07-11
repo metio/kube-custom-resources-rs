@@ -46,6 +46,10 @@ pub struct NginxProxySpec {
     /// Telemetry specifies the OpenTelemetry configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry: Option<NginxProxyTelemetry>,
+    /// WorkerConnections specifies the maximum number of simultaneous connections that can be opened by a worker process.
+    /// Default is 1024.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerConnections")]
+    pub worker_connections: Option<i32>,
 }
 
 /// Spec defines the desired state of the NginxProxy.
@@ -91,6 +95,9 @@ pub struct NginxProxyKubernetesDaemonSetContainer {
     /// Debug enables debugging for NGINX by using the nginx-debug binary.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
+    /// HostPorts are the list of ports to expose on the host.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPorts")]
+    pub host_ports: Option<Vec<NginxProxyKubernetesDaemonSetContainerHostPorts>>,
     /// Image is the NGINX image to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<NginxProxyKubernetesDaemonSetContainerImage>,
@@ -105,6 +112,16 @@ pub struct NginxProxyKubernetesDaemonSetContainer {
     /// VolumeMounts describe the mounting of Volumes within a container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<NginxProxyKubernetesDaemonSetContainerVolumeMounts>>,
+}
+
+/// HostPort exposes an nginx container port on the host.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerHostPorts {
+    /// ContainerPort is the port on the nginx container to map to the HostPort.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// Port to expose on the host.
+    pub port: i32,
 }
 
 /// Image is the NGINX image to use.
@@ -3026,6 +3043,9 @@ pub struct NginxProxyKubernetesDeploymentContainer {
     /// Debug enables debugging for NGINX by using the nginx-debug binary.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
+    /// HostPorts are the list of ports to expose on the host.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPorts")]
+    pub host_ports: Option<Vec<NginxProxyKubernetesDeploymentContainerHostPorts>>,
     /// Image is the NGINX image to use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<NginxProxyKubernetesDeploymentContainerImage>,
@@ -3040,6 +3060,16 @@ pub struct NginxProxyKubernetesDeploymentContainer {
     /// VolumeMounts describe the mounting of Volumes within a container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<NginxProxyKubernetesDeploymentContainerVolumeMounts>>,
+}
+
+/// HostPort exposes an nginx container port on the host.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDeploymentContainerHostPorts {
+    /// ContainerPort is the port on the nginx container to map to the HostPort.
+    #[serde(rename = "containerPort")]
+    pub container_port: i32,
+    /// Port to expose on the host.
+    pub port: i32,
 }
 
 /// Image is the NGINX image to use.
@@ -5982,13 +6012,9 @@ pub enum NginxProxyKubernetesServiceExternalTrafficPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesServiceNodePorts {
     /// ListenerPort is the Gateway listener port that this NodePort maps to.
-    /// kubebuilder:validation:Minimum=1
-    /// kubebuilder:validation:Maximum=65535
     #[serde(rename = "listenerPort")]
     pub listener_port: i32,
     /// Port is the NodePort to expose.
-    /// kubebuilder:validation:Minimum=1
-    /// kubebuilder:validation:Maximum=65535
     pub port: i32,
 }
 

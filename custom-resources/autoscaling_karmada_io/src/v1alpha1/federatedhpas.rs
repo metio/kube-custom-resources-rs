@@ -80,7 +80,9 @@ pub struct FederatedHPABehavior {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPABehaviorScaleDown {
     /// policies is a list of potential scaling polices which can be used during scaling.
-    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// If not set, use the default values:
+    /// - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window.
+    /// - For scale down: allow all pods to be removed in a 15s window.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<FederatedHPABehaviorScaleDownPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
@@ -95,6 +97,19 @@ pub struct FederatedHPABehaviorScaleDown {
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
+    /// tolerance is the tolerance on the ratio between the current and desired
+    /// metric value under which no updates are made to the desired number of
+    /// replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not
+    /// set, the default cluster-wide tolerance is applied (by default 10%).
+    /// 
+    /// For example, if autoscaling is configured with a memory consumption target of 100Mi,
+    /// and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be
+    /// triggered when the actual consumption falls below 95Mi or exceeds 101Mi.
+    /// 
+    /// This is an alpha field and requires enabling the HPAConfigurableTolerance
+    /// feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerance: Option<IntOrString>,
 }
 
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
@@ -120,7 +135,9 @@ pub struct FederatedHPABehaviorScaleDownPolicies {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FederatedHPABehaviorScaleUp {
     /// policies is a list of potential scaling polices which can be used during scaling.
-    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// If not set, use the default values:
+    /// - For scale up: allow doubling the number of pods, or an absolute change of 4 pods in a 15s window.
+    /// - For scale down: allow all pods to be removed in a 15s window.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<FederatedHPABehaviorScaleUpPolicies>>,
     /// selectPolicy is used to specify which policy should be used.
@@ -135,6 +152,19 @@ pub struct FederatedHPABehaviorScaleUp {
     /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
+    /// tolerance is the tolerance on the ratio between the current and desired
+    /// metric value under which no updates are made to the desired number of
+    /// replicas (e.g. 0.01 for 1%). Must be greater than or equal to zero. If not
+    /// set, the default cluster-wide tolerance is applied (by default 10%).
+    /// 
+    /// For example, if autoscaling is configured with a memory consumption target of 100Mi,
+    /// and scale-down and scale-up tolerances of 5% and 1% respectively, scaling will be
+    /// triggered when the actual consumption falls below 95Mi or exceeds 101Mi.
+    /// 
+    /// This is an alpha field and requires enabling the HPAConfigurableTolerance
+    /// feature gate.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerance: Option<IntOrString>,
 }
 
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
