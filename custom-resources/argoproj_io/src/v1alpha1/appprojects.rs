@@ -194,6 +194,9 @@ pub struct AppProjectSyncWindows {
     /// Clusters contains a list of clusters that the window will apply to
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub clusters: Option<Vec<String>>,
+    /// Description of the sync that will be applied to the schedule, can be used to add any information such as a ticket number for example
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
     /// Duration is the amount of time the sync window will be open
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,

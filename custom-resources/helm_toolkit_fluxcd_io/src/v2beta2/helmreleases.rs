@@ -489,26 +489,92 @@ pub struct HelmReleaseInstallRemediation {
 /// is empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseKubeConfig {
-    /// SecretRef holds the name of a secret that contains a key with
+    /// ConfigMapRef holds an optional name of a ConfigMap that contains
+    /// the following keys:
+    /// 
+    /// - `provider`: the provider to use. One of `aws`, `azure`, `gcp`, or
+    ///    `generic`. Required.
+    /// - `cluster`: the fully qualified resource name of the Kubernetes
+    ///    cluster in the cloud provider API. Not used by the `generic`
+    ///    provider. Required when one of `address` or `ca.crt` is not set.
+    /// - `address`: the address of the Kubernetes API server. Required
+    ///    for `generic`. For the other providers, if not specified, the
+    ///    first address in the cluster resource will be used, and if
+    ///    specified, it must match one of the addresses in the cluster
+    ///    resource.
+    ///    If audiences is not set, will be used as the audience for the
+    ///    `generic` provider.
+    /// - `ca.crt`: the optional PEM-encoded CA certificate for the
+    ///    Kubernetes API server. If not set, the controller will use the
+    ///    CA certificate from the cluster resource.
+    /// - `audiences`: the optional audiences as a list of
+    ///    line-break-separated strings for the Kubernetes ServiceAccount
+    ///    token. Defaults to the `address` for the `generic` provider, or
+    ///    to specific values for the other providers depending on the
+    ///    provider.
+    /// -  `serviceAccountName`: the optional name of the Kubernetes
+    ///    ServiceAccount in the same namespace that should be used
+    ///    for authentication. If not specified, the controller
+    ///    ServiceAccount will be used.
+    /// 
+    /// Mutually exclusive with SecretRef.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<HelmReleaseKubeConfigConfigMapRef>,
+    /// SecretRef holds an optional name of a secret that contains a key with
     /// the kubeconfig file as the value. If no key is set, the key will default
-    /// to 'value'.
+    /// to 'value'. Mutually exclusive with ConfigMapRef.
     /// It is recommended that the kubeconfig is self-contained, and the secret
     /// is regularly updated if credentials such as a cloud-access-token expire.
     /// Cloud specific `cmd-path` auth helpers will not function without adding
     /// binaries and credentials to the Pod that is responsible for reconciling
-    /// Kubernetes resources.
-    #[serde(rename = "secretRef")]
-    pub secret_ref: HelmReleaseKubeConfigSecretRef,
+    /// Kubernetes resources. Supported only for the generic provider.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
+    pub secret_ref: Option<HelmReleaseKubeConfigSecretRef>,
 }
 
-/// SecretRef holds the name of a secret that contains a key with
+/// ConfigMapRef holds an optional name of a ConfigMap that contains
+/// the following keys:
+/// 
+/// - `provider`: the provider to use. One of `aws`, `azure`, `gcp`, or
+///    `generic`. Required.
+/// - `cluster`: the fully qualified resource name of the Kubernetes
+///    cluster in the cloud provider API. Not used by the `generic`
+///    provider. Required when one of `address` or `ca.crt` is not set.
+/// - `address`: the address of the Kubernetes API server. Required
+///    for `generic`. For the other providers, if not specified, the
+///    first address in the cluster resource will be used, and if
+///    specified, it must match one of the addresses in the cluster
+///    resource.
+///    If audiences is not set, will be used as the audience for the
+///    `generic` provider.
+/// - `ca.crt`: the optional PEM-encoded CA certificate for the
+///    Kubernetes API server. If not set, the controller will use the
+///    CA certificate from the cluster resource.
+/// - `audiences`: the optional audiences as a list of
+///    line-break-separated strings for the Kubernetes ServiceAccount
+///    token. Defaults to the `address` for the `generic` provider, or
+///    to specific values for the other providers depending on the
+///    provider.
+/// -  `serviceAccountName`: the optional name of the Kubernetes
+///    ServiceAccount in the same namespace that should be used
+///    for authentication. If not specified, the controller
+///    ServiceAccount will be used.
+/// 
+/// Mutually exclusive with SecretRef.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct HelmReleaseKubeConfigConfigMapRef {
+    /// Name of the referent.
+    pub name: String,
+}
+
+/// SecretRef holds an optional name of a secret that contains a key with
 /// the kubeconfig file as the value. If no key is set, the key will default
-/// to 'value'.
+/// to 'value'. Mutually exclusive with ConfigMapRef.
 /// It is recommended that the kubeconfig is self-contained, and the secret
 /// is regularly updated if credentials such as a cloud-access-token expire.
 /// Cloud specific `cmd-path` auth helpers will not function without adding
 /// binaries and credentials to the Pod that is responsible for reconciling
-/// Kubernetes resources.
+/// Kubernetes resources. Supported only for the generic provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseKubeConfigSecretRef {
     /// Key in the Secret, when not specified an implementation-specific default key is used.

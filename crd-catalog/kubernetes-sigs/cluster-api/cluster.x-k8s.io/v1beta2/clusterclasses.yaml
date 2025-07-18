@@ -59,6 +59,7 @@ spec:
                       - "conditionType"
                     type: "object"
                   maxItems: 32
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-map-keys:
                     - "conditionType"
@@ -66,8 +67,29 @@ spec:
                 controlPlane:
                   description: "controlPlane is a reference to a local struct that holds the details\nfor provisioning the Control Plane for the Cluster."
                   properties:
+                    deletion:
+                      description: "deletion contains configuration options for Machine deletion."
+                      minProperties: 1
+                      properties:
+                        nodeDeletionTimeoutSeconds:
+                          description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology."
+                          format: "int32"
+                          minimum: 0.0
+                          type: "integer"
+                        nodeDrainTimeoutSeconds:
+                          description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology."
+                          format: "int32"
+                          minimum: 0.0
+                          type: "integer"
+                        nodeVolumeDetachTimeoutSeconds:
+                          description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology."
+                          format: "int32"
+                          minimum: 0.0
+                          type: "integer"
+                      type: "object"
                     machineHealthCheck:
                       description: "machineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.\nThis field is supported if and only if the ControlPlane provider template\nreferenced above is Machine based and supports setting replicas."
+                      minProperties: 1
                       properties:
                         maxUnhealthy:
                           anyOf:
@@ -130,7 +152,9 @@ spec:
                               - "type"
                             type: "object"
                           maxItems: 100
+                          minItems: 1
                           type: "array"
+                          x-kubernetes-list-type: "atomic"
                         unhealthyRange:
                           description: "unhealthyRange specifies the range of unhealthy machines allowed.\nAny further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"unhealthyRange\". Takes precedence over maxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines"
                           maxLength: 32
@@ -194,23 +218,8 @@ spec:
                           minLength: 1
                           type: "string"
                       type: "object"
-                    nodeDeletionTimeoutSeconds:
-                      description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology."
-                      format: "int32"
-                      minimum: 0.0
-                      type: "integer"
-                    nodeDrainTimeoutSeconds:
-                      description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology."
-                      format: "int32"
-                      minimum: 0.0
-                      type: "integer"
-                    nodeVolumeDetachTimeoutSeconds:
-                      description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology."
-                      format: "int32"
-                      minimum: 0.0
-                      type: "integer"
                     readinessGates:
-                      description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready\ncomputation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.\n\nNOTE: This field is considered only for computing v1beta2 conditions.\nNOTE: If a Cluster defines a custom list of readinessGates for the control plane,\nsuch list overrides readinessGates defined in this field.\nNOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;\ne.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc."
+                      description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready\ncomputation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.\n\nNOTE: If a Cluster defines a custom list of readinessGates for the control plane,\nsuch list overrides readinessGates defined in this field.\nNOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;\ne.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc."
                       items:
                         description: "MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate."
                         properties:
@@ -230,6 +239,7 @@ spec:
                           - "conditionType"
                         type: "object"
                       maxItems: 32
+                      minItems: 1
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "conditionType"
@@ -354,6 +364,7 @@ spec:
                                 type: "object"
                               maxItems: 100
                               type: "array"
+                              x-kubernetes-list-type: "atomic"
                             selector:
                               description: "selector defines on which templates the patch should be applied."
                               properties:
@@ -389,6 +400,7 @@ spec:
                                             type: "string"
                                           maxItems: 100
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     machinePoolClass:
                                       description: "machinePoolClass selects templates referenced in specific MachinePoolClasses in\n.spec.workers.machinePools."
@@ -401,6 +413,7 @@ spec:
                                             type: "string"
                                           maxItems: 100
                                           type: "array"
+                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                   type: "object"
                               required:
@@ -414,6 +427,7 @@ spec:
                           type: "object"
                         maxItems: 100
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       description:
                         description: "description is a human-readable description of this patch."
                         maxLength: 1024
@@ -458,6 +472,7 @@ spec:
                     type: "object"
                   maxItems: 1000
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 variables:
                   description: "variables defines the variables which can be configured\nin the Cluster topology and are then used in patches."
                   items:
@@ -515,6 +530,7 @@ spec:
                                   x-kubernetes-preserve-unknown-fields: true
                                 maxItems: 100
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               example:
                                 description: "example is an example for this variable."
                                 x-kubernetes-preserve-unknown-fields: true
@@ -586,6 +602,7 @@ spec:
                                   type: "string"
                                 maxItems: 1000
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               type:
                                 description: "type is the type of the variable.\nValid values are: object, array, string, integer, number or boolean."
                                 enum:
@@ -672,6 +689,7 @@ spec:
                     type: "object"
                   maxItems: 1000
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 workers:
                   description: "workers describes the worker nodes for the cluster.\nIt is a collection of node types which can be used to create\nthe worker nodes of the cluster."
                   minProperties: 1
@@ -681,18 +699,103 @@ spec:
                       items:
                         description: "MachineDeploymentClass serves as a template to define a set of worker nodes of the cluster\nprovisioned using the `ClusterClass`."
                         properties:
+                          bootstrap:
+                            description: "bootstrap contains the bootstrap template reference to be used\nfor the creation of worker Machines."
+                            properties:
+                              templateRef:
+                                description: "templateRef is a required reference to the BootstrapTemplate for a MachineDeployment."
+                                properties:
+                                  apiVersion:
+                                    description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
+                                    maxLength: 317
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
+                                    type: "string"
+                                  kind:
+                                    description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                    maxLength: 63
+                                    minLength: 1
+                                    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                    type: "string"
+                                  name:
+                                    description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                    maxLength: 253
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                    type: "string"
+                                required:
+                                  - "apiVersion"
+                                  - "kind"
+                                  - "name"
+                                type: "object"
+                            required:
+                              - "templateRef"
+                            type: "object"
                           class:
                             description: "class denotes a type of worker node present in the cluster,\nthis name MUST be unique within a ClusterClass and can be referenced\nin the Cluster to create a managed MachineDeployment."
                             maxLength: 256
                             minLength: 1
                             type: "string"
+                          deletion:
+                            description: "deletion contains configuration options for Machine deletion."
+                            minProperties: 1
+                            properties:
+                              nodeDeletionTimeoutSeconds:
+                                description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                              nodeDrainTimeoutSeconds:
+                                description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                              nodeVolumeDetachTimeoutSeconds:
+                                description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                            type: "object"
                           failureDomain:
                             description: "failureDomain is the failure domain the machines will be created in.\nMust match the name of a FailureDomain from the Cluster status.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
                             maxLength: 256
                             minLength: 1
                             type: "string"
+                          infrastructure:
+                            description: "infrastructure contains the infrastructure template reference to be used\nfor the creation of worker Machines."
+                            properties:
+                              templateRef:
+                                description: "templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment."
+                                properties:
+                                  apiVersion:
+                                    description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
+                                    maxLength: 317
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
+                                    type: "string"
+                                  kind:
+                                    description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                    maxLength: 63
+                                    minLength: 1
+                                    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                    type: "string"
+                                  name:
+                                    description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                    maxLength: 253
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                    type: "string"
+                                required:
+                                  - "apiVersion"
+                                  - "kind"
+                                  - "name"
+                                type: "object"
+                            required:
+                              - "templateRef"
+                            type: "object"
                           machineHealthCheck:
                             description: "machineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass."
+                            minProperties: 1
                             properties:
                               maxUnhealthy:
                                 anyOf:
@@ -755,13 +858,30 @@ spec:
                                     - "type"
                                   type: "object"
                                 maxItems: 100
+                                minItems: 1
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                               unhealthyRange:
                                 description: "unhealthyRange specifies the range of unhealthy machines allowed.\nAny further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"unhealthyRange\". Takes precedence over maxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines"
                                 maxLength: 32
                                 minLength: 1
                                 pattern: "^\\[[0-9]+-[0-9]+\\]$"
                                 type: "string"
+                            type: "object"
+                          metadata:
+                            description: "metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.\nAt runtime this metadata is merged with the corresponding metadata from the topology."
+                            minProperties: 1
+                            properties:
+                              annotations:
+                                additionalProperties:
+                                  type: "string"
+                                description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                                type: "object"
+                              labels:
+                                additionalProperties:
+                                  type: "string"
+                                description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                                type: "object"
                             type: "object"
                           minReadySeconds:
                             description: "minReadySeconds is the minimum number of seconds for which a newly created machine should\nbe ready.\nDefaults to 0 (machine will be considered available as soon as it\nis ready)\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
@@ -777,23 +897,8 @@ spec:
                                 minLength: 1
                                 type: "string"
                             type: "object"
-                          nodeDeletionTimeoutSeconds:
-                            description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
-                          nodeDrainTimeoutSeconds:
-                            description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
-                          nodeVolumeDetachTimeoutSeconds:
-                            description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
                           readinessGates:
-                            description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready\ncomputation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.\n\nNOTE: This field is considered only for computing v1beta2 conditions.\nNOTE: If a Cluster defines a custom list of readinessGates for a MachineDeployment using this MachineDeploymentClass,\nsuch list overrides readinessGates defined in this field."
+                            description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready\ncomputation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.\n\nNOTE: If a Cluster defines a custom list of readinessGates for a MachineDeployment using this MachineDeploymentClass,\nsuch list overrides readinessGates defined in this field."
                             items:
                               description: "MachineReadinessGate contains the type of a Machine condition to be used as a readiness gate."
                               properties:
@@ -813,15 +918,18 @@ spec:
                                 - "conditionType"
                               type: "object"
                             maxItems: 32
+                            minItems: 1
                             type: "array"
                             x-kubernetes-list-map-keys:
                               - "conditionType"
                             x-kubernetes-list-type: "map"
                           strategy:
                             description: "strategy is the deployment strategy to use to replace existing machines with\nnew ones.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass."
+                            minProperties: 1
                             properties:
                               remediation:
                                 description: "remediation controls the strategy of remediating unhealthy machines\nand how remediating operations should occur during the lifecycle of the dependant MachineSets."
+                                minProperties: 1
                                 properties:
                                   maxInFlight:
                                     anyOf:
@@ -832,6 +940,7 @@ spec:
                                 type: "object"
                               rollingUpdate:
                                 description: "rollingUpdate is the rolling update config params. Present only if\nMachineDeploymentStrategyType = RollingUpdate."
+                                minProperties: 1
                                 properties:
                                   deletePolicy:
                                     description: "deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.\nValid values are \"Random, \"Newest\", \"Oldest\"\nWhen no value is supplied, the default DeletePolicy of MachineSet is used"
@@ -860,95 +969,10 @@ spec:
                                   - "OnDelete"
                                 type: "string"
                             type: "object"
-                          template:
-                            description: "template is a local struct containing a collection of templates for creation of\nMachineDeployment objects representing a set of worker nodes."
-                            properties:
-                              bootstrap:
-                                description: "bootstrap contains the bootstrap template reference to be used\nfor the creation of worker Machines."
-                                properties:
-                                  templateRef:
-                                    description: "templateRef is a required reference to the BootstrapTemplate for a MachineDeployment."
-                                    properties:
-                                      apiVersion:
-                                        description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
-                                        maxLength: 317
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
-                                        type: "string"
-                                      kind:
-                                        description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
-                                        maxLength: 63
-                                        minLength: 1
-                                        pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
-                                        type: "string"
-                                      name:
-                                        description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
-                                        maxLength: 253
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-                                        type: "string"
-                                    required:
-                                      - "apiVersion"
-                                      - "kind"
-                                      - "name"
-                                    type: "object"
-                                required:
-                                  - "templateRef"
-                                type: "object"
-                              infrastructure:
-                                description: "infrastructure contains the infrastructure template reference to be used\nfor the creation of worker Machines."
-                                properties:
-                                  templateRef:
-                                    description: "templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment."
-                                    properties:
-                                      apiVersion:
-                                        description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
-                                        maxLength: 317
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
-                                        type: "string"
-                                      kind:
-                                        description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
-                                        maxLength: 63
-                                        minLength: 1
-                                        pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
-                                        type: "string"
-                                      name:
-                                        description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
-                                        maxLength: 253
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-                                        type: "string"
-                                    required:
-                                      - "apiVersion"
-                                      - "kind"
-                                      - "name"
-                                    type: "object"
-                                required:
-                                  - "templateRef"
-                                type: "object"
-                              metadata:
-                                description: "metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.\nAt runtime this metadata is merged with the corresponding metadata from the topology."
-                                minProperties: 1
-                                properties:
-                                  annotations:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
-                                    type: "object"
-                                  labels:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
-                                    type: "object"
-                                type: "object"
-                            required:
-                              - "bootstrap"
-                              - "infrastructure"
-                            type: "object"
                         required:
+                          - "bootstrap"
                           - "class"
-                          - "template"
+                          - "infrastructure"
                         type: "object"
                       maxItems: 100
                       type: "array"
@@ -960,11 +984,63 @@ spec:
                       items:
                         description: "MachinePoolClass serves as a template to define a pool of worker nodes of the cluster\nprovisioned using `ClusterClass`."
                         properties:
+                          bootstrap:
+                            description: "bootstrap contains the bootstrap template reference to be used\nfor the creation of the Machines in the MachinePool."
+                            properties:
+                              templateRef:
+                                description: "templateRef is a required reference to the BootstrapTemplate for a MachinePool."
+                                properties:
+                                  apiVersion:
+                                    description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
+                                    maxLength: 317
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
+                                    type: "string"
+                                  kind:
+                                    description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                    maxLength: 63
+                                    minLength: 1
+                                    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                    type: "string"
+                                  name:
+                                    description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                    maxLength: 253
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                    type: "string"
+                                required:
+                                  - "apiVersion"
+                                  - "kind"
+                                  - "name"
+                                type: "object"
+                            required:
+                              - "templateRef"
+                            type: "object"
                           class:
                             description: "class denotes a type of machine pool present in the cluster,\nthis name MUST be unique within a ClusterClass and can be referenced\nin the Cluster to create a managed MachinePool."
                             maxLength: 256
                             minLength: 1
                             type: "string"
+                          deletion:
+                            description: "deletion contains configuration options for Machine deletion."
+                            minProperties: 1
+                            properties:
+                              nodeDeletionTimeoutSeconds:
+                                description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine Pool is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                              nodeDrainTimeoutSeconds:
+                                description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                              nodeVolumeDetachTimeoutSeconds:
+                                description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
+                                format: "int32"
+                                minimum: 0.0
+                                type: "integer"
+                            type: "object"
                           failureDomains:
                             description: "failureDomains is the list of failure domains the MachinePool should be attached to.\nMust match a key in the FailureDomains map stored on the cluster object.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
                             items:
@@ -973,6 +1049,54 @@ spec:
                               type: "string"
                             maxItems: 100
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
+                          infrastructure:
+                            description: "infrastructure contains the infrastructure template reference to be used\nfor the creation of the MachinePool."
+                            properties:
+                              templateRef:
+                                description: "templateRef is a required reference to the InfrastructureTemplate for a MachinePool."
+                                properties:
+                                  apiVersion:
+                                    description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
+                                    maxLength: 317
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
+                                    type: "string"
+                                  kind:
+                                    description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
+                                    maxLength: 63
+                                    minLength: 1
+                                    pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
+                                    type: "string"
+                                  name:
+                                    description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
+                                    maxLength: 253
+                                    minLength: 1
+                                    pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                                    type: "string"
+                                required:
+                                  - "apiVersion"
+                                  - "kind"
+                                  - "name"
+                                type: "object"
+                            required:
+                              - "templateRef"
+                            type: "object"
+                          metadata:
+                            description: "metadata is the metadata applied to the MachinePool.\nAt runtime this metadata is merged with the corresponding metadata from the topology."
+                            minProperties: 1
+                            properties:
+                              annotations:
+                                additionalProperties:
+                                  type: "string"
+                                description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                                type: "object"
+                              labels:
+                                additionalProperties:
+                                  type: "string"
+                                description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
+                                type: "object"
+                            type: "object"
                           minReadySeconds:
                             description: "minReadySeconds is the minimum number of seconds for which a newly created machine pool should\nbe ready.\nDefaults to 0 (machine will be considered available as soon as it\nis ready)\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
                             format: "int32"
@@ -987,110 +1111,10 @@ spec:
                                 minLength: 1
                                 type: "string"
                             type: "object"
-                          nodeDeletionTimeoutSeconds:
-                            description: "nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine Pool is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
-                          nodeDrainTimeoutSeconds:
-                            description: "nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
-                          nodeVolumeDetachTimeoutSeconds:
-                            description: "nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.\nNOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass."
-                            format: "int32"
-                            minimum: 0.0
-                            type: "integer"
-                          template:
-                            description: "template is a local struct containing a collection of templates for creation of\nMachinePools objects representing a pool of worker nodes."
-                            properties:
-                              bootstrap:
-                                description: "bootstrap contains the bootstrap template reference to be used\nfor the creation of the Machines in the MachinePool."
-                                properties:
-                                  templateRef:
-                                    description: "templateRef is a required reference to the BootstrapTemplate for a MachinePool."
-                                    properties:
-                                      apiVersion:
-                                        description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
-                                        maxLength: 317
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
-                                        type: "string"
-                                      kind:
-                                        description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
-                                        maxLength: 63
-                                        minLength: 1
-                                        pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
-                                        type: "string"
-                                      name:
-                                        description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
-                                        maxLength: 253
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-                                        type: "string"
-                                    required:
-                                      - "apiVersion"
-                                      - "kind"
-                                      - "name"
-                                    type: "object"
-                                required:
-                                  - "templateRef"
-                                type: "object"
-                              infrastructure:
-                                description: "infrastructure contains the infrastructure template reference to be used\nfor the creation of the MachinePool."
-                                properties:
-                                  templateRef:
-                                    description: "templateRef is a required reference to the InfrastructureTemplate for a MachinePool."
-                                    properties:
-                                      apiVersion:
-                                        description: "apiVersion of the template.\napiVersion must be fully qualified domain name followed by / and a version."
-                                        maxLength: 317
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*\\/[a-z]([-a-z0-9]*[a-z0-9])?$"
-                                        type: "string"
-                                      kind:
-                                        description: "kind of the template.\nkind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character."
-                                        maxLength: 63
-                                        minLength: 1
-                                        pattern: "^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$"
-                                        type: "string"
-                                      name:
-                                        description: "name of the template.\nname must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character."
-                                        maxLength: 253
-                                        minLength: 1
-                                        pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
-                                        type: "string"
-                                    required:
-                                      - "apiVersion"
-                                      - "kind"
-                                      - "name"
-                                    type: "object"
-                                required:
-                                  - "templateRef"
-                                type: "object"
-                              metadata:
-                                description: "metadata is the metadata applied to the MachinePool.\nAt runtime this metadata is merged with the corresponding metadata from the topology."
-                                minProperties: 1
-                                properties:
-                                  annotations:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
-                                    type: "object"
-                                  labels:
-                                    additionalProperties:
-                                      type: "string"
-                                    description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
-                                    type: "object"
-                                type: "object"
-                            required:
-                              - "bootstrap"
-                              - "infrastructure"
-                            type: "object"
                         required:
+                          - "bootstrap"
                           - "class"
-                          - "template"
+                          - "infrastructure"
                         type: "object"
                       maxItems: 100
                       type: "array"
@@ -1266,6 +1290,7 @@ spec:
                                         x-kubernetes-preserve-unknown-fields: true
                                       maxItems: 100
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     example:
                                       description: "example is an example for this variable."
                                       x-kubernetes-preserve-unknown-fields: true
@@ -1337,6 +1362,7 @@ spec:
                                         type: "string"
                                       maxItems: 1000
                                       type: "array"
+                                      x-kubernetes-list-type: "atomic"
                                     type:
                                       description: "type is the type of the variable.\nValid values are: object, array, string, integer, number or boolean."
                                       enum:
@@ -1423,6 +1449,7 @@ spec:
                           type: "object"
                         maxItems: 100
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                       definitionsConflict:
                         description: "definitionsConflict specifies whether or not there are conflicting definitions for a single variable name."
                         type: "boolean"
@@ -1437,6 +1464,7 @@ spec:
                     type: "object"
                   maxItems: 1000
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
               type: "object"
           required:
             - "spec"

@@ -34,6 +34,9 @@ pub struct GrafanaNotificationPolicySpec {
     pub resync_period: Option<String>,
     /// Routes for alerts to match against
     pub route: GrafanaNotificationPolicyRoute,
+    /// Suspend pauses synchronizing attempts and tells the operator to ignore changes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
 }
 
 /// Selects Grafana instances for import

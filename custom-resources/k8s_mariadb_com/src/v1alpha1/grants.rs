@@ -74,5 +74,9 @@ pub struct GrantStatus {
     /// Conditions for the Grant object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// CurrentPrivileges is the list of current privileges used in the Grant.
+    /// It allows to detect the divergence from the desired privileges.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentPrivileges")]
+    pub current_privileges: Option<Vec<String>>,
 }
 

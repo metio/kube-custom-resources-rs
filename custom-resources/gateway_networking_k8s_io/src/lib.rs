@@ -17,6 +17,7 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `UDPRoute`
 ## gateway.networking.k8s.io/v1alpha3
 - `BackendTLSPolicy`
+- `TLSRoute`
 ## gateway.networking.k8s.io/v1beta1
 - `GatewayClass`
 - `Gateway`

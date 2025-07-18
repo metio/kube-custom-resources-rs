@@ -100,8 +100,19 @@ pub struct KafkaRebalanceStatus {
     /// A JSON object describing the optimization result.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "optimizationResult")]
     pub optimization_result: Option<BTreeMap<String, serde_json::Value>>,
+    /// A reference to Config Map with the progress information.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub progress: Option<KafkaRebalanceStatusProgress>,
     /// The session identifier for requests to Cruise Control pertaining to this KafkaRebalance resource. This is used by the Kafka Rebalance operator to track the status of ongoing rebalancing operations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionId")]
     pub session_id: Option<String>,
+}
+
+/// A reference to Config Map with the progress information.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaRebalanceStatusProgress {
+    /// The name of the `ConfigMap` containing information related to the progress of a partition rebalance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebalanceProgressConfigMap")]
+    pub rebalance_progress_config_map: Option<String>,
 }
 

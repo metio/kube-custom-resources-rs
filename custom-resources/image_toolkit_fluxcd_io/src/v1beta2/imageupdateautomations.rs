@@ -236,7 +236,7 @@ pub enum ImageUpdateAutomationSourceRefKind {
 /// Update gives the specification for how to update the files in
 /// the repository. This can be left empty, to use the default
 /// value.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ImageUpdateAutomationUpdate {
     /// Path to the directory containing the manifests to be updated.
     /// Defaults to 'None', which translates to the root path
@@ -244,7 +244,8 @@ pub struct ImageUpdateAutomationUpdate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// Strategy names the strategy to be used.
-    pub strategy: ImageUpdateAutomationUpdateStrategy,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<ImageUpdateAutomationUpdateStrategy>,
 }
 
 /// Update gives the specification for how to update the files in

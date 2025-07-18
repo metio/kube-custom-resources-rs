@@ -47,7 +47,7 @@ pub struct NodeSLOCpuBurstStrategy {
     /// specifies a period of time for pod can use at burst, default = -1 (unlimited)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfsQuotaBurstPeriodSeconds")]
     pub cfs_quota_burst_period_seconds: Option<i64>,
-    /// cpu burst percentage for setting cpu.cfs_burst_us, legal range: [0, 10000], default as 1000 (1000%)
+    /// cpu burst percentage for setting cpu.cfs_burst_us in Cgroupv1 or setting cpu.max.burst in Cgroupv2, legal range: [0, 10000], default as 1000 (1000%)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuBurstPercent")]
     pub cpu_burst_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

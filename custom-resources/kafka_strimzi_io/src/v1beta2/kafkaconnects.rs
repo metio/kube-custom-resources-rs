@@ -54,9 +54,12 @@ pub struct KafkaConnectSpec {
     /// Logging configuration for Kafka Connect.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logging: Option<KafkaConnectLogging>,
-    /// Metrics configuration.
+    /// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsConfig")]
     pub metrics_config: Option<KafkaConnectMetricsConfig>,
+    /// List of connector plugins to mount into the `KafkaConnect` pod.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plugins: Option<Vec<KafkaConnectPlugins>>,
     /// Configuration of the node label which will be used as the `client.rack` consumer configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rack: Option<KafkaConnectRack>,
@@ -591,25 +594,30 @@ pub struct KafkaConnectLoggingValueFromConfigMapKeyRef {
     pub optional: Option<bool>,
 }
 
-/// Metrics configuration.
+/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct KafkaConnectMetricsConfig {
-    /// Metrics type. Only 'jmxPrometheusExporter' supported currently.
+    /// Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint.
     #[serde(rename = "type")]
     pub r#type: KafkaConnectMetricsConfigType,
-    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
-    #[serde(rename = "valueFrom")]
-    pub value_from: KafkaConnectMetricsConfigValueFrom,
+    /// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaConnectMetricsConfigValueFrom>,
+    /// Configuration values for the Strimzi Metrics Reporter.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<KafkaConnectMetricsConfigValues>,
 }
 
-/// Metrics configuration.
+/// Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum KafkaConnectMetricsConfigType {
     #[serde(rename = "jmxPrometheusExporter")]
     JmxPrometheusExporter,
+    #[serde(rename = "strimziMetricsReporter")]
+    StrimziMetricsReporter,
 }
 
-/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored. 
+/// ConfigMap entry where the Prometheus JMX Exporter configuration is stored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectMetricsConfigValueFrom {
     /// Reference to the key in the ConfigMap containing the configuration.
@@ -626,6 +634,48 @@ pub struct KafkaConnectMetricsConfigValueFromConfigMapKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// Configuration values for the Strimzi Metrics Reporter.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectMetricsConfigValues {
+    /// A list of regex patterns to filter the metrics to collect. Should contain at least one element.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
+    pub allow_list: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectPlugins {
+    /// List of artifacts associated with this connector plugin. Required.
+    pub artifacts: Vec<KafkaConnectPluginsArtifacts>,
+    /// A unique name for the connector plugin. This name is used to generate the mount path for the connector artifacts. The name has to be unique within the KafkaConnect resource. The name must be unique within the `KafkaConnect` resource and match the pattern: `^[a-z][-_a-z0-9]*[a-z]$`. Required.
+    pub name: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KafkaConnectPluginsArtifacts {
+    /// Policy that determines when the container image (OCI artifact) is pulled.
+    /// 
+    /// Possible values are:
+    /// 
+    /// * `Always`: Always pull the image. If the pull fails, container creation fails.
+    /// * `Never`: Never pull the image. Use only a locally available image. Container creation fails if the image isn’t present.
+    /// * `IfNotPresent`: Pull the image only if it’s not already available locally. Container creation fails if the image isn’t present and the pull fails.
+    /// 
+    /// Defaults to `Always` if `:latest` tag is specified, or `IfNotPresent` otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    /// Reference to the container image (OCI artifact) containing the Kafka Connect plugin. The image is mounted as a volume and provides the plugin binary. Required.
+    pub reference: String,
+    /// Artifact type. Currently, the only supported artifact type is `image`.
+    #[serde(rename = "type")]
+    pub r#type: KafkaConnectPluginsArtifactsType,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaConnectPluginsArtifactsType {
+    #[serde(rename = "image")]
+    Image,
 }
 
 /// Configuration of the node label which will be used as the `client.rack` consumer configuration.
@@ -1500,27 +1550,30 @@ pub struct KafkaConnectTemplateBuildPodTopologySpreadConstraintsLabelSelectorMat
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumes {
-    /// ConfigMap to use to populate the volume.
+    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaConnectTemplateBuildPodVolumesConfigMap>,
-    /// CSIVolumeSource object to use to populate the volume.
+    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaConnectTemplateBuildPodVolumesCsi>,
-    /// EmptyDir to use to populate the volume.
+    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaConnectTemplateBuildPodVolumesEmptyDir>,
+    /// `ImageVolumeSource` object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<KafkaConnectTemplateBuildPodVolumesImage>,
     /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// PersistentVolumeClaim object to use to populate the volume.
+    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaConnectTemplateBuildPodVolumesPersistentVolumeClaim>,
-    /// Secret to use populate the volume.
+    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaConnectTemplateBuildPodVolumesSecret>,
 }
 
-/// ConfigMap to use to populate the volume.
+/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -1543,7 +1596,7 @@ pub struct KafkaConnectTemplateBuildPodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// CSIVolumeSource object to use to populate the volume.
+/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1564,7 +1617,7 @@ pub struct KafkaConnectTemplateBuildPodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// EmptyDir to use to populate the volume.
+/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1581,7 +1634,16 @@ pub struct KafkaConnectTemplateBuildPodVolumesEmptyDirSizeLimit {
     pub format: Option<String>,
 }
 
-/// PersistentVolumeClaim object to use to populate the volume.
+/// `ImageVolumeSource` object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplateBuildPodVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -1590,7 +1652,7 @@ pub struct KafkaConnectTemplateBuildPodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// Secret to use populate the volume.
+/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplateBuildPodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -2607,27 +2669,30 @@ pub struct KafkaConnectTemplatePodTopologySpreadConstraintsLabelSelectorMatchExp
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumes {
-    /// ConfigMap to use to populate the volume.
+    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaConnectTemplatePodVolumesConfigMap>,
-    /// CSIVolumeSource object to use to populate the volume.
+    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaConnectTemplatePodVolumesCsi>,
-    /// EmptyDir to use to populate the volume.
+    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaConnectTemplatePodVolumesEmptyDir>,
+    /// `ImageVolumeSource` object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<KafkaConnectTemplatePodVolumesImage>,
     /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// PersistentVolumeClaim object to use to populate the volume.
+    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaConnectTemplatePodVolumesPersistentVolumeClaim>,
-    /// Secret to use populate the volume.
+    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaConnectTemplatePodVolumesSecret>,
 }
 
-/// ConfigMap to use to populate the volume.
+/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -2650,7 +2715,7 @@ pub struct KafkaConnectTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// CSIVolumeSource object to use to populate the volume.
+/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2671,7 +2736,7 @@ pub struct KafkaConnectTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// EmptyDir to use to populate the volume.
+/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2688,7 +2753,16 @@ pub struct KafkaConnectTemplatePodVolumesEmptyDirSizeLimit {
     pub format: Option<String>,
 }
 
-/// PersistentVolumeClaim object to use to populate the volume.
+/// `ImageVolumeSource` object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectTemplatePodVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -2697,7 +2771,7 @@ pub struct KafkaConnectTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// Secret to use populate the volume.
+/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]

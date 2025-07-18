@@ -64,19 +64,19 @@ spec:
                       rule: "self == oldSelf"
                 mode:
                   default: "Pipeline"
-                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\"Pipeline\" indicates that a Composition specifies a pipeline of\nComposition Functions, each of which is responsible for producing\ncomposed resources that Crossplane should create or update."
+                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\"Pipeline\" indicates that a Composition specifies a pipeline of\nfunctions, each of which is responsible for producing composed\nresources that Crossplane should create or update."
                   enum:
                     - "Pipeline"
                   type: "string"
                 pipeline:
-                  description: "Pipeline is a list of composition function steps that will be used when a\ncomposite resource referring to this composition is created. One of\nresources and pipeline must be specified - you cannot specify both.\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes."
+                  description: "Pipeline is a list of function steps that will be used when a\ncomposite resource referring to this composition is created.\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes."
                   items:
-                    description: "A PipelineStep in a Composition Function pipeline."
+                    description: "A PipelineStep in a function pipeline."
                     properties:
                       credentials:
-                        description: "Credentials are optional credentials that the Composition Function needs."
+                        description: "Credentials are optional credentials that the function needs."
                         items:
-                          description: "FunctionCredentials are optional credentials that a Composition Function\nneeds to run."
+                          description: "FunctionCredentials are optional credentials that a function\nneeds to run."
                           properties:
                             name:
                               description: "Name of this set of credentials."
@@ -112,7 +112,7 @@ spec:
                           - "name"
                         x-kubernetes-list-type: "map"
                       functionRef:
-                        description: "FunctionRef is a reference to the Composition Function this step should\nexecute."
+                        description: "FunctionRef is a reference to the function this step should\nexecute."
                         properties:
                           name:
                             description: "Name of the referenced Function."
@@ -121,10 +121,51 @@ spec:
                           - "name"
                         type: "object"
                       input:
-                        description: "Input is an optional, arbitrary Kubernetes resource (i.e. a resource\nwith an apiVersion and kind) that will be passed to the Composition\nFunction as the 'input' of its RunFunctionRequest."
+                        description: "Input is an optional, arbitrary Kubernetes resource (i.e. a resource\nwith an apiVersion and kind) that will be passed to the function as\nthe 'input' of its RunFunctionRequest."
                         type: "object"
                         x-kubernetes-embedded-resource: true
                         x-kubernetes-preserve-unknown-fields: true
+                      requirements:
+                        description: "Requirements are resource requirements that will be satisfied before\nthis pipeline step is called for the first time. This allows\npre-populating required resources without requiring a function to\nrequest them first."
+                        properties:
+                          requiredResources:
+                            description: "RequiredResources is a list of resources that must be fetched before\nthis function is called."
+                            items:
+                              description: "RequiredResourceSelector selects a required resource."
+                              properties:
+                                apiVersion:
+                                  description: "APIVersion of the required resource."
+                                  type: "string"
+                                kind:
+                                  description: "Kind of the required resource."
+                                  type: "string"
+                                matchLabels:
+                                  additionalProperties:
+                                    type: "string"
+                                  description: "MatchLabels specifies the set of labels to match for finding the\nrequired resource. When specified, Name is ignored."
+                                  type: "object"
+                                name:
+                                  description: "Name of the required resource."
+                                  type: "string"
+                                namespace:
+                                  description: "Namespace of the required resource if it is namespaced."
+                                  type: "string"
+                                requirementName:
+                                  description: "RequirementName is the unique name to identify this required resource\nin the Required Resources map in the function request."
+                                  type: "string"
+                              required:
+                                - "apiVersion"
+                                - "kind"
+                                - "requirementName"
+                              type: "object"
+                              x-kubernetes-validations:
+                                - message: "Either name or matchLabels must be specified, but not both"
+                                  rule: "(has(self.name) && !has(self.matchLabels)) || (!has(self.name) && has(self.matchLabels))"
+                            type: "array"
+                            x-kubernetes-list-map-keys:
+                              - "requirementName"
+                            x-kubernetes-list-type: "map"
+                        type: "object"
                       step:
                         description: "Step name. Must be unique within its Pipeline."
                         type: "string"

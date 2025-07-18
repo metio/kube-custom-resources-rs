@@ -33,6 +33,9 @@ pub struct GrafanaContactPointSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     pub settings: serde_json::Value,
+    /// Suspend pauses synchronizing attempts and tells the operator to ignore changes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     #[serde(rename = "type")]
     pub r#type: String,
     /// Manually specify the UID the Contact Point is created with. Can be any string consisting of alphanumeric characters, - and _ with a maximum length of 40

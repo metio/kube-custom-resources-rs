@@ -497,15 +497,16 @@ spec:
                     - "type"
                   type: "object"
                 metricsConfig:
-                  description: "Metrics configuration."
+                  description: "Metrics configuration. Only `jmxPrometheusExporter` can be configured, as this component does not yet support `strimziMetricsReporter`."
                   properties:
                     type:
-                      description: "Metrics type. Only 'jmxPrometheusExporter' supported currently."
+                      description: "Metrics type. The supported types are `jmxPrometheusExporter` and `strimziMetricsReporter`. Type `jmxPrometheusExporter` uses the Prometheus JMX Exporter to expose Kafka JMX metrics in Prometheus format through an HTTP endpoint. Type `strimziMetricsReporter` uses the Strimzi Metrics Reporter to directly expose Kafka metrics in Prometheus format through an HTTP endpoint."
                       enum:
                         - "jmxPrometheusExporter"
+                        - "strimziMetricsReporter"
                       type: "string"
                     valueFrom:
-                      description: "ConfigMap entry where the Prometheus JMX Exporter configuration is stored. "
+                      description: "ConfigMap entry where the Prometheus JMX Exporter configuration is stored."
                       properties:
                         configMapKeyRef:
                           description: "Reference to the key in the ConfigMap containing the configuration."
@@ -518,10 +519,23 @@ spec:
                               type: "boolean"
                           type: "object"
                       type: "object"
+                    values:
+                      description: "Configuration values for the Strimzi Metrics Reporter."
+                      properties:
+                        allowList:
+                          description: "A list of regex patterns to filter the metrics to collect. Should contain at least one element."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                   required:
                     - "type"
-                    - "valueFrom"
                   type: "object"
+                  x-kubernetes-validations:
+                    - message: "valueFrom property is required"
+                      rule: "self.type != 'jmxPrometheusExporter' || has(self.valueFrom)"
+                    - message: "value type not supported"
+                      rule: "self.type != 'strimziMetricsReporter'"
                 mirrors:
                   description: "Configuration of the MirrorMaker 2 connectors."
                   items:
@@ -1534,11 +1548,12 @@ spec:
                                   configMap: {}
                                   csi: {}
                                   emptyDir: {}
+                                  image: {}
                                   persistentVolumeClaim: {}
                                   secret: {}
                             properties:
                               configMap:
-                                description: "ConfigMap to use to populate the volume."
+                                description: "`ConfigMap` to use to populate the volume."
                                 properties:
                                   defaultMode:
                                     type: "integer"
@@ -1559,7 +1574,7 @@ spec:
                                     type: "boolean"
                                 type: "object"
                               csi:
-                                description: "CSIVolumeSource object to use to populate the volume."
+                                description: "`CSIVolumeSource` object to use to populate the volume."
                                 properties:
                                   driver:
                                     type: "string"
@@ -1578,7 +1593,7 @@ spec:
                                     type: "object"
                                 type: "object"
                               emptyDir:
-                                description: "EmptyDir to use to populate the volume."
+                                description: "`EmptyDir` to use to populate the volume."
                                 properties:
                                   medium:
                                     type: "string"
@@ -1590,11 +1605,19 @@ spec:
                                         type: "string"
                                     type: "object"
                                 type: "object"
+                              image:
+                                description: "`ImageVolumeSource` object to use to populate the volume."
+                                properties:
+                                  pullPolicy:
+                                    type: "string"
+                                  reference:
+                                    type: "string"
+                                type: "object"
                               name:
                                 description: "Name to use for the volume. Required."
                                 type: "string"
                               persistentVolumeClaim:
-                                description: "PersistentVolumeClaim object to use to populate the volume."
+                                description: "`PersistentVolumeClaim` object to use to populate the volume."
                                 properties:
                                   claimName:
                                     type: "string"
@@ -1602,7 +1625,7 @@ spec:
                                     type: "boolean"
                                 type: "object"
                               secret:
-                                description: "Secret to use populate the volume."
+                                description: "`Secret` to use to populate the volume."
                                 properties:
                                   defaultMode:
                                     type: "integer"
@@ -2567,11 +2590,12 @@ spec:
                                   configMap: {}
                                   csi: {}
                                   emptyDir: {}
+                                  image: {}
                                   persistentVolumeClaim: {}
                                   secret: {}
                             properties:
                               configMap:
-                                description: "ConfigMap to use to populate the volume."
+                                description: "`ConfigMap` to use to populate the volume."
                                 properties:
                                   defaultMode:
                                     type: "integer"
@@ -2592,7 +2616,7 @@ spec:
                                     type: "boolean"
                                 type: "object"
                               csi:
-                                description: "CSIVolumeSource object to use to populate the volume."
+                                description: "`CSIVolumeSource` object to use to populate the volume."
                                 properties:
                                   driver:
                                     type: "string"
@@ -2611,7 +2635,7 @@ spec:
                                     type: "object"
                                 type: "object"
                               emptyDir:
-                                description: "EmptyDir to use to populate the volume."
+                                description: "`EmptyDir` to use to populate the volume."
                                 properties:
                                   medium:
                                     type: "string"
@@ -2623,11 +2647,19 @@ spec:
                                         type: "string"
                                     type: "object"
                                 type: "object"
+                              image:
+                                description: "`ImageVolumeSource` object to use to populate the volume."
+                                properties:
+                                  pullPolicy:
+                                    type: "string"
+                                  reference:
+                                    type: "string"
+                                type: "object"
                               name:
                                 description: "Name to use for the volume. Required."
                                 type: "string"
                               persistentVolumeClaim:
-                                description: "PersistentVolumeClaim object to use to populate the volume."
+                                description: "`PersistentVolumeClaim` object to use to populate the volume."
                                 properties:
                                   claimName:
                                     type: "string"
@@ -2635,7 +2667,7 @@ spec:
                                     type: "boolean"
                                 type: "object"
                               secret:
-                                description: "Secret to use populate the volume."
+                                description: "`Secret` to use to populate the volume."
                                 properties:
                                   defaultMode:
                                     type: "integer"

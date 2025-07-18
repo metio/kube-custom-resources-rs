@@ -25,6 +25,7 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 - `UDPRoute`
 ### gateway.networking.k8s.io/v1alpha3
 - `BackendTLSPolicy`
+- `TLSRoute`
 ### gateway.networking.k8s.io/v1beta1
 - `GatewayClass`
 - `Gateway`

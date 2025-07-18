@@ -596,7 +596,7 @@ spec:
                             description: "TLSServerConfig defines VictoriaMetrics TLS configuration for the application's server"
                             properties:
                               certFile:
-                                description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecretRef"
+                                description: "CertFile defines path to the pre-mounted file with certificate\nmutually exclusive with CertSecret"
                                 type: "string"
                               certSecret:
                                 description: "CertSecretRef defines reference for secret with certificate content under given key\nmutually exclusive with CertFile"

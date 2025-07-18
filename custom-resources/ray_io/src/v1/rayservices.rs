@@ -26,6 +26,8 @@ pub struct RayServiceSpec {
     pub exclude_head_pod_from_serve_svc: Option<bool>,
     #[serde(rename = "rayClusterConfig")]
     pub ray_cluster_config: RayServiceRayClusterConfig,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rayClusterDeletionDelaySeconds")]
+    pub ray_cluster_deletion_delay_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveConfigV2")]
     pub serve_config_v2: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serveService")]

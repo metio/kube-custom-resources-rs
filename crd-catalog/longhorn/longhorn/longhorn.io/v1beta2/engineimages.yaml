@@ -18,7 +18,6 @@ spec:
     shortNames:
       - "lhei"
     singular: "engineimage"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
