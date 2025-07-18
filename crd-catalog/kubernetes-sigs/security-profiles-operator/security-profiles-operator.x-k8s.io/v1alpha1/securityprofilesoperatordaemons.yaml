@@ -679,6 +679,10 @@ spec:
                     type: "object"
                     x-kubernetes-map-type: "atomic"
                   type: "array"
+                jsonEnricherFilters:
+                  default: ""
+                  description: "JsonEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted\nfor the json-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged."
+                  type: "string"
                 jsonEnricherOptions:
                   description: "Defines options specific to the JsonEnricher\nfunctionality of the SecurityProfilesOperator\nIts optional to provide this configuration"
                   properties:
@@ -702,6 +706,10 @@ spec:
                       description: "This field specifies the path for the accumulated audit log data.\nThe audit log will be written to this file in JSON format if a file path\nis provided. If left unspecified, the output will be directed to\nstandard output (stdout)."
                       type: "string"
                   type: "object"
+                logEnricherFilters:
+                  default: ""
+                  description: "LogEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted\nfor the log-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged."
+                  type: "string"
                 priorityClassName:
                   default: "system-node-critical"
                   description: "PriorityClassName if defined, indicates the spod pod priority class."

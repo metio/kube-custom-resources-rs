@@ -42,6 +42,15 @@ pub struct SecretSpec {
     /// and you must create and use a customer managed KMS key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 	from:
+    /// 	  name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
+    pub kms_key_ref: Option<SecretKmsKeyRef>,
     /// The name of the new secret.
     /// 
     /// The secret name can contain ASCII letters, numbers, and the following characters:
@@ -95,6 +104,31 @@ pub struct SecretSpec {
     /// in the Amazon Web Services General Reference guide.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<SecretTags>>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretKmsKeyRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<SecretKmsKeyRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretKmsKeyRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// A custom type that specifies a Region and the KmsKeyId for a replica secret.

@@ -60,6 +60,8 @@ pub enum NodeDisksDiskDriver {
     Auto,
     #[serde(rename = "aio")]
     Aio,
+    #[serde(rename = "nvme")]
+    Nvme,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

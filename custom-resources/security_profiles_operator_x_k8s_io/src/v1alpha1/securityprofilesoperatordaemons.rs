@@ -79,11 +79,19 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     /// namespace to use for pulling the images from SPOD pod from a private registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<SecurityProfilesOperatorDaemonImagePullSecrets>>,
+    /// JsonEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted
+    /// for the json-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonEnricherFilters")]
+    pub json_enricher_filters: Option<String>,
     /// Defines options specific to the JsonEnricher
     /// functionality of the SecurityProfilesOperator
     /// Its optional to provide this configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonEnricherOptions")]
     pub json_enricher_options: Option<SecurityProfilesOperatorDaemonJsonEnricherOptions>,
+    /// LogEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted
+    /// for the log-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEnricherFilters")]
+    pub log_enricher_filters: Option<String>,
     /// PriorityClassName if defined, indicates the spod pod priority class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,

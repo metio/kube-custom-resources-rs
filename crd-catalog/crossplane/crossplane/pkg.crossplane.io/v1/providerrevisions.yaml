@@ -148,6 +148,11 @@ spec:
                       - "reason"
                     type: "object"
                   type: "array"
+                capabilities:
+                  description: "Capabilities of this package. Capabilities are opaque strings that\nmay be meaningful to package consumers."
+                  items:
+                    type: "string"
+                  type: "array"
                 conditions:
                   description: "Conditions of the resource."
                   items:

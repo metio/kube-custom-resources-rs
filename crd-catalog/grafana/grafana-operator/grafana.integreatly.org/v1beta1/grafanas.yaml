@@ -4214,6 +4214,8 @@ spec:
                           required:
                             - "targetPort"
                           type: "object"
+                        subdomain:
+                          type: "string"
                         tls:
                           description: "TLSConfig defines config used to secure a route and provide termination"
                           properties:
@@ -4485,6 +4487,9 @@ spec:
                         x-kubernetes-map-type: "atomic"
                       type: "array"
                   type: "object"
+                suspend:
+                  description: "Suspend pauses reconciliation of owned resources like deployments, Services, Etc. upon changes"
+                  type: "boolean"
                 version:
                   description: "Version specifies the version of Grafana to use for this deployment. It follows the same format as the docker.io/grafana/grafana tags"
                   type: "string"

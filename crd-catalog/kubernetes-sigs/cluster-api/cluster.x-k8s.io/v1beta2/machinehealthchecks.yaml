@@ -154,7 +154,9 @@ spec:
                       - "type"
                     type: "object"
                   maxItems: 100
+                  minItems: 1
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
                 unhealthyRange:
                   description: "unhealthyRange specifies the range of unhealthy machines allowed.\nAny further remediation is only allowed if the number of machines selected by \"selector\" as not healthy\nis within the range of \"unhealthyRange\". Takes precedence over maxUnhealthy.\nEg. \"[3-5]\" - This means that remediation will be allowed only when:\n(a) there are at least 3 unhealthy machines (and)\n(b) there are at most 5 unhealthy machines\n\nDeprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details."
                   maxLength: 32
@@ -290,6 +292,7 @@ spec:
                     type: "string"
                   maxItems: 10000
                   type: "array"
+                  x-kubernetes-list-type: "atomic"
               type: "object"
           required:
             - "spec"

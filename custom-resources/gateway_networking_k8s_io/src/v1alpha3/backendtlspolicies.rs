@@ -119,8 +119,6 @@ pub struct BackendTLSPolicyValidation {
     /// 
     /// 1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).
     /// 2. Hostname MUST be used for authentication and MUST match the certificate served by the matching backend, unless SubjectAltNames is specified.
-    ///    authentication and MUST match the certificate served by the matching
-    ///    backend.
     /// 
     /// Support: Core
     pub hostname: String,

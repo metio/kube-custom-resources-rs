@@ -4388,11 +4388,10 @@ pub struct MariaDBReplication {
     /// ReplicaReplication is the replication configuration for the replica nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replica: Option<MariaDBReplicationReplica>,
-    /// SyncBinlog indicates whether the binary log should be synchronized to the disk after every event.
-    /// It trades off performance for consistency.
-    /// See: https://mariadb.com/kb/en/replication-and-binary-log-system-variables/#sync_binlog.
+    /// SyncBinlog indicates after how many events the binary log is synchronized to the disk.
+    /// The default is 1, flushing the binary log to disk after every write, which trades off performance for consistency. See: https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#sync_binlog
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncBinlog")]
-    pub sync_binlog: Option<bool>,
+    pub sync_binlog: Option<i64>,
 }
 
 /// Primary is the replication configuration for the primary node.

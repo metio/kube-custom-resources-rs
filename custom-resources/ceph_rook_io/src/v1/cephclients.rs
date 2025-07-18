@@ -30,11 +30,50 @@ pub struct CephClientSpec {
     /// If not specified, the default name is "rook-ceph-client-" as a prefix to the CR name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
+    /// Security represents security settings
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub security: Option<CephClientSecurity>,
+}
+
+/// Security represents security settings
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephClientSecurity {
+    /// CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephx: Option<CephClientSecurityCephx>,
+}
+
+/// CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephClientSecurityCephx {
+    /// KeyGeneration specifies the desired CephX key generation. This is used when KeyRotationPolicy
+    /// is KeyGeneration and ignored for other policies. If this is set to greater than the current
+    /// key generation, relevant keys will be rotated, and the generation value will be updated to
+    /// this new value (generation values are not necessarily incremental, though that is the
+    /// intended use case). If this is set to less than or equal to the current key generation, keys
+    /// are not rotated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<i32>,
+    /// KeyRotationPolicy controls if and when CephX keys are rotated after initial creation.
+    /// One of Disabled, or KeyGeneration. Default Disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyRotationPolicy")]
+    pub key_rotation_policy: Option<CephClientSecurityCephxKeyRotationPolicy>,
+}
+
+/// CephX configures CephX key settings. More: https://docs.ceph.com/en/latest/dev/cephx/
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephClientSecurityCephxKeyRotationPolicy {
+    #[serde(rename = "")]
+    KopiumEmpty,
+    Disabled,
+    KeyGeneration,
 }
 
 /// Status represents the status of a Ceph Client
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephClientStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephx: Option<CephClientStatusCephx>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// ObservedGeneration is the latest generation observed by the controller.
@@ -43,5 +82,24 @@ pub struct CephClientStatus {
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephClientStatusCephx {
+    /// KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+    /// same string format as reported by `CephCluster.status.version.version` to allow them to be
+    /// compared. E.g., `20.2.0-0`.
+    /// For all newly-created resources, this field set to the version of Ceph that created the key.
+    /// The special value "Uninitialized" indicates that keys are being created for the first time.
+    /// An empty string indicates that the version is unknown, as expected in brownfield deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCephVersion")]
+    pub key_ceph_version: Option<String>,
+    /// KeyGeneration represents the CephX key generation for the last successful reconcile.
+    /// For all newly-created resources, this field is set to `1`.
+    /// When keys are rotated due to any rotation policy, the generation is incremented or updated to
+    /// the configured policy generation.
+    /// Generation `0` indicates that keys existed prior to the implementation of key tracking.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<i32>,
 }
 

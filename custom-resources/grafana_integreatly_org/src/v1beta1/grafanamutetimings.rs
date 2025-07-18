@@ -34,6 +34,9 @@ pub struct GrafanaMuteTimingSpec {
     /// How often the resource is synced, defaults to 10m0s if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
+    /// Suspend pauses synchronizing attempts and tells the operator to ignore changes
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub suspend: Option<bool>,
     /// Time intervals for muting
     pub time_intervals: Vec<GrafanaMuteTimingTimeIntervals>,
 }
