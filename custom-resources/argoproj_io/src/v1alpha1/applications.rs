@@ -1504,6 +1504,9 @@ pub struct ApplicationSyncPolicyAutomated {
     /// AllowEmpty allows apps have zero live resources (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowEmpty")]
     pub allow_empty: Option<bool>,
+    /// Enable allows apps to explicitly control automated sync
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
     /// Prune specifies whether to delete resources from the cluster that are not found in the sources anymore as part of automated sync (default: false)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prune: Option<bool>,
@@ -1614,9 +1617,11 @@ pub struct ApplicationStatusHealth {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// Message is a human-readable informational message describing the health status
+    /// 
+    /// Deprecated: this field is not used and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Status holds the status code of the application or resource
+    /// Status holds the status code of the application
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
@@ -3067,6 +3072,9 @@ pub struct ApplicationStatusOperationStateSyncResultResources {
     /// HookType specifies the type of the hook. Empty for non-hook resources
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookType")]
     pub hook_type: Option<String>,
+    /// Images contains the images related to the ResourceResult
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
     /// Kind specifies the API kind of the resource
     pub kind: String,
     /// Message contains an informational or error message for the last sync OR operation
@@ -3727,12 +3735,14 @@ pub struct ApplicationStatusResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApplicationStatusResourcesHealth {
     /// LastTransitionTime is the time the HealthStatus was set or updated
+    /// 
+    /// Deprecated: this field is not used and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// Message is a human-readable informational message describing the health status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// Status holds the status code of the application or resource
+    /// Status holds the status code of the resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }

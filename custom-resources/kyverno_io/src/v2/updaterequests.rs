@@ -286,6 +286,9 @@ pub struct UpdateRequestResource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UpdateRequestRuleContext {
+    /// CacheRestore indicates whether the cache should be restored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheRestore")]
+    pub cache_restore: Option<bool>,
     /// DeleteDownstream represents whether the downstream needs to be deleted.
     #[serde(rename = "deleteDownstream")]
     pub delete_downstream: bool,

@@ -78,6 +78,9 @@ pub enum ClusterClassAvailabilityGatesPolarity {
 /// for provisioning the Control Plane for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlane {
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterClassControlPlaneDeletion>,
     /// machineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
     /// This field is supported if and only if the ControlPlane provider template
     /// referenced above is Machine based and supports setting replicas.
@@ -102,6 +105,25 @@ pub struct ClusterClassControlPlane {
     /// namingStrategy allows changing the naming pattern used when creating the control plane provider object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassControlPlaneNamingStrategy>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
+    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
+    /// 
+    /// NOTE: If a Cluster defines a custom list of readinessGates for the control plane,
+    /// such list overrides readinessGates defined in this field.
+    /// NOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;
+    /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ClusterClassControlPlaneReadinessGates>>,
+    /// templateRef contains the reference to a provider-specific control plane template.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassControlPlaneTemplateRef,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassControlPlaneDeletion {
     /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
@@ -119,21 +141,6 @@ pub struct ClusterClassControlPlane {
     /// NOTE: This value can be overridden while defining a Cluster.Topology.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
-    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
-    /// 
-    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
-    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
-    /// 
-    /// NOTE: This field is considered only for computing v1beta2 conditions.
-    /// NOTE: If a Cluster defines a custom list of readinessGates for the control plane,
-    /// such list overrides readinessGates defined in this field.
-    /// NOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;
-    /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
-    pub readiness_gates: Option<Vec<ClusterClassControlPlaneReadinessGates>>,
-    /// templateRef contains the reference to a provider-specific control plane template.
-    #[serde(rename = "templateRef")]
-    pub template_ref: ClusterClassControlPlaneTemplateRef,
 }
 
 /// machineHealthCheck defines a MachineHealthCheck for this ControlPlaneClass.
@@ -885,18 +892,31 @@ pub struct ClusterClassWorkers {
 /// provisioned using the `ClusterClass`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeployments {
+    /// bootstrap contains the bootstrap template reference to be used
+    /// for the creation of worker Machines.
+    pub bootstrap: ClusterClassWorkersMachineDeploymentsBootstrap,
     /// class denotes a type of worker node present in the cluster,
     /// this name MUST be unique within a ClusterClass and can be referenced
     /// in the Cluster to create a managed MachineDeployment.
     pub class: String,
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterClassWorkersMachineDeploymentsDeletion>,
     /// failureDomain is the failure domain the machines will be created in.
     /// Must match the name of a FailureDomain from the Cluster status.
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
+    /// infrastructure contains the infrastructure template reference to be used
+    /// for the creation of worker Machines.
+    pub infrastructure: ClusterClassWorkersMachineDeploymentsInfrastructure,
     /// machineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterClassWorkersMachineDeploymentsMachineHealthCheck>,
+    /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+    /// At runtime this metadata is merged with the corresponding metadata from the topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ClusterClassWorkersMachineDeploymentsMetadata>,
     /// minReadySeconds is the minimum number of seconds for which a newly created machine should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
@@ -907,6 +927,49 @@ pub struct ClusterClassWorkersMachineDeployments {
     /// namingStrategy allows changing the naming pattern used when creating the MachineDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassWorkersMachineDeploymentsNamingStrategy>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
+    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
+    /// 
+    /// NOTE: If a Cluster defines a custom list of readinessGates for a MachineDeployment using this MachineDeploymentClass,
+    /// such list overrides readinessGates defined in this field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ClusterClassWorkersMachineDeploymentsReadinessGates>>,
+    /// strategy is the deployment strategy to use to replace existing machines with
+    /// new ones.
+    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<ClusterClassWorkersMachineDeploymentsStrategy>,
+}
+
+/// bootstrap contains the bootstrap template reference to be used
+/// for the creation of worker Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsBootstrap {
+    /// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachineDeploymentsBootstrapTemplateRef,
+}
+
+/// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsBootstrapTemplateRef {
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsDeletion {
     /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
@@ -924,24 +987,30 @@ pub struct ClusterClassWorkersMachineDeployments {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
-    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
-    /// 
-    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
-    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
-    /// 
-    /// NOTE: This field is considered only for computing v1beta2 conditions.
-    /// NOTE: If a Cluster defines a custom list of readinessGates for a MachineDeployment using this MachineDeploymentClass,
-    /// such list overrides readinessGates defined in this field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
-    pub readiness_gates: Option<Vec<ClusterClassWorkersMachineDeploymentsReadinessGates>>,
-    /// strategy is the deployment strategy to use to replace existing machines with
-    /// new ones.
-    /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<ClusterClassWorkersMachineDeploymentsStrategy>,
-    /// template is a local struct containing a collection of templates for creation of
-    /// MachineDeployment objects representing a set of worker nodes.
-    pub template: ClusterClassWorkersMachineDeploymentsTemplate,
+}
+
+/// infrastructure contains the infrastructure template reference to be used
+/// for the creation of worker Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsInfrastructure {
+    /// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachineDeploymentsInfrastructureTemplateRef,
+}
+
+/// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsInfrastructureTemplateRef {
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
 }
 
 /// machineHealthCheck defines a MachineHealthCheck for this MachineDeploymentClass.
@@ -1026,6 +1095,24 @@ pub struct ClusterClassWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeC
     /// type of Node condition
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+/// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+/// At runtime this metadata is merged with the corresponding metadata from the topology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachineDeploymentsMetadata {
+    /// annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// labels is a map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: http://kubernetes.io/docs/user-guide/labels
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// namingStrategy allows changing the naming pattern used when creating the MachineDeployment.
@@ -1166,101 +1253,32 @@ pub enum ClusterClassWorkersMachineDeploymentsStrategyType {
     OnDelete,
 }
 
-/// template is a local struct containing a collection of templates for creation of
-/// MachineDeployment objects representing a set of worker nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplate {
-    /// bootstrap contains the bootstrap template reference to be used
-    /// for the creation of worker Machines.
-    pub bootstrap: ClusterClassWorkersMachineDeploymentsTemplateBootstrap,
-    /// infrastructure contains the infrastructure template reference to be used
-    /// for the creation of worker Machines.
-    pub infrastructure: ClusterClassWorkersMachineDeploymentsTemplateInfrastructure,
-    /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
-    /// At runtime this metadata is merged with the corresponding metadata from the topology.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterClassWorkersMachineDeploymentsTemplateMetadata>,
-}
-
-/// bootstrap contains the bootstrap template reference to be used
-/// for the creation of worker Machines.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrap {
-    /// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
-    #[serde(rename = "templateRef")]
-    pub template_ref: ClusterClassWorkersMachineDeploymentsTemplateBootstrapTemplateRef,
-}
-
-/// templateRef is a required reference to the BootstrapTemplate for a MachineDeployment.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapTemplateRef {
-    /// apiVersion of the template.
-    /// apiVersion must be fully qualified domain name followed by / and a version.
-    #[serde(rename = "apiVersion")]
-    pub api_version: String,
-    /// kind of the template.
-    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
-    pub kind: String,
-    /// name of the template.
-    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
-    pub name: String,
-}
-
-/// infrastructure contains the infrastructure template reference to be used
-/// for the creation of worker Machines.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructure {
-    /// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
-    #[serde(rename = "templateRef")]
-    pub template_ref: ClusterClassWorkersMachineDeploymentsTemplateInfrastructureTemplateRef,
-}
-
-/// templateRef is a required reference to the InfrastructureTemplate for a MachineDeployment.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureTemplateRef {
-    /// apiVersion of the template.
-    /// apiVersion must be fully qualified domain name followed by / and a version.
-    #[serde(rename = "apiVersion")]
-    pub api_version: String,
-    /// kind of the template.
-    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
-    pub kind: String,
-    /// name of the template.
-    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
-    pub name: String,
-}
-
-/// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
-/// At runtime this metadata is merged with the corresponding metadata from the topology.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsTemplateMetadata {
-    /// annotations is an unstructured key value map stored with a resource that may be
-    /// set by external tools to store and retrieve arbitrary metadata. They are not
-    /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    /// labels is a map of string keys and values that can be used to organize and categorize
-    /// (scope and select) objects. May match selectors of replication controllers
-    /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-}
-
 /// MachinePoolClass serves as a template to define a pool of worker nodes of the cluster
 /// provisioned using `ClusterClass`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachinePools {
+    /// bootstrap contains the bootstrap template reference to be used
+    /// for the creation of the Machines in the MachinePool.
+    pub bootstrap: ClusterClassWorkersMachinePoolsBootstrap,
     /// class denotes a type of machine pool present in the cluster,
     /// this name MUST be unique within a ClusterClass and can be referenced
     /// in the Cluster to create a managed MachinePool.
     pub class: String,
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterClassWorkersMachinePoolsDeletion>,
     /// failureDomains is the list of failure domains the MachinePool should be attached to.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
+    /// infrastructure contains the infrastructure template reference to be used
+    /// for the creation of the MachinePool.
+    pub infrastructure: ClusterClassWorkersMachinePoolsInfrastructure,
+    /// metadata is the metadata applied to the MachinePool.
+    /// At runtime this metadata is merged with the corresponding metadata from the topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<ClusterClassWorkersMachinePoolsMetadata>,
     /// minReadySeconds is the minimum number of seconds for which a newly created machine pool should
     /// be ready.
     /// Defaults to 0 (machine will be considered available as soon as it
@@ -1271,6 +1289,35 @@ pub struct ClusterClassWorkersMachinePools {
     /// namingStrategy allows changing the naming pattern used when creating the MachinePool.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
     pub naming_strategy: Option<ClusterClassWorkersMachinePoolsNamingStrategy>,
+}
+
+/// bootstrap contains the bootstrap template reference to be used
+/// for the creation of the Machines in the MachinePool.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachinePoolsBootstrap {
+    /// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
+    #[serde(rename = "templateRef")]
+    pub template_ref: ClusterClassWorkersMachinePoolsBootstrapTemplateRef,
+}
+
+/// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachinePoolsBootstrapTemplateRef {
+    /// apiVersion of the template.
+    /// apiVersion must be fully qualified domain name followed by / and a version.
+    #[serde(rename = "apiVersion")]
+    pub api_version: String,
+    /// kind of the template.
+    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
+    pub kind: String,
+    /// name of the template.
+    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
+    pub name: String,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachinePoolsDeletion {
     /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine Pool is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
@@ -1288,78 +1335,20 @@ pub struct ClusterClassWorkersMachinePools {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
-    /// template is a local struct containing a collection of templates for creation of
-    /// MachinePools objects representing a pool of worker nodes.
-    pub template: ClusterClassWorkersMachinePoolsTemplate,
-}
-
-/// namingStrategy allows changing the naming pattern used when creating the MachinePool.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsNamingStrategy {
-    /// template defines the template to use for generating the name of the MachinePool object.
-    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`.
-    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
-    /// get concatenated with a random suffix of length 5.
-    /// The templating mechanism provides the following arguments:
-    /// * `.cluster.name`: The name of the cluster object.
-    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
-    /// * `.machinePool.topologyName`: The name of the MachinePool topology (Cluster.spec.topology.workers.machinePools[].name).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub template: Option<String>,
-}
-
-/// template is a local struct containing a collection of templates for creation of
-/// MachinePools objects representing a pool of worker nodes.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplate {
-    /// bootstrap contains the bootstrap template reference to be used
-    /// for the creation of the Machines in the MachinePool.
-    pub bootstrap: ClusterClassWorkersMachinePoolsTemplateBootstrap,
-    /// infrastructure contains the infrastructure template reference to be used
-    /// for the creation of the MachinePool.
-    pub infrastructure: ClusterClassWorkersMachinePoolsTemplateInfrastructure,
-    /// metadata is the metadata applied to the MachinePool.
-    /// At runtime this metadata is merged with the corresponding metadata from the topology.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterClassWorkersMachinePoolsTemplateMetadata>,
-}
-
-/// bootstrap contains the bootstrap template reference to be used
-/// for the creation of the Machines in the MachinePool.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateBootstrap {
-    /// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
-    #[serde(rename = "templateRef")]
-    pub template_ref: ClusterClassWorkersMachinePoolsTemplateBootstrapTemplateRef,
-}
-
-/// templateRef is a required reference to the BootstrapTemplate for a MachinePool.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateBootstrapTemplateRef {
-    /// apiVersion of the template.
-    /// apiVersion must be fully qualified domain name followed by / and a version.
-    #[serde(rename = "apiVersion")]
-    pub api_version: String,
-    /// kind of the template.
-    /// kind must consist of alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character.
-    pub kind: String,
-    /// name of the template.
-    /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
-    pub name: String,
 }
 
 /// infrastructure contains the infrastructure template reference to be used
 /// for the creation of the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructure {
+pub struct ClusterClassWorkersMachinePoolsInfrastructure {
     /// templateRef is a required reference to the InfrastructureTemplate for a MachinePool.
     #[serde(rename = "templateRef")]
-    pub template_ref: ClusterClassWorkersMachinePoolsTemplateInfrastructureTemplateRef,
+    pub template_ref: ClusterClassWorkersMachinePoolsInfrastructureTemplateRef,
 }
 
 /// templateRef is a required reference to the InfrastructureTemplate for a MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureTemplateRef {
+pub struct ClusterClassWorkersMachinePoolsInfrastructureTemplateRef {
     /// apiVersion of the template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     #[serde(rename = "apiVersion")]
@@ -1375,7 +1364,7 @@ pub struct ClusterClassWorkersMachinePoolsTemplateInfrastructureTemplateRef {
 /// metadata is the metadata applied to the MachinePool.
 /// At runtime this metadata is merged with the corresponding metadata from the topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsTemplateMetadata {
+pub struct ClusterClassWorkersMachinePoolsMetadata {
     /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
@@ -1388,6 +1377,21 @@ pub struct ClusterClassWorkersMachinePoolsTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+}
+
+/// namingStrategy allows changing the naming pattern used when creating the MachinePool.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterClassWorkersMachinePoolsNamingStrategy {
+    /// template defines the template to use for generating the name of the MachinePool object.
+    /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`.
+    /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
+    /// get concatenated with a random suffix of length 5.
+    /// The templating mechanism provides the following arguments:
+    /// * `.cluster.name`: The name of the cluster object.
+    /// * `.random`: A random alphanumeric string, without vowels, of length 5.
+    /// * `.machinePool.topologyName`: The name of the MachinePool topology (Cluster.spec.topology.workers.machinePools[].name).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<String>,
 }
 
 /// status is the observed state of ClusterClass.

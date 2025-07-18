@@ -202,6 +202,9 @@ pub struct ClusterTopologyClassRef {
 /// controlPlane describes the cluster control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlane {
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterTopologyControlPlaneDeletion>,
     /// machineHealthCheck allows to enable, disable and override
     /// the MachineHealthCheck configuration in the ClusterClass for this control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
@@ -212,6 +215,31 @@ pub struct ClusterTopologyControlPlane {
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyControlPlaneMetadata>,
+    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
+    /// 
+    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
+    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
+    /// 
+    /// If this field is not defined, readinessGates from the corresponding ControlPlaneClass will be used, if any.
+    /// 
+    /// NOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;
+    /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ClusterTopologyControlPlaneReadinessGates>>,
+    /// replicas is the number of control plane nodes.
+    /// If the value is not set, the ControlPlane object is created without the number of Replicas
+    /// and it's assumed that the control plane controller does not implement support for this field.
+    /// When specified against a control plane provider that lacks support for this field, this value will be ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// variables can be used to customize the ControlPlane through patches.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<ClusterTopologyControlPlaneVariables>,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyControlPlaneDeletion {
     /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
@@ -226,27 +254,6 @@ pub struct ClusterTopologyControlPlane {
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
-    /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
-    /// 
-    /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
-    /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
-    /// 
-    /// If this field is not defined, readinessGates from the corresponding ControlPlaneClass will be used, if any.
-    /// 
-    /// NOTE: This field is considered only for computing v1beta2 conditions.
-    /// NOTE: Specific control plane provider implementations might automatically extend the list of readinessGates;
-    /// e.g. the kubeadm control provider adds ReadinessGates for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
-    pub readiness_gates: Option<Vec<ClusterTopologyControlPlaneReadinessGates>>,
-    /// replicas is the number of control plane nodes.
-    /// If the value is nil, the ControlPlane object is created without the number of Replicas
-    /// and it's assumed that the control plane controller does not implement support for this field.
-    /// When specified against a control plane provider that lacks support for this field, this value will be ignored.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
-    /// variables can be used to customize the ControlPlane through patches.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<ClusterTopologyControlPlaneVariables>,
 }
 
 /// machineHealthCheck allows to enable, disable and override
@@ -449,6 +456,9 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// This should match one of the deployment classes defined in the ClusterClass object
     /// mentioned in the `Cluster.Spec.Class` field.
     pub class: String,
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterTopologyWorkersMachineDeploymentsDeletion>,
     /// failureDomain is the failure domain the machines will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
@@ -472,28 +482,12 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
-    /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
-    /// Defaults to 10 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
-    pub node_deletion_timeout_seconds: Option<i32>,
-    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
-    /// The default value is 0, meaning that the node can be drained without any time limitations.
-    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
-    pub node_drain_timeout_seconds: Option<i32>,
-    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
-    /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
-    pub node_volume_detach_timeout_seconds: Option<i32>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
     /// 
     /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
     /// computation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.
     /// 
     /// If this field is not defined, readinessGates from the corresponding MachineDeploymentClass will be used, if any.
-    /// 
-    /// NOTE: This field is considered only for computing v1beta2 conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ClusterTopologyWorkersMachineDeploymentsReadinessGates>>,
     /// replicas is the number of worker nodes belonging to this set.
@@ -509,6 +503,25 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// variables can be used to customize the MachineDeployment through patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<ClusterTopologyWorkersMachineDeploymentsVariables>,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsDeletion {
+    /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the Machine
+    /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
+    /// Defaults to 10 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeoutSeconds")]
+    pub node_deletion_timeout_seconds: Option<i32>,
+    /// nodeDrainTimeoutSeconds is the total amount of time that the controller will spend on draining a node.
+    /// The default value is 0, meaning that the node can be drained without any time limitations.
+    /// NOTE: nodeDrainTimeoutSeconds is different from `kubectl drain --timeout`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeoutSeconds")]
+    pub node_drain_timeout_seconds: Option<i32>,
+    /// nodeVolumeDetachTimeoutSeconds is the total amount of time that the controller will spend on waiting for all volumes
+    /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
+    pub node_volume_detach_timeout_seconds: Option<i32>,
 }
 
 /// machineHealthCheck allows to enable, disable and override
@@ -778,6 +791,9 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// This should match one of the deployment classes defined in the ClusterClass object
     /// mentioned in the `Cluster.Spec.Class` field.
     pub class: String,
+    /// deletion contains configuration options for Machine deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<ClusterTopologyWorkersMachinePoolsDeletion>,
     /// failureDomains is the list of failure domains the machine pool will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
@@ -797,6 +813,20 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
+    /// replicas is the number of nodes belonging to this pool.
+    /// If the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)
+    /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
+    /// of this value.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub replicas: Option<i32>,
+    /// variables can be used to customize the MachinePool through patches.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub variables: Option<ClusterTopologyWorkersMachinePoolsVariables>,
+}
+
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachinePoolsDeletion {
     /// nodeDeletionTimeoutSeconds defines how long the controller will attempt to delete the Node that the MachinePool
     /// hosts after the MachinePool is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
@@ -811,15 +841,6 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
-    /// replicas is the number of nodes belonging to this pool.
-    /// If the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)
-    /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
-    /// of this value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicas: Option<i32>,
-    /// variables can be used to customize the MachinePool through patches.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub variables: Option<ClusterTopologyWorkersMachinePoolsVariables>,
 }
 
 /// metadata is the metadata applied to the MachinePool.

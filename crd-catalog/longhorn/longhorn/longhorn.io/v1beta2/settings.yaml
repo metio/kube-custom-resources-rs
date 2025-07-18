@@ -18,7 +18,6 @@ spec:
     shortNames:
       - "lhs"
     singular: "setting"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

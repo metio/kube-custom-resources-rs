@@ -40,6 +40,14 @@ spec:
                 allProxy:
                   description: "AllProxy specifies a HTTP(S) proxy to be used for connecting to services if\na protocol-specific proxy is not specified. Authentication is not supported.\nFormat is <scheme>://<host>:<port>"
                   type: "string"
+                caCertificateSecretRef:
+                  description: "CACertificateSecretRef references secret containing the X.509 CA certificate in the PEM format."
+                  properties:
+                    name:
+                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                      type: "string"
+                  type: "object"
+                  x-kubernetes-map-type: "atomic"
                 cacheConfigurationSeconds:
                   description: "The period (in seconds) that the APIcast configuration will be stored in\nAPIcast's cache."
                   format: "int64"

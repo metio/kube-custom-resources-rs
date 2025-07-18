@@ -103,6 +103,10 @@ pub struct ProviderRevisionStatus {
     /// reconciling this revision, and what they were used for.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appliedImageConfigRefs")]
     pub applied_image_config_refs: Option<Vec<ProviderRevisionStatusAppliedImageConfigRefs>>,
+    /// Capabilities of this package. Capabilities are opaque strings that
+    /// may be meaningful to package consumers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capabilities: Option<Vec<String>>,
     /// Conditions of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,

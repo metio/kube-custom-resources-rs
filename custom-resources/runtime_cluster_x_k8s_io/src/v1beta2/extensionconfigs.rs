@@ -168,7 +168,7 @@ pub struct ExtensionConfigStatusHandlers {
     #[serde(rename = "requestHook")]
     pub request_hook: ExtensionConfigStatusHandlersRequestHook,
     /// timeoutSeconds defines the timeout duration for client calls to the ExtensionHandler.
-    /// Defaults to 10 is not set.
+    /// Defaults to 10 if not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }

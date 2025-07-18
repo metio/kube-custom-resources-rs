@@ -1432,27 +1432,30 @@ pub struct KafkaBridgeTemplatePodTopologySpreadConstraintsLabelSelectorMatchExpr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumes {
-    /// ConfigMap to use to populate the volume.
+    /// `ConfigMap` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<KafkaBridgeTemplatePodVolumesConfigMap>,
-    /// CSIVolumeSource object to use to populate the volume.
+    /// `CSIVolumeSource` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<KafkaBridgeTemplatePodVolumesCsi>,
-    /// EmptyDir to use to populate the volume.
+    /// `EmptyDir` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<KafkaBridgeTemplatePodVolumesEmptyDir>,
+    /// `ImageVolumeSource` object to use to populate the volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<KafkaBridgeTemplatePodVolumesImage>,
     /// Name to use for the volume. Required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// PersistentVolumeClaim object to use to populate the volume.
+    /// `PersistentVolumeClaim` object to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<KafkaBridgeTemplatePodVolumesPersistentVolumeClaim>,
-    /// Secret to use populate the volume.
+    /// `Secret` to use to populate the volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KafkaBridgeTemplatePodVolumesSecret>,
 }
 
-/// ConfigMap to use to populate the volume.
+/// `ConfigMap` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
@@ -1475,7 +1478,7 @@ pub struct KafkaBridgeTemplatePodVolumesConfigMapItems {
     pub path: Option<String>,
 }
 
-/// CSIVolumeSource object to use to populate the volume.
+/// `CSIVolumeSource` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1496,7 +1499,7 @@ pub struct KafkaBridgeTemplatePodVolumesCsiNodePublishSecretRef {
     pub name: Option<String>,
 }
 
-/// EmptyDir to use to populate the volume.
+/// `EmptyDir` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesEmptyDir {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1513,7 +1516,16 @@ pub struct KafkaBridgeTemplatePodVolumesEmptyDirSizeLimit {
     pub format: Option<String>,
 }
 
-/// PersistentVolumeClaim object to use to populate the volume.
+/// `ImageVolumeSource` object to use to populate the volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaBridgeTemplatePodVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+/// `PersistentVolumeClaim` object to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesPersistentVolumeClaim {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "claimName")]
@@ -1522,7 +1534,7 @@ pub struct KafkaBridgeTemplatePodVolumesPersistentVolumeClaim {
     pub read_only: Option<bool>,
 }
 
-/// Secret to use populate the volume.
+/// `Secret` to use to populate the volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaBridgeTemplatePodVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]

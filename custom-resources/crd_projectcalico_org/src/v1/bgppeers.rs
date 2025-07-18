@@ -41,6 +41,8 @@ pub struct BGPPeerSpec {
     pub peer_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reachableBy")]
     pub reachable_by: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reversePeering")]
+    pub reverse_peering: Option<BGPPeerReversePeering>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddress")]
     pub source_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecurity")]
@@ -60,5 +62,11 @@ pub struct BGPPeerPasswordSecretKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BGPPeerReversePeering {
+    Auto,
+    Manual,
 }
 

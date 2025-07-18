@@ -30,6 +30,9 @@ pub struct APIcastSpec {
     /// Format is <scheme>://<host>:<port>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allProxy")]
     pub all_proxy: Option<String>,
+    /// CACertificateSecretRef references secret containing the X.509 CA certificate in the PEM format.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateSecretRef")]
+    pub ca_certificate_secret_ref: Option<APIcastCaCertificateSecretRef>,
     /// The period (in seconds) that the APIcast configuration will be stored in
     /// APIcast's cache.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheConfigurationSeconds")]
@@ -174,6 +177,16 @@ pub struct APIcastSpec {
 /// endpoint URL. The Secret must be located in the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIcastAdminPortalCredentialsRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// CACertificateSecretRef references secret containing the X.509 CA certificate in the PEM format.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct APIcastCaCertificateSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?

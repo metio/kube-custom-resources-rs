@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.2"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "mariadbs.k8s.mariadb.com"
 spec:
   group: "k8s.mariadb.com"
@@ -4203,8 +4203,8 @@ spec:
                           type: "string"
                       type: "object"
                     syncBinlog:
-                      description: "SyncBinlog indicates whether the binary log should be synchronized to the disk after every event.\nIt trades off performance for consistency.\nSee: https://mariadb.com/kb/en/replication-and-binary-log-system-variables/#sync_binlog."
-                      type: "boolean"
+                      description: "SyncBinlog indicates after how many events the binary log is synchronized to the disk.\nThe default is 1, flushing the binary log to disk after every write, which trades off performance for consistency. See: https://mariadb.com/docs/server/ha-and-performance/standard-replication/replication-and-binary-log-system-variables#sync_binlog"
+                      type: "integer"
                   type: "object"
                 resources:
                   description: "Resources describes the compute resource requirements."

@@ -2024,6 +2024,8 @@ pub struct OpenTelemetryCollectorObservabilityMetrics {
     pub disable_prometheus_annotations: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabels")]
+    pub extra_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2688,6 +2690,8 @@ pub struct OpenTelemetryCollectorTargetAllocatorObservabilityMetrics {
     pub disable_prometheus_annotations: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraLabels")]
+    pub extra_labels: Option<BTreeMap<String, String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
