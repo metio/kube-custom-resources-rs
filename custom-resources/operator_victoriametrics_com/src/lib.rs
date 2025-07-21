@@ -3,8 +3,6 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 
 # Available Custom Resources
 
-## operator.victoriametrics.com/v1
-- `VLAgent`
 ## operator.victoriametrics.com/v1beta1
 - `VMAlertmanagerConfig`
 - `VMNodeScrape`
@@ -16,7 +14,5 @@ This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernet
 - `VMStaticScrape`
 - `VMUser`
 */
-#[cfg(feature = "v1")]
-pub mod v1;
 #[cfg(feature = "v1beta1")]
 pub mod v1beta1;
