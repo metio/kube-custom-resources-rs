@@ -11,8 +11,6 @@ This crate is part of [kube-custom-resources-rs](https://github.com/metio/kube-c
 
 ## Available Custom Resources
 
-### operator.victoriametrics.com/v1
-- `VLAgent`
 ### operator.victoriametrics.com/v1beta1
 - `VMAlertmanagerConfig`
 - `VMNodeScrape`
