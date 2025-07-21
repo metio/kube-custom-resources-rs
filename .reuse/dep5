@@ -343,6 +343,10 @@ Files: crd-catalog/carlosedp/lbconfig-operator/*
 Copyright: The carlosedp/lbconfig-operator Authors
 License: MIT
 
+Files: crd-catalog/ceph/ceph-csi-operator/*
+Copyright: The ceph/ceph-csi-operator Authors
+License: MIT
+
 Files: crd-catalog/cert-manager/cert-manager/*
 Copyright: The cert-manager/cert-manager Authors
 License: Apache-2.0

@@ -940,6 +940,18 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
         ignores: &[],
     },
     UpstreamSource {
+        project_name: "ceph/ceph-csi-operator",
+        license: MIT,
+        urls: &[
+            "https://github.com/ceph/ceph-csi-operator/blob/main/config/crd/bases/csi.ceph.io_cephconnections.yaml",
+            "https://github.com/ceph/ceph-csi-operator/blob/main/config/crd/bases/csi.ceph.io_clientprofilemappings.yaml",
+            "https://github.com/ceph/ceph-csi-operator/blob/main/config/crd/bases/csi.ceph.io_clientprofiles.yaml",
+            "https://github.com/ceph/ceph-csi-operator/blob/main/config/crd/bases/csi.ceph.io_drivers.yaml",
+            "https://github.com/ceph/ceph-csi-operator/blob/main/config/crd/bases/csi.ceph.io_operatorconfigs.yaml",
+        ],
+        ignores: &[],
+    },
+    UpstreamSource {
         project_name: "cert-manager/cert-manager",
         license: APACHE_V2,
         urls: &[
