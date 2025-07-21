@@ -111,6 +111,7 @@ members = [
     "custom-resources/craftypath_github_io",
     "custom-resources/crane_konveyor_io",
     "custom-resources/crd_projectcalico_org",
+    "custom-resources/csi_ceph_io",
     "custom-resources/data_fluid_io",
     "custom-resources/databases_schemahero_io",
     "custom-resources/databases_spotahome_com",

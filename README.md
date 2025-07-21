@@ -151,6 +151,7 @@ The following groups are available:
 - [craftypath.github.io](https://crates.io/crates/kcr_craftypath_github_io)
 - [crane.konveyor.io](https://crates.io/crates/kcr_crane_konveyor_io)
 - [crd.projectcalico.org](https://crates.io/crates/kcr_crd_projectcalico_org)
+- [csi.ceph.io](https://crates.io/crates/kcr_csi_ceph_io)
 - [data.fluid.io](https://crates.io/crates/kcr_data_fluid_io)
 - [databases.schemahero.io](https://crates.io/crates/kcr_databases_schemahero_io)
 - [databases.spotahome.com](https://crates.io/crates/kcr_databases_spotahome_com)
