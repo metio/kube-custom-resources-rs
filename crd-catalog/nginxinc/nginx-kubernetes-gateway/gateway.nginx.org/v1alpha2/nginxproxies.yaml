@@ -259,6 +259,22 @@ spec:
                                   description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
                                   type: "string"
                               type: "object"
+                            readinessProbe:
+                              description: "ReadinessProbe defines the readiness probe for the NGINX container."
+                              properties:
+                                initialDelaySeconds:
+                                  description: "InitialDelaySeconds is the number of seconds after the container has\nstarted before the readiness probe is initiated.\nIf not specified, the default is 3 seconds."
+                                  format: "int32"
+                                  maximum: 3600.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                port:
+                                  description: "Port is the port on which the readiness endpoint is exposed.\nIf not specified, the default port is 8081."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                              type: "object"
                             resources:
                               description: "Resources describes the compute resource requirements."
                               properties:
@@ -331,6 +347,24 @@ spec:
                                 type: "object"
                               type: "array"
                           type: "object"
+                        patches:
+                          description: "Patches are custom patches to apply to the NGINX DaemonSet."
+                          items:
+                            description: "Patch defines a patch to apply to a Kubernetes object."
+                            properties:
+                              type:
+                                default: "StrategicMerge"
+                                description: "Type is the type of patch. Defaults to StrategicMerge."
+                                enum:
+                                  - "StrategicMerge"
+                                  - "Merge"
+                                  - "JSONPatch"
+                                type: "string"
+                              value:
+                                description: "Value is the patch data as raw JSON.\nFor StrategicMerge and Merge patches, this should be a JSON object.\nFor JSONPatch patches, this should be a JSON array of patch operations."
+                                x-kubernetes-preserve-unknown-fields: true
+                            type: "object"
+                          type: "array"
                         pod:
                           description: "Pod defines Pod-specific fields."
                           properties:
@@ -2236,6 +2270,22 @@ spec:
                                   description: "StopSignal defines which signal will be sent to a container when it is being stopped.\nIf not specified, the default is defined by the container runtime in use.\nStopSignal can only be set for Pods with a non-empty .spec.os.name"
                                   type: "string"
                               type: "object"
+                            readinessProbe:
+                              description: "ReadinessProbe defines the readiness probe for the NGINX container."
+                              properties:
+                                initialDelaySeconds:
+                                  description: "InitialDelaySeconds is the number of seconds after the container has\nstarted before the readiness probe is initiated.\nIf not specified, the default is 3 seconds."
+                                  format: "int32"
+                                  maximum: 3600.0
+                                  minimum: 0.0
+                                  type: "integer"
+                                port:
+                                  description: "Port is the port on which the readiness endpoint is exposed.\nIf not specified, the default port is 8081."
+                                  format: "int32"
+                                  maximum: 65535.0
+                                  minimum: 1.0
+                                  type: "integer"
+                              type: "object"
                             resources:
                               description: "Resources describes the compute resource requirements."
                               properties:
@@ -2308,6 +2358,24 @@ spec:
                                 type: "object"
                               type: "array"
                           type: "object"
+                        patches:
+                          description: "Patches are custom patches to apply to the NGINX Deployment."
+                          items:
+                            description: "Patch defines a patch to apply to a Kubernetes object."
+                            properties:
+                              type:
+                                default: "StrategicMerge"
+                                description: "Type is the type of patch. Defaults to StrategicMerge."
+                                enum:
+                                  - "StrategicMerge"
+                                  - "Merge"
+                                  - "JSONPatch"
+                                type: "string"
+                              value:
+                                description: "Value is the patch data as raw JSON.\nFor StrategicMerge and Merge patches, this should be a JSON object.\nFor JSONPatch patches, this should be a JSON array of patch operations."
+                                x-kubernetes-preserve-unknown-fields: true
+                            type: "object"
+                          type: "array"
                         pod:
                           description: "Pod defines Pod-specific fields."
                           properties:
@@ -4048,6 +4116,24 @@ spec:
                             required:
                               - "listenerPort"
                               - "port"
+                            type: "object"
+                          type: "array"
+                        patches:
+                          description: "Patches are custom patches to apply to the NGINX Service."
+                          items:
+                            description: "Patch defines a patch to apply to a Kubernetes object."
+                            properties:
+                              type:
+                                default: "StrategicMerge"
+                                description: "Type is the type of patch. Defaults to StrategicMerge."
+                                enum:
+                                  - "StrategicMerge"
+                                  - "Merge"
+                                  - "JSONPatch"
+                                type: "string"
+                              value:
+                                description: "Value is the patch data as raw JSON.\nFor StrategicMerge and Merge patches, this should be a JSON object.\nFor JSONPatch patches, this should be a JSON array of patch operations."
+                                x-kubernetes-preserve-unknown-fields: true
                             type: "object"
                           type: "array"
                         type:

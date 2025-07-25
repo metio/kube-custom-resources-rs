@@ -13,7 +13,6 @@ spec:
     shortNames:
       - "hra"
     singular: "horizontalrunnerautoscaler"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

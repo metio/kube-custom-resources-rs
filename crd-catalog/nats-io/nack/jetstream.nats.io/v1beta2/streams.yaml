@@ -37,6 +37,10 @@ spec:
                   default: false
                   description: "When true, allow higher performance, direct access to get individual messages."
                   type: "boolean"
+                allowMsgTtl:
+                  default: false
+                  description: "When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored."
+                  type: "boolean"
                 allowRollup:
                   default: false
                   description: "When true, allows the use of the Nats-Rollup header to replace all contents of a stream, or subject in a stream, with a single new message."
@@ -263,6 +267,10 @@ spec:
                   enum:
                     - "file"
                     - "memory"
+                  type: "string"
+                subjectDeleteMarkerTtl:
+                  default: ""
+                  description: "Enables and sets a duration for adding server markers for delete, purge and max age limits."
                   type: "string"
                 subjectTransform:
                   description: "SubjectTransform is for applying a subject transform (to matching messages) when a new message is received."

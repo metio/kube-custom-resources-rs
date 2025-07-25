@@ -612,7 +612,9 @@ pub struct BundlesVersionsBundlesCilium {
     pub cilium: BundlesVersionsBundlesCiliumCilium,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "helmChart")]
     pub helm_chart: Option<BundlesVersionsBundlesCiliumHelmChart>,
-    pub manifest: BundlesVersionsBundlesCiliumManifest,
+    /// This field has been deprecated
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub manifest: Option<BundlesVersionsBundlesCiliumManifest>,
     pub operator: BundlesVersionsBundlesCiliumOperator,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -686,6 +688,7 @@ pub enum BundlesVersionsBundlesCiliumHelmChartOs {
     Windows,
 }
 
+/// This field has been deprecated
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BundlesVersionsBundlesCiliumManifest {
     /// URI points to the manifest yaml file

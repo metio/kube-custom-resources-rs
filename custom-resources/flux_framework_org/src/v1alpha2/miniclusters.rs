@@ -299,6 +299,10 @@ pub struct MiniClusterFlux {
     /// Disable specifying the socket path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSocket")]
     pub disable_socket: Option<bool>,
+    /// Environment
+    /// If defined, set these envars for the flux view.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub environment: Option<BTreeMap<String, String>>,
     /// Log level to use for flux logging (only in non TestMode)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<i32>,

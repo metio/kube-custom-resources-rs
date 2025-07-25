@@ -32,9 +32,9 @@ pub struct DNSRecordSpec {
     /// If unset or set to an empty string the record UID will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
-    /// providerRef is a reference to a provider secret.
-    #[serde(rename = "providerRef")]
-    pub provider_ref: DNSRecordProviderRef,
+    /// ProviderRef is a reference to a provider secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerRef")]
+    pub provider_ref: Option<DNSRecordProviderRef>,
     /// rootHost is the single root for all endpoints in a DNSRecord.
     /// it is expected all defined endpoints are children of or equal to this rootHost
     /// Must contain at least two groups of valid URL characters separated by a "."
@@ -115,7 +115,7 @@ pub struct DNSRecordHealthCheckAdditionalHeadersRef {
     pub name: String,
 }
 
-/// providerRef is a reference to a provider secret.
+/// ProviderRef is a reference to a provider secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DNSRecordProviderRef {
     pub name: String,
@@ -145,6 +145,9 @@ pub struct DNSRecordStatus {
     /// ownerID is a unique string used to identify the owner of this record.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
+    /// ProviderRef is a reference to a provider secret used to publish endpoints.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerRef")]
+    pub provider_ref: Option<DNSRecordStatusProviderRef>,
     /// QueuedAt is a time when DNS record was received for the reconciliation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedAt")]
     pub queued_at: Option<String>,
@@ -219,6 +222,12 @@ pub struct DNSRecordStatusHealthCheckProbes {
     pub ip_address: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub synced: Option<bool>,
+}
+
+/// ProviderRef is a reference to a provider secret used to publish endpoints.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordStatusProviderRef {
+    pub name: String,
 }
 
 /// Endpoint is a high-level way of a connection between a service and an IP

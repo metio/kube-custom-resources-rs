@@ -22,7 +22,6 @@ pub struct InputManifestSpec {
     /// Kubernetes list of Kubernetes cluster this manifest will manage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<InputManifestKubernetes>,
-    /// LoadBalancers list of loadbalancer clusters the Kubernetes clusters may use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<InputManifestLoadBalancers>,
     /// NodePool is a map of dynamic nodepools and static nodepools which will be used to
@@ -71,7 +70,11 @@ pub struct InputManifestKubernetesClustersInstallationProxy {
     pub endpoint: Option<String>,
     /// Mode defines if the proxy mode (on/off/default). If undefined, the default mode is used.
     pub mode: String,
-    /// NoProxy is a comma-separated list of values that will be added to the default NoProxy list used by Claudie. Any values specified will be appended to the end of the default NoProxy list. This field only has an effect if the Proxy is turned on.
+    /// NoProxy is a comma-separated list of values that will be added to the default NoProxy list used by Claudie.
+    /// 
+    /// The default no proxy list is: 127.0.0.1/8,localhost,cluster.local,10.244.0.0/16,10.96.0.0/12"
+    /// Any values specified will be appended to the end of the default NoProxy list.
+    /// This field only has an effect if the Proxy is turned on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
 }
@@ -85,7 +88,6 @@ pub struct InputManifestKubernetesClustersPools {
     pub control: Vec<String>,
 }
 
-/// LoadBalancers list of loadbalancer clusters the Kubernetes clusters may use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestLoadBalancers {
     /// A list of load balancers clusters.
@@ -119,7 +121,9 @@ pub struct InputManifestLoadBalancersClusters {
 pub struct InputManifestLoadBalancersClustersDns {
     /// Alternative names that will be created in addition to the hostname. Giving the ability
     /// to have a loadbalancer for multiple hostnames.
+    /// 
     /// - api.example.com
+    /// 
     /// - apiv2.example.com
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternativeNames")]
     pub alternative_names: Option<Vec<String>>,
@@ -133,7 +137,7 @@ pub struct InputManifestLoadBalancersClustersDns {
     pub provider: String,
 }
 
-/// Role defines a concrete loadbalancer configuration. Single loadbalancer can have multiple roles.
+/// Role defines a concrete loadbalancer configuration. A Single loadbalancer can have multiple roles.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InputManifestLoadBalancersRoles {
     /// Name of the role. Used as a reference in clusters.
@@ -153,7 +157,7 @@ pub struct InputManifestLoadBalancersRoles {
     pub target_port: i32,
 }
 
-/// Role defines a concrete loadbalancer configuration. Single loadbalancer can have multiple roles.
+/// Role defines a concrete loadbalancer configuration. A Single loadbalancer can have multiple roles.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum InputManifestLoadBalancersRolesProtocol {
     #[serde(rename = "tcp")]
@@ -185,7 +189,6 @@ pub struct InputManifestNodePools {
 
 /// DynamicNodePool List of dynamically to-be-created nodepools of not yet existing machines, used for Kubernetes or loadbalancer clusters.
 /// These are only blueprints, and will only be created per reference in kubernetes or loadBalancer clusters.
-/// 
 /// 
 /// E.g. if the nodepool isn't used, it won't even be created. Or if the same nodepool is used in two different clusters,
 /// it will be created twice. In OOP analogy, a dynamic nodepool would be a class
@@ -343,7 +346,7 @@ pub struct InputManifestProviders {
     /// Name is the name of the provider specification. It has to be unique across all providers.
     pub name: String,
     /// ProviderType type of a provider.
-    /// A list of available providers can be found at https://docs.claudie.io/v0.9.7/input-manifest/providers/aws/
+    /// A list of available providers can be found at https://docs.claudie.io/latest/input-manifest/providers/aws/
     #[serde(rename = "providerType")]
     pub provider_type: InputManifestProvidersProviderType,
     /// SecretReference represents a Secret Reference. It has enough information to retrieve secret

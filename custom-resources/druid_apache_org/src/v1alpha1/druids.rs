@@ -1197,12 +1197,18 @@ pub struct DruidAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DruidAuth {
+    /// PasswordKey specifies the key within the Kubernetes secret that contains the password for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
+    pub password_key: Option<String>,
     /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
     /// in any namespace
     #[serde(rename = "secretRef")]
     pub secret_ref: DruidAuthSecretRef,
     #[serde(rename = "type")]
     pub r#type: String,
+    /// UsernameKey specifies the key within the Kubernetes secret that contains the username for authentication.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usernameKey")]
+    pub username_key: Option<String>,
 }
 
 /// SecretReference represents a Secret Reference. It has enough information to retrieve secret

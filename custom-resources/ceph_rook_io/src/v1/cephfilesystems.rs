@@ -1191,6 +1191,8 @@ pub struct CephFilesystemStatusCheckMirror {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephFilesystemStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephx: Option<CephFilesystemStatusCephx>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Use only info and put mirroringStatus in it?
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1207,6 +1209,33 @@ pub struct CephFilesystemStatus {
     /// FilesystemSnapshotScheduleStatusSpec is the status of the snapshot schedule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephFilesystemStatusSnapshotScheduleStatus>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephFilesystemStatusCephx {
+    /// Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub daemon: Option<CephFilesystemStatusCephxDaemon>,
+}
+
+/// Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephFilesystemStatusCephxDaemon {
+    /// KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+    /// same string format as reported by `CephCluster.status.version.version` to allow them to be
+    /// compared. E.g., `20.2.0-0`.
+    /// For all newly-created resources, this field set to the version of Ceph that created the key.
+    /// The special value "Uninitialized" indicates that keys are being created for the first time.
+    /// An empty string indicates that the version is unknown, as expected in brownfield deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCephVersion")]
+    pub key_ceph_version: Option<String>,
+    /// KeyGeneration represents the CephX key generation for the last successful reconcile.
+    /// For all newly-created resources, this field is set to `1`.
+    /// When keys are rotated due to any rotation policy, the generation is incremented or updated to
+    /// the configured policy generation.
+    /// Generation `0` indicates that keys existed prior to the implementation of key tracking.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<i32>,
 }
 
 /// MirroringStatus is the filesystem mirroring status

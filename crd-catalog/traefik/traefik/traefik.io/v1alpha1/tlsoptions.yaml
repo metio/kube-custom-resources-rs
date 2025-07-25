@@ -58,7 +58,7 @@ spec:
                       type: "array"
                   type: "object"
                 curvePreferences:
-                  description: "CurvePreferences defines the preferred elliptic curves in a specific order.\nMore info: https://doc.traefik.io/traefik/v3.5/https/tls/#curve-preferences"
+                  description: "CurvePreferences defines the preferred elliptic curves.\nMore info: https://doc.traefik.io/traefik/v3.5/https/tls/#curve-preferences"
                   items:
                     type: "string"
                   type: "array"

@@ -490,7 +490,7 @@ spec:
                   description: "Paused If set to true all actions on the underlying managed objects are not\ngoing to be performed, except for delete actions."
                   type: "boolean"
                 persistentVolumeClaimRetentionPolicy:
-                  description: "PersistentVolumeClaimRetentionPolicy allows configuration of PVC rentention policy"
+                  description: "PersistentVolumeClaimRetentionPolicy allows configuration of PVC retention policy"
                   properties:
                     whenDeleted:
                       description: "WhenDeleted specifies what happens to PVCs created from StatefulSet\nVolumeClaimTemplates when the StatefulSet is deleted. The default policy\nof `Retain` causes PVCs to not be affected by StatefulSet deletion. The\n`Delete` policy causes those PVCs to be deleted."
@@ -890,7 +890,7 @@ spec:
                           x-kubernetes-int-or-string: true
                       type: "object"
                     volumeClaimTemplate:
-                      description: "A PVC spec to be used by the VMAlertManager StatefulSets."
+                      description: "A PVC spec to be used by the StatefulSets/Deployments."
                       properties:
                         apiVersion:
                           description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"

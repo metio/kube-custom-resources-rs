@@ -22,7 +22,8 @@ pub struct BundleSpec {
     /// Sources is a set of references to data whose data will sync to the target.
     pub sources: Vec<BundleSources>,
     /// Target is the target location in all namespaces to sync source data to.
-    pub target: BundleTarget,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub target: Option<BundleTarget>,
 }
 
 /// BundleSource is the set of sources whose data will be appended and synced to

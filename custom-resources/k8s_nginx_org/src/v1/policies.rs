@@ -20,38 +20,39 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PolicySpec {
-    /// AccessControl defines an access policy based on the source IP of a request.
+    /// The access control policy based on the client IP address.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControl")]
     pub access_control: Option<PolicyAccessControl>,
-    /// APIKey defines an API Key policy.
+    /// The API Key policy configures NGINX to authorize requests which provide a valid API Key in a specified header or query param.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<PolicyApiKey>,
-    /// BasicAuth holds HTTP Basic authentication configuration
+    /// The basic auth policy configures NGINX to authenticate client requests using HTTP Basic authentication credentials.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<PolicyBasicAuth>,
-    /// EgressMTLS defines an Egress MTLS policy.
+    /// The EgressMTLS policy configures upstreams authentication and certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMTLS")]
     pub egress_mtls: Option<PolicyEgressMtls>,
+    /// Specifies which instance of NGINX Ingress Controller must handle the Policy resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
-    /// IngressMTLS defines an Ingress MTLS policy.
+    /// The IngressMTLS policy configures client certificate verification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressMTLS")]
     pub ingress_mtls: Option<PolicyIngressMtls>,
-    /// JWTAuth holds JWT authentication configuration.
+    /// The JWT policy configures NGINX Plus to authenticate client requests using JSON Web Tokens.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jwt: Option<PolicyJwt>,
-    /// OIDC defines an Open ID Connect policy.
+    /// The OpenID Connect policy configures NGINX to authenticate client requests by validating a JWT token against an OAuth2/OIDC token provider, such as Auth0 or Keycloak.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oidc: Option<PolicyOidc>,
-    /// RateLimit defines a rate limit policy.
+    /// The rate limit policy controls the rate of processing requests per a defined key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimit")]
     pub rate_limit: Option<PolicyRateLimit>,
-    /// WAF defines an WAF policy.
+    /// The WAF policy configures WAF and log configuration policies for NGINX AppProtect
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub waf: Option<PolicyWaf>,
 }
 
-/// AccessControl defines an access policy based on the source IP of a request.
+/// The access control policy based on the client IP address.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyAccessControl {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,145 +61,199 @@ pub struct PolicyAccessControl {
     pub deny: Option<Vec<String>>,
 }
 
-/// APIKey defines an API Key policy.
+/// The API Key policy configures NGINX to authorize requests which provide a valid API Key in a specified header or query param.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyApiKey {
+    /// The key to which the API key is applied. Can contain text, variables, or a combination of them. Accepted variables are $http_, $arg_, $cookie_.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<String>,
-    /// SuppliedIn defines the locations API Key should be supplied in.
+    /// The location of the API Key. For example, $http_auth, $arg_apikey, $cookie_auth. Accepted variables are $http_, $arg_, $cookie_.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "suppliedIn")]
     pub supplied_in: Option<PolicyApiKeySuppliedIn>,
 }
 
-/// SuppliedIn defines the locations API Key should be supplied in.
+/// The location of the API Key. For example, $http_auth, $arg_apikey, $cookie_auth. Accepted variables are $http_, $arg_, $cookie_.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyApiKeySuppliedIn {
+    /// The location of the API Key as a request header. For example, $http_auth. Accepted variables are $http_.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<Vec<String>>,
+    /// The location of the API Key as a query param. For example, $arg_apikey. Accepted variables are $arg_.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub query: Option<Vec<String>>,
 }
 
-/// BasicAuth holds HTTP Basic authentication configuration
+/// The basic auth policy configures NGINX to authenticate client requests using HTTP Basic authentication credentials.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyBasicAuth {
+    /// The realm for the basic authentication.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub realm: Option<String>,
+    /// The name of the Kubernetes secret that stores the Htpasswd configuration. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/htpasswd, and the config must be stored in the secret under the key htpasswd, otherwise the secret will be rejected as invalid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
 }
 
-/// EgressMTLS defines an Egress MTLS policy.
+/// The EgressMTLS policy configures upstreams authentication and certificate verification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyEgressMtls {
+    /// Specifies the enabled ciphers for requests to an upstream HTTPS server. The default is DEFAULT.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ciphers: Option<String>,
+    /// Specifies the protocols for requests to an upstream HTTPS server. The default is TLSv1 TLSv1.1 TLSv1.2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<String>,
+    /// Enables passing of the server name through Server Name Indication extension.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<bool>,
+    /// Enables reuse of SSL sessions to the upstreams. The default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionReuse")]
     pub session_reuse: Option<bool>,
+    /// Allows overriding the server name used to verify the certificate of the upstream HTTPS server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslName")]
     pub ssl_name: Option<String>,
+    /// The name of the Kubernetes secret that stores the TLS certificate and key. It must be in the same namespace as the Policy resource. The secret must be of the type kubernetes.io/tls, the certificate must be stored in the secret under the key tls.crt, and the key must be stored under the key tls.key, otherwise the secret will be rejected as invalid.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<String>,
+    /// The name of the Kubernetes secret that stores the CA certificate. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/ca, and the certificate must be stored in the secret under the key ca.crt, otherwise the secret will be rejected as invalid.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertSecret")]
     pub trusted_cert_secret: Option<String>,
+    /// Sets the verification depth in the proxied HTTPS server certificates chain. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
+    /// Enables verification of the upstream HTTPS server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyServer")]
     pub verify_server: Option<bool>,
 }
 
-/// IngressMTLS defines an Ingress MTLS policy.
+/// The IngressMTLS policy configures client certificate verification.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyIngressMtls {
+    /// The name of the Kubernetes secret that stores the CA certificate. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/ca, and the certificate must be stored in the secret under the key ca.crt, otherwise the secret will be rejected as invalid.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecret")]
     pub client_cert_secret: Option<String>,
+    /// The file name of the Certificate Revocation List. NGINX Ingress Controller will look for this file in /etc/nginx/secrets
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crlFileName")]
     pub crl_file_name: Option<String>,
+    /// Verification for the client. Possible values are "on", "off", "optional", "optional_no_ca". The default is "on".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyClient")]
     pub verify_client: Option<String>,
+    /// Sets the verification depth in the client certificates chain. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
 }
 
-/// JWTAuth holds JWT authentication configuration.
+/// The JWT policy configures NGINX Plus to authenticate client requests using JSON Web Tokens.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyJwt {
+    /// The remote URI where the request will be sent to retrieve JSON Web Key set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksURI")]
     pub jwks_uri: Option<String>,
+    /// Enables in-memory caching of JWKS (JSON Web Key Sets) that are obtained from the jwksURI and sets a valid time for expiration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCache")]
     pub key_cache: Option<String>,
+    /// The realm of the JWT.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub realm: Option<String>,
+    /// The name of the Kubernetes secret that stores the Htpasswd configuration. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/htpasswd, and the config must be stored in the secret under the key htpasswd, otherwise the secret will be rejected as invalid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
+    /// Enables SNI (Server Name Indication) for the JWT policy. This is useful when the remote server requires SNI to serve the correct certificate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sniEnabled")]
+    pub sni_enabled: Option<bool>,
+    /// The SNI name to use when connecting to the remote server. If not set, the hostname from the ``jwksURI`` will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sniName")]
+    pub sni_name: Option<String>,
+    /// The token specifies a variable that contains the JSON Web Token. By default the JWT is passed in the Authorization header as a Bearer Token. JWT may be also passed as a cookie or a part of a query string, for example: $cookie_auth_token. Accepted variables are $http_, $arg_, $cookie_.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub token: Option<String>,
 }
 
-/// OIDC defines an Open ID Connect policy.
+/// The OpenID Connect policy configures NGINX to authenticate client requests by validating a JWT token against an OAuth2/OIDC token provider, such as Auth0 or Keycloak.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyOidc {
+    /// Option of whether Bearer token is used to authorize NGINX to access protected backend.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTokenEnable")]
     pub access_token_enable: Option<bool>,
+    /// URL for the authorization endpoint provided by your OpenID Connect provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authEndpoint")]
     pub auth_endpoint: Option<String>,
+    /// A list of extra URL arguments to pass to the authorization endpoint provided by your OpenID Connect provider. Arguments must be URL encoded, multiple arguments may be included in the list, for example [ arg1=value1, arg2=value2 ]
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "authExtraArgs")]
     pub auth_extra_args: Option<Vec<String>>,
+    /// The client ID provided by your OpenID Connect provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
+    /// The name of the Kubernetes secret that stores the client secret provided by your OpenID Connect provider. It must be in the same namespace as the Policy resource. The secret must be of the type nginx.org/oidc, and the secret under the key client-secret, otherwise the secret will be rejected as invalid. If PKCE is enabled, this should be not configured.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<String>,
+    /// URL provided by your OpenID Connect provider to request the end user be logged out.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "endSessionEndpoint")]
     pub end_session_endpoint: Option<String>,
+    /// URL for the JSON Web Key Set (JWK) document provided by your OpenID Connect provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwksURI")]
     pub jwks_uri: Option<String>,
+    /// Switches Proof Key for Code Exchange on. The OpenID client needs to be in public mode. clientSecret is not used in this mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pkceEnable")]
     pub pkce_enable: Option<bool>,
+    /// URI to redirect to after the logout has been performed. Requires endSessionEndpoint. The default is /_logout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postLogoutRedirectURI")]
     pub post_logout_redirect_uri: Option<String>,
+    /// Allows overriding the default redirect URI. The default is /_codexch.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURI")]
     pub redirect_uri: Option<String>,
+    /// List of OpenID Connect scopes. The scope openid always needs to be present and others can be added concatenating them with a + sign, for example openid+profile+email, openid+email+userDefinedScope. The default is openid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<String>,
+    /// URL for the token endpoint provided by your OpenID Connect provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenEndpoint")]
     pub token_endpoint: Option<String>,
+    /// Specifies the maximum timeout in milliseconds for synchronizing ID/access tokens and shared values between Ingress Controller pods. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSyncLeeway")]
     pub zone_sync_leeway: Option<i64>,
 }
 
-/// RateLimit defines a rate limit policy.
+/// The rate limit policy controls the rate of processing requests per a defined key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRateLimit {
+    /// Excessive requests are delayed until their number exceeds the burst size, in which case the request is terminated with an error.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub burst: Option<i64>,
-    /// RateLimitCondition defines a condition for a rate limit policy.
+    /// Add a condition to a rate-limit policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<PolicyRateLimitCondition>,
+    /// The delay parameter specifies a limit at which excessive requests become delayed. If not set all excessive requests are delayed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delay: Option<i64>,
+    /// Enables the dry run mode. In this mode, the rate limit is not actually applied, but the number of excessive requests is accounted as usual in the shared memory zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
     pub dry_run: Option<bool>,
+    /// The key to which the rate limit is applied. Can contain text, variables, or a combination of them.
+    /// Variables must be surrounded by ${}. For example: ${binary_remote_addr}. Accepted variables are
+    /// $binary_remote_addr, $request_uri, $request_method, $url, $http_, $args, $arg_, $cookie_,$jwt_claim_ .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
+    /// Sets the desired logging level for cases when the server refuses to process requests due to rate exceeding, or delays request processing. Allowed values are info, notice, warn or error. Default is error.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
+    /// Disables the delaying of excessive requests while requests are being limited. Overrides delay if both are set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noDelay")]
     pub no_delay: Option<bool>,
+    /// The rate of requests permitted. The rate is specified in requests per second (r/s) or requests per minute (r/m).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<String>,
+    /// Sets the status code to return in response to rejected requests. Must fall into the range 400..599. Default is 503.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectCode")]
     pub reject_code: Option<i64>,
+    /// Enables a constant rate-limit by dividing the configured rate by the number of nginx-ingress pods currently serving traffic. This adjustment ensures that the rate-limit remains consistent, even as the number of nginx-pods fluctuates due to autoscaling. This will not work properly if requests from a client are not evenly distributed across all ingress pods (Such as with sticky sessions, long lived TCP Connections with many requests, and so forth). In such cases using zone-sync instead would give better results. Enabling zone-sync will suppress this setting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scale: Option<bool>,
+    /// Size of the shared memory zone. Only positive values are allowed. Allowed suffixes are k or m, if none are present k is assumed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSize")]
     pub zone_size: Option<String>,
 }
 
-/// RateLimitCondition defines a condition for a rate limit policy.
+/// Add a condition to a rate-limit policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyRateLimitCondition {
     /// sets the rate limit in this policy to be the default if no conditions are met. In a group of policies with the same condition, only one policy can be the default.
@@ -232,13 +287,16 @@ pub struct PolicyRateLimitConditionVariables {
     pub name: String,
 }
 
-/// WAF defines an WAF policy.
+/// The WAF policy configures WAF and log configuration policies for NGINX AppProtect
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWaf {
+    /// The App Protect WAF policy bundle. Mutually exclusive with apPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apBundle")]
     pub ap_bundle: Option<String>,
+    /// The App Protect WAF policy of the WAF. Accepts an optional namespace. Mutually exclusive with apBundle.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apPolicy")]
     pub ap_policy: Option<String>,
+    /// Enables NGINX App Protect WAF.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// SecurityLog defines the security log of a WAF policy.
@@ -251,12 +309,16 @@ pub struct PolicyWaf {
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLog {
+    /// The App Protect WAF log bundle resource. Only works with apBundle.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
     pub ap_log_bundle: Option<String>,
+    /// The App Protect WAF log conf resource. Accepts an optional namespace. Only works with apPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
+    /// Enables security log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// The log destination for the security log. Only accepted variables are syslog:server=<ip-address>; localhost; fqdn>:<port>, stderr, <absolute path to file>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDest")]
     pub log_dest: Option<String>,
 }
@@ -264,23 +326,30 @@ pub struct PolicyWafSecurityLog {
 /// SecurityLog defines the security log of a WAF policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyWafSecurityLogs {
+    /// The App Protect WAF log bundle resource. Only works with apBundle.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogBundle")]
     pub ap_log_bundle: Option<String>,
+    /// The App Protect WAF log conf resource. Accepts an optional namespace. Only works with apPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apLogConf")]
     pub ap_log_conf: Option<String>,
+    /// Enables security log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
+    /// The log destination for the security log. Only accepted variables are syslog:server=<ip-address>; localhost; fqdn>:<port>, stderr, <absolute path to file>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logDest")]
     pub log_dest: Option<String>,
 }
 
-/// PolicyStatus is the status of the policy resource
+/// the status of the Policy resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyStatus {
+    /// The message of the current state of the resource. It can contain more detailed information about the reason.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// The reason of the current state of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
+    /// Represents the current state of the resource. There are three possible values: Valid, Invalid and Warning. Valid indicates that the resource has been validated and accepted by the Ingress Controller. Invalid means the resource failed validation or
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

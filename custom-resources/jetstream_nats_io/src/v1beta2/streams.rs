@@ -25,6 +25,9 @@ pub struct StreamSpec {
     /// When true, allow higher performance, direct access to get individual messages.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDirect")]
     pub allow_direct: Option<bool>,
+    /// When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMsgTtl")]
+    pub allow_msg_ttl: Option<bool>,
     /// When true, allows the use of the Nats-Rollup header to replace all contents of a stream, or subject in a stream, with a single new message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowRollup")]
     pub allow_rollup: Option<bool>,
@@ -126,6 +129,9 @@ pub struct StreamSpec {
     /// The storage backend to use for the Stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<StreamStorage>,
+    /// Enables and sets a duration for adding server markers for delete, purge and max age limits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectDeleteMarkerTtl")]
+    pub subject_delete_marker_ttl: Option<String>,
     /// SubjectTransform is for applying a subject transform (to matching messages) when a new message is received.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectTransform")]
     pub subject_transform: Option<StreamSubjectTransform>,

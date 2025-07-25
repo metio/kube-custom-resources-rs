@@ -33,9 +33,9 @@ pub struct BackupRepositorySpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "repositoryType")]
     pub repository_type: Option<BackupRepositoryRepositoryType>,
     /// ResticIdentifier is the full restic-compatible string for identifying
-    /// this repository.
-    #[serde(rename = "resticIdentifier")]
-    pub restic_identifier: String,
+    /// this repository. This field is only used when RepositoryType is "restic".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resticIdentifier")]
+    pub restic_identifier: Option<String>,
     /// VolumeNamespace is the namespace this backup repository contains
     /// pod volume backups for.
     #[serde(rename = "volumeNamespace")]

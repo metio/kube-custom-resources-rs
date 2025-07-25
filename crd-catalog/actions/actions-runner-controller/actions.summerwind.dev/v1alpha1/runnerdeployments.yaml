@@ -13,7 +13,6 @@ spec:
     shortNames:
       - "rdeploy"
     singular: "runnerdeployment"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

@@ -7034,6 +7034,10 @@ pub struct WorkloadPodSetsTopologyRequest {
     /// - Kubeflow: training.kubeflow.org/replica-index
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIndexLabel")]
     pub pod_index_label: Option<String>,
+    /// PodSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.
+    /// PodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetGroupName")]
+    pub pod_set_group_name: Option<String>,
     /// PodSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as
     /// indicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSetSliceRequiredTopology")]

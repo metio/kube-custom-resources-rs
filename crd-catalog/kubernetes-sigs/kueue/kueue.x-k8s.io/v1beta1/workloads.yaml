@@ -4871,6 +4871,9 @@ spec:
                           podIndexLabel:
                             description: "PodIndexLabel indicates the name of the label indexing the pods.\nFor example, in the context of\n- kubernetes job this is: kubernetes.io/job-completion-index\n- JobSet: kubernetes.io/job-completion-index (inherited from Job)\n- Kubeflow: training.kubeflow.org/replica-index"
                             type: "string"
+                          podSetGroupName:
+                            description: "PodSetGroupName indicates the name of the group of PodSets to which this PodSet belongs to.\nPodSets with the same `PodSetGroupName` should be assigned the same ResourceFlavor"
+                            type: "string"
                           podSetSliceRequiredTopology:
                             description: "PodSetSliceRequiredTopology indicates the topology level required by the PodSet slice, as\nindicated by the `kueue.x-k8s.io/podset-slice-required-topology` annotation."
                             type: "string"

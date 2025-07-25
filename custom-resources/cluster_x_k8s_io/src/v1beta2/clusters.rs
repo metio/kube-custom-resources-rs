@@ -205,10 +205,10 @@ pub struct ClusterTopologyControlPlane {
     /// deletion contains configuration options for Machine deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<ClusterTopologyControlPlaneDeletion>,
-    /// machineHealthCheck allows to enable, disable and override
-    /// the MachineHealthCheck configuration in the ClusterClass for this control plane.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
-    pub machine_health_check: Option<ClusterTopologyControlPlaneMachineHealthCheck>,
+    /// healthCheck allows to enable, disable and override control plane health check
+    /// configuration from the ClusterClass for this control plane.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<ClusterTopologyControlPlaneHealthCheck>,
     /// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
     /// if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it
     /// is applied only to the ControlPlane.
@@ -256,11 +256,25 @@ pub struct ClusterTopologyControlPlaneDeletion {
     pub node_volume_detach_timeout_seconds: Option<i32>,
 }
 
-/// machineHealthCheck allows to enable, disable and override
-/// the MachineHealthCheck configuration in the ClusterClass for this control plane.
+/// healthCheck allows to enable, disable and override control plane health check
+/// configuration from the ClusterClass for this control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyControlPlaneMachineHealthCheck {
-    /// enable controls if a MachineHealthCheck should be created for the target machines.
+pub struct ClusterTopologyControlPlaneHealthCheck {
+    /// checks are the checks that are used to evaluate if a Machine is healthy.
+    /// 
+    /// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+    /// and as a consequence the checks and remediation fields from Cluster will be used instead of the
+    /// corresponding fields in ClusterClass.
+    /// 
+    /// Independent of this configuration the MachineHealthCheck controller will always
+    /// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+    /// Machines with deleted Nodes as unhealthy.
+    /// 
+    /// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+    /// is defaulted to 10 minutes and evaluated accordingly.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub checks: Option<ClusterTopologyControlPlaneHealthCheckChecks>,
+    /// enabled controls if a MachineHealthCheck should be created for the target machines.
     /// 
     /// If false: No MachineHealthCheck will be created.
     /// 
@@ -270,12 +284,37 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enable: Option<bool>,
-    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
-    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
-    /// "selector" are not healthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
-    pub max_unhealthy: Option<IntOrString>,
+    pub enabled: Option<bool>,
+    /// remediation configures if and how remediations are triggered if a Machine is unhealthy.
+    /// 
+    /// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+    /// and as a consequence the checks and remediation fields from cluster will be used instead of the
+    /// corresponding fields in ClusterClass.
+    /// 
+    /// If an health check override is defined and remediation or remediation.triggerIf is not set,
+    /// remediation will always be triggered for unhealthy Machines.
+    /// 
+    /// If an health check override is defined and remediation or remediation.templateRef is not set,
+    /// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+    /// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<ClusterTopologyControlPlaneHealthCheckRemediation>,
+}
+
+/// checks are the checks that are used to evaluate if a Machine is healthy.
+/// 
+/// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+/// and as a consequence the checks and remediation fields from Cluster will be used instead of the
+/// corresponding fields in ClusterClass.
+/// 
+/// Independent of this configuration the MachineHealthCheck controller will always
+/// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+/// Machines with deleted Nodes as unhealthy.
+/// 
+/// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+/// is defaulted to 10 minutes and evaluated accordingly.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyControlPlaneHealthCheckChecks {
     /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
@@ -290,37 +329,67 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
     pub node_startup_timeout_seconds: Option<i32>,
-    /// remediationTemplate is a reference to a remediation template
+    /// unhealthyNodeConditions contains a list of conditions that determine
+    /// whether a node is considered unhealthy. The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyControlPlaneHealthCheckChecksUnhealthyNodeConditions>>,
+}
+
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a node is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyControlPlaneHealthCheckChecksUnhealthyNodeConditions {
+    /// status of the condition, one of True, False, Unknown.
+    pub status: String,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
+    /// type of Node condition
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// remediation configures if and how remediations are triggered if a Machine is unhealthy.
+/// 
+/// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+/// and as a consequence the checks and remediation fields from cluster will be used instead of the
+/// corresponding fields in ClusterClass.
+/// 
+/// If an health check override is defined and remediation or remediation.triggerIf is not set,
+/// remediation will always be triggered for unhealthy Machines.
+/// 
+/// If an health check override is defined and remediation or remediation.templateRef is not set,
+/// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+/// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyControlPlaneHealthCheckRemediation {
+    /// templateRef is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate>,
-    /// unhealthyNodeConditions contains a list of conditions that determine
-    /// whether a node is considered unhealthy. The conditions are combined in a
-    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
-    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyControlPlaneMachineHealthCheckUnhealthyNodeConditions>>,
-    /// unhealthyRange specifies the range of unhealthy machines allowed.
-    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
-    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
-    /// (a) there are at least 3 unhealthy machines (and)
-    /// (b) there are at most 5 unhealthy machines
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
-    pub unhealthy_range: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<ClusterTopologyControlPlaneHealthCheckRemediationTemplateRef>,
+    /// triggerIf configures if remediations are triggered.
+    /// If this field is not set, remediations are always triggered.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerIf")]
+    pub trigger_if: Option<ClusterTopologyControlPlaneHealthCheckRemediationTriggerIf>,
 }
 
-/// remediationTemplate is a reference to a remediation template
+/// templateRef is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
+pub struct ClusterTopologyControlPlaneHealthCheckRemediationTemplateRef {
     /// apiVersion of the remediation template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
@@ -334,22 +403,23 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckRemediationTemplate {
     pub name: String,
 }
 
-/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
-/// specified as a duration.  When the named condition has been in the given
-/// status for at least the timeout value, a node is considered unhealthy.
+/// triggerIf configures if remediations are triggered.
+/// If this field is not set, remediations are always triggered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyNodeConditions {
-    /// status of the condition, one of True, False, Unknown.
-    pub status: String,
-    /// timeoutSeconds is the duration that a node must be in a given status for,
-    /// after which the node is considered unhealthy.
-    /// For example, with a value of "1h", the node must match the status
-    /// for at least 1 hour before being considered unhealthy.
-    #[serde(rename = "timeoutSeconds")]
-    pub timeout_seconds: i32,
-    /// type of Node condition
-    #[serde(rename = "type")]
-    pub r#type: String,
+pub struct ClusterTopologyControlPlaneHealthCheckRemediationTriggerIf {
+    /// unhealthyInRange specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is in the configured range.
+    /// Takes precedence over unhealthyLessThanOrEqualTo.
+    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
+    /// (a) there are at least 3 unhealthy Machines (and)
+    /// (b) there are at most 5 unhealthy Machines
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInRange")]
+    pub unhealthy_in_range: Option<String>,
+    /// unhealthyLessThanOrEqualTo specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is less than or equal to the configured value.
+    /// unhealthyInRange takes precedence if set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyLessThanOrEqualTo")]
+    pub unhealthy_less_than_or_equal_to: Option<IntOrString>,
 }
 
 /// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
@@ -463,10 +533,10 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
-    /// machineHealthCheck allows to enable, disable and override
-    /// the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
-    pub machine_health_check: Option<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck>,
+    /// healthCheck allows to enable, disable and override MachineDeployment health check
+    /// configuration from the ClusterClass for this MachineDeployment.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
+    pub health_check: Option<ClusterTopologyWorkersMachineDeploymentsHealthCheck>,
     /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -496,10 +566,10 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// of this value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// strategy is the deployment strategy to use to replace existing machines with
-    /// new ones.
+    /// rollout allows you to configure the behaviour of rolling updates to the MachineDeployment Machines.
+    /// It allows you to define the strategy used during rolling replacements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<ClusterTopologyWorkersMachineDeploymentsStrategy>,
+    pub rollout: Option<ClusterTopologyWorkersMachineDeploymentsRollout>,
     /// variables can be used to customize the MachineDeployment through patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<ClusterTopologyWorkersMachineDeploymentsVariables>,
@@ -522,13 +592,39 @@ pub struct ClusterTopologyWorkersMachineDeploymentsDeletion {
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeoutSeconds")]
     pub node_volume_detach_timeout_seconds: Option<i32>,
+    /// order defines the order in which Machines are deleted when downscaling.
+    /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub order: Option<ClusterTopologyWorkersMachineDeploymentsDeletionOrder>,
 }
 
-/// machineHealthCheck allows to enable, disable and override
-/// the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
+/// deletion contains configuration options for Machine deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterTopologyWorkersMachineDeploymentsDeletionOrder {
+    Random,
+    Newest,
+    Oldest,
+}
+
+/// healthCheck allows to enable, disable and override MachineDeployment health check
+/// configuration from the ClusterClass for this MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
-    /// enable controls if a MachineHealthCheck should be created for the target machines.
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheck {
+    /// checks are the checks that are used to evaluate if a Machine is healthy.
+    /// 
+    /// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+    /// and as a consequence the checks and remediation fields from Cluster will be used instead of the
+    /// corresponding fields in ClusterClass.
+    /// 
+    /// Independent of this configuration the MachineHealthCheck controller will always
+    /// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+    /// Machines with deleted Nodes as unhealthy.
+    /// 
+    /// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+    /// is defaulted to 10 minutes and evaluated accordingly.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub checks: Option<ClusterTopologyWorkersMachineDeploymentsHealthCheckChecks>,
+    /// enabled controls if a MachineHealthCheck should be created for the target machines.
     /// 
     /// If false: No MachineHealthCheck will be created.
     /// 
@@ -538,12 +634,37 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// If true: A MachineHealthCheck is guaranteed to be created. Cluster validation will
     /// block if `enable` is true and no MachineHealthCheck definition is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub enable: Option<bool>,
-    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
-    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
-    /// "selector" are not healthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
-    pub max_unhealthy: Option<IntOrString>,
+    pub enabled: Option<bool>,
+    /// remediation configures if and how remediations are triggered if a Machine is unhealthy.
+    /// 
+    /// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+    /// and as a consequence the checks and remediation fields from cluster will be used instead of the
+    /// corresponding fields in ClusterClass.
+    /// 
+    /// If an health check override is defined and remediation or remediation.triggerIf is not set,
+    /// remediation will always be triggered for unhealthy Machines.
+    /// 
+    /// If an health check override is defined and remediation or remediation.templateRef is not set,
+    /// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+    /// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediation>,
+}
+
+/// checks are the checks that are used to evaluate if a Machine is healthy.
+/// 
+/// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+/// and as a consequence the checks and remediation fields from Cluster will be used instead of the
+/// corresponding fields in ClusterClass.
+/// 
+/// Independent of this configuration the MachineHealthCheck controller will always
+/// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+/// Machines with deleted Nodes as unhealthy.
+/// 
+/// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+/// is defaulted to 10 minutes and evaluated accordingly.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheckChecks {
     /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
@@ -558,37 +679,83 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
     pub node_startup_timeout_seconds: Option<i32>,
-    /// remediationTemplate is a reference to a remediation template
+    /// unhealthyNodeConditions contains a list of conditions that determine
+    /// whether a node is considered unhealthy. The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsHealthCheckChecksUnhealthyNodeConditions>>,
+}
+
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a node is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheckChecksUnhealthyNodeConditions {
+    /// status of the condition, one of True, False, Unknown.
+    pub status: String,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
+    /// type of Node condition
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// remediation configures if and how remediations are triggered if a Machine is unhealthy.
+/// 
+/// If one of checks and remediation fields are set, the system assumes that an healthCheck override is defined,
+/// and as a consequence the checks and remediation fields from cluster will be used instead of the
+/// corresponding fields in ClusterClass.
+/// 
+/// If an health check override is defined and remediation or remediation.triggerIf is not set,
+/// remediation will always be triggered for unhealthy Machines.
+/// 
+/// If an health check override is defined and remediation or remediation.templateRef is not set,
+/// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+/// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediation {
+    /// maxInFlight determines how many in flight remediations should happen at the same time.
+    /// 
+    /// Remediation only happens on the MachineSet with the most current revision, while
+    /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
+    /// 
+    /// Note: In general (independent of remediations), unhealthy machines are always
+    /// prioritized during scale down operations over healthy ones.
+    /// 
+    /// MaxInFlight can be set to a fixed number or a percentage.
+    /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
+    /// the desired replicas.
+    /// 
+    /// If not set, remediation is limited to all machines (bounded by replicas)
+    /// under the active MachineSet's management.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
+    pub max_in_flight: Option<IntOrString>,
+    /// templateRef is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate>,
-    /// unhealthyNodeConditions contains a list of conditions that determine
-    /// whether a node is considered unhealthy. The conditions are combined in a
-    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
-    pub unhealthy_node_conditions: Option<Vec<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions>>,
-    /// unhealthyRange specifies the range of unhealthy machines allowed.
-    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
-    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
-    /// (a) there are at least 3 unhealthy machines (and)
-    /// (b) there are at most 5 unhealthy machines
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
-    pub unhealthy_range: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediationTemplateRef>,
+    /// triggerIf configures if remediations are triggered.
+    /// If this field is not set, remediations are always triggered.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerIf")]
+    pub trigger_if: Option<ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediationTriggerIf>,
 }
 
-/// remediationTemplate is a reference to a remediation template
+/// templateRef is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediationTemplate {
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediationTemplateRef {
     /// apiVersion of the remediation template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
@@ -602,22 +769,23 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckRemediation
     pub name: String,
 }
 
-/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
-/// specified as a duration.  When the named condition has been in the given
-/// status for at least the timeout value, a node is considered unhealthy.
+/// triggerIf configures if remediations are triggered.
+/// If this field is not set, remediations are always triggered.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyNodeConditions {
-    /// status of the condition, one of True, False, Unknown.
-    pub status: String,
-    /// timeoutSeconds is the duration that a node must be in a given status for,
-    /// after which the node is considered unhealthy.
-    /// For example, with a value of "1h", the node must match the status
-    /// for at least 1 hour before being considered unhealthy.
-    #[serde(rename = "timeoutSeconds")]
-    pub timeout_seconds: i32,
-    /// type of Node condition
-    #[serde(rename = "type")]
-    pub r#type: String,
+pub struct ClusterTopologyWorkersMachineDeploymentsHealthCheckRemediationTriggerIf {
+    /// unhealthyInRange specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is in the configured range.
+    /// Takes precedence over unhealthyLessThanOrEqualTo.
+    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
+    /// (a) there are at least 3 unhealthy Machines (and)
+    /// (b) there are at most 5 unhealthy Machines
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInRange")]
+    pub unhealthy_in_range: Option<String>,
+    /// unhealthyLessThanOrEqualTo specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is less than or equal to the configured value.
+    /// unhealthyInRange takes precedence if set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyLessThanOrEqualTo")]
+    pub unhealthy_less_than_or_equal_to: Option<IntOrString>,
 }
 
 /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
@@ -662,55 +830,32 @@ pub enum ClusterTopologyWorkersMachineDeploymentsReadinessGatesPolarity {
     Negative,
 }
 
-/// strategy is the deployment strategy to use to replace existing machines with
-/// new ones.
+/// rollout allows you to configure the behaviour of rolling updates to the MachineDeployment Machines.
+/// It allows you to define the strategy used during rolling replacements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
-    /// remediation controls the strategy of remediating unhealthy machines
-    /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
+pub struct ClusterTopologyWorkersMachineDeploymentsRollout {
+    /// strategy specifies how to roll out control plane Machines.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub remediation: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRemediation>,
-    /// rollingUpdate is the rolling update config params. Present only if
-    /// MachineDeploymentStrategyType = RollingUpdate.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
-    pub rolling_update: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate>,
-    /// type of deployment. Allowed values are RollingUpdate and OnDelete.
-    /// The default is RollingUpdate.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<ClusterTopologyWorkersMachineDeploymentsStrategyType>,
+    pub strategy: Option<ClusterTopologyWorkersMachineDeploymentsRolloutStrategy>,
 }
 
-/// remediation controls the strategy of remediating unhealthy machines
-/// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRemediation {
-    /// maxInFlight determines how many in flight remediations should happen at the same time.
-    /// 
-    /// Remediation only happens on the MachineSet with the most current revision, while
-    /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
-    /// 
-    /// Note: In general (independent of remediations), unhealthy machines are always
-    /// prioritized during scale down operations over healthy ones.
-    /// 
-    /// MaxInFlight can be set to a fixed number or a percentage.
-    /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
-    /// the desired replicas.
-    /// 
-    /// If not set, remediation is limited to all machines (bounded by replicas)
-    /// under the active MachineSet's management.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
-    pub max_in_flight: Option<IntOrString>,
+/// strategy specifies how to roll out control plane Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterTopologyWorkersMachineDeploymentsRolloutStrategy {
+    /// rollingUpdate is the rolling update config params. Present only if
+    /// type = RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterTopologyWorkersMachineDeploymentsRolloutStrategyRollingUpdate>,
+    /// type of rollout. Allowed values are RollingUpdate and OnDelete.
+    /// Default is RollingUpdate.
+    #[serde(rename = "type")]
+    pub r#type: ClusterTopologyWorkersMachineDeploymentsRolloutStrategyType,
 }
 
 /// rollingUpdate is the rolling update config params. Present only if
-/// MachineDeploymentStrategyType = RollingUpdate.
+/// type = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
-    /// deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
-    /// Valid values are "Random, "Newest", "Oldest"
-    /// When no value is supplied, the default DeletePolicy of MachineSet is used
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
-    pub delete_policy: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy>,
+pub struct ClusterTopologyWorkersMachineDeploymentsRolloutStrategyRollingUpdate {
     /// maxSurge is the maximum number of machines that can be scheduled above the
     /// desired number of machines.
     /// Value can be an absolute number (ex: 5) or a percentage of
@@ -742,19 +887,9 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// rollingUpdate is the rolling update config params. Present only if
-/// MachineDeploymentStrategyType = RollingUpdate.
+/// strategy specifies how to roll out control plane Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdateDeletePolicy {
-    Random,
-    Newest,
-    Oldest,
-}
-
-/// strategy is the deployment strategy to use to replace existing machines with
-/// new ones.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterTopologyWorkersMachineDeploymentsStrategyType {
+pub enum ClusterTopologyWorkersMachineDeploymentsRolloutStrategyType {
     RollingUpdate,
     OnDelete,
 }

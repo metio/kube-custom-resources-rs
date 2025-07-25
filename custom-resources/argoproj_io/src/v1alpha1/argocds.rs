@@ -544,6 +544,12 @@ pub struct ArgoCDArgoCdAgentPrincipal {
 pub struct ArgoCDBanner {
     /// Content defines the banner message content to display
     pub content: String,
+    /// Permanent defines if the banner should be displayed permanently or only for a certain period of time
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub permanent: Option<bool>,
+    /// Position defines the position of the banner in the UI
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub position: Option<String>,
     /// URL defines an optional URL to be used as banner message link
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,

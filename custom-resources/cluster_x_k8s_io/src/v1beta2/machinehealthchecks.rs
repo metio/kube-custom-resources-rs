@@ -21,16 +21,43 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MachineHealthCheckSpec {
+    /// checks are the checks that are used to evaluate if a Machine is healthy.
+    /// 
+    /// Independent of this configuration the MachineHealthCheck controller will always
+    /// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+    /// Machines with deleted Nodes as unhealthy.
+    /// 
+    /// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+    /// is defaulted to 10 minutes and evaluated accordingly.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub checks: Option<MachineHealthCheckChecks>,
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    /// maxUnhealthy specifies the maximum number of unhealthy machines allowed.
-    /// Any further remediation is only allowed if at most "maxUnhealthy" machines selected by
-    /// "selector" are not healthy.
+    /// remediation configures if and how remediations are triggered if a Machine is unhealthy.
     /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
-    pub max_unhealthy: Option<IntOrString>,
+    /// If remediation or remediation.triggerIf is not set,
+    /// remediation will always be triggered for unhealthy Machines.
+    /// 
+    /// If remediation or remediation.templateRef is not set,
+    /// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+    /// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<MachineHealthCheckRemediation>,
+    /// selector is a label selector to match machines whose health will be exercised
+    pub selector: MachineHealthCheckSelector,
+}
+
+/// checks are the checks that are used to evaluate if a Machine is healthy.
+/// 
+/// Independent of this configuration the MachineHealthCheck controller will always
+/// flag Machines with `cluster.x-k8s.io/remediate-machine` annotation and
+/// Machines with deleted Nodes as unhealthy.
+/// 
+/// Furthermore, if checks.nodeStartupTimeoutSeconds is not set it
+/// is defaulted to 10 minutes and evaluated accordingly.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineHealthCheckChecks {
     /// nodeStartupTimeoutSeconds allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
@@ -45,41 +72,63 @@ pub struct MachineHealthCheckSpec {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeoutSeconds")]
     pub node_startup_timeout_seconds: Option<i32>,
-    /// remediationTemplate is a reference to a remediation template
+    /// unhealthyNodeConditions contains a list of conditions that determine
+    /// whether a node is considered unhealthy. The conditions are combined in a
+    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
+    pub unhealthy_node_conditions: Option<Vec<MachineHealthCheckChecksUnhealthyNodeConditions>>,
+}
+
+/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
+/// specified as a duration.  When the named condition has been in the given
+/// status for at least the timeout value, a node is considered unhealthy.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineHealthCheckChecksUnhealthyNodeConditions {
+    /// status of the condition, one of True, False, Unknown.
+    pub status: String,
+    /// timeoutSeconds is the duration that a node must be in a given status for,
+    /// after which the node is considered unhealthy.
+    /// For example, with a value of "1h", the node must match the status
+    /// for at least 1 hour before being considered unhealthy.
+    #[serde(rename = "timeoutSeconds")]
+    pub timeout_seconds: i32,
+    /// type of Node condition
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// remediation configures if and how remediations are triggered if a Machine is unhealthy.
+/// 
+/// If remediation or remediation.triggerIf is not set,
+/// remediation will always be triggered for unhealthy Machines.
+/// 
+/// If remediation or remediation.templateRef is not set,
+/// the OwnerRemediated condition will be set on unhealthy Machines to trigger remediation via
+/// the owner of the Machines, for example a MachineSet or a KubeadmControlPlane.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineHealthCheckRemediation {
+    /// templateRef is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
     /// creates a new object from the template referenced and hands off remediation of the machine to
     /// a controller that lives outside of Cluster API.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
-    pub remediation_template: Option<MachineHealthCheckRemediationTemplate>,
-    /// selector is a label selector to match machines whose health will be exercised
-    pub selector: MachineHealthCheckSelector,
-    /// unhealthyNodeConditions contains a list of conditions that determine
-    /// whether a node is considered unhealthy. The conditions are combined in a
-    /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyNodeConditions")]
-    pub unhealthy_node_conditions: Option<Vec<MachineHealthCheckUnhealthyNodeConditions>>,
-    /// unhealthyRange specifies the range of unhealthy machines allowed.
-    /// Any further remediation is only allowed if the number of machines selected by "selector" as not healthy
-    /// is within the range of "unhealthyRange". Takes precedence over maxUnhealthy.
-    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
-    /// (a) there are at least 3 unhealthy machines (and)
-    /// (b) there are at most 5 unhealthy machines
-    /// 
-    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10722 for more details.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyRange")]
-    pub unhealthy_range: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
+    pub template_ref: Option<MachineHealthCheckRemediationTemplateRef>,
+    /// triggerIf configures if remediations are triggered.
+    /// If this field is not set, remediations are always triggered.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggerIf")]
+    pub trigger_if: Option<MachineHealthCheckRemediationTriggerIf>,
 }
 
-/// remediationTemplate is a reference to a remediation template
+/// templateRef is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
 /// creates a new object from the template referenced and hands off remediation of the machine to
 /// a controller that lives outside of Cluster API.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineHealthCheckRemediationTemplate {
+pub struct MachineHealthCheckRemediationTemplateRef {
     /// apiVersion of the remediation template.
     /// apiVersion must be fully qualified domain name followed by / and a version.
     /// NOTE: This field must be kept in sync with the APIVersion of the remediation template.
@@ -91,6 +140,25 @@ pub struct MachineHealthCheckRemediationTemplate {
     /// name of the remediation template.
     /// name must consist of lower case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character.
     pub name: String,
+}
+
+/// triggerIf configures if remediations are triggered.
+/// If this field is not set, remediations are always triggered.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineHealthCheckRemediationTriggerIf {
+    /// unhealthyInRange specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is in the configured range.
+    /// Takes precedence over unhealthyLessThanOrEqualTo.
+    /// Eg. "[3-5]" - This means that remediation will be allowed only when:
+    /// (a) there are at least 3 unhealthy Machines (and)
+    /// (b) there are at most 5 unhealthy Machines
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyInRange")]
+    pub unhealthy_in_range: Option<String>,
+    /// unhealthyLessThanOrEqualTo specifies that remediations are only triggered if the number of
+    /// unhealthy Machines is less than or equal to the configured value.
+    /// unhealthyInRange takes precedence if set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyLessThanOrEqualTo")]
+    pub unhealthy_less_than_or_equal_to: Option<IntOrString>,
 }
 
 /// selector is a label selector to match machines whose health will be exercised
@@ -121,24 +189,6 @@ pub struct MachineHealthCheckSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
-}
-
-/// UnhealthyNodeCondition represents a Node condition type and value with a timeout
-/// specified as a duration.  When the named condition has been in the given
-/// status for at least the timeout value, a node is considered unhealthy.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineHealthCheckUnhealthyNodeConditions {
-    /// status of the condition, one of True, False, Unknown.
-    pub status: String,
-    /// timeoutSeconds is the duration that a node must be in a given status for,
-    /// after which the node is considered unhealthy.
-    /// For example, with a value of "1h", the node must match the status
-    /// for at least 1 hour before being considered unhealthy.
-    #[serde(rename = "timeoutSeconds")]
-    pub timeout_seconds: i32,
-    /// type of Node condition
-    #[serde(rename = "type")]
-    pub r#type: String,
 }
 
 /// status is the most recently observed status of MachineHealthCheck resource

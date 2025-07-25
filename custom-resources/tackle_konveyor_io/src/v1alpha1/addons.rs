@@ -39,9 +39,9 @@ pub struct AddonSpec {
     /// Selector defines criteria to be selected for a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Task declares task (kind) compatibility.
+    /// Tasks declares tasks the addon provides.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub task: Option<String>,
+    pub tasks: Option<Vec<String>>,
 }
 
 /// Container defines the addon container.

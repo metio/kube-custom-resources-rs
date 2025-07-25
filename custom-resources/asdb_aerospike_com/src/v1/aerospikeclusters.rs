@@ -5203,6 +5203,10 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
@@ -5695,8 +5699,8 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceEmptyDir 
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6578,6 +6582,10 @@ pub struct AerospikeClusterRackConfigRacksStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicy>,
@@ -7070,8 +7078,8 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceEmptyDir {
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7251,6 +7259,10 @@ pub struct AerospikeClusterStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStorageFilesystemVolumePolicy>,
@@ -7743,8 +7755,8 @@ pub struct AerospikeClusterStorageVolumesSourceEmptyDir {
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13204,6 +13216,10 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
@@ -13696,8 +13712,8 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceEmp
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14579,6 +14595,10 @@ pub struct AerospikeClusterStatusRackConfigRacksStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicy>,
@@ -15071,8 +15091,8 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceEmptyDir {
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15292,6 +15312,10 @@ pub struct AerospikeClusterStatusStorage {
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
+    /// DeleteLocalStorageOnRestart enables the deletion of local storage PVCs when a pod is restarted or rescheduled
+    /// by AKO. It only considers local storage classes given in the localStorageClasses field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteLocalStorageOnRestart")]
+    pub delete_local_storage_on_restart: Option<bool>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusStorageFilesystemVolumePolicy>,
@@ -15784,8 +15808,8 @@ pub struct AerospikeClusterStatusStorageVolumesSourceEmptyDir {
 /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolume {
-    /// Name for creating PVC for this volume, Name or path should be given
-    /// Name string `json:"name"`
+    /// AccessModes contains the desired access modes the volume should have.
+    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
