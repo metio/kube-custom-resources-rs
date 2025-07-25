@@ -216,6 +216,15 @@ pub struct RecordSetSpec {
     ///    * Associate that health check with the resource record set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckID")]
     pub health_check_id: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 	from:
+    /// 	  name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckRef")]
+    pub health_check_ref: Option<RecordSetHealthCheckRef>,
     /// The ID of the hosted zone that contains the resource record sets that you
     /// want to change.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostedZoneID")]
@@ -514,6 +523,31 @@ pub struct RecordSetGeoLocation {
     pub country_code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subdivisionCode")]
     pub subdivision_code: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RecordSetHealthCheckRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<RecordSetHealthCheckRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RecordSetHealthCheckRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference

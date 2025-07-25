@@ -846,9 +846,11 @@ spec:
                 selector:
                   description: "Selector defines criteria to be selected for a task."
                   type: "string"
-                task:
-                  description: "Task declares task (kind) compatibility."
-                  type: "string"
+                tasks:
+                  description: "Tasks declares tasks the addon provides."
+                  items:
+                    type: "string"
+                  type: "array"
               type: "object"
             status:
               description: "Status defines the observed state of the resource."

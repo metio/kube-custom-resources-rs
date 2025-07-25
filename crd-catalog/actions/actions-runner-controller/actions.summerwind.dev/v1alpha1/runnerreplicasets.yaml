@@ -13,7 +13,6 @@ spec:
     shortNames:
       - "rrs"
     singular: "runnerreplicaset"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

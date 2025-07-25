@@ -151,10 +151,9 @@ spec:
                     - message: "OwnerID is immutable"
                       rule: "self == oldSelf"
                 providerRef:
-                  description: "providerRef is a reference to a provider secret."
+                  description: "ProviderRef is a reference to a provider secret."
                   properties:
                     name:
-                      minLength: 1
                       type: "string"
                   required:
                     - "name"
@@ -169,7 +168,6 @@ spec:
                     - message: "RootHost is immutable"
                       rule: "self == oldSelf"
               required:
-                - "providerRef"
                 - "rootHost"
               type: "object"
               x-kubernetes-validations:
@@ -383,6 +381,14 @@ spec:
                 ownerID:
                   description: "ownerID is a unique string used to identify the owner of this record."
                   type: "string"
+                providerRef:
+                  description: "ProviderRef is a reference to a provider secret used to publish endpoints."
+                  properties:
+                    name:
+                      type: "string"
+                  required:
+                    - "name"
+                  type: "object"
                 queuedAt:
                   description: "QueuedAt is a time when DNS record was received for the reconciliation"
                   format: "date-time"

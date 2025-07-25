@@ -88,12 +88,28 @@ pub struct IngressRouteRoutesMiddlewares {
 /// More info: https://doc.traefik.io/traefik/v3.5/routing/routers/#observability
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutesObservability {
+    /// AccessLogs enables access logs for this router.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogs")]
     pub access_logs: Option<bool>,
+    /// Metrics enables metrics for this router.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<bool>,
+    /// TraceVerbosity defines the verbosity level of the tracing for this router.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceVerbosity")]
+    pub trace_verbosity: Option<IngressRouteRoutesObservabilityTraceVerbosity>,
+    /// Tracing enables tracing for this router.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<bool>,
+}
+
+/// Observability defines the observability configuration for a router.
+/// More info: https://doc.traefik.io/traefik/v3.5/routing/routers/#observability
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum IngressRouteRoutesObservabilityTraceVerbosity {
+    #[serde(rename = "minimal")]
+    Minimal,
+    #[serde(rename = "detailed")]
+    Detailed,
 }
 
 /// Service defines an upstream HTTP service to proxy traffic to.

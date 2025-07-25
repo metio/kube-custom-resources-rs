@@ -1523,7 +1523,6 @@ spec:
                                   - "volumePath"
                                 type: "object"
                             required:
-                              - ""
                               - "name"
                             type: "object"
                           type: "array"
@@ -2867,7 +2866,6 @@ spec:
                           - "volumePath"
                         type: "object"
                     required:
-                      - ""
                       - "name"
                     type: "object"
                   type: "array"
@@ -4335,7 +4333,6 @@ spec:
                               - "volumePath"
                             type: "object"
                         required:
-                          - ""
                           - "name"
                         type: "object"
                       type: "array"

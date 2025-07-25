@@ -28,7 +28,7 @@ pub struct TLSOptionSpec {
     /// ClientAuth defines the server's policy for TLS Client Authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientAuth")]
     pub client_auth: Option<TLSOptionClientAuth>,
-    /// CurvePreferences defines the preferred elliptic curves in a specific order.
+    /// CurvePreferences defines the preferred elliptic curves.
     /// More info: https://doc.traefik.io/traefik/v3.5/https/tls/#curve-preferences
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "curvePreferences")]
     pub curve_preferences: Option<Vec<String>>,

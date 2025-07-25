@@ -66,10 +66,20 @@ spec:
                         description: "Observability defines the observability configuration for a router.\nMore info: https://doc.traefik.io/traefik/v3.5/routing/routers/#observability"
                         properties:
                           accessLogs:
+                            description: "AccessLogs enables access logs for this router."
                             type: "boolean"
                           metrics:
+                            description: "Metrics enables metrics for this router."
                             type: "boolean"
+                          traceVerbosity:
+                            default: "minimal"
+                            description: "TraceVerbosity defines the verbosity level of the tracing for this router."
+                            enum:
+                              - "minimal"
+                              - "detailed"
+                            type: "string"
                           tracing:
+                            description: "Tracing enables tracing for this router."
                             type: "boolean"
                         type: "object"
                       priority:

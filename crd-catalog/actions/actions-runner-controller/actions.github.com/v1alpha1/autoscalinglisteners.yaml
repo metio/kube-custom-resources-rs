@@ -11,7 +11,6 @@ spec:
     listKind: "AutoscalingListenerList"
     plural: "autoscalinglisteners"
     singular: "autoscalinglistener"
-  preserveUnknownFields: false
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:

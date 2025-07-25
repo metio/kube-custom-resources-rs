@@ -194,7 +194,7 @@ pub struct AlertmanagerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If set to true all actions on the underlying managed objects are not
-    /// goint to be performed, except for delete actions.
+    /// going to be performed, except for delete actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
     /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.

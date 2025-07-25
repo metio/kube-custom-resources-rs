@@ -3815,7 +3815,7 @@ spec:
                   description: "Define which Nodes the Pods are scheduled on."
                   type: "object"
                 paused:
-                  description: "If set to true all actions on the underlying managed objects are not\ngoint to be performed, except for delete actions."
+                  description: "If set to true all actions on the underlying managed objects are not\ngoing to be performed, except for delete actions."
                   type: "boolean"
                 persistentVolumeClaimRetentionPolicy:
                   description: "The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.\nThe default behavior is all PVCs are retained.\nThis is an alpha field from kubernetes 1.23 until 1.26 and a beta field from 1.26.\nIt requires enabling the StatefulSetAutoDeletePVC feature gate."

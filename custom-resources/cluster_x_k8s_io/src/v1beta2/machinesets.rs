@@ -23,10 +23,9 @@ pub struct MachineSetSpec {
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    /// deletePolicy defines the policy used to identify nodes to delete when downscaling.
-    /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
-    pub delete_policy: Option<MachineSetDeletePolicy>,
+    /// deletion contains configuration options for MachineSet deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<MachineSetDeletion>,
     /// machineNamingStrategy allows changing the naming pattern used when creating Machines.
     /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
@@ -61,9 +60,18 @@ pub struct MachineSetSpec {
     pub template: MachineSetTemplate,
 }
 
-/// spec is the desired state of MachineSet.
+/// deletion contains configuration options for MachineSet deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineSetDeletion {
+    /// order defines the order in which Machines are deleted when downscaling.
+    /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub order: Option<MachineSetDeletionOrder>,
+}
+
+/// deletion contains configuration options for MachineSet deletion.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MachineSetDeletePolicy {
+pub enum MachineSetDeletionOrder {
     Random,
     Newest,
     Oldest,

@@ -9,7 +9,7 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// GlobalConfigurationSpec is the spec of the GlobalConfiguration resource.
+/// GlobalConfigurationSpec resource defines the global configuration parameters of the Ingress Controller.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "k8s.nginx.org", version = "v1", kind = "GlobalConfiguration", plural = "globalconfigurations")]
 #[kube(namespaced)]
@@ -17,6 +17,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GlobalConfigurationSpec {
+    /// Listeners field of the GlobalConfigurationSpec resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listeners: Option<Vec<GlobalConfigurationListeners>>,
 }
@@ -24,16 +25,22 @@ pub struct GlobalConfigurationSpec {
 /// Listener defines a listener.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GlobalConfigurationListeners {
+    /// Specifies the IPv4 address to listen on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv4: Option<String>,
+    /// ipv6 addresse that NGINX will listen on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv6: Option<String>,
+    /// The name of the listener. The name must be unique across all listeners.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The port on which the listener will accept connections.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
+    /// The protocol of the listener. For example, HTTP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
+    /// Whether the listener will be listening for SSL connections
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl: Option<bool>,
 }

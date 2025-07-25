@@ -21,6 +21,8 @@ pub struct BGPPeerSpec {
     pub filters: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepOriginalNextHop")]
     pub keep_original_next_hop: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localASNumber")]
+    pub local_as_number: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "localWorkloadSelector")]
     pub local_workload_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestartTime")]

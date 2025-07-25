@@ -24,6 +24,9 @@ pub struct MachineDeploymentSpec {
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
+    /// deletion contains configuration options for MachineDeployment deletion.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deletion: Option<MachineDeploymentDeletion>,
     /// machineNamingStrategy allows changing the naming pattern used when creating Machines.
     /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
@@ -31,6 +34,9 @@ pub struct MachineDeploymentSpec {
     /// paused indicates that the deployment is paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
+    /// remediation controls how unhealthy Machines are remediated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remediation: Option<MachineDeploymentRemediation>,
     /// replicas is the number of desired machines.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// 
@@ -50,24 +56,34 @@ pub struct MachineDeploymentSpec {
     ///   should be later controlled by the autoscaler
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// rolloutAfter is a field to indicate a rollout should be performed
-    /// after the specified time even if no changes have been made to the
-    /// MachineDeployment.
-    /// Example: In the YAML the time can be specified in the RFC3339 format.
-    /// To specify the rolloutAfter target as March 9, 2023, at 9 am UTC
-    /// use "2023-03-09T09:00:00Z".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
-    pub rollout_after: Option<String>,
+    /// rollout allows you to configure the behaviour of rolling updates to the MachineDeployment Machines.
+    /// It allows you to require that all Machines are replaced after a certain time,
+    /// and allows you to define the strategy used during rolling replacements.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rollout: Option<MachineDeploymentRollout>,
     /// selector is the label selector for machines. Existing MachineSets whose machines are
     /// selected by this will be the ones affected by this deployment.
     /// It must match the machine template's labels.
     pub selector: MachineDeploymentSelector,
-    /// strategy is the deployment strategy to use to replace existing machines with
-    /// new ones.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub strategy: Option<MachineDeploymentStrategy>,
     /// template describes the machines that will be created.
     pub template: MachineDeploymentTemplate,
+}
+
+/// deletion contains configuration options for MachineDeployment deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentDeletion {
+    /// order defines the order in which Machines are deleted when downscaling.
+    /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub order: Option<MachineDeploymentDeletionOrder>,
+}
+
+/// deletion contains configuration options for MachineDeployment deletion.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineDeploymentDeletionOrder {
+    Random,
+    Newest,
+    Oldest,
 }
 
 /// machineNamingStrategy allows changing the naming pattern used when creating Machines.
@@ -92,6 +108,100 @@ pub struct MachineDeploymentMachineNamingStrategy {
     /// template. If not provided, validation will fail.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<String>,
+}
+
+/// remediation controls how unhealthy Machines are remediated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentRemediation {
+    /// maxInFlight determines how many in flight remediations should happen at the same time.
+    /// 
+    /// Remediation only happens on the MachineSet with the most current revision, while
+    /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
+    /// 
+    /// Note: In general (independent of remediations), unhealthy machines are always
+    /// prioritized during scale down operations over healthy ones.
+    /// 
+    /// MaxInFlight can be set to a fixed number or a percentage.
+    /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
+    /// the desired replicas.
+    /// 
+    /// If not set, remediation is limited to all machines (bounded by replicas)
+    /// under the active MachineSet's management.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
+    pub max_in_flight: Option<IntOrString>,
+}
+
+/// rollout allows you to configure the behaviour of rolling updates to the MachineDeployment Machines.
+/// It allows you to require that all Machines are replaced after a certain time,
+/// and allows you to define the strategy used during rolling replacements.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentRollout {
+    /// after is a field to indicate a rollout should be performed
+    /// after the specified time even if no changes have been made to the
+    /// MachineDeployment.
+    /// Example: In the YAML the time can be specified in the RFC3339 format.
+    /// To specify the rolloutAfter target as March 9, 2023, at 9 am UTC
+    /// use "2023-03-09T09:00:00Z".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub after: Option<String>,
+    /// strategy specifies how to roll out control plane Machines.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<MachineDeploymentRolloutStrategy>,
+}
+
+/// strategy specifies how to roll out control plane Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MachineDeploymentRolloutStrategy {
+    /// rollingUpdate is the rolling update config params. Present only if
+    /// type = RollingUpdate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<MachineDeploymentRolloutStrategyRollingUpdate>,
+    /// type of rollout. Allowed values are RollingUpdate and OnDelete.
+    /// Default is RollingUpdate.
+    #[serde(rename = "type")]
+    pub r#type: MachineDeploymentRolloutStrategyType,
+}
+
+/// rollingUpdate is the rolling update config params. Present only if
+/// type = RollingUpdate.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MachineDeploymentRolloutStrategyRollingUpdate {
+    /// maxSurge is the maximum number of machines that can be scheduled above the
+    /// desired number of machines.
+    /// Value can be an absolute number (ex: 5) or a percentage of
+    /// desired machines (ex: 10%).
+    /// This can not be 0 if MaxUnavailable is 0.
+    /// Absolute number is calculated from percentage by rounding up.
+    /// Defaults to 1.
+    /// Example: when this is set to 30%, the new MachineSet can be scaled
+    /// up immediately when the rolling update starts, such that the total
+    /// number of old and new machines do not exceed 130% of desired
+    /// machines. Once old machines have been killed, new MachineSet can
+    /// be scaled up further, ensuring that total number of machines running
+    /// at any time during the update is at most 130% of desired machines.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
+    pub max_surge: Option<IntOrString>,
+    /// maxUnavailable is the maximum number of machines that can be unavailable during the update.
+    /// Value can be an absolute number (ex: 5) or a percentage of desired
+    /// machines (ex: 10%).
+    /// Absolute number is calculated from percentage by rounding down.
+    /// This can not be 0 if MaxSurge is 0.
+    /// Defaults to 0.
+    /// Example: when this is set to 30%, the old MachineSet can be scaled
+    /// down to 70% of desired machines immediately when the rolling update
+    /// starts. Once new machines are ready, old MachineSet can be scaled
+    /// down further, followed by scaling up the new MachineSet, ensuring
+    /// that the total number of machines available at all times
+    /// during the update is at least 70% of desired machines.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
+    pub max_unavailable: Option<IntOrString>,
+}
+
+/// strategy specifies how to roll out control plane Machines.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MachineDeploymentRolloutStrategyType {
+    RollingUpdate,
+    OnDelete,
 }
 
 /// selector is the label selector for machines. Existing MachineSets whose machines are
@@ -124,103 +234,6 @@ pub struct MachineDeploymentSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
-}
-
-/// strategy is the deployment strategy to use to replace existing machines with
-/// new ones.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeploymentStrategy {
-    /// remediation controls the strategy of remediating unhealthy machines
-    /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub remediation: Option<MachineDeploymentStrategyRemediation>,
-    /// rollingUpdate is the rolling update config params. Present only if
-    /// MachineDeploymentStrategyType = RollingUpdate.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
-    pub rolling_update: Option<MachineDeploymentStrategyRollingUpdate>,
-    /// type of deployment. Allowed values are RollingUpdate and OnDelete.
-    /// The default is RollingUpdate.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<MachineDeploymentStrategyType>,
-}
-
-/// remediation controls the strategy of remediating unhealthy machines
-/// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeploymentStrategyRemediation {
-    /// maxInFlight determines how many in flight remediations should happen at the same time.
-    /// 
-    /// Remediation only happens on the MachineSet with the most current revision, while
-    /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
-    /// 
-    /// Note: In general (independent of remediations), unhealthy machines are always
-    /// prioritized during scale down operations over healthy ones.
-    /// 
-    /// MaxInFlight can be set to a fixed number or a percentage.
-    /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
-    /// the desired replicas.
-    /// 
-    /// If not set, remediation is limited to all machines (bounded by replicas)
-    /// under the active MachineSet's management.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
-    pub max_in_flight: Option<IntOrString>,
-}
-
-/// rollingUpdate is the rolling update config params. Present only if
-/// MachineDeploymentStrategyType = RollingUpdate.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeploymentStrategyRollingUpdate {
-    /// deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
-    /// Valid values are "Random, "Newest", "Oldest"
-    /// When no value is supplied, the default DeletePolicy of MachineSet is used
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
-    pub delete_policy: Option<MachineDeploymentStrategyRollingUpdateDeletePolicy>,
-    /// maxSurge is the maximum number of machines that can be scheduled above the
-    /// desired number of machines.
-    /// Value can be an absolute number (ex: 5) or a percentage of
-    /// desired machines (ex: 10%).
-    /// This can not be 0 if MaxUnavailable is 0.
-    /// Absolute number is calculated from percentage by rounding up.
-    /// Defaults to 1.
-    /// Example: when this is set to 30%, the new MachineSet can be scaled
-    /// up immediately when the rolling update starts, such that the total
-    /// number of old and new machines do not exceed 130% of desired
-    /// machines. Once old machines have been killed, new MachineSet can
-    /// be scaled up further, ensuring that total number of machines running
-    /// at any time during the update is at most 130% of desired machines.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
-    pub max_surge: Option<IntOrString>,
-    /// maxUnavailable is the maximum number of machines that can be unavailable during the update.
-    /// Value can be an absolute number (ex: 5) or a percentage of desired
-    /// machines (ex: 10%).
-    /// Absolute number is calculated from percentage by rounding down.
-    /// This can not be 0 if MaxSurge is 0.
-    /// Defaults to 0.
-    /// Example: when this is set to 30%, the old MachineSet can be scaled
-    /// down to 70% of desired machines immediately when the rolling update
-    /// starts. Once new machines are ready, old MachineSet can be scaled
-    /// down further, followed by scaling up the new MachineSet, ensuring
-    /// that the total number of machines available at all times
-    /// during the update is at least 70% of desired machines.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
-    pub max_unavailable: Option<IntOrString>,
-}
-
-/// rollingUpdate is the rolling update config params. Present only if
-/// MachineDeploymentStrategyType = RollingUpdate.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MachineDeploymentStrategyRollingUpdateDeletePolicy {
-    Random,
-    Newest,
-    Oldest,
-}
-
-/// strategy is the deployment strategy to use to replace existing machines with
-/// new ones.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum MachineDeploymentStrategyType {
-    RollingUpdate,
-    OnDelete,
 }
 
 /// template describes the machines that will be created.

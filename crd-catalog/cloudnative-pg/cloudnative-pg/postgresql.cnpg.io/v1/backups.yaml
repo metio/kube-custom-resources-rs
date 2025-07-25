@@ -99,6 +99,9 @@ spec:
               required:
                 - "cluster"
               type: "object"
+              x-kubernetes-validations:
+                - message: "BackupSpec is immutable once set"
+                  rule: "oldSelf == self"
             status:
               description: "Most recently observed status of the backup. This data may not be up to\ndate. Populated by the system. Read-only.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
               properties:

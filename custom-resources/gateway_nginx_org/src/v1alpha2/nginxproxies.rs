@@ -84,6 +84,9 @@ pub struct NginxProxyKubernetesDaemonSet {
     /// Container defines container fields for the NGINX container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<NginxProxyKubernetesDaemonSetContainer>,
+    /// Patches are custom patches to apply to the NGINX DaemonSet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<NginxProxyKubernetesDaemonSetPatches>>,
     /// Pod defines Pod-specific fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<NginxProxyKubernetesDaemonSetPod>,
@@ -106,6 +109,9 @@ pub struct NginxProxyKubernetesDaemonSetContainer {
     /// until the action is complete, unless the container process fails, in which case the handler is aborted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<NginxProxyKubernetesDaemonSetContainerLifecycle>,
+    /// ReadinessProbe defines the readiness probe for the NGINX container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<NginxProxyKubernetesDaemonSetContainerReadinessProbe>,
     /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<NginxProxyKubernetesDaemonSetContainerResources>,
@@ -357,6 +363,20 @@ pub struct NginxProxyKubernetesDaemonSetContainerLifecyclePreStopTcpSocket {
     pub port: IntOrString,
 }
 
+/// ReadinessProbe defines the readiness probe for the NGINX container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetContainerReadinessProbe {
+    /// InitialDelaySeconds is the number of seconds after the container has
+    /// started before the readiness probe is initiated.
+    /// If not specified, the default is 3 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// Port is the port on which the readiness endpoint is exposed.
+    /// If not specified, the default port is 8081.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
 /// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDaemonSetContainerResources {
@@ -444,6 +464,28 @@ pub struct NginxProxyKubernetesDaemonSetContainerVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDaemonSetPatches {
+    /// Type is the type of patch. Defaults to StrategicMerge.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<NginxProxyKubernetesDaemonSetPatchesType>,
+    /// Value is the patch data as raw JSON.
+    /// For StrategicMerge and Merge patches, this should be a JSON object.
+    /// For JSONPatch patches, this should be a JSON array of patch operations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyKubernetesDaemonSetPatchesType {
+    StrategicMerge,
+    Merge,
+    #[serde(rename = "JSONPatch")]
+    JsonPatch,
 }
 
 /// Pod defines Pod-specific fields.
@@ -3029,6 +3071,9 @@ pub struct NginxProxyKubernetesDeployment {
     /// Container defines container fields for the NGINX container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<NginxProxyKubernetesDeploymentContainer>,
+    /// Patches are custom patches to apply to the NGINX Deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<NginxProxyKubernetesDeploymentPatches>>,
     /// Pod defines Pod-specific fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pod: Option<NginxProxyKubernetesDeploymentPod>,
@@ -3054,6 +3099,9 @@ pub struct NginxProxyKubernetesDeploymentContainer {
     /// until the action is complete, unless the container process fails, in which case the handler is aborted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<NginxProxyKubernetesDeploymentContainerLifecycle>,
+    /// ReadinessProbe defines the readiness probe for the NGINX container.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<NginxProxyKubernetesDeploymentContainerReadinessProbe>,
     /// Resources describes the compute resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<NginxProxyKubernetesDeploymentContainerResources>,
@@ -3305,6 +3353,20 @@ pub struct NginxProxyKubernetesDeploymentContainerLifecyclePreStopTcpSocket {
     pub port: IntOrString,
 }
 
+/// ReadinessProbe defines the readiness probe for the NGINX container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDeploymentContainerReadinessProbe {
+    /// InitialDelaySeconds is the number of seconds after the container has
+    /// started before the readiness probe is initiated.
+    /// If not specified, the default is 3 seconds.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// Port is the port on which the readiness endpoint is exposed.
+    /// If not specified, the default port is 8081.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
 /// Resources describes the compute resource requirements.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NginxProxyKubernetesDeploymentContainerResources {
@@ -3392,6 +3454,28 @@ pub struct NginxProxyKubernetesDeploymentContainerVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesDeploymentPatches {
+    /// Type is the type of patch. Defaults to StrategicMerge.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<NginxProxyKubernetesDeploymentPatchesType>,
+    /// Value is the patch data as raw JSON.
+    /// For StrategicMerge and Merge patches, this should be a JSON object.
+    /// For JSONPatch patches, this should be a JSON array of patch operations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyKubernetesDeploymentPatchesType {
+    StrategicMerge,
+    Merge,
+    #[serde(rename = "JSONPatch")]
+    JsonPatch,
 }
 
 /// Pod defines Pod-specific fields.
@@ -5994,6 +6078,9 @@ pub struct NginxProxyKubernetesService {
     /// The default NodePort range enforced by Kubernetes is 30000-32767.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePorts")]
     pub node_ports: Option<Vec<NginxProxyKubernetesServiceNodePorts>>,
+    /// Patches are custom patches to apply to the NGINX Service.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub patches: Option<Vec<NginxProxyKubernetesServicePatches>>,
     /// ServiceType describes ingress method for the Service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<NginxProxyKubernetesServiceType>,
@@ -6016,6 +6103,28 @@ pub struct NginxProxyKubernetesServiceNodePorts {
     pub listener_port: i32,
     /// Port is the NodePort to expose.
     pub port: i32,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NginxProxyKubernetesServicePatches {
+    /// Type is the type of patch. Defaults to StrategicMerge.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<NginxProxyKubernetesServicePatchesType>,
+    /// Value is the patch data as raw JSON.
+    /// For StrategicMerge and Merge patches, this should be a JSON object.
+    /// For JSONPatch patches, this should be a JSON array of patch operations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<serde_json::Value>,
+}
+
+/// Patch defines a patch to apply to a Kubernetes object.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NginxProxyKubernetesServicePatchesType {
+    StrategicMerge,
+    Merge,
+    #[serde(rename = "JSONPatch")]
+    JsonPatch,
 }
 
 /// Service is the configuration for the NGINX Service.

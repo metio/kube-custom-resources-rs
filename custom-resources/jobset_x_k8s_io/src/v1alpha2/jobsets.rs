@@ -159,6 +159,7 @@ pub enum JobSetFailurePolicyRulesAction {
     FailJobSet,
     RestartJobSet,
     RestartJobSetAndIgnoreMaxRestarts,
+    RecreateJob,
 }
 
 /// Network defines the networking options for the jobset.
@@ -7533,6 +7534,10 @@ pub enum JobSetSuccessPolicyOperator {
 pub struct JobSetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// IndividualJobRecreates tracks the number of times an individual Job within
+    /// the JobSet has been recreated (i.e. in case of RecreateJob failure policy).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "individualJobRecreates")]
+    pub individual_job_recreates: Option<BTreeMap<String, i32>>,
     /// ReplicatedJobsStatus track the number of JobsReady for each replicatedJob.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicatedJobsStatus")]
     pub replicated_jobs_status: Option<Vec<JobSetStatusReplicatedJobsStatus>>,

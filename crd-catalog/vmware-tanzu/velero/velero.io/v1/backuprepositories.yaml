@@ -55,7 +55,7 @@ spec:
                     - ""
                   type: "string"
                 resticIdentifier:
-                  description: "ResticIdentifier is the full restic-compatible string for identifying\nthis repository."
+                  description: "ResticIdentifier is the full restic-compatible string for identifying\nthis repository. This field is only used when RepositoryType is \"restic\"."
                   type: "string"
                 volumeNamespace:
                   description: "VolumeNamespace is the namespace this backup repository contains\npod volume backups for."
@@ -63,7 +63,6 @@ spec:
               required:
                 - "backupStorageLocation"
                 - "maintenanceFrequency"
-                - "resticIdentifier"
                 - "volumeNamespace"
               type: "object"
             status:

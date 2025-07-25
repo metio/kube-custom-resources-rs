@@ -239,6 +239,9 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDrivers {
     /// CSR represents the configuration for csr driver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csr: Option<ClusterManagerRegistrationConfigurationRegistrationDriversCsr>,
+    /// GRPC represents the configuration for gRPC driver.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub grpc: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpc>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -247,6 +250,8 @@ pub enum ClusterManagerRegistrationConfigurationRegistrationDriversAuthType {
     Csr,
     #[serde(rename = "awsirsa")]
     Awsirsa,
+    #[serde(rename = "grpc")]
+    Grpc,
 }
 
 /// AwsIrsa represents the configuration for awsirsa driver.
@@ -271,6 +276,45 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDriversCsr {
     /// AutoApprovedIdentities represent a list of approved users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
     pub auto_approved_identities: Option<Vec<String>>,
+}
+
+/// GRPC represents the configuration for gRPC driver.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpc {
+    /// AutoApprovedIdentities represent a list of approved arn patterns
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
+    pub auto_approved_identities: Option<Vec<String>>,
+    /// EndpointExposure represents the configuration for endpoint exposure.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointExposure")]
+    pub endpoint_exposure: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposure>,
+    /// ImagePullSpec represents the desired image of the gRPC broker installed on hub.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSpec")]
+    pub image_pull_spec: Option<String>,
+}
+
+/// EndpointExposure represents the configuration for endpoint exposure.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposure {
+    /// Hostname points to a fixed hostname for serving agents' handshakes.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostname: Option<ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureHostname>,
+    /// Type specifies how the gRPC endpoint is exposed.
+    /// You may need to apply an object to expose the gRPC endpoint, for example: a route.
+    #[serde(rename = "type")]
+    pub r#type: ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureType,
+}
+
+/// Hostname points to a fixed hostname for serving agents' handshakes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureHostname {
+    pub value: String,
+}
+
+/// EndpointExposure represents the configuration for endpoint exposure.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterManagerRegistrationConfigurationRegistrationDriversGrpcEndpointExposureType {
+    #[serde(rename = "hostname")]
+    Hostname,
 }
 
 /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.
