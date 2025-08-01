@@ -1558,14 +1558,15 @@ spec:
                                     description: "CalicoNodeDaemonSetInitContainer is a calico-node DaemonSet init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the calico-node DaemonSet init container by name.\nSupported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner"
+                                        description: "Name is an enum which identifies the calico-node DaemonSet init container by name.\nSupported values are: install-cni, hostpath-init, flexvol-driver, ebpf-bootstrap, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner, mount-bpffs (deprecated, replaced by ebpf-bootstrap)"
                                         enum:
                                           - "install-cni"
                                           - "hostpath-init"
                                           - "flexvol-driver"
-                                          - "mount-bpffs"
+                                          - "ebpf-bootstrap"
                                           - "node-certs-key-cert-provisioner"
                                           - "calico-node-prometheus-server-tls-key-cert-provisioner"
+                                          - "mount-bpffs"
                                         type: "string"
                                       resources:
                                         description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet init container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
@@ -2303,12 +2304,11 @@ spec:
                                     description: "CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container."
                                     properties:
                                       name:
-                                        description: "Name is an enum which identifies the calico-node-windows DaemonSet init container by name.\nSupported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner"
+                                        description: "Name is an enum which identifies the calico-node-windows DaemonSet init container by name.\nSupported values are: install-cni;hostpath-init, flexvol-driver, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner"
                                         enum:
                                           - "install-cni"
                                           - "hostpath-init"
                                           - "flexvol-driver"
-                                          - "mount-bpffs"
                                           - "node-certs-key-cert-provisioner"
                                           - "calico-node-windows-prometheus-server-tls-key-cert-provisioner"
                                         type: "string"
@@ -6607,14 +6607,15 @@ spec:
                                         description: "CalicoNodeDaemonSetInitContainer is a calico-node DaemonSet init container."
                                         properties:
                                           name:
-                                            description: "Name is an enum which identifies the calico-node DaemonSet init container by name.\nSupported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner"
+                                            description: "Name is an enum which identifies the calico-node DaemonSet init container by name.\nSupported values are: install-cni, hostpath-init, flexvol-driver, ebpf-bootstrap, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner, mount-bpffs (deprecated, replaced by ebpf-bootstrap)"
                                             enum:
                                               - "install-cni"
                                               - "hostpath-init"
                                               - "flexvol-driver"
-                                              - "mount-bpffs"
+                                              - "ebpf-bootstrap"
                                               - "node-certs-key-cert-provisioner"
                                               - "calico-node-prometheus-server-tls-key-cert-provisioner"
+                                              - "mount-bpffs"
                                             type: "string"
                                           resources:
                                             description: "Resources allows customization of limits and requests for compute resources such as cpu and memory.\nIf specified, this overrides the named calico-node DaemonSet init container's resources.\nIf omitted, the calico-node DaemonSet will use its default value for this container's resources.\nIf used in conjunction with the deprecated ComponentResources, then this value takes precedence."
@@ -7352,12 +7353,11 @@ spec:
                                         description: "CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container."
                                         properties:
                                           name:
-                                            description: "Name is an enum which identifies the calico-node-windows DaemonSet init container by name.\nSupported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner"
+                                            description: "Name is an enum which identifies the calico-node-windows DaemonSet init container by name.\nSupported values are: install-cni;hostpath-init, flexvol-driver, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner"
                                             enum:
                                               - "install-cni"
                                               - "hostpath-init"
                                               - "flexvol-driver"
-                                              - "mount-bpffs"
                                               - "node-certs-key-cert-provisioner"
                                               - "calico-node-windows-prometheus-server-tls-key-cert-provisioner"
                                             type: "string"

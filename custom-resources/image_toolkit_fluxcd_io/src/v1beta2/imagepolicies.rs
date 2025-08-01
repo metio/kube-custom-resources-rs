@@ -157,13 +157,6 @@ pub struct ImagePolicyPolicySemver {
 pub struct ImagePolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// LatestImage gives the first in the list of images scanned by
-    /// the image repository, when filtered and ordered according to
-    /// the policy.
-    /// 
-    /// Deprecated: Replaced by the composite "latestRef" field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestImage")]
-    pub latest_image: Option<String>,
     /// LatestRef gives the first in the list of images scanned by
     /// the image repository, when filtered and ordered according
     /// to the policy.
@@ -171,12 +164,6 @@ pub struct ImagePolicyStatus {
     pub latest_ref: Option<ImagePolicyStatusLatestRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// ObservedPreviousImage is the observed previous LatestImage. It is used
-    /// to keep track of the previous and current images.
-    /// 
-    /// Deprecated: Replaced by the composite "observedPreviousRef" field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedPreviousImage")]
-    pub observed_previous_image: Option<String>,
     /// ObservedPreviousRef is the observed previous LatestRef. It is used
     /// to keep track of the previous and current images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedPreviousRef")]

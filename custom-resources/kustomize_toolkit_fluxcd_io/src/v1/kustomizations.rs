@@ -37,7 +37,7 @@ pub struct KustomizationSpec {
     /// (orphan if false, delete if true). Defaults to 'MirrorPrune'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<KustomizationDeletionPolicy>,
-    /// DependsOn may contain a meta.NamespacedObjectReference slice
+    /// DependsOn may contain a DependencyReference slice
     /// with references to Kustomization resources that must be ready before this
     /// Kustomization can be reconciled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
@@ -183,15 +183,22 @@ pub enum KustomizationDeletionPolicy {
     Orphan,
 }
 
-/// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any
-/// namespace.
+/// DependencyReference defines a Kustomization dependency on another Kustomization resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KustomizationDependsOn {
     /// Name of the referent.
     pub name: String,
-    /// Namespace of the referent, when not specified it acts as LocalObjectReference.
+    /// Namespace of the referent, defaults to the namespace of the Kustomization
+    /// resource object that contains the reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// ReadyExpr is a CEL expression that can be used to assess the readiness
+    /// of a dependency. When specified, the built-in readiness check
+    /// is replaced by the logic defined in the CEL expression.
+    /// To make the CEL expression additive to the built-in readiness check,
+    /// the feature gate `AdditiveCELDependencyCheck` must be set to `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyExpr")]
+    pub ready_expr: Option<String>,
 }
 
 /// CustomHealthCheck defines the health check for custom resources.

@@ -102,6 +102,9 @@ pub struct ArgoCDSpec {
     /// Monitoring defines whether workload status monitoring configuration for this instance.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<ArgoCDMonitoring>,
+    /// NamespaceManagement defines the list of namespaces that Argo CD is allowed to manage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceManagement")]
+    pub namespace_management: Option<Vec<ArgoCDNamespaceManagement>>,
     /// NodePlacement defines NodeSelectors and Taints for Argo CD workloads
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ArgoCDNodePlacement>,
@@ -1126,6 +1129,16 @@ pub struct ArgoCDMonitoring {
     pub disable_metrics: Option<bool>,
     /// Enabled defines whether workload status monitoring is enabled for this instance or not
     pub enabled: bool,
+}
+
+/// NamespaceManagement defines the namespace management settings
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ArgoCDNamespaceManagement {
+    /// Whether the namespace can be managed by ArgoCD
+    #[serde(rename = "allowManagedBy")]
+    pub allow_managed_by: bool,
+    /// Name of the namespace or pattern to be managed
+    pub name: String,
 }
 
 /// NodePlacement defines NodeSelectors and Taints for Argo CD workloads

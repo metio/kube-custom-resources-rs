@@ -132,6 +132,12 @@ pub struct PlanSpec {
     /// https://kubevirt.io/user-guide/compute/node_assignment/#nodeselector
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetNodeSelector")]
     pub target_node_selector: Option<BTreeMap<String, String>>,
+    /// TargetPowerState specifies the desired power state of the target VM after migration.
+    /// - "on": Target VM will be powered on after migration
+    /// - "off": Target VM will be powered off after migration
+    /// - "auto" or nil (default): Target VM will match the source VM's power state
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPowerState")]
+    pub target_power_state: Option<PlanTargetPowerState>,
     /// The network attachment definition that should be used for disk transfer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transferNetwork")]
     pub transfer_network: Option<ObjectReference>,
@@ -159,6 +165,7 @@ pub struct PlanSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNameTemplate")]
     pub volume_name_template: Option<String>,
     /// Whether this is a warm migration.
+    /// Deprecated: this field will be deprecated in 2.10. Use Type instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warm: Option<bool>,
 }
@@ -1034,6 +1041,17 @@ pub struct PlanTargetAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     pub values: Option<Vec<String>>,
 }
 
+/// PlanSpec defines the desired state of Plan.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PlanTargetPowerState {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "auto")]
+    Auto,
+}
+
 /// The network attachment definition that should be used for disk transfer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanTransferNetwork {
@@ -1146,6 +1164,12 @@ pub struct PlanVms {
     /// If provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
     pub target_name: Option<String>,
+    /// TargetPowerState specifies the desired power state of the target VM after migration.
+    /// - "on": Target VM will be powered on after migration
+    /// - "off": Target VM will be powered off after migration
+    /// - "auto" or nil (default): Target VM will match the source VM's power state
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPowerState")]
+    pub target_power_state: Option<PlanVmsTargetPowerState>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1244,6 +1268,17 @@ pub struct PlanVmsLuks {
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
+}
+
+/// A VM listed on the plan.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PlanVmsTargetPowerState {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "auto")]
+    Auto,
 }
 
 /// PlanStatus defines the observed state of Plan.
@@ -1475,6 +1510,12 @@ pub struct PlanStatusMigrationVms {
     /// If provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
     pub target_name: Option<String>,
+    /// TargetPowerState specifies the desired power state of the target VM after migration.
+    /// - "on": Target VM will be powered on after migration
+    /// - "off": Target VM will be powered off after migration
+    /// - "auto" or nil (default): Target VM will match the source VM's power state
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPowerState")]
+    pub target_power_state: Option<PlanStatusMigrationVmsTargetPowerState>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1678,6 +1719,17 @@ pub struct PlanStatusMigrationVmsPipelineTasksProgress {
     pub completed: i64,
     /// Total units.
     pub total: i64,
+}
+
+/// VM Status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PlanStatusMigrationVmsTargetPowerState {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "auto")]
+    Auto,
 }
 
 /// Warm migration status

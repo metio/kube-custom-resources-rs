@@ -223,8 +223,8 @@ pub struct TCPRouteRules {
     /// Support: Implementation-specific for any other resource
     /// 
     /// Support for weight: Extended
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendRefs")]
-    pub backend_refs: Option<Vec<TCPRouteRulesBackendRefs>>,
+    #[serde(rename = "backendRefs")]
+    pub backend_refs: Vec<TCPRouteRulesBackendRefs>,
     /// Name is the name of the route rule. This name MUST be unique within a Route if it is set.
     /// 
     /// Support: Extended
@@ -361,8 +361,7 @@ pub struct TCPRouteStatusParents {
     /// * The Route refers to a nonexistent parent.
     /// * The Route is of a type that the controller does not support.
     /// * The Route is in a namespace the controller does not have access to.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+    pub conditions: Vec<Condition>,
     /// ControllerName is a domain/path string that indicates the name of the
     /// controller that wrote this status. This corresponds with the
     /// controllerName field on GatewayClass.

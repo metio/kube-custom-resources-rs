@@ -31,6 +31,8 @@ pub struct ServiceDiscoverySpec {
     pub broker_k8s_remote_namespace: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerK8sSecret")]
     pub broker_k8s_secret: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterCIDR")]
+    pub cluster_cidr: Option<String>,
     #[serde(rename = "clusterID")]
     pub cluster_id: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clustersetIPCIDR")]

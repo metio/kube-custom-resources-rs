@@ -28,7 +28,7 @@ pub struct ClusterSpec {
     /// If you set this value to False when creating a cluster, the default networking
     /// add-ons will not be installed.
     /// 
-    /// The default networking addons include vpc-cni, coredns, and kube-proxy.
+    /// The default networking add-ons include vpc-cni, coredns, and kube-proxy.
     /// 
     /// Use this option when you plan to install third-party alternative add-ons
     /// or self-manage the default networking add-ons.
@@ -77,8 +77,8 @@ pub struct ClusterSpec {
     /// EKS clusters on the Amazon Web Services cloud.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "outpostConfig")]
     pub outpost_config: Option<ClusterOutpostConfig>,
-    /// The configuration in the cluster for EKS Hybrid Nodes. You can't change or
-    /// update this configuration after the cluster is created.
+    /// The configuration in the cluster for EKS Hybrid Nodes. You can add, change,
+    /// or remove this configuration after the cluster is created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNetworkConfig")]
     pub remote_network_config: Option<ClusterRemoteNetworkConfig>,
     /// The VPC configuration that's used by the cluster control plane. Amazon EKS
@@ -290,8 +290,8 @@ pub struct ClusterOutpostConfigControlPlanePlacement {
     pub group_name: Option<String>,
 }
 
-/// The configuration in the cluster for EKS Hybrid Nodes. You can't change or
-/// update this configuration after the cluster is created.
+/// The configuration in the cluster for EKS Hybrid Nodes. You can add, change,
+/// or remove this configuration after the cluster is created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterRemoteNetworkConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNodeNetworks")]
@@ -312,7 +312,7 @@ pub struct ClusterRemoteNetworkConfig {
 /// It must satisfy the following requirements:
 /// 
 ///    * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
-///    size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+///    size is /32, maximum allowed size is /8. Publicly-routable addresses aren't
 ///    supported.
 /// 
 ///    * Each block cannot overlap with the range of the VPC CIDR blocks for
@@ -350,7 +350,7 @@ pub struct ClusterRemoteNetworkConfigRemoteNodeNetworks {
 /// It must satisfy the following requirements:
 /// 
 ///    * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed
-///    size is /24, maximum allowed size is /8. Publicly-routable addresses aren't
+///    size is /32, maximum allowed size is /8. Publicly-routable addresses aren't
 ///    supported.
 /// 
 ///    * Each block cannot overlap with the range of the VPC CIDR blocks for

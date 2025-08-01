@@ -24,6 +24,11 @@ pub struct CephBlockPoolRadosNamespaceSpec {
     /// the CephBlockPool CR.
     #[serde(rename = "blockPoolName")]
     pub block_pool_name: String,
+    /// ClusterID to be used for this RadosNamespace in the CSI configuration.
+    /// It must be unique among all Ceph clusters managed by Rook.
+    /// If not specified, the clusterID will be generated and can be found in the CR status.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
+    pub cluster_id: Option<String>,
     /// Mirroring configuration of CephBlockPoolRadosNamespace
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirroring: Option<CephBlockPoolRadosNamespaceMirroring>,

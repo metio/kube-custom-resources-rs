@@ -99,7 +99,7 @@ spec:
                           type: "string"
                         type: "array"
                     type: "object"
-                  minItems: 1
+                  minItems: 0
                   type: "array"
                 healthCheck:
                   description: "HealthCheckSpec configures health checks in the DNS provider.\nBy default this health check will be applied to each unique DNS A Record for\nthe listeners assigned to the target gateway"

@@ -5284,13 +5284,26 @@ pub struct PrometheusOtlp {
     /// It requires Prometheus >= v3.4.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertHistogramsToNHCB")]
     pub convert_histograms_to_nhcb: Option<bool>,
+    /// List of OpenTelemetry resource attributes to ignore when `promoteAllResourceAttributes` is true.
+    /// 
+    /// It requires `promoteAllResourceAttributes` to be true.
+    /// It requires Prometheus >= v3.5.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreResourceAttributes")]
+    pub ignore_resource_attributes: Option<Vec<String>>,
     /// Enables adding `service.name`, `service.namespace` and `service.instance.id`
     /// resource attributes to the `target_info` metric, on top of converting them into the `instance` and `job` labels.
     /// 
     /// It requires Prometheus >= v3.1.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepIdentifyingResourceAttributes")]
     pub keep_identifying_resource_attributes: Option<bool>,
+    /// Promote all resource attributes to metric labels except the ones defined in `ignoreResourceAttributes`.
+    /// 
+    /// Cannot be true when `promoteResourceAttributes` is defined.
+    /// It requires Prometheus >= v3.5.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAllResourceAttributes")]
+    pub promote_all_resource_attributes: Option<bool>,
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
+    /// Cannot be defined when `promoteAllResourceAttributes` is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
     /// Configures how the OTLP receiver endpoint translates the incoming metrics.

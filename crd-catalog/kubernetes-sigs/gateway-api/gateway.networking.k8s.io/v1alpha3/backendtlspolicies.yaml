@@ -288,6 +288,7 @@ spec:
                         type: "string"
                     required:
                       - "ancestorRef"
+                      - "conditions"
                       - "controllerName"
                     type: "object"
                   maxItems: 16

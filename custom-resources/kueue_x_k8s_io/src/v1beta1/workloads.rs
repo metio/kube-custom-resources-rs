@@ -7098,6 +7098,10 @@ pub struct WorkloadStatus {
     /// admissionChecks list all the admission checks required by the workload and the current status
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "admissionChecks")]
     pub admission_checks: Option<Vec<WorkloadStatusAdmissionChecks>>,
+    /// clusterName is the name of the cluster where the workload is actually assigned.
+    /// This field is reset after the Workload is evicted.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
+    pub cluster_name: Option<String>,
     /// conditions hold the latest available observations of the Workload
     /// current state.
     /// 
@@ -7109,6 +7113,12 @@ pub struct WorkloadStatus {
     /// succeeded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// nominatedClusterNames specifies the list of cluster names that have been nominated for scheduling.
+    /// This field is mutually exclusive with the `.status.clusterName` field, and is reset when
+    /// `status.clusterName` is set.
+    /// This field is optional.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nominatedClusterNames")]
+    pub nominated_cluster_names: Option<Vec<String>>,
     /// reclaimablePods keeps track of the number pods within a podset for which
     /// the resource reservation is no longer needed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "reclaimablePods")]

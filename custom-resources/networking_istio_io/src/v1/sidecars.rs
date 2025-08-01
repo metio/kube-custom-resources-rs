@@ -307,6 +307,9 @@ pub struct SidecarIngressPort {
 /// Set of TLS related options that will enable TLS termination on the sidecar for requests originating from outside the mesh.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SidecarIngressTls {
+    /// For mutual TLS, the name of the secret or the configmap that holds CA certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertCredentialName")]
+    pub ca_cert_credential_name: Option<String>,
     /// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,

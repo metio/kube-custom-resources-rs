@@ -113,7 +113,7 @@ spec:
                   description: "The Kubernetes labels to apply to the nodes in the node group when they are\ncreated."
                   type: "object"
                 launchTemplate:
-                  description: "An object representing a node group's launch template specification. When\nusing this object, don't directly specify instanceTypes, diskSize, or remoteAccess.\nMake sure that the launch template meets the requirements in launchTemplateSpecification.\nAlso refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
+                  description: "An object representing a node group's launch template specification. When\nusing this object, don't directly specify instanceTypes, diskSize, or remoteAccess.\nYou cannot later specify a different launch template ID or name than what\nwas used to create the node group.\n\nMake sure that the launch template meets the requirements in launchTemplateSpecification.\nAlso refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)\nin the Amazon EKS User Guide."
                   properties:
                     id:
                       type: "string"

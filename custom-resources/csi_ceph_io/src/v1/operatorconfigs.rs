@@ -55,6 +55,10 @@ pub struct OperatorConfigDriverSpecDefaults {
     /// a list of additional sidecars?
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployCsiAddons")]
     pub deploy_csi_addons: Option<bool>,
+    /// Set to true to enable fencing for the driver.
+    /// Fencing is a feature that allows the driver to fence a node when it is tainted with node.kubernetes.io/out-of-service.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFencing")]
+    pub enable_fencing: Option<bool>,
     /// Set to true to enable adding volume metadata on the CephFS subvolumes and RBD images.
     /// Not all users might be interested in getting volume/snapshot details as metadata on CephFS subvolume and RBD images.
     /// Hence enable metadata is false by default.

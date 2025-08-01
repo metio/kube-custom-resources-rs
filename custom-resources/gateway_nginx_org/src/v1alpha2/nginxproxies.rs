@@ -23,6 +23,14 @@ pub struct NginxProxySpec {
     /// If not specified, or set to false, http2 will be enabled for all servers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHTTP2")]
     pub disable_http2: Option<bool>,
+    /// DisableSNIHostValidation disables the validation that ensures the SNI hostname
+    /// matches the Host header in HTTPS requests. When disabled, HTTPS connections can
+    /// be reused for requests to different hostnames covered by the same certificate.
+    /// This resolves HTTP/2 connection coalescing issues with wildcard certificates but
+    /// introduces security risks as described in Gateway API GEP-3567.
+    /// If not specified, defaults to false (validation enabled).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSNIHostValidation")]
+    pub disable_sni_host_validation: Option<bool>,
     /// IPFamily specifies the IP family to be used by the NGINX.
     /// Default is "dual", meaning the server will use both IPv4 and IPv6.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamily")]

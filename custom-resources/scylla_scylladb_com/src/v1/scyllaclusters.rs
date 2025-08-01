@@ -220,6 +220,11 @@ pub struct ScyllaClusterBackups {
     /// retention is the number of backups which are to be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<i64>,
+    /// retryWait specifies the initial exponential backoff duration for task retries.
+    /// For instance, if set to 10 minutes, the first retry will be attempted after 10 minutes, the second after 20 minutes, the third after 40 minutes, and so on, up to the number of retries specified in `numRetries`.
+    /// If not set, the default values is left to ScyllaDB Manager to decide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryWait")]
+    pub retry_wait: Option<String>,
     /// snapshotParallel is a list of snapshot parallelism limits in the format [<dc>:]<limit>.
     /// The <dc>: part is optional and allows for specifying different limits in selected datacenters.
     /// If The <dc>: part is not set, the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1)
@@ -3161,6 +3166,11 @@ pub struct ScyllaClusterRepairs {
     /// The formula to calculate it is as follows: number of nodes / RF, ex. for 6 node cluster with RF=3 the maximum parallelism is 2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
+    /// retryWait specifies the initial exponential backoff duration for task retries.
+    /// For instance, if set to 10 minutes, the first retry will be attempted after 10 minutes, the second after 20 minutes, the third after 40 minutes, and so on, up to the number of retries specified in `numRetries`.
+    /// If not set, the default values is left to ScyllaDB Manager to decide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryWait")]
+    pub retry_wait: Option<String>,
     /// smallTableThreshold enable small table optimization for tables of size lower than given threshold.
     /// Supported units [B, MiB, GiB, TiB].
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smallTableThreshold")]
@@ -3254,6 +3264,9 @@ pub struct ScyllaClusterStatusBackups {
     /// retention reflects the number of backups which are to be stored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<i64>,
+    /// retryWait reflects the initial exponential backoff duration for task retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryWait")]
+    pub retry_wait: Option<String>,
     /// snapshotParallel reflects a list of snapshot parallelism limits in the format [<dc>:]<limit>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotParallel")]
     pub snapshot_parallel: Option<Vec<String>>,
@@ -3357,6 +3370,9 @@ pub struct ScyllaClusterStatusRepairs {
     /// parallel reflects the maximum number of Scylla repair jobs that can run at the same time (on different token ranges and replicas).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
+    /// retryWait reflects the initial exponential backoff duration for task retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryWait")]
+    pub retry_wait: Option<String>,
     /// smallTableThreshold reflects whether small table optimization for tables, of size lower than given threshold, are enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smallTableThreshold")]
     pub small_table_threshold: Option<String>,

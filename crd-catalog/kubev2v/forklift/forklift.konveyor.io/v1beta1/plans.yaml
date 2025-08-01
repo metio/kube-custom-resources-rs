@@ -768,6 +768,13 @@ spec:
                     type: "string"
                   description: "TargetNodeSelector, constrains the scheduler to only schedule VMs on nodes,\nwhich contain the specified labels.\nSee virtual machine instance NodeSelector documentation for more details,\nhttps://kubevirt.io/user-guide/compute/node_assignment/#nodeselector"
                   type: "object"
+                targetPowerState:
+                  description: "TargetPowerState specifies the desired power state of the target VM after migration.\n- \"on\": Target VM will be powered on after migration\n- \"off\": Target VM will be powered off after migration\n- \"auto\" or nil (default): Target VM will match the source VM's power state"
+                  enum:
+                    - "on"
+                    - "off"
+                    - "auto"
+                  type: "string"
                 transferNetwork:
                   description: "The network attachment definition that should be used for disk transfer."
                   properties:
@@ -899,6 +906,13 @@ spec:
                       targetName:
                         description: "TargetName specifies a custom name for the VM in the target cluster.\nIf not provided, the original VM name will be used and automatically adjusted to meet k8s DNS1123 requirements.\nIf provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use."
                         type: "string"
+                      targetPowerState:
+                        description: "TargetPowerState specifies the desired power state of the target VM after migration.\n- \"on\": Target VM will be powered on after migration\n- \"off\": Target VM will be powered off after migration\n- \"auto\" or nil (default): Target VM will match the source VM's power state"
+                        enum:
+                          - "on"
+                          - "off"
+                          - "auto"
+                        type: "string"
                       type:
                         description: "Type used to qualify the name."
                         type: "string"
@@ -911,7 +925,7 @@ spec:
                   description: "VolumeNameTemplate is a template for generating volume interface names in the target virtual machine.\nIt follows Go template syntax and has access to the following variables:\n  - .PVCName: name of the PVC mounted to the VM using this volume\n  - .VolumeIndex: sequential index of the volume interface (0-based)\nNote:\n  - This template can be overridden at the individual VM level\n  - If not specified on VM level and on Plan leverl, default naming conventions will be used\nExamples:\n  \"disk-{{.VolumeIndex}}\"\n  \"pvc-{{.PVCName}}\""
                   type: "string"
                 warm:
-                  description: "Whether this is a warm migration."
+                  description: "Whether this is a warm migration.\nDeprecated: this field will be deprecated in 2.10. Use Type instead."
                   type: "boolean"
               required:
                 - "map"
@@ -1445,6 +1459,13 @@ spec:
                             type: "string"
                           targetName:
                             description: "TargetName specifies a custom name for the VM in the target cluster.\nIf not provided, the original VM name will be used and automatically adjusted to meet k8s DNS1123 requirements.\nIf provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use."
+                            type: "string"
+                          targetPowerState:
+                            description: "TargetPowerState specifies the desired power state of the target VM after migration.\n- \"on\": Target VM will be powered on after migration\n- \"off\": Target VM will be powered off after migration\n- \"auto\" or nil (default): Target VM will match the source VM's power state"
+                            enum:
+                              - "on"
+                              - "off"
+                              - "auto"
                             type: "string"
                           type:
                             description: "Type used to qualify the name."

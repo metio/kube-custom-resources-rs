@@ -255,8 +255,10 @@ pub struct CheClusterAuthGatewayConfigBumpEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -296,8 +298,10 @@ pub struct CheClusterAuthGatewayConfigBumpEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -351,8 +355,10 @@ pub struct CheClusterAuthGatewayEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -392,8 +398,10 @@ pub struct CheClusterAuthGatewayEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -447,8 +455,10 @@ pub struct CheClusterAuthGatewayKubeRbacProxyEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -488,8 +498,10 @@ pub struct CheClusterAuthGatewayKubeRbacProxyEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -543,8 +555,10 @@ pub struct CheClusterAuthGatewayOAuthProxyEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -584,8 +598,10 @@ pub struct CheClusterAuthGatewayOAuthProxyEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -800,8 +816,10 @@ pub struct CheClusterDatabasePostgresEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -841,8 +859,10 @@ pub struct CheClusterDatabasePostgresEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -925,8 +945,10 @@ pub struct CheClusterDevWorkspaceEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -966,8 +988,10 @@ pub struct CheClusterDevWorkspaceEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1485,8 +1509,10 @@ pub struct CheClusterServerCheServerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1526,8 +1552,10 @@ pub struct CheClusterServerCheServerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1608,8 +1636,10 @@ pub struct CheClusterServerDashboardEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1649,8 +1679,10 @@ pub struct CheClusterServerDashboardEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1733,8 +1765,10 @@ pub struct CheClusterServerDevfileRegistryEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1774,8 +1808,10 @@ pub struct CheClusterServerDevfileRegistryEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1866,8 +1902,10 @@ pub struct CheClusterServerPluginRegistryEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -1907,8 +1945,10 @@ pub struct CheClusterServerPluginRegistryEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -1980,7 +2020,6 @@ pub struct CheClusterServerWorkspaceDefaultComponents {
     pub openshift: Option<CheClusterServerWorkspaceDefaultComponentsOpenshift>,
     /// Allows importing a plugin.
     /// 
-    /// 
     /// Plugins are mainly imported devfiles that contribute components, commands
     /// and events as a consistent single unit. They are defined in either YAML files
     /// following the devfile syntax,
@@ -2012,12 +2051,10 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainer {
     pub annotation: Option<CheClusterServerWorkspaceDefaultComponentsContainerAnnotation>,
     /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.
     /// 
-    /// 
     /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
     /// The command to run in the dockerimage component instead of the default one provided in the image.
-    /// 
     /// 
     /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2029,7 +2066,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainer {
     /// Specify if a container should run in its own separated pod,
     /// instead of running as part of the main development environment pod.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedPod")]
     pub dedicated_pod: Option<bool>,
@@ -2037,12 +2073,9 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainer {
     pub endpoints: Option<Vec<CheClusterServerWorkspaceDefaultComponentsContainerEndpoints>>,
     /// Environment variables used in this container.
     /// 
-    /// 
     /// The following variables are reserved and cannot be overridden via env:
     /// 
-    /// 
     ///  - `$PROJECTS_ROOT`
-    /// 
     /// 
     ///  - `$PROJECT_SOURCE`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2054,7 +2087,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainer {
     pub memory_request: Option<String>,
     /// Toggles whether or not the project source code should
     /// be mounted in the component.
-    /// 
     /// 
     /// Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountSources")]
@@ -2087,31 +2119,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainerEndpoints {
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2122,26 +2147,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsContainerEndpoints {
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2221,7 +2239,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsCustom {
 pub struct CheClusterServerWorkspaceDefaultComponentsImage {
     /// Defines if the image should be built during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoBuild")]
     pub auto_build: Option<bool>,
@@ -2252,7 +2269,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsImageDockerfile {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub git: Option<CheClusterServerWorkspaceDefaultComponentsImageDockerfileGit>,
     /// Specify if a privileged builder pod is required.
-    /// 
     /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootRequired")]
@@ -2327,7 +2343,6 @@ pub enum CheClusterServerWorkspaceDefaultComponentsImageImageType {
 pub struct CheClusterServerWorkspaceDefaultComponentsKubernetes {
     /// Defines if the component should be deployed during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
@@ -2351,31 +2366,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsKubernetesEndpoints {
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2386,26 +2394,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsKubernetesEndpoints {
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2462,7 +2463,6 @@ pub enum CheClusterServerWorkspaceDefaultComponentsKubernetesLocationType {
 pub struct CheClusterServerWorkspaceDefaultComponentsOpenshift {
     /// Defines if the component should be deployed during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
@@ -2486,31 +2486,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsOpenshiftEndpoints {
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2521,26 +2514,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsOpenshiftEndpoints {
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2592,7 +2578,6 @@ pub enum CheClusterServerWorkspaceDefaultComponentsOpenshiftLocationType {
 
 /// Allows importing a plugin.
 /// 
-/// 
 /// Plugins are mainly imported devfiles that contribute components, commands
 /// and events as a consistent single unit. They are defined in either YAML files
 /// following the devfile syntax,
@@ -2638,12 +2623,10 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginCommands {
     /// Command that consists in applying a given component definition,
     /// typically bound to a devworkspace event.
     /// 
-    /// 
     /// For example, when an `apply` command is bound to a `preStart` event,
     /// and references a `container` component, it will start the container as a
     /// K8S initContainer in the devworkspace POD, unless the component has its
     /// `dedicatedPod` field set to `true`.
-    /// 
     /// 
     /// When no `apply` command exist for a given component,
     /// it is assumed the component will be applied at devworkspace start
@@ -2672,12 +2655,10 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginCommands {
 /// Command that consists in applying a given component definition,
 /// typically bound to a devworkspace event.
 /// 
-/// 
 /// For example, when an `apply` command is bound to a `preStart` event,
 /// and references a `container` component, it will start the container as a
 /// K8S initContainer in the devworkspace POD, unless the component has its
 /// `dedicatedPod` field set to `true`.
-/// 
 /// 
 /// When no `apply` command exist for a given component,
 /// it is assumed the component will be applied at devworkspace start
@@ -2779,12 +2760,9 @@ pub enum CheClusterServerWorkspaceDefaultComponentsPluginCommandsCompositeGroupK
 pub struct CheClusterServerWorkspaceDefaultComponentsPluginCommandsExec {
     /// The actual command-line string
     /// 
-    /// 
     /// Special variables that can be used:
     /// 
-    /// 
     ///  - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.
-    /// 
     /// 
     ///  - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commandLine")]
@@ -2805,7 +2783,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginCommandsExec {
     /// A *hotReloadCapable* `build` command is expected to be executed only once and won't be executed again.
     /// This field is taken into account only for commands `build`, `run` and `debug` with `isDefault` set to `true`.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotReloadCapable")]
     pub hot_reload_capable: Option<bool>,
@@ -2815,12 +2792,9 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginCommandsExec {
     pub label: Option<String>,
     /// Working directory where the command should be executed
     /// 
-    /// 
     /// Special variables that can be used:
     /// 
-    /// 
     ///  - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.
-    /// 
     /// 
     ///  - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
@@ -2911,12 +2885,10 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainer {
     pub annotation: Option<CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainerAnnotation>,
     /// The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.
     /// 
-    /// 
     /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
     /// The command to run in the dockerimage component instead of the default one provided in the image.
-    /// 
     /// 
     /// Defaults to an empty array, meaning use whatever is defined in the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2928,7 +2900,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainer {
     /// Specify if a container should run in its own separated pod,
     /// instead of running as part of the main development environment pod.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dedicatedPod")]
     pub dedicated_pod: Option<bool>,
@@ -2936,12 +2907,9 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainer {
     pub endpoints: Option<Vec<CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainerEndpoints>>,
     /// Environment variables used in this container.
     /// 
-    /// 
     /// The following variables are reserved and cannot be overridden via env:
     /// 
-    /// 
     ///  - `$PROJECTS_ROOT`
-    /// 
     /// 
     ///  - `$PROJECT_SOURCE`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2954,7 +2922,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainer {
     pub memory_request: Option<String>,
     /// Toggles whether or not the project source code should
     /// be mounted in the component.
-    /// 
     /// 
     /// Defaults to true for all component types except plugins and components that set `dedicatedPod` to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountSources")]
@@ -2987,31 +2954,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainerEn
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3022,26 +2982,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainerEn
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3107,7 +3060,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsContainerVo
 pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsImage {
     /// Defines if the image should be built during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoBuild")]
     pub auto_build: Option<bool>,
@@ -3138,7 +3090,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsImageDocker
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub git: Option<CheClusterServerWorkspaceDefaultComponentsPluginComponentsImageDockerfileGit>,
     /// Specify if a privileged builder pod is required.
-    /// 
     /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootRequired")]
@@ -3216,7 +3167,6 @@ pub enum CheClusterServerWorkspaceDefaultComponentsPluginComponentsImageImageTyp
 pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsKubernetes {
     /// Defines if the component should be deployed during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
@@ -3240,31 +3190,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsKubernetesE
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3275,26 +3218,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsKubernetesE
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3351,7 +3287,6 @@ pub enum CheClusterServerWorkspaceDefaultComponentsPluginComponentsKubernetesLoc
 pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsOpenshift {
     /// Defines if the component should be deployed during startup.
     /// 
-    /// 
     /// Default value is `false`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployByDefault")]
     pub deploy_by_default: Option<bool>,
@@ -3375,31 +3310,24 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsOpenshiftEn
     pub annotation: Option<BTreeMap<String, String>>,
     /// Map of implementation-dependant string-based free-form attributes.
     /// 
-    /// 
     /// Examples of Che-specific attributes:
     /// 
-    /// 
     /// - cookiesAuthEnabled: "true" / "false",
-    /// 
     /// 
     /// - type: "terminal" / "ide" / "ide-dev",
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, serde_json::Value>>,
     /// Describes how the endpoint should be exposed on the network.
     /// 
-    /// 
     /// - `public` means that the endpoint will be exposed on the public network, typically through
     /// a K8S ingress or an OpenShift route.
-    /// 
     /// 
     /// - `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,
     /// typically by K8S services, to be consumed by other elements running
     /// on the same cloud internal network.
     /// 
-    /// 
     /// - `none` means that the endpoint will not be exposed and will only be accessible
     /// inside the main devworkspace POD, on a local address.
-    /// 
     /// 
     /// Default value is `public`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3410,26 +3338,19 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsOpenshiftEn
     pub path: Option<String>,
     /// Describes the application and transport protocols of the traffic that will go through this endpoint.
     /// 
-    /// 
     /// - `http`: Endpoint will have `http` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `https` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `https`: Endpoint will have `https` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.
     /// It will be automaticaly promoted to `wss` when the `secure` field is set to `true`.
     /// 
-    /// 
     /// - `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.
-    /// 
     /// 
     /// - `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.
     /// 
-    /// 
     /// - `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.
-    /// 
     /// 
     /// Default value is `http`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3493,7 +3414,6 @@ pub struct CheClusterServerWorkspaceDefaultComponentsPluginComponentsVolume {
 }
 
 /// Allows importing a plugin.
-/// 
 /// 
 /// Plugins are mainly imported devfiles that contribute components, commands
 /// and events as a consistent single unit. They are defined in either YAML files

@@ -18,6 +18,15 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
+        - description: "Reconciliation paused"
+          jsonPath: ".status.conditions[?(@.type==\"Paused\")].status"
+          name: "Paused"
+          priority: 10
+          type: "string"
+        - description: "Variables ready"
+          jsonPath: ".status.conditions[?(@.type==\"VariablesReady\")].status"
+          name: "Variables Ready"
+          type: "string"
         - description: "Time duration since creation of ClusterClass"
           jsonPath: ".metadata.creationTimestamp"
           name: "Age"
@@ -224,8 +233,9 @@ spec:
                           description: "labels is a map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
                           type: "object"
                       type: "object"
-                    namingStrategy:
-                      description: "namingStrategy allows changing the naming pattern used when creating the control plane provider object."
+                    naming:
+                      description: "naming allows changing the naming pattern used when creating the control plane provider object."
+                      minProperties: 1
                       properties:
                         template:
                           description: "template defines the template to use for generating the name of the ControlPlane object.\nIf not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.\nIf the templated string exceeds 63 characters, it will be trimmed to 58 characters and will\nget concatenated with a random suffix of length 5.\nThe templating mechanism provides the following arguments:\n* `.cluster.name`: The name of the cluster object.\n* `.random`: A random alphanumeric string, without vowels, of length 5."
@@ -291,8 +301,9 @@ spec:
                 infrastructure:
                   description: "infrastructure is a reference to a local struct that holds the details\nfor provisioning the infrastructure cluster for the Cluster."
                   properties:
-                    namingStrategy:
-                      description: "namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object."
+                    naming:
+                      description: "naming allows changing the naming pattern used when creating the infrastructure cluster object."
+                      minProperties: 1
                       properties:
                         template:
                           description: "template defines the template to use for generating the name of the Infrastructure object.\nIf not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.\nIf the templated string exceeds 63 characters, it will be trimmed to 58 characters and will\nget concatenated with a random suffix of length 5.\nThe templating mechanism provides the following arguments:\n* `.cluster.name`: The name of the cluster object.\n* `.random`: A random alphanumeric string, without vowels, of length 5."
@@ -378,6 +389,7 @@ spec:
                                   - "path"
                                 type: "object"
                               maxItems: 100
+                              minItems: 1
                               type: "array"
                               x-kubernetes-list-type: "atomic"
                             selector:
@@ -486,6 +498,7 @@ spec:
                       - "name"
                     type: "object"
                   maxItems: 1000
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 variables:
@@ -521,6 +534,7 @@ spec:
                         properties:
                           openAPIV3Schema:
                             description: "openAPIV3Schema defines the schema of a variable via OpenAPI v3\nschema. The schema is a subset of the schema used in\nKubernetes CRDs."
+                            minProperties: 1
                             properties:
                               additionalProperties:
                                 description: "additionalProperties specifies the schema of values in a map (keys are always strings).\nNOTE: Can only be set if type is object.\nNOTE: AdditionalProperties is mutually exclusive with Properties.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
@@ -616,6 +630,7 @@ spec:
                                   minLength: 1
                                   type: "string"
                                 maxItems: 1000
+                                minItems: 1
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               type:
@@ -675,12 +690,14 @@ spec:
                                     - "rule"
                                   type: "object"
                                 maxItems: 100
+                                minItems: 1
                                 type: "array"
                                 x-kubernetes-list-map-keys:
                                   - "rule"
                                 x-kubernetes-list-type: "map"
                               x-metadata:
                                 description: "x-metadata is the metadata of a variable or a nested field within a variable.\nIt can be used to add additional data for higher level tools."
+                                minProperties: 1
                                 properties:
                                   annotations:
                                     additionalProperties:
@@ -703,6 +720,7 @@ spec:
                       - "schema"
                     type: "object"
                   maxItems: 1000
+                  minItems: 1
                   type: "array"
                   x-kubernetes-list-type: "atomic"
                 workers:
@@ -931,8 +949,9 @@ spec:
                             format: "int32"
                             minimum: 0.0
                             type: "integer"
-                          namingStrategy:
-                            description: "namingStrategy allows changing the naming pattern used when creating the MachineDeployment."
+                          naming:
+                            description: "naming allows changing the naming pattern used when creating the MachineDeployment."
+                            minProperties: 1
                             properties:
                               template:
                                 description: "template defines the template to use for generating the name of the MachineDeployment object.\nIf not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`.\nIf the templated string exceeds 63 characters, it will be trimmed to 58 characters and will\nget concatenated with a random suffix of length 5.\nThe templating mechanism provides the following arguments:\n* `.cluster.name`: The name of the cluster object.\n* `.random`: A random alphanumeric string, without vowels, of length 5.\n* `.machineDeployment.topologyName`: The name of the MachineDeployment topology (Cluster.spec.topology.workers.machineDeployments[].name)."
@@ -1007,6 +1026,7 @@ spec:
                           - "infrastructure"
                         type: "object"
                       maxItems: 100
+                      minItems: 1
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "class"
@@ -1134,8 +1154,9 @@ spec:
                             format: "int32"
                             minimum: 0.0
                             type: "integer"
-                          namingStrategy:
-                            description: "namingStrategy allows changing the naming pattern used when creating the MachinePool."
+                          naming:
+                            description: "naming allows changing the naming pattern used when creating the MachinePool."
+                            minProperties: 1
                             properties:
                               template:
                                 description: "template defines the template to use for generating the name of the MachinePool object.\nIf not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`.\nIf the templated string exceeds 63 characters, it will be trimmed to 58 characters and will\nget concatenated with a random suffix of length 5.\nThe templating mechanism provides the following arguments:\n* `.cluster.name`: The name of the cluster object.\n* `.random`: A random alphanumeric string, without vowels, of length 5.\n* `.machinePool.topologyName`: The name of the MachinePool topology (Cluster.spec.topology.workers.machinePools[].name)."
@@ -1149,6 +1170,7 @@ spec:
                           - "infrastructure"
                         type: "object"
                       maxItems: 100
+                      minItems: 1
                       type: "array"
                       x-kubernetes-list-map-keys:
                         - "class"
@@ -1298,6 +1320,7 @@ spec:
                               properties:
                                 openAPIV3Schema:
                                   description: "openAPIV3Schema defines the schema of a variable via OpenAPI v3\nschema. The schema is a subset of the schema used in\nKubernetes CRDs."
+                                  minProperties: 1
                                   properties:
                                     additionalProperties:
                                       description: "additionalProperties specifies the schema of values in a map (keys are always strings).\nNOTE: Can only be set if type is object.\nNOTE: AdditionalProperties is mutually exclusive with Properties.\nNOTE: This field uses PreserveUnknownFields and Schemaless,\nbecause recursive validation is not possible."
@@ -1393,6 +1416,7 @@ spec:
                                         minLength: 1
                                         type: "string"
                                       maxItems: 1000
+                                      minItems: 1
                                       type: "array"
                                       x-kubernetes-list-type: "atomic"
                                     type:
@@ -1452,12 +1476,14 @@ spec:
                                           - "rule"
                                         type: "object"
                                       maxItems: 100
+                                      minItems: 1
                                       type: "array"
                                       x-kubernetes-list-map-keys:
                                         - "rule"
                                       x-kubernetes-list-type: "map"
                                     x-metadata:
                                       description: "x-metadata is the metadata of a variable or a nested field within a variable.\nIt can be used to add additional data for higher level tools."
+                                      minProperties: 1
                                       properties:
                                         annotations:
                                           additionalProperties:

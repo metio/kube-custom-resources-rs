@@ -186,15 +186,18 @@ spec:
                       type: "object"
                   type: "object"
                 dependsOn:
-                  description: "DependsOn may contain a meta.NamespacedObjectReference slice with\nreferences to HelmRelease resources that must be ready before this HelmRelease\ncan be reconciled."
+                  description: "DependsOn may contain a DependencyReference slice with\nreferences to HelmRelease resources that must be ready before this HelmRelease\ncan be reconciled."
                   items:
-                    description: "NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any\nnamespace."
+                    description: "DependencyReference defines a HelmRelease dependency on another HelmRelease resource."
                     properties:
                       name:
                         description: "Name of the referent."
                         type: "string"
                       namespace:
-                        description: "Namespace of the referent, when not specified it acts as LocalObjectReference."
+                        description: "Namespace of the referent, defaults to the namespace of the HelmRelease\nresource object that contains the reference."
+                        type: "string"
+                      readyExpr:
+                        description: "ReadyExpr is a CEL expression that can be used to assess the readiness\nof a dependency. When specified, the built-in readiness check\nis replaced by the logic defined in the CEL expression.\nTo make the CEL expression additive to the built-in readiness check,\nthe feature gate `AdditiveCELDependencyCheck` must be set to `true`."
                         type: "string"
                     required:
                       - "name"

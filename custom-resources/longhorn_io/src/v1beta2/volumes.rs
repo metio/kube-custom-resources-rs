@@ -69,14 +69,14 @@ pub struct VolumeSpec {
     /// - disabled: Disable offline rebuilding for this volume, regardless of the global setting
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "offlineRebuilding")]
     pub offline_rebuilding: Option<VolumeOfflineRebuilding>,
-    /// RebuildingMBytesPerSecond limits the write bandwidth (in megabytes per second) on the destination replica during rebuilding. Set to 0 to disable bandwidth limiting.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rebuildingMbytesPerSecond")]
-    pub rebuilding_mbytes_per_second: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaAutoBalance")]
     pub replica_auto_balance: Option<VolumeReplicaAutoBalance>,
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaDiskSoftAntiAffinity")]
     pub replica_disk_soft_anti_affinity: Option<VolumeReplicaDiskSoftAntiAffinity>,
+    /// ReplicaRebuildingBandwidthLimit limits the write bandwidth (in megabytes per second) on the destination replica during rebuilding. Set to 0 to disable bandwidth limiting.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRebuildingBandwidthLimit")]
+    pub replica_rebuilding_bandwidth_limit: Option<i64>,
     /// Replica soft anti affinity of the volume. Set enabled to allow replicas to be scheduled on the same node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSoftAntiAffinity")]
     pub replica_soft_anti_affinity: Option<VolumeReplicaSoftAntiAffinity>,

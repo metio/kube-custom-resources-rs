@@ -261,6 +261,8 @@ pub struct APIcastEmbeddedConfigurationSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIcastExposedHost {
     pub host: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
+    pub ingress_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<Vec<APIcastExposedHostTls>>,
 }

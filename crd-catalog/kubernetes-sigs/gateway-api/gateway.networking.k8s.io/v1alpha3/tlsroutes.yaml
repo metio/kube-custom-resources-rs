@@ -161,6 +161,8 @@ spec:
                         minLength: 1
                         pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                         type: "string"
+                    required:
+                      - "backendRefs"
                     type: "object"
                   maxItems: 16
                   minItems: 1
@@ -278,6 +280,7 @@ spec:
                           - "name"
                         type: "object"
                     required:
+                      - "conditions"
                       - "controllerName"
                       - "parentRef"
                     type: "object"

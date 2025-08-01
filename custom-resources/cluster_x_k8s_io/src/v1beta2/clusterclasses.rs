@@ -102,9 +102,9 @@ pub struct ClusterClassControlPlane {
     /// referenced is Machine based.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassControlPlaneMetadata>,
-    /// namingStrategy allows changing the naming pattern used when creating the control plane provider object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
-    pub naming_strategy: Option<ClusterClassControlPlaneNamingStrategy>,
+    /// naming allows changing the naming pattern used when creating the control plane provider object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naming: Option<ClusterClassControlPlaneNaming>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
     /// 
     /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
@@ -333,9 +333,9 @@ pub struct ClusterClassControlPlaneMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// namingStrategy allows changing the naming pattern used when creating the control plane provider object.
+/// naming allows changing the naming pattern used when creating the control plane provider object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassControlPlaneNamingStrategy {
+pub struct ClusterClassControlPlaneNaming {
     /// template defines the template to use for generating the name of the ControlPlane object.
     /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.
     /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
@@ -390,17 +390,17 @@ pub struct ClusterClassControlPlaneTemplateRef {
 /// for provisioning the infrastructure cluster for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructure {
-    /// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
-    pub naming_strategy: Option<ClusterClassInfrastructureNamingStrategy>,
+    /// naming allows changing the naming pattern used when creating the infrastructure cluster object.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naming: Option<ClusterClassInfrastructureNaming>,
     /// templateRef contains the reference to a provider-specific infrastructure cluster template.
     #[serde(rename = "templateRef")]
     pub template_ref: ClusterClassInfrastructureTemplateRef,
 }
 
-/// namingStrategy allows changing the naming pattern used when creating the infrastructure cluster object.
+/// naming allows changing the naming pattern used when creating the infrastructure cluster object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassInfrastructureNamingStrategy {
+pub struct ClusterClassInfrastructureNaming {
     /// template defines the template to use for generating the name of the Infrastructure object.
     /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .random }}`.
     /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
@@ -978,9 +978,9 @@ pub struct ClusterClassWorkersMachineDeployments {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachineDeploymentClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// namingStrategy allows changing the naming pattern used when creating the MachineDeployment.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
-    pub naming_strategy: Option<ClusterClassWorkersMachineDeploymentsNamingStrategy>,
+    /// naming allows changing the naming pattern used when creating the MachineDeployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naming: Option<ClusterClassWorkersMachineDeploymentsNaming>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
     /// 
     /// This field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready
@@ -1250,9 +1250,9 @@ pub struct ClusterClassWorkersMachineDeploymentsMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// namingStrategy allows changing the naming pattern used when creating the MachineDeployment.
+/// naming allows changing the naming pattern used when creating the MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachineDeploymentsNamingStrategy {
+pub struct ClusterClassWorkersMachineDeploymentsNaming {
     /// template defines the template to use for generating the name of the MachineDeployment object.
     /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machineDeployment.topologyName }}-{{ .random }}`.
     /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will
@@ -1386,9 +1386,9 @@ pub struct ClusterClassWorkersMachinePools {
     /// NOTE: This value can be overridden while defining a Cluster.Topology using this MachinePoolClass.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// namingStrategy allows changing the naming pattern used when creating the MachinePool.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namingStrategy")]
-    pub naming_strategy: Option<ClusterClassWorkersMachinePoolsNamingStrategy>,
+    /// naming allows changing the naming pattern used when creating the MachinePool.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub naming: Option<ClusterClassWorkersMachinePoolsNaming>,
 }
 
 /// bootstrap contains the bootstrap template reference to be used
@@ -1479,9 +1479,9 @@ pub struct ClusterClassWorkersMachinePoolsMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// namingStrategy allows changing the naming pattern used when creating the MachinePool.
+/// naming allows changing the naming pattern used when creating the MachinePool.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClassWorkersMachinePoolsNamingStrategy {
+pub struct ClusterClassWorkersMachinePoolsNaming {
     /// template defines the template to use for generating the name of the MachinePool object.
     /// If not defined, it will fallback to `{{ .cluster.name }}-{{ .machinePool.topologyName }}-{{ .random }}`.
     /// If the templated string exceeds 63 characters, it will be trimmed to 58 characters and will

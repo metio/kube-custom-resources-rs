@@ -59,7 +59,7 @@ spec:
                       type: "boolean"
                   type: "object"
                 bootstrapSelfManagedAddons:
-                  description: "If you set this value to False when creating a cluster, the default networking\nadd-ons will not be installed.\n\nThe default networking addons include vpc-cni, coredns, and kube-proxy.\n\nUse this option when you plan to install third-party alternative add-ons\nor self-manage the default networking add-ons."
+                  description: "If you set this value to False when creating a cluster, the default networking\nadd-ons will not be installed.\n\nThe default networking add-ons include vpc-cni, coredns, and kube-proxy.\n\nUse this option when you plan to install third-party alternative add-ons\nor self-manage the default networking add-ons."
                   type: "boolean"
                 clientRequestToken:
                   description: "A unique, case-sensitive identifier that you provide to ensurethe idempotency\nof the request."
@@ -155,11 +155,11 @@ spec:
                       type: "array"
                   type: "object"
                 remoteNetworkConfig:
-                  description: "The configuration in the cluster for EKS Hybrid Nodes. You can't change or\nupdate this configuration after the cluster is created."
+                  description: "The configuration in the cluster for EKS Hybrid Nodes. You can add, change,\nor remove this configuration after the cluster is created."
                   properties:
                     remoteNodeNetworks:
                       items:
-                        description: "A network CIDR that can contain hybrid nodes.\n\nThese CIDR blocks define the expected IP address range of the hybrid nodes\nthat join the cluster. These blocks are typically determined by your network\nadministrator.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range.\n\n   * Each block must have a route to the VPC that uses the VPC CIDR blocks,\n   not public IPs or Elastic IPs. There are many options including Transit\n   Gateway, Site-to-Site VPN, or Direct Connect.\n\n   * Each host must allow outbound connection to the EKS cluster control\n   plane on TCP ports 443 and 10250.\n\n   * Each host must allow inbound connection from the EKS cluster control\n   plane on TCP port 10250 for logs, exec and port-forward operations.\n\n   * Each host must allow TCP and UDP network connectivity to and from other\n   hosts that are running CoreDNS on UDP port 53 for service and pod DNS\n   names."
+                        description: "A network CIDR that can contain hybrid nodes.\n\nThese CIDR blocks define the expected IP address range of the hybrid nodes\nthat join the cluster. These blocks are typically determined by your network\nadministrator.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /32, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range.\n\n   * Each block must have a route to the VPC that uses the VPC CIDR blocks,\n   not public IPs or Elastic IPs. There are many options including Transit\n   Gateway, Site-to-Site VPN, or Direct Connect.\n\n   * Each host must allow outbound connection to the EKS cluster control\n   plane on TCP ports 443 and 10250.\n\n   * Each host must allow inbound connection from the EKS cluster control\n   plane on TCP port 10250 for logs, exec and port-forward operations.\n\n   * Each host must allow TCP and UDP network connectivity to and from other\n   hosts that are running CoreDNS on UDP port 53 for service and pod DNS\n   names."
                         properties:
                           cidrs:
                             items:
@@ -169,7 +169,7 @@ spec:
                       type: "array"
                     remotePodNetworks:
                       items:
-                        description: "A network CIDR that can contain pods that run Kubernetes webhooks on hybrid\nnodes.\n\nThese CIDR blocks are determined by configuring your Container Network Interface\n(CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon\nVPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /24, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range."
+                        description: "A network CIDR that can contain pods that run Kubernetes webhooks on hybrid\nnodes.\n\nThese CIDR blocks are determined by configuring your Container Network Interface\n(CNI) plugin. We recommend the Calico CNI or Cilium CNI. Note that the Amazon\nVPC CNI plugin for Kubernetes isn't available for on-premises and edge locations.\n\nEnter one or more IPv4 CIDR blocks in decimal dotted-quad notation (for example,\n10.2.0.0/16).\n\nIt must satisfy the following requirements:\n\n   * Each block must be within an IPv4 RFC-1918 network range. Minimum allowed\n   size is /32, maximum allowed size is /8. Publicly-routable addresses aren't\n   supported.\n\n   * Each block cannot overlap with the range of the VPC CIDR blocks for\n   your EKS resources, or the block of the Kubernetes service IP range."
                         properties:
                           cidrs:
                             items:

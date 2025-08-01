@@ -92,8 +92,13 @@ pub struct GrafanaAlertRuleGroupRules {
     pub r#for: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isPaused")]
     pub is_paused: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepFiringFor")]
+    pub keep_firing_for: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
+    /// The number of missing series evaluations that must occur before the rule is considered to be resolved.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "missingSeriesEvalsToResolve")]
+    pub missing_series_evals_to_resolve: Option<i64>,
     #[serde(rename = "noDataState")]
     pub no_data_state: GrafanaAlertRuleGroupRulesNoDataState,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notificationSettings")]

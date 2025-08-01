@@ -57,6 +57,9 @@ spec:
                         cilium:
                           description: "CiliumConfig contains configuration specific to the Cilium CNI."
                           properties:
+                            cniExclusive:
+                              description: "CNIExclusive controls whether Cilium should remove other CNI configuration files.\nWhen true (default), Cilium removes other CNI configs; when false, it leaves them alone."
+                              type: "boolean"
                             egressMasqueradeInterfaces:
                               description: "EgressMasquaradeInterfaces determines which network interfaces are used for masquerading. Accepted values are a valid interface name or interface prefix."
                               type: "string"

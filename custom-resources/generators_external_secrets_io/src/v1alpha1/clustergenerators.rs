@@ -49,6 +49,9 @@ pub struct ClusterGeneratorGenerator {
     pub password_spec: Option<ClusterGeneratorGeneratorPasswordSpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "quayAccessTokenSpec")]
     pub quay_access_token_spec: Option<ClusterGeneratorGeneratorQuayAccessTokenSpec>,
+    /// SSHKeySpec controls the behavior of the ssh key generator.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeySpec")]
+    pub ssh_key_spec: Option<ClusterGeneratorGeneratorSshKeySpec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stsSessionTokenSpec")]
     pub sts_session_token_spec: Option<ClusterGeneratorGeneratorStsSessionTokenSpec>,
     /// UUIDSpec controls the behavior of the uuid generator.
@@ -628,6 +631,31 @@ pub struct ClusterGeneratorGeneratorQuayAccessTokenSpecServiceAccountRef {
     /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+}
+
+/// SSHKeySpec controls the behavior of the ssh key generator.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterGeneratorGeneratorSshKeySpec {
+    /// Comment specifies an optional comment for the SSH key
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub comment: Option<String>,
+    /// KeySize specifies the key size for RSA keys (default: 2048)
+    /// For RSA keys: 2048, 3072, 4096
+    /// Ignored for ed25519 keys
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySize")]
+    pub key_size: Option<i64>,
+    /// KeyType specifies the SSH key type (rsa, ed25519)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyType")]
+    pub key_type: Option<ClusterGeneratorGeneratorSshKeySpecKeyType>,
+}
+
+/// SSHKeySpec controls the behavior of the ssh key generator.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterGeneratorGeneratorSshKeySpecKeyType {
+    #[serde(rename = "rsa")]
+    Rsa,
+    #[serde(rename = "ed25519")]
+    Ed25519,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1614,6 +1642,8 @@ pub enum ClusterGeneratorKind {
     GithubAccessToken,
     QuayAccessToken,
     Password,
+    #[serde(rename = "SSHKey")]
+    SshKey,
     #[serde(rename = "STSSessionToken")]
     StsSessionToken,
     #[serde(rename = "UUID")]
