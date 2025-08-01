@@ -204,6 +204,12 @@ pub struct MigrationStatusVms {
     /// If provided, this exact name will be used instead. The migration will fail if the name is not unique or already in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetName")]
     pub target_name: Option<String>,
+    /// TargetPowerState specifies the desired power state of the target VM after migration.
+    /// - "on": Target VM will be powered on after migration
+    /// - "off": Target VM will be powered off after migration
+    /// - "auto" or nil (default): Target VM will match the source VM's power state
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPowerState")]
+    pub target_power_state: Option<MigrationStatusVmsTargetPowerState>,
     /// Type used to qualify the name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -407,6 +413,17 @@ pub struct MigrationStatusVmsPipelineTasksProgress {
     pub completed: i64,
     /// Total units.
     pub total: i64,
+}
+
+/// VM Status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MigrationStatusVmsTargetPowerState {
+    #[serde(rename = "on")]
+    On,
+    #[serde(rename = "off")]
+    Off,
+    #[serde(rename = "auto")]
+    Auto,
 }
 
 /// Warm migration status

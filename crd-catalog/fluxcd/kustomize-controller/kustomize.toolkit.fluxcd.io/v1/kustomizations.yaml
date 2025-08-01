@@ -92,15 +92,18 @@ spec:
                     - "Orphan"
                   type: "string"
                 dependsOn:
-                  description: "DependsOn may contain a meta.NamespacedObjectReference slice\nwith references to Kustomization resources that must be ready before this\nKustomization can be reconciled."
+                  description: "DependsOn may contain a DependencyReference slice\nwith references to Kustomization resources that must be ready before this\nKustomization can be reconciled."
                   items:
-                    description: "NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any\nnamespace."
+                    description: "DependencyReference defines a Kustomization dependency on another Kustomization resource."
                     properties:
                       name:
                         description: "Name of the referent."
                         type: "string"
                       namespace:
-                        description: "Namespace of the referent, when not specified it acts as LocalObjectReference."
+                        description: "Namespace of the referent, defaults to the namespace of the Kustomization\nresource object that contains the reference."
+                        type: "string"
+                      readyExpr:
+                        description: "ReadyExpr is a CEL expression that can be used to assess the readiness\nof a dependency. When specified, the built-in readiness check\nis replaced by the logic defined in the CEL expression.\nTo make the CEL expression additive to the built-in readiness check,\nthe feature gate `AdditiveCELDependencyCheck` must be set to `true`."
                         type: "string"
                     required:
                       - "name"

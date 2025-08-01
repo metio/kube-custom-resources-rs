@@ -64,6 +64,9 @@ pub struct GatewayServersPort {
 /// Set of TLS related options that govern the server's behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayServersTls {
+    /// For mutual TLS, the name of the secret or the configmap that holds CA certificates.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertCredentialName")]
+    pub ca_cert_credential_name: Option<String>,
     /// REQUIRED if mode is `MUTUAL` or `OPTIONAL_MUTUAL`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,

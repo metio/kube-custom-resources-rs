@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "checlusters.org.eclipse.che"
 spec:
   group: "org.eclipse.che"
@@ -67,7 +67,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -116,7 +117,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -151,7 +153,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -200,7 +203,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -238,7 +242,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -287,7 +292,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -322,7 +328,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -371,7 +378,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -567,7 +575,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -616,7 +625,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -673,7 +683,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -722,7 +733,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -935,7 +947,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -984,7 +997,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1060,7 +1074,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1109,7 +1124,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1189,7 +1205,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1238,7 +1255,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1349,7 +1367,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1398,7 +1417,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1544,12 +1564,12 @@ spec:
                                     type: "object"
                                 type: "object"
                               args:
-                                description: "The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.\n\n\nDefaults to an empty array, meaning use whatever is defined in the image."
+                                description: "The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.\n\nDefaults to an empty array, meaning use whatever is defined in the image."
                                 items:
                                   type: "string"
                                 type: "array"
                               command:
-                                description: "The command to run in the dockerimage component instead of the default one provided in the image.\n\n\nDefaults to an empty array, meaning use whatever is defined in the image."
+                                description: "The command to run in the dockerimage component instead of the default one provided in the image.\n\nDefaults to an empty array, meaning use whatever is defined in the image."
                                 items:
                                   type: "string"
                                 type: "array"
@@ -1558,7 +1578,7 @@ spec:
                               cpuRequest:
                                 type: "string"
                               dedicatedPod:
-                                description: "Specify if a container should run in its own separated pod,\ninstead of running as part of the main development environment pod.\n\n\nDefault value is `false`"
+                                description: "Specify if a container should run in its own separated pod,\ninstead of running as part of the main development environment pod.\n\nDefault value is `false`"
                                 type: "boolean"
                               endpoints:
                                 items:
@@ -1569,12 +1589,12 @@ spec:
                                       description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                       type: "object"
                                     attributes:
-                                      description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                      description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                       type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                     exposure:
                                       default: "public"
-                                      description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                      description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                       enum:
                                         - "public"
                                         - "internal"
@@ -1589,7 +1609,7 @@ spec:
                                       type: "string"
                                     protocol:
                                       default: "http"
-                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                       enum:
                                         - "http"
                                         - "https"
@@ -1610,7 +1630,7 @@ spec:
                                   type: "object"
                                 type: "array"
                               env:
-                                description: "Environment variables used in this container.\n\n\nThe following variables are reserved and cannot be overridden via env:\n\n\n - `$PROJECTS_ROOT`\n\n\n - `$PROJECT_SOURCE`"
+                                description: "Environment variables used in this container.\n\nThe following variables are reserved and cannot be overridden via env:\n\n - `$PROJECTS_ROOT`\n\n - `$PROJECT_SOURCE`"
                                 items:
                                   properties:
                                     name:
@@ -1629,7 +1649,7 @@ spec:
                               memoryRequest:
                                 type: "string"
                               mountSources:
-                                description: "Toggles whether or not the project source code should\nbe mounted in the component.\n\n\nDefaults to true for all component types except plugins and components that set `dedicatedPod` to true."
+                                description: "Toggles whether or not the project source code should\nbe mounted in the component.\n\nDefaults to true for all component types except plugins and components that set `dedicatedPod` to true."
                                 type: "boolean"
                               sourceMapping:
                                 default: "/projects"
@@ -1674,7 +1694,7 @@ spec:
                             description: "Allows specifying the definition of an image for outer loop builds"
                             properties:
                               autoBuild:
-                                description: "Defines if the image should be built during startup.\n\n\nDefault value is `false`"
+                                description: "Defines if the image should be built during startup.\n\nDefault value is `false`"
                                 type: "boolean"
                               dockerfile:
                                 description: "Allows specifying dockerfile type build"
@@ -1724,7 +1744,7 @@ spec:
                                       - "remotes"
                                     type: "object"
                                   rootRequired:
-                                    description: "Specify if a privileged builder pod is required.\n\n\nDefault value is `false`"
+                                    description: "Specify if a privileged builder pod is required.\n\nDefault value is `false`"
                                     type: "boolean"
                                   srcType:
                                     description: "Type of Dockerfile src"
@@ -1752,7 +1772,7 @@ spec:
                             description: "Allows importing into the devworkspace the Kubernetes resources\ndefined in a given manifest. For example this allows reusing the Kubernetes\ndefinitions used to deploy some runtime components in production."
                             properties:
                               deployByDefault:
-                                description: "Defines if the component should be deployed during startup.\n\n\nDefault value is `false`"
+                                description: "Defines if the component should be deployed during startup.\n\nDefault value is `false`"
                                 type: "boolean"
                               endpoints:
                                 items:
@@ -1763,12 +1783,12 @@ spec:
                                       description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                       type: "object"
                                     attributes:
-                                      description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                      description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                       type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                     exposure:
                                       default: "public"
-                                      description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                      description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                       enum:
                                         - "public"
                                         - "internal"
@@ -1783,7 +1803,7 @@ spec:
                                       type: "string"
                                     protocol:
                                       default: "http"
-                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                       enum:
                                         - "http"
                                         - "https"
@@ -1825,7 +1845,7 @@ spec:
                             description: "Allows importing into the devworkspace the OpenShift resources\ndefined in a given manifest. For example this allows reusing the OpenShift\ndefinitions used to deploy some runtime components in production."
                             properties:
                               deployByDefault:
-                                description: "Defines if the component should be deployed during startup.\n\n\nDefault value is `false`"
+                                description: "Defines if the component should be deployed during startup.\n\nDefault value is `false`"
                                 type: "boolean"
                               endpoints:
                                 items:
@@ -1836,12 +1856,12 @@ spec:
                                       description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                       type: "object"
                                     attributes:
-                                      description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                      description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                       type: "object"
                                       x-kubernetes-preserve-unknown-fields: true
                                     exposure:
                                       default: "public"
-                                      description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                      description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                       enum:
                                         - "public"
                                         - "internal"
@@ -1856,7 +1876,7 @@ spec:
                                       type: "string"
                                     protocol:
                                       default: "http"
-                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                      description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                       enum:
                                         - "http"
                                         - "https"
@@ -1890,14 +1910,14 @@ spec:
                                 type: "string"
                             type: "object"
                           plugin:
-                            description: "Allows importing a plugin.\n\n\nPlugins are mainly imported devfiles that contribute components, commands\nand events as a consistent single unit. They are defined in either YAML files\nfollowing the devfile syntax,\nor as `DevWorkspaceTemplate` Kubernetes Custom Resources"
+                            description: "Allows importing a plugin.\n\nPlugins are mainly imported devfiles that contribute components, commands\nand events as a consistent single unit. They are defined in either YAML files\nfollowing the devfile syntax,\nor as `DevWorkspaceTemplate` Kubernetes Custom Resources"
                             properties:
                               commands:
                                 description: "Overrides of commands encapsulated in a parent devfile or a plugin.\nOverriding is done according to K8S strategic merge patch standard rules."
                                 items:
                                   properties:
                                     apply:
-                                      description: "Command that consists in applying a given component definition,\ntypically bound to a devworkspace event.\n\n\nFor example, when an `apply` command is bound to a `preStart` event,\nand references a `container` component, it will start the container as a\nK8S initContainer in the devworkspace POD, unless the component has its\n`dedicatedPod` field set to `true`.\n\n\nWhen no `apply` command exist for a given component,\nit is assumed the component will be applied at devworkspace start\nby default, unless `deployByDefault` for that component is set to false."
+                                      description: "Command that consists in applying a given component definition,\ntypically bound to a devworkspace event.\n\nFor example, when an `apply` command is bound to a `preStart` event,\nand references a `container` component, it will start the container as a\nK8S initContainer in the devworkspace POD, unless the component has its\n`dedicatedPod` field set to `true`.\n\nWhen no `apply` command exist for a given component,\nit is assumed the component will be applied at devworkspace start\nby default, unless `deployByDefault` for that component is set to false."
                                       properties:
                                         component:
                                           description: "Describes component that will be applied"
@@ -1968,7 +1988,7 @@ spec:
                                       description: "CLI Command executed in an existing component container"
                                       properties:
                                         commandLine:
-                                          description: "The actual command-line string\n\n\nSpecial variables that can be used:\n\n\n - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.\n\n\n - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one."
+                                          description: "The actual command-line string\n\nSpecial variables that can be used:\n\n - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.\n\n - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one."
                                           type: "string"
                                         component:
                                           description: "Describes component to which given action relates"
@@ -2002,13 +2022,13 @@ spec:
                                               type: "string"
                                           type: "object"
                                         hotReloadCapable:
-                                          description: "Specify whether the command is restarted or not when the source code changes.\nIf set to `true` the command won't be restarted.\nA *hotReloadCapable* `run` or `debug` command is expected to handle file changes on its own and won't be restarted.\nA *hotReloadCapable* `build` command is expected to be executed only once and won't be executed again.\nThis field is taken into account only for commands `build`, `run` and `debug` with `isDefault` set to `true`.\n\n\nDefault value is `false`"
+                                          description: "Specify whether the command is restarted or not when the source code changes.\nIf set to `true` the command won't be restarted.\nA *hotReloadCapable* `run` or `debug` command is expected to handle file changes on its own and won't be restarted.\nA *hotReloadCapable* `build` command is expected to be executed only once and won't be executed again.\nThis field is taken into account only for commands `build`, `run` and `debug` with `isDefault` set to `true`.\n\nDefault value is `false`"
                                           type: "boolean"
                                         label:
                                           description: "Optional label that provides a label for this command\nto be used in Editor UI menus for example"
                                           type: "string"
                                         workingDir:
-                                          description: "Working directory where the command should be executed\n\n\nSpecial variables that can be used:\n\n\n - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.\n\n\n - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one."
+                                          description: "Working directory where the command should be executed\n\nSpecial variables that can be used:\n\n - `$PROJECTS_ROOT`: A path where projects sources are mounted as defined by container component's sourceMapping.\n\n - `$PROJECT_SOURCE`: A path to a project source ($PROJECTS_ROOT/<project-name>). If there are multiple projects, this will point to the directory of the first one."
                                           type: "string"
                                       type: "object"
                                     id:
@@ -2055,12 +2075,12 @@ spec:
                                               type: "object"
                                           type: "object"
                                         args:
-                                          description: "The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.\n\n\nDefaults to an empty array, meaning use whatever is defined in the image."
+                                          description: "The arguments to supply to the command running the dockerimage component. The arguments are supplied either to the default command provided in the image or to the overridden command.\n\nDefaults to an empty array, meaning use whatever is defined in the image."
                                           items:
                                             type: "string"
                                           type: "array"
                                         command:
-                                          description: "The command to run in the dockerimage component instead of the default one provided in the image.\n\n\nDefaults to an empty array, meaning use whatever is defined in the image."
+                                          description: "The command to run in the dockerimage component instead of the default one provided in the image.\n\nDefaults to an empty array, meaning use whatever is defined in the image."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -2069,7 +2089,7 @@ spec:
                                         cpuRequest:
                                           type: "string"
                                         dedicatedPod:
-                                          description: "Specify if a container should run in its own separated pod,\ninstead of running as part of the main development environment pod.\n\n\nDefault value is `false`"
+                                          description: "Specify if a container should run in its own separated pod,\ninstead of running as part of the main development environment pod.\n\nDefault value is `false`"
                                           type: "boolean"
                                         endpoints:
                                           items:
@@ -2080,11 +2100,11 @@ spec:
                                                 description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                                 type: "object"
                                               attributes:
-                                                description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                                description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                                 type: "object"
                                                 x-kubernetes-preserve-unknown-fields: true
                                               exposure:
-                                                description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                                description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                                 enum:
                                                   - "public"
                                                   - "internal"
@@ -2098,7 +2118,7 @@ spec:
                                                 description: "Path of the endpoint URL"
                                                 type: "string"
                                               protocol:
-                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                                 enum:
                                                   - "http"
                                                   - "https"
@@ -2118,7 +2138,7 @@ spec:
                                             type: "object"
                                           type: "array"
                                         env:
-                                          description: "Environment variables used in this container.\n\n\nThe following variables are reserved and cannot be overridden via env:\n\n\n - `$PROJECTS_ROOT`\n\n\n - `$PROJECT_SOURCE`"
+                                          description: "Environment variables used in this container.\n\nThe following variables are reserved and cannot be overridden via env:\n\n - `$PROJECTS_ROOT`\n\n - `$PROJECT_SOURCE`"
                                           items:
                                             properties:
                                               name:
@@ -2136,7 +2156,7 @@ spec:
                                         memoryRequest:
                                           type: "string"
                                         mountSources:
-                                          description: "Toggles whether or not the project source code should\nbe mounted in the component.\n\n\nDefaults to true for all component types except plugins and components that set `dedicatedPod` to true."
+                                          description: "Toggles whether or not the project source code should\nbe mounted in the component.\n\nDefaults to true for all component types except plugins and components that set `dedicatedPod` to true."
                                           type: "boolean"
                                         sourceMapping:
                                           description: "Optional specification of the path in the container where\nproject sources should be transferred/mounted when `mountSources` is `true`.\nWhen omitted, the default value of /projects is used."
@@ -2163,7 +2183,7 @@ spec:
                                       description: "Allows specifying the definition of an image for outer loop builds"
                                       properties:
                                         autoBuild:
-                                          description: "Defines if the image should be built during startup.\n\n\nDefault value is `false`"
+                                          description: "Defines if the image should be built during startup.\n\nDefault value is `false`"
                                           type: "boolean"
                                         dockerfile:
                                           description: "Allows specifying dockerfile type build"
@@ -2209,7 +2229,7 @@ spec:
                                                   type: "object"
                                               type: "object"
                                             rootRequired:
-                                              description: "Specify if a privileged builder pod is required.\n\n\nDefault value is `false`"
+                                              description: "Specify if a privileged builder pod is required.\n\nDefault value is `false`"
                                               type: "boolean"
                                             srcType:
                                               description: "Type of Dockerfile src"
@@ -2236,7 +2256,7 @@ spec:
                                       description: "Allows importing into the devworkspace the Kubernetes resources\ndefined in a given manifest. For example this allows reusing the Kubernetes\ndefinitions used to deploy some runtime components in production."
                                       properties:
                                         deployByDefault:
-                                          description: "Defines if the component should be deployed during startup.\n\n\nDefault value is `false`"
+                                          description: "Defines if the component should be deployed during startup.\n\nDefault value is `false`"
                                           type: "boolean"
                                         endpoints:
                                           items:
@@ -2247,11 +2267,11 @@ spec:
                                                 description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                                 type: "object"
                                               attributes:
-                                                description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                                description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                                 type: "object"
                                                 x-kubernetes-preserve-unknown-fields: true
                                               exposure:
-                                                description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                                description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                                 enum:
                                                   - "public"
                                                   - "internal"
@@ -2265,7 +2285,7 @@ spec:
                                                 description: "Path of the endpoint URL"
                                                 type: "string"
                                               protocol:
-                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                                 enum:
                                                   - "http"
                                                   - "https"
@@ -2306,7 +2326,7 @@ spec:
                                       description: "Allows importing into the devworkspace the OpenShift resources\ndefined in a given manifest. For example this allows reusing the OpenShift\ndefinitions used to deploy some runtime components in production."
                                       properties:
                                         deployByDefault:
-                                          description: "Defines if the component should be deployed during startup.\n\n\nDefault value is `false`"
+                                          description: "Defines if the component should be deployed during startup.\n\nDefault value is `false`"
                                           type: "boolean"
                                         endpoints:
                                           items:
@@ -2317,11 +2337,11 @@ spec:
                                                 description: "Annotations to be added to Kubernetes Ingress or Openshift Route"
                                                 type: "object"
                                               attributes:
-                                                description: "Map of implementation-dependant string-based free-form attributes.\n\n\nExamples of Che-specific attributes:\n\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
+                                                description: "Map of implementation-dependant string-based free-form attributes.\n\nExamples of Che-specific attributes:\n\n- cookiesAuthEnabled: \"true\" / \"false\",\n\n- type: \"terminal\" / \"ide\" / \"ide-dev\","
                                                 type: "object"
                                                 x-kubernetes-preserve-unknown-fields: true
                                               exposure:
-                                                description: "Describes how the endpoint should be exposed on the network.\n\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\n\nDefault value is `public`"
+                                                description: "Describes how the endpoint should be exposed on the network.\n\n- `public` means that the endpoint will be exposed on the public network, typically through\na K8S ingress or an OpenShift route.\n\n- `internal` means that the endpoint will be exposed internally outside of the main devworkspace POD,\ntypically by K8S services, to be consumed by other elements running\non the same cloud internal network.\n\n- `none` means that the endpoint will not be exposed and will only be accessible\ninside the main devworkspace POD, on a local address.\n\nDefault value is `public`"
                                                 enum:
                                                   - "public"
                                                   - "internal"
@@ -2335,7 +2355,7 @@ spec:
                                                 description: "Path of the endpoint URL"
                                                 type: "string"
                                               protocol:
-                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\n\nDefault value is `http`"
+                                                description: "Describes the application and transport protocols of the traffic that will go through this endpoint.\n\n- `http`: Endpoint will have `http` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `https` when the `secure` field is set to `true`.\n\n- `https`: Endpoint will have `https` traffic, typically on a TCP connection.\n\n- `ws`: Endpoint will have `ws` traffic, typically on a TCP connection.\nIt will be automaticaly promoted to `wss` when the `secure` field is set to `true`.\n\n- `wss`: Endpoint will have `wss` traffic, typically on a TCP connection.\n\n- `tcp`: Endpoint will have traffic on a TCP connection, without specifying an application protocol.\n\n- `udp`: Endpoint will have traffic on an UDP connection, without specifying an application protocol.\n\nDefault value is `http`"
                                                 enum:
                                                   - "http"
                                                   - "https"

@@ -236,6 +236,8 @@ pub enum ClusterPushSecretPushSecretSpecSelectorGeneratorRefKind {
     GithubAccessToken,
     QuayAccessToken,
     Password,
+    #[serde(rename = "SSHKey")]
+    SshKey,
     #[serde(rename = "STSSessionToken")]
     StsSessionToken,
     #[serde(rename = "UUID")]

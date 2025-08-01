@@ -3120,6 +3120,9 @@ pub struct FlowCollectorLoki {
 /// This section is aimed mostly for debugging and fine-grained performance optimizations.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiAdvanced {
+    /// `excludeLabels` is a list of field to be excluded from the list of Loki labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeLabels")]
+    pub exclude_labels: Option<Vec<String>>,
     /// `staticLabels` is a map of common labels to set on each flow in Loki storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticLabels")]
     pub static_labels: Option<BTreeMap<String, String>>,

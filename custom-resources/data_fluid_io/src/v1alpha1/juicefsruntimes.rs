@@ -21,9 +21,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct JuiceFSRuntimeSpec {
-    /// CleanCachePolicy defines cleanCache Policy
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanCachePolicy")]
-    pub clean_cache_policy: Option<JuiceFSRuntimeCleanCachePolicy>,
     /// Configs of JuiceFS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<String>>,
@@ -43,6 +40,9 @@ pub struct JuiceFSRuntimeSpec {
     /// The version information that instructs fluid to orchestrate a particular version of JuiceFS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "juicefsVersion")]
     pub juicefs_version: Option<JuiceFSRuntimeJuicefsVersion>,
+    /// RuntimeManagement defines policies when managing the runtime
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub management: Option<JuiceFSRuntimeManagement>,
     /// The component spec of JuiceFS master
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub master: Option<JuiceFSRuntimeMaster>,
@@ -64,25 +64,6 @@ pub struct JuiceFSRuntimeSpec {
     /// The component spec of JuiceFS worker
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub worker: Option<JuiceFSRuntimeWorker>,
-}
-
-/// CleanCachePolicy defines cleanCache Policy
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeCleanCachePolicy {
-    /// Optional duration in seconds the cache needs to clean gracefully. May be decreased in delete runtime request.
-    /// Value must be non-negative integer. The value zero indicates clean immediately via the timeout
-    /// command (no opportunity to shut down).
-    /// If this value is nil, the default grace period will be used instead.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with timeout command.
-    /// Set this value longer than the expected cleanup time for your process.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
-    pub grace_period_seconds: Option<i32>,
-    /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts
-    /// to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number
-    /// of retries. This gives you the option to continue processing retries.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryAttempts")]
-    pub max_retry_attempts: Option<i32>,
 }
 
 /// Desired state for JuiceFS Fuse
@@ -630,6 +611,44 @@ pub struct JuiceFSRuntimeJuicefsVersion {
     /// Image tag (e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
+}
+
+/// RuntimeManagement defines policies when managing the runtime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JuiceFSRuntimeManagement {
+    /// CleanCachePolicy defines the policy of cleaning cache when shutting down the runtime
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanCachePolicy")]
+    pub clean_cache_policy: Option<JuiceFSRuntimeManagementCleanCachePolicy>,
+    /// MetadataSyncPolicy defines the policy of syncing metadata when setting up the runtime. If not set,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSyncPolicy")]
+    pub metadata_sync_policy: Option<JuiceFSRuntimeManagementMetadataSyncPolicy>,
+}
+
+/// CleanCachePolicy defines the policy of cleaning cache when shutting down the runtime
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JuiceFSRuntimeManagementCleanCachePolicy {
+    /// Optional duration in seconds the cache needs to clean gracefully. May be decreased in delete runtime request.
+    /// Value must be non-negative integer. The value zero indicates clean immediately via the timeout
+    /// command (no opportunity to shut down).
+    /// If this value is nil, the default grace period will be used instead.
+    /// The grace period is the duration in seconds after the processes running in the pod are sent
+    /// a termination signal and the time when the processes are forcibly halted with timeout command.
+    /// Set this value longer than the expected cleanup time for your process.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
+    pub grace_period_seconds: Option<i32>,
+    /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts
+    /// to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number
+    /// of retries. This gives you the option to continue processing retries.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryAttempts")]
+    pub max_retry_attempts: Option<i32>,
+}
+
+/// MetadataSyncPolicy defines the policy of syncing metadata when setting up the runtime. If not set,
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JuiceFSRuntimeManagementMetadataSyncPolicy {
+    /// AutoSync enables automatic metadata sync when setting up a runtime. If not set, it defaults to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoSync")]
+    pub auto_sync: Option<bool>,
 }
 
 /// The component spec of JuiceFS master

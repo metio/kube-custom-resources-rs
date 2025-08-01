@@ -27,10 +27,10 @@ pub struct MachineDeploymentSpec {
     /// deletion contains configuration options for MachineDeployment deletion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<MachineDeploymentDeletion>,
-    /// machineNamingStrategy allows changing the naming pattern used when creating Machines.
+    /// machineNaming allows changing the naming pattern used when creating Machines.
     /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNamingStrategy")]
-    pub machine_naming_strategy: Option<MachineDeploymentMachineNamingStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineNaming")]
+    pub machine_naming: Option<MachineDeploymentMachineNaming>,
     /// paused indicates that the deployment is paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
@@ -86,10 +86,10 @@ pub enum MachineDeploymentDeletionOrder {
     Oldest,
 }
 
-/// machineNamingStrategy allows changing the naming pattern used when creating Machines.
+/// machineNaming allows changing the naming pattern used when creating Machines.
 /// Note: InfraMachines & BootstrapConfigs will use the same name as the corresponding Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MachineDeploymentMachineNamingStrategy {
+pub struct MachineDeploymentMachineNaming {
     /// template defines the template to use for generating the names of the
     /// Machine objects.
     /// If not defined, it will fallback to `{{ .machineSet.name }}-{{ .random }}`.

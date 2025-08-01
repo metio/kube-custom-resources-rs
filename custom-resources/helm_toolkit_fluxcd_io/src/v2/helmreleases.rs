@@ -33,7 +33,7 @@ pub struct HelmReleaseSpec {
     /// overridden if its key matches a common one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "commonMetadata")]
     pub common_metadata: Option<HelmReleaseCommonMetadata>,
-    /// DependsOn may contain a meta.NamespacedObjectReference slice with
+    /// DependsOn may contain a DependencyReference slice with
     /// references to HelmRelease resources that must be ready before this HelmRelease
     /// can be reconciled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dependsOn")]
@@ -298,15 +298,22 @@ pub struct HelmReleaseCommonMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// NamespacedObjectReference contains enough information to locate the referenced Kubernetes resource object in any
-/// namespace.
+/// DependencyReference defines a HelmRelease dependency on another HelmRelease resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HelmReleaseDependsOn {
     /// Name of the referent.
     pub name: String,
-    /// Namespace of the referent, when not specified it acts as LocalObjectReference.
+    /// Namespace of the referent, defaults to the namespace of the HelmRelease
+    /// resource object that contains the reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
+    /// ReadyExpr is a CEL expression that can be used to assess the readiness
+    /// of a dependency. When specified, the built-in readiness check
+    /// is replaced by the logic defined in the CEL expression.
+    /// To make the CEL expression additive to the built-in readiness check,
+    /// the feature gate `AdditiveCELDependencyCheck` must be set to `true`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyExpr")]
+    pub ready_expr: Option<String>,
 }
 
 /// DriftDetection holds the configuration for detecting and handling

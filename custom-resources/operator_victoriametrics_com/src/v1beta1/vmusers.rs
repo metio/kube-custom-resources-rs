@@ -195,7 +195,7 @@ pub struct VMUserTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub src_query_args: Option<Vec<String>>,
     /// Static - user defined url for traffic forward,
-    /// for instance http://vmsingle:8429
+    /// for instance http://vmsingle:8428
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VMUserTargetRefsStatic>,
     /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
@@ -257,7 +257,7 @@ pub enum VMUserTargetRefsLoadBalancingPolicy {
 }
 
 /// Static - user defined url for traffic forward,
-/// for instance http://vmsingle:8429
+/// for instance http://vmsingle:8428
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefsStatic {
     /// URL http url for given staticRef.

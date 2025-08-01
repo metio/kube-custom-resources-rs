@@ -1419,6 +1419,8 @@ pub struct PerconaXtraDBClusterHaproxyExposePrimary {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
@@ -1441,6 +1443,8 @@ pub struct PerconaXtraDBClusterHaproxyExposeReplicas {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlyReaders")]
@@ -4288,6 +4292,8 @@ pub struct PerconaXtraDBClusterProxysqlExpose {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
@@ -6672,6 +6678,8 @@ pub struct PerconaXtraDBClusterPxcExpose {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]

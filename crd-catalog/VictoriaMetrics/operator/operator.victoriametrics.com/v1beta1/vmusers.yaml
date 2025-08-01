@@ -205,7 +205,7 @@ spec:
                           type: "string"
                         type: "array"
                       static:
-                        description: "Static - user defined url for traffic forward,\nfor instance http://vmsingle:8429"
+                        description: "Static - user defined url for traffic forward,\nfor instance http://vmsingle:8428"
                         properties:
                           url:
                             description: "URL http url for given staticRef."

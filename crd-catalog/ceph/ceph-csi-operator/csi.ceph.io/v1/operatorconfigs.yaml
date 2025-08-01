@@ -2113,6 +2113,9 @@ spec:
                     deployCsiAddons:
                       description: "a list of additional sidecars?"
                       type: "boolean"
+                    enableFencing:
+                      description: "Set to true to enable fencing for the driver.\nFencing is a feature that allows the driver to fence a node when it is tainted with node.kubernetes.io/out-of-service."
+                      type: "boolean"
                     enableMetadata:
                       description: "Set to true to enable adding volume metadata on the CephFS subvolumes and RBD images.\nNot all users might be interested in getting volume/snapshot details as metadata on CephFS subvolume and RBD images.\nHence enable metadata is false by default."
                       type: "boolean"

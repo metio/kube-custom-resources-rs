@@ -27,8 +27,7 @@ pub struct ClusterResourceSetSpec {
     #[serde(rename = "clusterSelector")]
     pub cluster_selector: ClusterResourceSetClusterSelector,
     /// resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<Vec<ClusterResourceSetResources>>,
+    pub resources: Vec<ClusterResourceSetResources>,
     /// strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<ClusterResourceSetStrategy>,

@@ -20,6 +20,11 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CephFilesystemSubVolumeGroupSpec {
+    /// ClusterID to be used for this subvolume group in the CSI configuration.
+    /// It must be unique among all Ceph clusters managed by Rook.
+    /// If not specified, the clusterID will be generated and can be found in the CR status.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
+    pub cluster_id: Option<String>,
     /// The data pool name for the Ceph Filesystem subvolume group layout, if the default CephFS pool is not desired.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPoolName")]
     pub data_pool_name: Option<String>,

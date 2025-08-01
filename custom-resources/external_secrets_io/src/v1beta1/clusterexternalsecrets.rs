@@ -198,6 +198,8 @@ pub enum ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRefKind {
     GithubAccessToken,
     QuayAccessToken,
     Password,
+    #[serde(rename = "SSHKey")]
+    SshKey,
     #[serde(rename = "STSSessionToken")]
     StsSessionToken,
     #[serde(rename = "UUID")]
@@ -421,6 +423,8 @@ pub enum ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRefKin
     GithubAccessToken,
     QuayAccessToken,
     Password,
+    #[serde(rename = "SSHKey")]
+    SshKey,
     #[serde(rename = "STSSessionToken")]
     StsSessionToken,
     #[serde(rename = "UUID")]

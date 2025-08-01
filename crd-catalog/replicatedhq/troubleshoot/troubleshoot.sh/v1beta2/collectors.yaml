@@ -5555,6 +5555,8 @@ spec:
                         type: "object"
                       runPod:
                         properties:
+                          allowImagePullRetries:
+                            type: "boolean"
                           annotations:
                             additionalProperties:
                               type: "string"

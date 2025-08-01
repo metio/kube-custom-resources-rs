@@ -52,11 +52,11 @@ pub struct AddonSpec {
     /// The name of the add-on. The name must match one of the names returned by
     /// DescribeAddonVersions.
     pub name: String,
-    /// An array of Pod Identity Assocations to be created. Each EKS Pod Identity
-    /// association maps a Kubernetes service account to an IAM Role.
+    /// An array of EKS Pod Identity associations to be created. Each association
+    /// maps a Kubernetes service account to an IAM role.
     /// 
     /// For more information, see Attach an IAM Role to an Amazon EKS add-on using
-    /// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
+    /// EKS Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
     /// in the Amazon EKS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIdentityAssociations")]
     pub pod_identity_associations: Option<Vec<AddonPodIdentityAssociations>>,
@@ -137,13 +137,12 @@ pub struct AddonClusterRefFrom {
     pub namespace: Option<String>,
 }
 
-/// A type of Pod Identity Association owned by an Amazon EKS Add-on.
+/// A type of EKS Pod Identity association owned by an Amazon EKS add-on.
 /// 
-/// Each EKS Pod Identity Association maps a role to a service account in a namespace
-/// in the cluster.
+/// Each association maps a role to a service account in a namespace in the cluster.
 /// 
 /// For more information, see Attach an IAM Role to an Amazon EKS add-on using
-/// Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
+/// EKS Pod Identity (https://docs.aws.amazon.com/eks/latest/userguide/add-ons-iam.html)
 /// in the Amazon EKS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AddonPodIdentityAssociations {

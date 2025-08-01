@@ -22,6 +22,59 @@ spec:
           jsonPath: ".spec.topology.classRef.name"
           name: "ClusterClass"
           type: "string"
+        - description: "Cluster pass all availability checks"
+          jsonPath: ".status.conditions[?(@.type==\"Available\")].status"
+          name: "Available"
+          type: "string"
+        - description: "The desired number of control plane machines"
+          jsonPath: ".status.controlPlane.desiredReplicas"
+          name: "CP Desired"
+          type: "integer"
+        - description: "The number of control plane machines"
+          jsonPath: ".status.controlPlane.replicas"
+          name: "CP Current"
+          priority: 10
+          type: "integer"
+        - description: "The number of control plane machines with Ready condition true"
+          jsonPath: ".status.controlPlane.readyReplicas"
+          name: "CP Ready"
+          priority: 10
+          type: "integer"
+        - description: "The number of control plane machines with Available condition true"
+          jsonPath: ".status.controlPlane.availableReplicas"
+          name: "CP Available"
+          type: "integer"
+        - description: "The number of control plane machines with UpToDate condition true"
+          jsonPath: ".status.controlPlane.upToDateReplicas"
+          name: "CP Up-to-date"
+          type: "integer"
+        - description: "The desired number of worker machines"
+          jsonPath: ".status.workers.desiredReplicas"
+          name: "W Desired"
+          type: "integer"
+        - description: "The number of worker machines"
+          jsonPath: ".status.workers.replicas"
+          name: "W Current"
+          priority: 10
+          type: "integer"
+        - description: "The number of worker machines with Ready condition true"
+          jsonPath: ".status.workers.readyReplicas"
+          name: "W Ready"
+          priority: 10
+          type: "integer"
+        - description: "The number of worker machines with Available condition true"
+          jsonPath: ".status.workers.availableReplicas"
+          name: "W Available"
+          type: "integer"
+        - description: "The number of worker machines with UpToDate condition true"
+          jsonPath: ".status.workers.upToDateReplicas"
+          name: "W Up-to-date"
+          type: "integer"
+        - description: "Reconciliation paused"
+          jsonPath: ".status.conditions[?(@.type==\"Paused\")].status"
+          name: "Paused"
+          priority: 10
+          type: "string"
         - description: "Cluster status such as Pending/Provisioning/Provisioned/Deleting/Failed"
           jsonPath: ".status.phase"
           name: "Phase"
@@ -97,6 +150,7 @@ spec:
                             minLength: 1
                             type: "string"
                           maxItems: 100
+                          minItems: 1
                           type: "array"
                           x-kubernetes-list-type: "atomic"
                       required:
@@ -117,6 +171,7 @@ spec:
                             minLength: 1
                             type: "string"
                           maxItems: 100
+                          minItems: 1
                           type: "array"
                           x-kubernetes-list-type: "atomic"
                       required:
@@ -603,6 +658,7 @@ spec:
                                 description: "name is the unique identifier for this MachineDeploymentTopology.\nThe value is used with other unique identifiers to create a MachineDeployment's Name\n(e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,\nthe values are hashed together."
                                 maxLength: 63
                                 minLength: 1
+                                pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
                               readinessGates:
                                 description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. to instruct the machine controller to include in the computation for Machine's ready\ncomputation a condition, managed by an external controllers, reporting the status of special software/hardware installed on the Machine.\n\nIf this field is not defined, readinessGates from the corresponding MachineDeploymentClass will be used, if any."
@@ -771,6 +827,7 @@ spec:
                                 description: "name is the unique identifier for this MachinePoolTopology.\nThe value is used with other unique identifiers to create a MachinePool's Name\n(e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,\nthe values are hashed together."
                                 maxLength: 63
                                 minLength: 1
+                                pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                                 type: "string"
                               replicas:
                                 description: "replicas is the number of nodes belonging to this pool.\nIf the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)\nand it's assumed that an external entity (like cluster autoscaler) is responsible for the management\nof this value."

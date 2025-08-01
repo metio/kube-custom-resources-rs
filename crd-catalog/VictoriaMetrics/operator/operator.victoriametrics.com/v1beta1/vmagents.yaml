@@ -1449,7 +1449,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 remoteWrite:
-                  description: "RemoteWrite list of victoria metrics /some other remote write system\nfor vm it must looks like: http://victoria-metrics-single:8429/api/v1/write\nor for cluster different url\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#splitting-data-streams-among-multiple-systems"
+                  description: "RemoteWrite list of victoria metrics /some other remote write system\nfor vm it must looks like: http://victoria-metrics-single:8428/api/v1/write\nor for cluster different url\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#splitting-data-streams-among-multiple-systems"
                   items:
                     description: "VMAgentRemoteWriteSpec defines the remote storage configuration for VmAgent"
                     properties:

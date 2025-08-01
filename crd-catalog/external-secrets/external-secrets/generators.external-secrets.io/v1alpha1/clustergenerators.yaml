@@ -587,6 +587,25 @@ spec:
                         - "robotAccount"
                         - "serviceAccountRef"
                       type: "object"
+                    sshKeySpec:
+                      description: "SSHKeySpec controls the behavior of the ssh key generator."
+                      properties:
+                        comment:
+                          description: "Comment specifies an optional comment for the SSH key"
+                          type: "string"
+                        keySize:
+                          description: "KeySize specifies the key size for RSA keys (default: 2048)\nFor RSA keys: 2048, 3072, 4096\nIgnored for ed25519 keys"
+                          maximum: 8192.0
+                          minimum: 256.0
+                          type: "integer"
+                        keyType:
+                          default: "rsa"
+                          description: "KeyType specifies the SSH key type (rsa, ed25519)"
+                          enum:
+                            - "rsa"
+                            - "ed25519"
+                          type: "string"
+                      type: "object"
                     stsSessionTokenSpec:
                       properties:
                         auth:
@@ -1492,6 +1511,7 @@ spec:
                     - "GithubAccessToken"
                     - "QuayAccessToken"
                     - "Password"
+                    - "SSHKey"
                     - "STSSessionToken"
                     - "UUID"
                     - "VaultDynamicSecret"

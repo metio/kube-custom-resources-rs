@@ -51,6 +51,11 @@ pub struct ClientProfileCephConnectionRef {
 /// CephFsConfigSpec defines the desired CephFs configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientProfileCephFs {
+    /// CephCsiSecretsSpec defines the secrets used by the client profile
+    /// to access the Ceph cluster and perform operations
+    /// on volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cephCsiSecrets")]
+    pub ceph_csi_secrets: Option<ClientProfileCephFsCephCsiSecrets>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseMountOptions")]
     pub fuse_mount_options: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelMountOptions")]
@@ -61,6 +66,29 @@ pub struct ClientProfileCephFs {
     pub sub_volume_group: Option<String>,
 }
 
+/// CephCsiSecretsSpec defines the secrets used by the client profile
+/// to access the Ceph cluster and perform operations
+/// on volumes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientProfileCephFsCephCsiSecrets {
+    /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+    /// in any namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerPublishSecret")]
+    pub controller_publish_secret: Option<ClientProfileCephFsCephCsiSecretsControllerPublishSecret>,
+}
+
+/// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+/// in any namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientProfileCephFsCephCsiSecretsControllerPublishSecret {
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
 /// NfsConfigSpec cdefines the desired NFS configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientProfileNfs {
@@ -69,8 +97,36 @@ pub struct ClientProfileNfs {
 /// RbdConfigSpec defines the desired RBD configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClientProfileRbd {
+    /// CephCsiSecretsSpec defines the secrets used by the client profile
+    /// to access the Ceph cluster and perform operations
+    /// on volumes.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cephCsiSecrets")]
+    pub ceph_csi_secrets: Option<ClientProfileRbdCephCsiSecrets>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "radosNamespace")]
     pub rados_namespace: Option<String>,
+}
+
+/// CephCsiSecretsSpec defines the secrets used by the client profile
+/// to access the Ceph cluster and perform operations
+/// on volumes.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientProfileRbdCephCsiSecrets {
+    /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+    /// in any namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerPublishSecret")]
+    pub controller_publish_secret: Option<ClientProfileRbdCephCsiSecretsControllerPublishSecret>,
+}
+
+/// SecretReference represents a Secret Reference. It has enough information to retrieve secret
+/// in any namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClientProfileRbdCephCsiSecretsControllerPublishSecret {
+    /// name is unique within a namespace to reference a secret resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// namespace defines the space within which the secret name must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// ClientProfileStatus defines the observed state of Ceph CSI

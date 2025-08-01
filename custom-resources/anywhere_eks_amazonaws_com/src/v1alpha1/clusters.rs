@@ -114,6 +114,10 @@ pub struct ClusterClusterNetworkCniConfig {
 /// CiliumConfig contains configuration specific to the Cilium CNI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkCniConfigCilium {
+    /// CNIExclusive controls whether Cilium should remove other CNI configuration files.
+    /// When true (default), Cilium removes other CNI configs; when false, it leaves them alone.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniExclusive")]
+    pub cni_exclusive: Option<bool>,
     /// EgressMasquaradeInterfaces determines which network interfaces are used for masquerading. Accepted values are a valid interface name or interface prefix.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMasqueradeInterfaces")]
     pub egress_masquerade_interfaces: Option<String>,

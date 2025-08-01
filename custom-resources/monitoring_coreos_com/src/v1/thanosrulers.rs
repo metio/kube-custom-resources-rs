@@ -101,6 +101,17 @@ pub struct ThanosRulerSpec {
     /// Defines the DNS policy for the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<ThanosRulerDnsPolicy>,
+    /// Enable access to Thanos Ruler feature flags. By default, no features are enabled.
+    /// 
+    /// Enabling features which are disabled by default is entirely outside the
+    /// scope of what the maintainers will support and by doing so, you accept
+    /// that this behaviour may break at any time without notice.
+    /// 
+    /// For more information see https://thanos.io/tip/components/rule.md/
+    /// 
+    /// It requires Thanos >= 0.39.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
+    pub enable_features: Option<Vec<String>>,
     /// Indicates whether information about services should be injected into pod's environment variables
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -250,6 +261,9 @@ pub struct ThanosRulerSpec {
     /// Number of thanos ruler instances to deploy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// Minimum amount of time to wait before resending an alert to Alertmanager.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resendDelay")]
+    pub resend_delay: Option<String>,
     /// Resources defines the resource requirements for single Pods.
     /// If not provided, no requests/limits will be set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -269,6 +283,11 @@ pub struct ThanosRulerSpec {
     /// It requires Thanos >= v0.37.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConcurrentEval")]
     pub rule_concurrent_eval: Option<i32>,
+    /// Minimum duration between alert and restored "for" state.
+    /// This is maintained only for alerts with configured "for" time greater than grace period.
+    /// It requires Thanos >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleGracePeriod")]
+    pub rule_grace_period: Option<String>,
     /// Namespaces to be selected for Rules discovery. If unspecified, only
     /// the same namespace as the ThanosRuler object is in is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]

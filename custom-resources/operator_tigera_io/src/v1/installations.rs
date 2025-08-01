@@ -2215,7 +2215,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesCla
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the calico-node DaemonSet init container by name.
-    /// Supported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner
+    /// Supported values are: install-cni, hostpath-init, flexvol-driver, ebpf-bootstrap, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner, mount-bpffs (deprecated, replaced by ebpf-bootstrap)
     pub name: InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-node DaemonSet init container's resources.
@@ -2234,12 +2234,14 @@ pub enum InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersName {
     HostpathInit,
     #[serde(rename = "flexvol-driver")]
     FlexvolDriver,
-    #[serde(rename = "mount-bpffs")]
-    MountBpffs,
+    #[serde(rename = "ebpf-bootstrap")]
+    EbpfBootstrap,
     #[serde(rename = "node-certs-key-cert-provisioner")]
     NodeCertsKeyCertProvisioner,
     #[serde(rename = "calico-node-prometheus-server-tls-key-cert-provisioner")]
     CalicoNodePrometheusServerTlsKeyCertProvisioner,
+    #[serde(rename = "mount-bpffs")]
+    MountBpffs,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -3181,7 +3183,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResou
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name.
-    /// Supported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
+    /// Supported values are: install-cni;hostpath-init, flexvol-driver, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-node-windows DaemonSet init container's resources.
@@ -3200,8 +3202,6 @@ pub enum InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersNam
     HostpathInit,
     #[serde(rename = "flexvol-driver")]
     FlexvolDriver,
-    #[serde(rename = "mount-bpffs")]
-    MountBpffs,
     #[serde(rename = "node-certs-key-cert-provisioner")]
     NodeCertsKeyCertProvisioner,
     #[serde(rename = "calico-node-windows-prometheus-server-tls-key-cert-provisioner")]
@@ -9055,7 +9055,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContaine
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the calico-node DaemonSet init container by name.
-    /// Supported values are: install-cni, hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner
+    /// Supported values are: install-cni, hostpath-init, flexvol-driver, ebpf-bootstrap, node-certs-key-cert-provisioner, calico-node-prometheus-server-tls-key-cert-provisioner, mount-bpffs (deprecated, replaced by ebpf-bootstrap)
     pub name: InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-node DaemonSet init container's resources.
@@ -9074,12 +9074,14 @@ pub enum InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContai
     HostpathInit,
     #[serde(rename = "flexvol-driver")]
     FlexvolDriver,
-    #[serde(rename = "mount-bpffs")]
-    MountBpffs,
+    #[serde(rename = "ebpf-bootstrap")]
+    EbpfBootstrap,
     #[serde(rename = "node-certs-key-cert-provisioner")]
     NodeCertsKeyCertProvisioner,
     #[serde(rename = "calico-node-prometheus-server-tls-key-cert-provisioner")]
     CalicoNodePrometheusServerTlsKeyCertProvisioner,
+    #[serde(rename = "mount-bpffs")]
+    MountBpffs,
 }
 
 /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
@@ -10021,7 +10023,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name.
-    /// Supported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
+    /// Supported values are: install-cni;hostpath-init, flexvol-driver, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
     pub name: InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-node-windows DaemonSet init container's resources.
@@ -10040,8 +10042,6 @@ pub enum InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecIni
     HostpathInit,
     #[serde(rename = "flexvol-driver")]
     FlexvolDriver,
-    #[serde(rename = "mount-bpffs")]
-    MountBpffs,
     #[serde(rename = "node-certs-key-cert-provisioner")]
     NodeCertsKeyCertProvisioner,
     #[serde(rename = "calico-node-windows-prometheus-server-tls-key-cert-provisioner")]

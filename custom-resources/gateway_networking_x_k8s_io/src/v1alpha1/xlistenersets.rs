@@ -393,8 +393,8 @@ pub struct XListenerSetListenersTlsFrontendValidation {
     /// to be attached. If a ReferenceGrant does not allow this reference, the
     /// "ResolvedRefs" condition MUST be set to False for this listener with the
     /// "RefNotPermitted" reason.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificateRefs")]
-    pub ca_certificate_refs: Option<Vec<XListenerSetListenersTlsFrontendValidationCaCertificateRefs>>,
+    #[serde(rename = "caCertificateRefs")]
+    pub ca_certificate_refs: Vec<XListenerSetListenersTlsFrontendValidationCaCertificateRefs>,
 }
 
 /// ObjectReference identifies an API object including its namespace.
