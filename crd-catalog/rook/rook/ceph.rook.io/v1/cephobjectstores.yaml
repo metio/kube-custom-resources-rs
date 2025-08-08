@@ -119,7 +119,10 @@ spec:
                       description: "The erasure code settings"
                       properties:
                         algorithm:
-                          description: "The algorithm for erasure coding"
+                          description: "The algorithm for erasure coding.\nIf absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile."
+                          enum:
+                            - "isa"
+                            - "jerasure"
                           type: "string"
                         codingChunks:
                           description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThis is the number of OSDs that can be lost simultaneously before data cannot be recovered."
@@ -258,6 +261,9 @@ spec:
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
                   type: "object"
+                defaultRealm:
+                  description: "Set this realm as the default in Ceph. Only one realm should be default.\nDo not set this true on more than one CephObjectStore.\nThis may not be set when zone is also specified; in this case, the realm\nreferenced by the zone's zonegroup should configure defaulting behavior."
+                  type: "boolean"
                 gateway:
                   description: "The rgw pod info"
                   nullable: true
@@ -1537,7 +1543,10 @@ spec:
                       description: "The erasure code settings"
                       properties:
                         algorithm:
-                          description: "The algorithm for erasure coding"
+                          description: "The algorithm for erasure coding.\nIf absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile."
+                          enum:
+                            - "isa"
+                            - "jerasure"
                           type: "string"
                         codingChunks:
                           description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThis is the number of OSDs that can be lost simultaneously before data cannot be recovered."
@@ -1853,6 +1862,9 @@ spec:
                     - "name"
                   type: "object"
               type: "object"
+              x-kubernetes-validations:
+                - message: "defaultRealm must not be true when zone.name is set (multisite configuration)"
+                  rule: "!(has(self.defaultRealm) && self.defaultRealm == true && has(self.zone) && size(self.zone.name) > 0)"
             status:
               description: "ObjectStoreStatus represents the status of a Ceph Object Store resource"
               properties:

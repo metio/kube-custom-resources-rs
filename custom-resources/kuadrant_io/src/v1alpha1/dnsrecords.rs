@@ -20,6 +20,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DNSRecordSpec {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub delegate: Option<bool>,
     /// endpoints is a list of endpoints that will be published into the dns provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoints: Option<Vec<DNSRecordEndpoints>>,

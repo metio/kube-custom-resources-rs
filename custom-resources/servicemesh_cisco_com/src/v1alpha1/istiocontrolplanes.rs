@@ -62,8 +62,6 @@ pub struct IstioControlPlaneSpec {
     pub sidecar_injector: Option<IstioControlPlaneSidecarInjector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "telemetryV2")]
     pub telemetry_v2: Option<IstioControlPlaneTelemetryV2>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracer: Option<IstioControlPlaneTracer>,
     pub version: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchOneNamespace")]
     pub watch_one_namespace: Option<bool>,
@@ -1946,6 +1944,8 @@ pub struct IstioControlPlaneMeshConfig {
     pub service_settings: Option<Vec<IstioControlPlaneMeshConfigServiceSettings>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioControlPlaneMeshConfigTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thriftConfig")]
+    pub thrift_config: Option<IstioControlPlaneMeshConfigThriftConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
@@ -2106,6 +2106,8 @@ pub struct IstioControlPlaneMeshConfigDefaultConfig {
     pub interception_mode: Option<IstioControlPlaneMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentShutdownDuration")]
+    pub parent_shutdown_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
     pub private_key_provider: Option<IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProvider>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
@@ -2296,18 +2298,10 @@ pub enum IstioControlPlaneMeshConfigDefaultConfigInterceptionMode {
 pub struct IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cryptomb: Option<IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProviderCryptomb>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub qat: Option<IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProviderQat>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProviderCryptomb {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
-    pub poll_delay: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneMeshConfigDefaultConfigPrivateKeyProviderQat {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
     pub poll_delay: Option<String>,
 }
@@ -2581,8 +2575,6 @@ pub struct IstioControlPlaneMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opencensus: Option<IstioControlPlaneMeshConfigExtensionProvidersOpencensus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub opentelemetry: Option<IstioControlPlaneMeshConfigExtensionProvidersOpentelemetry>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prometheus: Option<IstioControlPlaneMeshConfigExtensionProvidersPrometheus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skywalking: Option<IstioControlPlaneMeshConfigExtensionProvidersSkywalking>,
@@ -2767,16 +2759,6 @@ pub struct IstioControlPlaneMeshConfigExtensionProvidersOpencensus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
-    pub max_tag_length: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioControlPlaneMeshConfigExtensionProvidersPrometheus {
 }
 
@@ -2942,6 +2924,14 @@ pub struct IstioControlPlaneMeshConfigTcpKeepalive {
     pub probes: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IstioControlPlaneMeshConfigThriftConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitTimeout")]
+    pub rate_limit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitUrl")]
+    pub rate_limit_url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4809,8 +4799,6 @@ pub struct IstioControlPlaneProxy {
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<IstioControlPlaneProxyResources>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tracer: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8618,131 +8606,6 @@ pub struct IstioControlPlaneTelemetryV2 {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracer {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
-    pub custom_tags: Option<BTreeMap<String, IstioControlPlaneTracerCustomTags>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub datadog: Option<IstioControlPlaneTracerDatadog>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lightstep: Option<IstioControlPlaneTracerLightstep>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
-    pub max_path_tag_length: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openCensusAgent")]
-    pub open_census_agent: Option<IstioControlPlaneTracerOpenCensusAgent>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sampling: Option<f64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stackdriver: Option<IstioControlPlaneTracerStackdriver>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSettings")]
-    pub tls_settings: Option<IstioControlPlaneTracerTlsSettings>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub zipkin: Option<IstioControlPlaneTracerZipkin>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerCustomTags {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment: Option<IstioControlPlaneTracerCustomTagsEnvironment>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub header: Option<IstioControlPlaneTracerCustomTagsHeader>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub literal: Option<IstioControlPlaneTracerCustomTagsLiteral>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerCustomTagsEnvironment {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
-    pub default_value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerCustomTagsHeader {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultValue")]
-    pub default_value: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerCustomTagsLiteral {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerDatadog {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub address: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerLightstep {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessToken")]
-    pub access_token: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub address: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerOpenCensusAgent {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub address: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub context: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerStackdriver {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub debug: Option<bool>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAnnotations")]
-    pub max_number_of_annotations: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfAttributes")]
-    pub max_number_of_attributes: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfMessageEvents")]
-    pub max_number_of_message_events: Option<i64>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct IstioControlPlaneTracerTlsSettings {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
-    pub ca_certificates: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
-    pub client_certificate: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
-    pub credential_name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
-    pub insecure_skip_verify: Option<bool>,
-    pub mode: IstioControlPlaneTracerTlsSettingsMode,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
-    pub private_key: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sni: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
-    pub subject_alt_names: Option<Vec<String>>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum IstioControlPlaneTracerTlsSettingsMode {
-    #[serde(rename = "DISABLE")]
-    Disable,
-    #[serde(rename = "SIMPLE")]
-    Simple,
-    #[serde(rename = "MUTUAL")]
-    Mutual,
-    #[serde(rename = "ISTIO_MUTUAL")]
-    IstioMutual,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneTracerZipkin {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub address: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioControlPlaneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caRootCertificate")]
     pub ca_root_certificate: Option<String>,
@@ -8854,6 +8717,8 @@ pub struct IstioControlPlaneStatusMeshConfig {
     pub service_settings: Option<Vec<IstioControlPlaneStatusMeshConfigServiceSettings>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioControlPlaneStatusMeshConfigTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thriftConfig")]
+    pub thrift_config: Option<IstioControlPlaneStatusMeshConfigThriftConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
@@ -9014,6 +8879,8 @@ pub struct IstioControlPlaneStatusMeshConfigDefaultConfig {
     pub interception_mode: Option<IstioControlPlaneStatusMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentShutdownDuration")]
+    pub parent_shutdown_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
     pub private_key_provider: Option<IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProvider>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
@@ -9204,18 +9071,10 @@ pub enum IstioControlPlaneStatusMeshConfigDefaultConfigInterceptionMode {
 pub struct IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cryptomb: Option<IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderCryptomb>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub qat: Option<IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderQat>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderCryptomb {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
-    pub poll_delay: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneStatusMeshConfigDefaultConfigPrivateKeyProviderQat {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
     pub poll_delay: Option<String>,
 }
@@ -9489,8 +9348,6 @@ pub struct IstioControlPlaneStatusMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opencensus: Option<IstioControlPlaneStatusMeshConfigExtensionProvidersOpencensus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub opentelemetry: Option<IstioControlPlaneStatusMeshConfigExtensionProvidersOpentelemetry>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prometheus: Option<IstioControlPlaneStatusMeshConfigExtensionProvidersPrometheus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skywalking: Option<IstioControlPlaneStatusMeshConfigExtensionProvidersSkywalking>,
@@ -9675,16 +9532,6 @@ pub struct IstioControlPlaneStatusMeshConfigExtensionProvidersOpencensus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioControlPlaneStatusMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
-    pub max_tag_length: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioControlPlaneStatusMeshConfigExtensionProvidersPrometheus {
 }
 
@@ -9850,6 +9697,14 @@ pub struct IstioControlPlaneStatusMeshConfigTcpKeepalive {
     pub probes: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IstioControlPlaneStatusMeshConfigThriftConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitTimeout")]
+    pub rate_limit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitUrl")]
+    pub rate_limit_url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

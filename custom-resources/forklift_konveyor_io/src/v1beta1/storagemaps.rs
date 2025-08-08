@@ -103,6 +103,8 @@ pub enum StorageMapMapOffloadPluginVsphereXcopyConfigStorageVendorProduct {
     PureFlashArray,
     #[serde(rename = "powerflex")]
     Powerflex,
+    #[serde(rename = "powermax")]
+    Powermax,
 }
 
 /// Source storage.

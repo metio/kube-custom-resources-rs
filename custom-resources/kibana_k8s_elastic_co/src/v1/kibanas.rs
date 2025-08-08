@@ -29,8 +29,7 @@ pub struct KibanaSpec {
     /// ElasticsearchRef is a reference to an Elasticsearch cluster running in the same Kubernetes cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchRef")]
     pub elasticsearch_ref: Option<KibanaElasticsearchRef>,
-    /// EnterpriseSearchRef is a reference to an EnterpriseSearch running in the same Kubernetes cluster.
-    /// Kibana provides the default Enterprise Search UI starting version 7.14.
+    /// EnterpriseSearchRef is a reference to an EnterpriseSearch running in the same Kubernetes cluster. Kibana provides the default Enterprise Search UI starting version 7.14.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enterpriseSearchRef")]
     pub enterprise_search_ref: Option<KibanaEnterpriseSearchRef>,
     /// HTTP holds the HTTP layer configuration for Kibana.
@@ -39,10 +38,7 @@ pub struct KibanaSpec {
     /// Image is the Kibana Docker image to deploy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Monitoring enables you to collect and ship log and monitoring data of this Kibana.
-    /// See https://www.elastic.co/guide/en/kibana/current/xpack-monitoring.html.
-    /// Metricbeat and Filebeat are deployed in the same Pod as sidecars and each one sends data to one or two different
-    /// Elasticsearch monitoring clusters running in the same Kubernetes cluster.
+    /// Monitoring enables you to collect and ship log and monitoring data of this Kibana. See https://www.elastic.co/guide/en/kibana/current/xpack-monitoring.html. Metricbeat and Filebeat are deployed in the same Pod as sidecars and each one sends data to one or two different Elasticsearch monitoring clusters running in the same Kubernetes cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub monitoring: Option<KibanaMonitoring>,
     /// PodTemplate provides customisation options (labels, annotations, affinity rules, resource requests, and so on) for the Kibana pods
@@ -54,8 +50,7 @@ pub struct KibanaSpec {
     /// SecureSettings is a list of references to Kubernetes secrets containing sensitive configuration options for Kibana.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secureSettings")]
     pub secure_settings: Option<Vec<KibanaSecureSettings>>,
-    /// ServiceAccountName is used to check access from the current resource to a resource (for ex. Elasticsearch) in a different namespace.
-    /// Can only be used if ECK is enforcing RBAC on references.
+    /// ServiceAccountName is used to check access from the current resource to a resource (for ex. Elasticsearch) in a different namespace. Can only be used if ECK is enforcing RBAC on references.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Version of Kibana.
@@ -71,25 +66,15 @@ pub struct KibanaElasticsearchRef {
     /// Namespace of the Kubernetes object. If empty, defaults to the current namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-    /// Elastic resource not managed by the operator. The referenced secret must contain the following:
-    /// - `url`: the URL to reach the Elastic resource
-    /// - `username`: the username of the user to be authenticated to the Elastic resource
-    /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional)
-    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
-    /// This field cannot be used in combination with the other fields name, namespace or serviceName.
+    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an Elastic resource not managed by the operator. The referenced secret must contain the following: - `url`: the URL to reach the Elastic resource - `username`: the username of the user to be authenticated to the Elastic resource - `password`: the password of the user to be authenticated to the Elastic resource - `ca.crt`: the CA certificate in PEM format (optional). This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced
-    /// object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
-    /// the referenced resource is used.
+    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of the referenced resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
-/// EnterpriseSearchRef is a reference to an EnterpriseSearch running in the same Kubernetes cluster.
-/// Kibana provides the default Enterprise Search UI starting version 7.14.
+/// EnterpriseSearchRef is a reference to an EnterpriseSearch running in the same Kubernetes cluster. Kibana provides the default Enterprise Search UI starting version 7.14.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaEnterpriseSearchRef {
     /// Name of an existing Kubernetes object corresponding to an Elastic resource managed by ECK.
@@ -98,19 +83,10 @@ pub struct KibanaEnterpriseSearchRef {
     /// Namespace of the Kubernetes object. If empty, defaults to the current namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-    /// Elastic resource not managed by the operator. The referenced secret must contain the following:
-    /// - `url`: the URL to reach the Elastic resource
-    /// - `username`: the username of the user to be authenticated to the Elastic resource
-    /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional)
-    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
-    /// This field cannot be used in combination with the other fields name, namespace or serviceName.
+    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an Elastic resource not managed by the operator. The referenced secret must contain the following: - `url`: the URL to reach the Elastic resource - `username`: the username of the user to be authenticated to the Elastic resource - `password`: the password of the user to be authenticated to the Elastic resource - `ca.crt`: the CA certificate in PEM format (optional). This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced
-    /// object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
-    /// the referenced resource is used.
+    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of the referenced resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
@@ -129,8 +105,7 @@ pub struct KibanaHttp {
 /// Service defines the template for the associated Kubernetes Service object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpService {
-    /// ObjectMeta is the metadata of the service.
-    /// The name and namespace provided here are managed by ECK and will be ignored.
+    /// ObjectMeta is the metadata of the service. The name and namespace provided here are managed by ECK and will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<KibanaHttpServiceMetadata>,
     /// Spec is the specification of the service.
@@ -138,8 +113,7 @@ pub struct KibanaHttpService {
     pub spec: Option<KibanaHttpServiceSpec>,
 }
 
-/// ObjectMeta is the metadata of the service.
-/// The name and namespace provided here are managed by ECK and will be ignored.
+/// ObjectMeta is the metadata of the service. The name and namespace provided here are managed by ECK and will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpServiceMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -157,216 +131,63 @@ pub struct KibanaHttpServiceMetadata {
 /// Spec is the specification of the service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpServiceSpec {
-    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically
-    /// allocated for services with type LoadBalancer.  Default is "true". It
-    /// may be set to "false" if the cluster load-balancer does not rely on
-    /// NodePorts.  If the caller requests specific NodePorts (by specifying a
-    /// value), those requests will be respected, regardless of this field.
-    /// This field may only be set for services with type LoadBalancer and will
-    /// be cleared if the type is changed to any other type.
+    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically allocated for services with type LoadBalancer.  Default is "true". It may be set to "false" if the cluster load-balancer does not rely on NodePorts.  If the caller requests specific NodePorts (by specifying a value), those requests will be respected, regardless of this field. This field may only be set for services with type LoadBalancer and will be cleared if the type is changed to any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
-    /// clusterIP is the IP address of the service and is usually assigned
-    /// randomly. If an address is specified manually, is in-range (as per
-    /// system configuration), and is not in use, it will be allocated to the
-    /// service; otherwise creation of the service will fail. This field may not
-    /// be changed through updates unless the type field is also being changed
-    /// to ExternalName (which requires this field to be blank) or the type
-    /// field is being changed from ExternalName (in which case this field may
-    /// optionally be specified, as describe above).  Valid values are "None",
-    /// empty string (""), or a valid IP address. Setting this to "None" makes a
-    /// "headless service" (no virtual IP), which is useful when direct endpoint
-    /// connections are preferred and proxying is not required.  Only applies to
-    /// types ClusterIP, NodePort, and LoadBalancer. If this field is specified
-    /// when creating a Service of type ExternalName, creation will fail. This
-    /// field will be wiped when updating a Service to type ExternalName.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// clusterIP is the IP address of the service and is usually assigned randomly. If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be blank) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address. Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
-    /// ClusterIPs is a list of IP addresses assigned to this service, and are
-    /// usually assigned randomly.  If an address is specified manually, is
-    /// in-range (as per system configuration), and is not in use, it will be
-    /// allocated to the service; otherwise creation of the service will fail.
-    /// This field may not be changed through updates unless the type field is
-    /// also being changed to ExternalName (which requires this field to be
-    /// empty) or the type field is being changed from ExternalName (in which
-    /// case this field may optionally be specified, as describe above).  Valid
-    /// values are "None", empty string (""), or a valid IP address.  Setting
-    /// this to "None" makes a "headless service" (no virtual IP), which is
-    /// useful when direct endpoint connections are preferred and proxying is
-    /// not required.  Only applies to types ClusterIP, NodePort, and
-    /// LoadBalancer. If this field is specified when creating a Service of type
-    /// ExternalName, creation will fail. This field will be wiped when updating
-    /// a Service to type ExternalName.  If this field is not specified, it will
-    /// be initialized from the clusterIP field.  If this field is specified,
-    /// clients must ensure that clusterIPs[0] and clusterIP have the same
-    /// value.
-    /// 
-    /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
-    /// These IPs must correspond to the values of the ipFamilies field. Both
-    /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// ClusterIPs is a list of IP addresses assigned to this service, and are usually assigned randomly.  If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be empty) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address.  Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName.  If this field is not specified, it will be initialized from the clusterIP field.  If this field is specified, clients must ensure that clusterIPs[0] and clusterIP have the same value. 
+    ///  This field may hold a maximum of two entries (dual-stack IPs, in either order). These IPs must correspond to the values of the ipFamilies field. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
-    /// externalIPs is a list of IP addresses for which nodes in the cluster
-    /// will also accept traffic for this service.  These IPs are not managed by
-    /// Kubernetes.  The user is responsible for ensuring that traffic arrives
-    /// at a node with this IP.  A common example is external load-balancers
-    /// that are not part of the Kubernetes system.
+    /// externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service.  These IPs are not managed by Kubernetes.  The user is responsible for ensuring that traffic arrives at a node with this IP.  A common example is external load-balancers that are not part of the Kubernetes system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    /// externalName is the external reference that discovery mechanisms will
-    /// return as an alias for this service (e.g. a DNS CNAME record). No
-    /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
-    /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
+    /// externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
-    /// externalTrafficPolicy describes how nodes distribute service traffic they
-    /// receive on one of the Service's "externally-facing" addresses (NodePorts,
-    /// ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure
-    /// the service in a way that assumes that external load balancers will take care
-    /// of balancing the service traffic between nodes, and so each node will deliver
-    /// traffic only to the node-local endpoints of the service, without masquerading
-    /// the client source IP. (Traffic mistakenly sent to a node with no endpoints will
-    /// be dropped.) The default value, "Cluster", uses the standard behavior of
-    /// routing to all endpoints evenly (possibly modified by topology and other
-    /// features). Note that traffic sent to an External IP or LoadBalancer IP from
-    /// within the cluster will always get "Cluster" semantics, but clients sending to
-    /// a NodePort from within the cluster may need to take traffic policy into account
-    /// when picking a node.
+    /// externalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.) The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get "Cluster" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    /// healthCheckNodePort specifies the healthcheck nodePort for the service.
-    /// This only applies when type is set to LoadBalancer and
-    /// externalTrafficPolicy is set to Local. If a value is specified, is
-    /// in-range, and is not in use, it will be used.  If not specified, a value
-    /// will be automatically allocated.  External systems (e.g. load-balancers)
-    /// can use this port to determine if a given node holds endpoints for this
-    /// service or not.  If this field is specified when creating a Service
-    /// which does not need it, creation will fail. This field will be wiped
-    /// when updating a Service to no longer need it (e.g. changing type).
-    /// This field cannot be updated once set.
+    /// healthCheckNodePort specifies the healthcheck nodePort for the service. This only applies when type is set to LoadBalancer and externalTrafficPolicy is set to Local. If a value is specified, is in-range, and is not in use, it will be used.  If not specified, a value will be automatically allocated.  External systems (e.g. load-balancers) can use this port to determine if a given node holds endpoints for this service or not.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type). This field cannot be updated once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
-    /// InternalTrafficPolicy describes how nodes distribute service traffic they
-    /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
-    /// only want to talk to endpoints of the service on the same node as the pod,
-    /// dropping the traffic if there are no local endpoints. The default value,
-    /// "Cluster", uses the standard behavior of routing to all endpoints evenly
-    /// (possibly modified by topology and other features).
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they receive on the ClusterIP. If set to "Local", the proxy will assume that pods only want to talk to endpoints of the service on the same node as the pod, dropping the traffic if there are no local endpoints. The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
-    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
-    /// service. This field is usually assigned automatically based on cluster
-    /// configuration and the ipFamilyPolicy field. If this field is specified
-    /// manually, the requested family is available in the cluster,
-    /// and ipFamilyPolicy allows it, it will be used; otherwise creation of
-    /// the service will fail. This field is conditionally mutable: it allows
-    /// for adding or removing a secondary IP family, but it does not allow
-    /// changing the primary IP family of the Service. Valid values are "IPv4"
-    /// and "IPv6".  This field only applies to Services of types ClusterIP,
-    /// NodePort, and LoadBalancer, and does apply to "headless" services.
-    /// This field will be wiped when updating a Service to type ExternalName.
-    /// 
-    /// This field may hold a maximum of two entries (dual-stack families, in
-    /// either order).  These families must correspond to the values of the
-    /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
-    /// governed by the ipFamilyPolicy field.
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services. This field will be wiped when updating a Service to type ExternalName. 
+    ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// IPFamilyPolicy represents the dual-stack-ness requested or required by
-    /// this Service. If there is no value provided, then this field will be set
-    /// to SingleStack. Services can be "SingleStack" (a single IP family),
-    /// "PreferDualStack" (two IP families on dual-stack configured clusters or
-    /// a single IP family on single-stack clusters), or "RequireDualStack"
-    /// (two IP families on dual-stack configured clusters, otherwise fail). The
-    /// ipFamilies and clusterIPs fields depend on the value of this field. This
-    /// field will be wiped when updating a service to type ExternalName.
+    /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
-    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
-    /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
-    /// e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users.
-    /// This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load
-    /// balancer implementation is used, today this is typically done through the cloud provider integration,
-    /// but should apply for any default implementation. If set, it is assumed that a load balancer
-    /// implementation is watching for Services with a matching class. Any default load balancer
-    /// implementation (e.g. cloud providers) should ignore Services that set this field.
-    /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
-    /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
+    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix, e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users. This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load balancer implementation is used, today this is typically done through the cloud provider integration, but should apply for any default implementation. If set, it is assumed that a load balancer implementation is watching for Services with a matching class. Any default load balancer implementation (e.g. cloud providers) should ignore Services that set this field. This field can only be set when creating or updating a Service to type 'LoadBalancer'. Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    /// Only applies to Service Type: LoadBalancer.
-    /// This feature depends on whether the underlying cloud-provider supports specifying
-    /// the loadBalancerIP when a load balancer is created.
-    /// This field will be ignored if the cloud-provider does not support the feature.
-    /// Deprecated: This field was under-specified and its meaning varies across implementations.
-    /// Using it is non-portable and it may not support dual-stack.
-    /// Users are encouraged to use implementation-specific annotations when available.
+    /// Only applies to Service Type: LoadBalancer. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created. This field will be ignored if the cloud-provider does not support the feature. Deprecated: This field was under-specified and its meaning varies across implementations. Using it is non-portable and it may not support dual-stack. Users are encouraged to use implementation-specific annotations when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
-    /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
-    /// cloud-provider does not support the feature."
-    /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
+    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature." More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
-    /// The list of ports that are exposed by this service.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<KibanaHttpServiceSpecPorts>>,
-    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this
-    /// Service should disregard any indications of ready/not-ready.
-    /// The primary use case for setting this field is for a StatefulSet's Headless Service to
-    /// propagate SRV DNS records for its Pods for the purpose of peer discovery.
-    /// The Kubernetes controllers that generate Endpoints and EndpointSlice resources for
-    /// Services interpret this to mean that all endpoints are considered "ready" even if the
-    /// Pods themselves are not. Agents which consume only Kubernetes generated endpoints
-    /// through the Endpoints or EndpointSlice resources can safely assume this behavior.
+    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this Service should disregard any indications of ready/not-ready. The primary use case for setting this field is for a StatefulSet's Headless Service to propagate SRV DNS records for its Pods for the purpose of peer discovery. The Kubernetes controllers that generate Endpoints and EndpointSlice resources for Services interpret this to mean that all endpoints are considered "ready" even if the Pods themselves are not. Agents which consume only Kubernetes generated endpoints through the Endpoints or EndpointSlice resources can safely assume this behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
-    /// Route service traffic to pods with label keys and values matching this
-    /// selector. If empty or not present, the service is assumed to have an
-    /// external process managing its endpoints, which Kubernetes will not
-    /// modify. Only applies to types ClusterIP, NodePort, and LoadBalancer.
-    /// Ignored if type is ExternalName.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// Supports "ClientIP" and "None". Used to maintain session affinity.
-    /// Enable client IP based session affinity.
-    /// Must be ClientIP or None.
-    /// Defaults to None.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// Supports "ClientIP" and "None". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<KibanaHttpServiceSpecSessionAffinityConfig>,
-    /// TrafficDistribution offers a way to express preferences for how traffic
-    /// is distributed to Service endpoints. Implementations can use this field
-    /// as a hint, but are not required to guarantee strict adherence. If the
-    /// field is not set, the implementation will apply its default routing
-    /// strategy. If set to "PreferClose", implementations should prioritize
-    /// endpoints that are in the same zone.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
-    pub traffic_distribution: Option<String>,
-    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
-    /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
-    /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
-    /// to endpoints. Endpoints are determined by the selector or if that is not
-    /// specified, by manual construction of an Endpoints object or
-    /// EndpointSlice objects. If clusterIP is "None", no virtual IP is
-    /// allocated and the endpoints are published as a set of endpoints rather
-    /// than a virtual IP.
-    /// "NodePort" builds on ClusterIP and allocates a port on every node which
-    /// routes to the same endpoints as the clusterIP.
-    /// "LoadBalancer" builds on NodePort and creates an external load-balancer
-    /// (if supported in the current cloud) which routes to the same endpoints
-    /// as the clusterIP.
-    /// "ExternalName" aliases this service to the specified externalName.
-    /// Several other fields do not apply to ExternalName services.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -374,55 +195,24 @@ pub struct KibanaHttpServiceSpec {
 /// ServicePort contains information on service's port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpServiceSpecPorts {
-    /// The application protocol for this port.
-    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
-    /// This field follows standard Kubernetes label syntax.
-    /// Valid values are either:
-    /// 
-    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
-    /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    /// 
-    /// * Kubernetes-defined prefixed names:
-    ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
-    ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
-    ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    /// 
-    /// * Other protocols should use implementation-defined prefixed names such as
-    /// mycompany.com/my-custom-protocol.
+    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
+    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
+    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540 * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
+    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
-    /// The name of this port within the service. This must be a DNS_LABEL.
-    /// All ports within a ServiceSpec must have unique names. When considering
-    /// the endpoints for a Service, this must match the 'name' field in the
-    /// EndpointPort.
-    /// Optional if only one ServicePort is defined on this service.
+    /// The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The port on each node on which this service is exposed when type is
-    /// NodePort or LoadBalancer.  Usually assigned by the system. If a value is
-    /// specified, in-range, and not in use it will be used, otherwise the
-    /// operation will fail.  If not specified, a port will be allocated if this
-    /// Service requires one.  If this field is specified when creating a
-    /// Service which does not need it, creation will fail. This field will be
-    /// wiped when updating a Service to no longer need it (e.g. changing type
-    /// from NodePort to ClusterIP).
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    /// The port on each node on which this service is exposed when type is NodePort or LoadBalancer.  Usually assigned by the system. If a value is specified, in-range, and not in use it will be used, otherwise the operation will fail.  If not specified, a port will be allocated if this Service requires one.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type from NodePort to ClusterIP). More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i32>,
     /// The port that will be exposed by this service.
     pub port: i32,
-    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP".
-    /// Default is TCP.
+    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Number or name of the port to access on the pods targeted by the service.
-    /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
-    /// If this is a string, it will be looked up as a named port in the
-    /// target Pod's container ports. If this is not specified, the value
-    /// of the 'port' field is used (an identity map).
-    /// This field is ignored for services with clusterIP=None, and should be
-    /// omitted or set equal to the 'port' field.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
@@ -438,9 +228,7 @@ pub struct KibanaHttpServiceSpecSessionAffinityConfig {
 /// clientIP contains the configurations of Client IP based session affinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpServiceSpecSessionAffinityConfigClientIp {
-    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
-    /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
-    /// Default value is 10800(for 3 hours).
+    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP". Default value is 10800(for 3 hours).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -448,12 +236,8 @@ pub struct KibanaHttpServiceSpecSessionAffinityConfigClientIp {
 /// TLS defines options for configuring TLS for HTTP.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpTls {
-    /// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
-    /// The referenced secret should contain the following:
-    /// 
-    /// - `ca.crt`: The certificate authority (optional).
-    /// - `tls.crt`: The certificate (or a chain).
-    /// - `tls.key`: The private key to the first certificate in the certificate chain.
+    /// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS. The referenced secret should contain the following: 
+    ///  - `ca.crt`: The certificate authority (optional). - `tls.crt`: The certificate (or a chain). - `tls.key`: The private key to the first certificate in the certificate chain.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<KibanaHttpTlsCertificate>,
     /// SelfSignedCertificate allows configuring the self-signed certificate generated by the operator.
@@ -461,12 +245,8 @@ pub struct KibanaHttpTls {
     pub self_signed_certificate: Option<KibanaHttpTlsSelfSignedCertificate>,
 }
 
-/// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
-/// The referenced secret should contain the following:
-/// 
-/// - `ca.crt`: The certificate authority (optional).
-/// - `tls.crt`: The certificate (or a chain).
-/// - `tls.key`: The private key to the first certificate in the certificate chain.
+/// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS. The referenced secret should contain the following: 
+///  - `ca.crt`: The certificate authority (optional). - `tls.crt`: The certificate (or a chain). - `tls.key`: The private key to the first certificate in the certificate chain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaHttpTlsCertificate {
     /// SecretName is the name of the secret.
@@ -496,10 +276,7 @@ pub struct KibanaHttpTlsSelfSignedCertificateSubjectAltNames {
     pub ip: Option<String>,
 }
 
-/// Monitoring enables you to collect and ship log and monitoring data of this Kibana.
-/// See https://www.elastic.co/guide/en/kibana/current/xpack-monitoring.html.
-/// Metricbeat and Filebeat are deployed in the same Pod as sidecars and each one sends data to one or two different
-/// Elasticsearch monitoring clusters running in the same Kubernetes cluster.
+/// Monitoring enables you to collect and ship log and monitoring data of this Kibana. See https://www.elastic.co/guide/en/kibana/current/xpack-monitoring.html. Metricbeat and Filebeat are deployed in the same Pod as sidecars and each one sends data to one or two different Elasticsearch monitoring clusters running in the same Kubernetes cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaMonitoring {
     /// Logs holds references to Elasticsearch clusters which receive log data from an associated resource.
@@ -513,14 +290,12 @@ pub struct KibanaMonitoring {
 /// Logs holds references to Elasticsearch clusters which receive log data from an associated resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaMonitoringLogs {
-    /// ElasticsearchRefs is a reference to a list of monitoring Elasticsearch clusters running in the same Kubernetes cluster.
-    /// Due to existing limitations, only a single Elasticsearch cluster is currently supported.
+    /// ElasticsearchRefs is a reference to a list of monitoring Elasticsearch clusters running in the same Kubernetes cluster. Due to existing limitations, only a single Elasticsearch cluster is currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchRefs")]
     pub elasticsearch_refs: Option<Vec<KibanaMonitoringLogsElasticsearchRefs>>,
 }
 
-/// ObjectSelector defines a reference to a Kubernetes object which can be an Elastic resource managed by the operator
-/// or a Secret describing an external Elastic resource not managed by the operator.
+/// ObjectSelector defines a reference to a Kubernetes object which can be an Elastic resource managed by the operator or a Secret describing an external Elastic resource not managed by the operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaMonitoringLogsElasticsearchRefs {
     /// Name of an existing Kubernetes object corresponding to an Elastic resource managed by ECK.
@@ -529,19 +304,10 @@ pub struct KibanaMonitoringLogsElasticsearchRefs {
     /// Namespace of the Kubernetes object. If empty, defaults to the current namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-    /// Elastic resource not managed by the operator. The referenced secret must contain the following:
-    /// - `url`: the URL to reach the Elastic resource
-    /// - `username`: the username of the user to be authenticated to the Elastic resource
-    /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional)
-    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
-    /// This field cannot be used in combination with the other fields name, namespace or serviceName.
+    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an Elastic resource not managed by the operator. The referenced secret must contain the following: - `url`: the URL to reach the Elastic resource - `username`: the username of the user to be authenticated to the Elastic resource - `password`: the password of the user to be authenticated to the Elastic resource - `ca.crt`: the CA certificate in PEM format (optional). This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced
-    /// object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
-    /// the referenced resource is used.
+    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of the referenced resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
@@ -549,14 +315,12 @@ pub struct KibanaMonitoringLogsElasticsearchRefs {
 /// Metrics holds references to Elasticsearch clusters which receive monitoring data from this resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaMonitoringMetrics {
-    /// ElasticsearchRefs is a reference to a list of monitoring Elasticsearch clusters running in the same Kubernetes cluster.
-    /// Due to existing limitations, only a single Elasticsearch cluster is currently supported.
+    /// ElasticsearchRefs is a reference to a list of monitoring Elasticsearch clusters running in the same Kubernetes cluster. Due to existing limitations, only a single Elasticsearch cluster is currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearchRefs")]
     pub elasticsearch_refs: Option<Vec<KibanaMonitoringMetricsElasticsearchRefs>>,
 }
 
-/// ObjectSelector defines a reference to a Kubernetes object which can be an Elastic resource managed by the operator
-/// or a Secret describing an external Elastic resource not managed by the operator.
+/// ObjectSelector defines a reference to a Kubernetes object which can be an Elastic resource managed by the operator or a Secret describing an external Elastic resource not managed by the operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaMonitoringMetricsElasticsearchRefs {
     /// Name of an existing Kubernetes object corresponding to an Elastic resource managed by ECK.
@@ -565,19 +329,10 @@ pub struct KibanaMonitoringMetricsElasticsearchRefs {
     /// Namespace of the Kubernetes object. If empty, defaults to the current namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an
-    /// Elastic resource not managed by the operator. The referenced secret must contain the following:
-    /// - `url`: the URL to reach the Elastic resource
-    /// - `username`: the username of the user to be authenticated to the Elastic resource
-    /// - `password`: the password of the user to be authenticated to the Elastic resource
-    /// - `ca.crt`: the CA certificate in PEM format (optional)
-    /// - `api-key`: the key to authenticate against the Elastic resource instead of a username and password (supported only for `elasticsearchRefs` in AgentSpec and in BeatSpec)
-    /// This field cannot be used in combination with the other fields name, namespace or serviceName.
+    /// SecretName is the name of an existing Kubernetes secret that contains connection information for associating an Elastic resource not managed by the operator. The referenced secret must contain the following: - `url`: the URL to reach the Elastic resource - `username`: the username of the user to be authenticated to the Elastic resource - `password`: the password of the user to be authenticated to the Elastic resource - `ca.crt`: the CA certificate in PEM format (optional). This field cannot be used in combination with the other fields name, namespace or serviceName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
-    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced
-    /// object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of
-    /// the referenced resource is used.
+    /// ServiceName is the name of an existing Kubernetes service which is used to make requests to the referenced object. It has to be in the same namespace as the referenced resource. If left empty, the default HTTP service of the referenced resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
@@ -585,9 +340,7 @@ pub struct KibanaMonitoringMetricsElasticsearchRefs {
 /// SecretSource defines a data source based on a Kubernetes Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaSecureSettings {
-    /// Entries define how to project each key-value pair in the secret to filesystem paths.
-    /// If not defined, all keys will be projected to similarly named paths in the filesystem.
-    /// If defined, only the specified keys will be projected to the corresponding paths.
+    /// Entries define how to project each key-value pair in the secret to filesystem paths. If not defined, all keys will be projected to similarly named paths in the filesystem. If defined, only the specified keys will be projected to the corresponding paths.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<KibanaSecureSettingsEntries>>,
     /// SecretName is the name of the secret.
@@ -600,8 +353,7 @@ pub struct KibanaSecureSettings {
 pub struct KibanaSecureSettingsEntries {
     /// Key is the key contained in the secret.
     pub key: String,
-    /// Path is the relative file path to map the key to.
-    /// Path must not be an absolute file path and must not contain any ".." components.
+    /// Path is the relative file path to map the key to. Path must not be an absolute file path and must not contain any ".." components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
@@ -609,8 +361,7 @@ pub struct KibanaSecureSettingsEntries {
 /// KibanaStatus defines the observed state of Kibana
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KibanaStatus {
-    /// AssociationStatus is the status of any auto-linking to Elasticsearch clusters.
-    /// This field is deprecated and will be removed in a future release. Use ElasticsearchAssociationStatus instead.
+    /// AssociationStatus is the status of any auto-linking to Elasticsearch clusters. This field is deprecated and will be removed in a future release. Use ElasticsearchAssociationStatus instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "associationStatus")]
     pub association_status: Option<String>,
     /// AvailableNodes is the number of available replicas in the deployment.
@@ -631,17 +382,13 @@ pub struct KibanaStatus {
     /// MonitoringAssociationStatus is the status of any auto-linking to monitoring Elasticsearch clusters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "monitoringAssociationStatus")]
     pub monitoring_association_status: Option<BTreeMap<String, String>>,
-    /// ObservedGeneration is the most recent generation observed for this Kibana instance.
-    /// It corresponds to the metadata generation, which is updated on mutation by the API Server.
-    /// If the generation observed in status diverges from the generation in metadata, the Kibana
-    /// controller has not yet processed the changes contained in the Kibana specification.
+    /// ObservedGeneration is the most recent generation observed for this Kibana instance. It corresponds to the metadata generation, which is updated on mutation by the API Server. If the generation observed in status diverges from the generation in metadata, the Kibana controller has not yet processed the changes contained in the Kibana specification.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Selector is the label selector used to find all pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
-    /// Version of the stack resource currently running. During version upgrades, multiple versions may run
-    /// in parallel: this value specifies the lowest version currently running.
+    /// Version of the stack resource currently running. During version upgrades, multiple versions may run in parallel: this value specifies the lowest version currently running.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }

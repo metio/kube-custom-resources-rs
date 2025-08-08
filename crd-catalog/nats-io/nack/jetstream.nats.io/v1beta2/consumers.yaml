@@ -15,11 +15,11 @@ spec:
           jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
           name: "State"
           type: "string"
-        - description: "The name of the JetStream Stream."
+        - description: "The name of the Jetstream Stream."
           jsonPath: ".spec.streamName"
           name: "Stream"
           type: "string"
-        - description: "The name of the JetStream Consumer."
+        - description: "The name of the Jetstream Consumer."
           jsonPath: ".spec.durableName"
           name: "Consumer"
           type: "string"
@@ -50,13 +50,13 @@ spec:
                   description: "How long to allow messages to remain un-acknowledged before attempting redelivery."
                   type: "string"
                 backoff:
-                  description: "List of durations representing a retry time scale for NaK'd or retried messages."
+                  description: "List of durations representing a retry time scale for NaK'd or retried messages"
                   items:
                     type: "string"
                   type: "array"
                 creds:
                   default: ""
-                  description: "NATS user credentials for connecting to servers. Please make sure your controller has mounted the creds on its path."
+                  description: "NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path."
                   type: "string"
                 deliverGroup:
                   description: "The name of a queue group."
@@ -95,16 +95,10 @@ spec:
                   type: "boolean"
                 headersOnly:
                   default: false
-                  description: "When set, only the headers of messages in the stream are delivered, and not the bodies. Additionally, Nats-Msg-Size header is added to indicate the size of the removed payload."
+                  description: "When set, only the headers of messages in the stream are delivered, and not the bodies. Additionally, Nats-Msg-Size header is added to indicate the size of the removed payload"
                   type: "boolean"
                 heartbeatInterval:
                   description: "The interval used to deliver idle heartbeats for push-based consumers, in Go's time.Duration format."
-                  type: "string"
-                inactiveThreshold:
-                  description: "The idle time an Ephemeral Consumer allows before it is removed."
-                  type: "string"
-                jsDomain:
-                  description: "The JetStream domain to use for the consumer."
                   type: "string"
                 maxAckPending:
                   description: "Maximum pending Acks before consumers are paused."
@@ -145,14 +139,14 @@ spec:
                   type: "string"
                 preventDelete:
                   default: false
-                  description: "When true, the managed Consumer will not be deleted when the resource is deleted."
+                  description: "When true, the managed Consumer will not be deleted when the resource is deleted"
                   type: "boolean"
                 preventUpdate:
                   default: false
-                  description: "When true, the managed Consumer will not be updated when the resource is updated."
+                  description: "When true, the managed Consumer will not be updated when the resource is updated"
                   type: "boolean"
                 rateLimitBps:
-                  description: "Rate at which messages will be delivered to clients, expressed in bit per second."
+                  description: "rate at which messages will be delivered to clients, expressed in bit per second."
                   type: "integer"
                 replayPolicy:
                   default: "instant"
@@ -169,7 +163,7 @@ spec:
                   type: "string"
                 servers:
                   default: []
-                  description: "A list of servers for creating consumer."
+                  description: "A list of servers for creating consumer"
                   items:
                     type: "string"
                   type: "array"
@@ -191,10 +185,6 @@ spec:
                         type: "string"
                       type: "array"
                   type: "object"
-                tlsFirst:
-                  default: false
-                  description: "When true, the KV Store will initiate TLS before server INFO."
-                  type: "boolean"
               type: "object"
             status:
               properties:

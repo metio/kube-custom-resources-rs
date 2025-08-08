@@ -29,9 +29,7 @@ pub struct ElasticsearchSpec {
     /// NodeSets allow specifying groups of Elasticsearch nodes sharing the same configuration and Pod templates.
     #[serde(rename = "nodeSets")]
     pub node_sets: Vec<ElasticsearchNodeSets>,
-    /// PodDisruptionBudget provides access to the default pod disruption budget for the Elasticsearch cluster.
-    /// The default budget selects all cluster pods and sets `maxUnavailable` to 1. To disable, set `PodDisruptionBudget`
-    /// to the empty value (`{}` in YAML).
+    /// PodDisruptionBudget provides access to the default pod disruption budget for the Elasticsearch cluster. The default budget selects all cluster pods and sets `maxUnavailable` to 1. To disable, set `PodDisruptionBudget` to the empty value (`{}` in YAML).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
     pub pod_disruption_budget: Option<ElasticsearchPodDisruptionBudget>,
     /// SecureSettings is a list of references to Kubernetes secrets containing sensitive configuration options for Elasticsearch.
@@ -59,8 +57,7 @@ pub struct ElasticsearchHttp {
 /// Service defines the template for the associated Kubernetes Service object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpService {
-    /// ObjectMeta is the metadata of the service.
-    /// The name and namespace provided here are managed by ECK and will be ignored.
+    /// ObjectMeta is the metadata of the service. The name and namespace provided here are managed by ECK and will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ElasticsearchHttpServiceMetadata>,
     /// Spec is the specification of the service.
@@ -68,8 +65,7 @@ pub struct ElasticsearchHttpService {
     pub spec: Option<ElasticsearchHttpServiceSpec>,
 }
 
-/// ObjectMeta is the metadata of the service.
-/// The name and namespace provided here are managed by ECK and will be ignored.
+/// ObjectMeta is the metadata of the service. The name and namespace provided here are managed by ECK and will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpServiceMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -87,216 +83,63 @@ pub struct ElasticsearchHttpServiceMetadata {
 /// Spec is the specification of the service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpServiceSpec {
-    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically
-    /// allocated for services with type LoadBalancer.  Default is "true". It
-    /// may be set to "false" if the cluster load-balancer does not rely on
-    /// NodePorts.  If the caller requests specific NodePorts (by specifying a
-    /// value), those requests will be respected, regardless of this field.
-    /// This field may only be set for services with type LoadBalancer and will
-    /// be cleared if the type is changed to any other type.
+    /// allocateLoadBalancerNodePorts defines if NodePorts will be automatically allocated for services with type LoadBalancer.  Default is "true". It may be set to "false" if the cluster load-balancer does not rely on NodePorts.  If the caller requests specific NodePorts (by specifying a value), those requests will be respected, regardless of this field. This field may only be set for services with type LoadBalancer and will be cleared if the type is changed to any other type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
-    /// clusterIP is the IP address of the service and is usually assigned
-    /// randomly. If an address is specified manually, is in-range (as per
-    /// system configuration), and is not in use, it will be allocated to the
-    /// service; otherwise creation of the service will fail. This field may not
-    /// be changed through updates unless the type field is also being changed
-    /// to ExternalName (which requires this field to be blank) or the type
-    /// field is being changed from ExternalName (in which case this field may
-    /// optionally be specified, as describe above).  Valid values are "None",
-    /// empty string (""), or a valid IP address. Setting this to "None" makes a
-    /// "headless service" (no virtual IP), which is useful when direct endpoint
-    /// connections are preferred and proxying is not required.  Only applies to
-    /// types ClusterIP, NodePort, and LoadBalancer. If this field is specified
-    /// when creating a Service of type ExternalName, creation will fail. This
-    /// field will be wiped when updating a Service to type ExternalName.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// clusterIP is the IP address of the service and is usually assigned randomly. If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be blank) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address. Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
-    /// ClusterIPs is a list of IP addresses assigned to this service, and are
-    /// usually assigned randomly.  If an address is specified manually, is
-    /// in-range (as per system configuration), and is not in use, it will be
-    /// allocated to the service; otherwise creation of the service will fail.
-    /// This field may not be changed through updates unless the type field is
-    /// also being changed to ExternalName (which requires this field to be
-    /// empty) or the type field is being changed from ExternalName (in which
-    /// case this field may optionally be specified, as describe above).  Valid
-    /// values are "None", empty string (""), or a valid IP address.  Setting
-    /// this to "None" makes a "headless service" (no virtual IP), which is
-    /// useful when direct endpoint connections are preferred and proxying is
-    /// not required.  Only applies to types ClusterIP, NodePort, and
-    /// LoadBalancer. If this field is specified when creating a Service of type
-    /// ExternalName, creation will fail. This field will be wiped when updating
-    /// a Service to type ExternalName.  If this field is not specified, it will
-    /// be initialized from the clusterIP field.  If this field is specified,
-    /// clients must ensure that clusterIPs[0] and clusterIP have the same
-    /// value.
-    /// 
-    /// This field may hold a maximum of two entries (dual-stack IPs, in either order).
-    /// These IPs must correspond to the values of the ipFamilies field. Both
-    /// clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// ClusterIPs is a list of IP addresses assigned to this service, and are usually assigned randomly.  If an address is specified manually, is in-range (as per system configuration), and is not in use, it will be allocated to the service; otherwise creation of the service will fail. This field may not be changed through updates unless the type field is also being changed to ExternalName (which requires this field to be empty) or the type field is being changed from ExternalName (in which case this field may optionally be specified, as describe above).  Valid values are "None", empty string (""), or a valid IP address.  Setting this to "None" makes a "headless service" (no virtual IP), which is useful when direct endpoint connections are preferred and proxying is not required.  Only applies to types ClusterIP, NodePort, and LoadBalancer. If this field is specified when creating a Service of type ExternalName, creation will fail. This field will be wiped when updating a Service to type ExternalName.  If this field is not specified, it will be initialized from the clusterIP field.  If this field is specified, clients must ensure that clusterIPs[0] and clusterIP have the same value. 
+    ///  This field may hold a maximum of two entries (dual-stack IPs, in either order). These IPs must correspond to the values of the ipFamilies field. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIPs")]
     pub cluster_i_ps: Option<Vec<String>>,
-    /// externalIPs is a list of IP addresses for which nodes in the cluster
-    /// will also accept traffic for this service.  These IPs are not managed by
-    /// Kubernetes.  The user is responsible for ensuring that traffic arrives
-    /// at a node with this IP.  A common example is external load-balancers
-    /// that are not part of the Kubernetes system.
+    /// externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service.  These IPs are not managed by Kubernetes.  The user is responsible for ensuring that traffic arrives at a node with this IP.  A common example is external load-balancers that are not part of the Kubernetes system.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
-    /// externalName is the external reference that discovery mechanisms will
-    /// return as an alias for this service (e.g. a DNS CNAME record). No
-    /// proxying will be involved.  Must be a lowercase RFC-1123 hostname
-    /// (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
+    /// externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires `type` to be "ExternalName".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
-    /// externalTrafficPolicy describes how nodes distribute service traffic they
-    /// receive on one of the Service's "externally-facing" addresses (NodePorts,
-    /// ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure
-    /// the service in a way that assumes that external load balancers will take care
-    /// of balancing the service traffic between nodes, and so each node will deliver
-    /// traffic only to the node-local endpoints of the service, without masquerading
-    /// the client source IP. (Traffic mistakenly sent to a node with no endpoints will
-    /// be dropped.) The default value, "Cluster", uses the standard behavior of
-    /// routing to all endpoints evenly (possibly modified by topology and other
-    /// features). Note that traffic sent to an External IP or LoadBalancer IP from
-    /// within the cluster will always get "Cluster" semantics, but clients sending to
-    /// a NodePort from within the cluster may need to take traffic policy into account
-    /// when picking a node.
+    /// externalTrafficPolicy describes how nodes distribute service traffic they receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs, and LoadBalancer IPs). If set to "Local", the proxy will configure the service in a way that assumes that external load balancers will take care of balancing the service traffic between nodes, and so each node will deliver traffic only to the node-local endpoints of the service, without masquerading the client source IP. (Traffic mistakenly sent to a node with no endpoints will be dropped.) The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features). Note that traffic sent to an External IP or LoadBalancer IP from within the cluster will always get "Cluster" semantics, but clients sending to a NodePort from within the cluster may need to take traffic policy into account when picking a node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
-    /// healthCheckNodePort specifies the healthcheck nodePort for the service.
-    /// This only applies when type is set to LoadBalancer and
-    /// externalTrafficPolicy is set to Local. If a value is specified, is
-    /// in-range, and is not in use, it will be used.  If not specified, a value
-    /// will be automatically allocated.  External systems (e.g. load-balancers)
-    /// can use this port to determine if a given node holds endpoints for this
-    /// service or not.  If this field is specified when creating a Service
-    /// which does not need it, creation will fail. This field will be wiped
-    /// when updating a Service to no longer need it (e.g. changing type).
-    /// This field cannot be updated once set.
+    /// healthCheckNodePort specifies the healthcheck nodePort for the service. This only applies when type is set to LoadBalancer and externalTrafficPolicy is set to Local. If a value is specified, is in-range, and is not in use, it will be used.  If not specified, a value will be automatically allocated.  External systems (e.g. load-balancers) can use this port to determine if a given node holds endpoints for this service or not.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type). This field cannot be updated once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
-    /// InternalTrafficPolicy describes how nodes distribute service traffic they
-    /// receive on the ClusterIP. If set to "Local", the proxy will assume that pods
-    /// only want to talk to endpoints of the service on the same node as the pod,
-    /// dropping the traffic if there are no local endpoints. The default value,
-    /// "Cluster", uses the standard behavior of routing to all endpoints evenly
-    /// (possibly modified by topology and other features).
+    /// InternalTrafficPolicy describes how nodes distribute service traffic they receive on the ClusterIP. If set to "Local", the proxy will assume that pods only want to talk to endpoints of the service on the same node as the pod, dropping the traffic if there are no local endpoints. The default value, "Cluster", uses the standard behavior of routing to all endpoints evenly (possibly modified by topology and other features).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
-    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this
-    /// service. This field is usually assigned automatically based on cluster
-    /// configuration and the ipFamilyPolicy field. If this field is specified
-    /// manually, the requested family is available in the cluster,
-    /// and ipFamilyPolicy allows it, it will be used; otherwise creation of
-    /// the service will fail. This field is conditionally mutable: it allows
-    /// for adding or removing a secondary IP family, but it does not allow
-    /// changing the primary IP family of the Service. Valid values are "IPv4"
-    /// and "IPv6".  This field only applies to Services of types ClusterIP,
-    /// NodePort, and LoadBalancer, and does apply to "headless" services.
-    /// This field will be wiped when updating a Service to type ExternalName.
-    /// 
-    /// This field may hold a maximum of two entries (dual-stack families, in
-    /// either order).  These families must correspond to the values of the
-    /// clusterIPs field, if specified. Both clusterIPs and ipFamilies are
-    /// governed by the ipFamilyPolicy field.
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service. This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail. This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service. Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services. This field will be wiped when updating a Service to type ExternalName. 
+    ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
-    /// IPFamilyPolicy represents the dual-stack-ness requested or required by
-    /// this Service. If there is no value provided, then this field will be set
-    /// to SingleStack. Services can be "SingleStack" (a single IP family),
-    /// "PreferDualStack" (two IP families on dual-stack configured clusters or
-    /// a single IP family on single-stack clusters), or "RequireDualStack"
-    /// (two IP families on dual-stack configured clusters, otherwise fail). The
-    /// ipFamilies and clusterIPs fields depend on the value of this field. This
-    /// field will be wiped when updating a service to type ExternalName.
+    /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service. If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field. This field will be wiped when updating a service to type ExternalName.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
-    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to.
-    /// If specified, the value of this field must be a label-style identifier, with an optional prefix,
-    /// e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users.
-    /// This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load
-    /// balancer implementation is used, today this is typically done through the cloud provider integration,
-    /// but should apply for any default implementation. If set, it is assumed that a load balancer
-    /// implementation is watching for Services with a matching class. Any default load balancer
-    /// implementation (e.g. cloud providers) should ignore Services that set this field.
-    /// This field can only be set when creating or updating a Service to type 'LoadBalancer'.
-    /// Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
+    /// loadBalancerClass is the class of the load balancer implementation this Service belongs to. If specified, the value of this field must be a label-style identifier, with an optional prefix, e.g. "internal-vip" or "example.com/internal-vip". Unprefixed names are reserved for end-users. This field can only be set when the Service type is 'LoadBalancer'. If not set, the default load balancer implementation is used, today this is typically done through the cloud provider integration, but should apply for any default implementation. If set, it is assumed that a load balancer implementation is watching for Services with a matching class. Any default load balancer implementation (e.g. cloud providers) should ignore Services that set this field. This field can only be set when creating or updating a Service to type 'LoadBalancer'. Once set, it can not be changed. This field will be wiped when a service is updated to a non 'LoadBalancer' type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
-    /// Only applies to Service Type: LoadBalancer.
-    /// This feature depends on whether the underlying cloud-provider supports specifying
-    /// the loadBalancerIP when a load balancer is created.
-    /// This field will be ignored if the cloud-provider does not support the feature.
-    /// Deprecated: This field was under-specified and its meaning varies across implementations.
-    /// Using it is non-portable and it may not support dual-stack.
-    /// Users are encouraged to use implementation-specific annotations when available.
+    /// Only applies to Service Type: LoadBalancer. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created. This field will be ignored if the cloud-provider does not support the feature. Deprecated: This field was under-specified and its meaning varies across implementations. Using it is non-portable and it may not support dual-stack. Users are encouraged to use implementation-specific annotations when available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
-    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider
-    /// load-balancer will be restricted to the specified client IPs. This field will be ignored if the
-    /// cloud-provider does not support the feature."
-    /// More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
+    /// If specified and supported by the platform, this will restrict traffic through the cloud-provider load-balancer will be restricted to the specified client IPs. This field will be ignored if the cloud-provider does not support the feature." More info: https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
-    /// The list of ports that are exposed by this service.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// The list of ports that are exposed by this service. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ElasticsearchHttpServiceSpecPorts>>,
-    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this
-    /// Service should disregard any indications of ready/not-ready.
-    /// The primary use case for setting this field is for a StatefulSet's Headless Service to
-    /// propagate SRV DNS records for its Pods for the purpose of peer discovery.
-    /// The Kubernetes controllers that generate Endpoints and EndpointSlice resources for
-    /// Services interpret this to mean that all endpoints are considered "ready" even if the
-    /// Pods themselves are not. Agents which consume only Kubernetes generated endpoints
-    /// through the Endpoints or EndpointSlice resources can safely assume this behavior.
+    /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this Service should disregard any indications of ready/not-ready. The primary use case for setting this field is for a StatefulSet's Headless Service to propagate SRV DNS records for its Pods for the purpose of peer discovery. The Kubernetes controllers that generate Endpoints and EndpointSlice resources for Services interpret this to mean that all endpoints are considered "ready" even if the Pods themselves are not. Agents which consume only Kubernetes generated endpoints through the Endpoints or EndpointSlice resources can safely assume this behavior.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
-    /// Route service traffic to pods with label keys and values matching this
-    /// selector. If empty or not present, the service is assumed to have an
-    /// external process managing its endpoints, which Kubernetes will not
-    /// modify. Only applies to types ClusterIP, NodePort, and LoadBalancer.
-    /// Ignored if type is ExternalName.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/
+    /// Route service traffic to pods with label keys and values matching this selector. If empty or not present, the service is assumed to have an external process managing its endpoints, which Kubernetes will not modify. Only applies to types ClusterIP, NodePort, and LoadBalancer. Ignored if type is ExternalName. More info: https://kubernetes.io/docs/concepts/services-networking/service/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
-    /// Supports "ClientIP" and "None". Used to maintain session affinity.
-    /// Enable client IP based session affinity.
-    /// Must be ClientIP or None.
-    /// Defaults to None.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+    /// Supports "ClientIP" and "None". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<String>,
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ElasticsearchHttpServiceSpecSessionAffinityConfig>,
-    /// TrafficDistribution offers a way to express preferences for how traffic
-    /// is distributed to Service endpoints. Implementations can use this field
-    /// as a hint, but are not required to guarantee strict adherence. If the
-    /// field is not set, the implementation will apply its default routing
-    /// strategy. If set to "PreferClose", implementations should prioritize
-    /// endpoints that are in the same zone.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
-    pub traffic_distribution: Option<String>,
-    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid
-    /// options are ExternalName, ClusterIP, NodePort, and LoadBalancer.
-    /// "ClusterIP" allocates a cluster-internal IP address for load-balancing
-    /// to endpoints. Endpoints are determined by the selector or if that is not
-    /// specified, by manual construction of an Endpoints object or
-    /// EndpointSlice objects. If clusterIP is "None", no virtual IP is
-    /// allocated and the endpoints are published as a set of endpoints rather
-    /// than a virtual IP.
-    /// "NodePort" builds on ClusterIP and allocates a port on every node which
-    /// routes to the same endpoints as the clusterIP.
-    /// "LoadBalancer" builds on NodePort and creates an external load-balancer
-    /// (if supported in the current cloud) which routes to the same endpoints
-    /// as the clusterIP.
-    /// "ExternalName" aliases this service to the specified externalName.
-    /// Several other fields do not apply to ExternalName services.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+    /// type determines how the Service is exposed. Defaults to ClusterIP. Valid options are ExternalName, ClusterIP, NodePort, and LoadBalancer. "ClusterIP" allocates a cluster-internal IP address for load-balancing to endpoints. Endpoints are determined by the selector or if that is not specified, by manual construction of an Endpoints object or EndpointSlice objects. If clusterIP is "None", no virtual IP is allocated and the endpoints are published as a set of endpoints rather than a virtual IP. "NodePort" builds on ClusterIP and allocates a port on every node which routes to the same endpoints as the clusterIP. "LoadBalancer" builds on NodePort and creates an external load-balancer (if supported in the current cloud) which routes to the same endpoints as the clusterIP. "ExternalName" aliases this service to the specified externalName. Several other fields do not apply to ExternalName services. More info: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -304,55 +147,24 @@ pub struct ElasticsearchHttpServiceSpec {
 /// ServicePort contains information on service's port.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpServiceSpecPorts {
-    /// The application protocol for this port.
-    /// This is used as a hint for implementations to offer richer behavior for protocols that they understand.
-    /// This field follows standard Kubernetes label syntax.
-    /// Valid values are either:
-    /// 
-    /// * Un-prefixed protocol names - reserved for IANA standard service names (as per
-    /// RFC-6335 and https://www.iana.org/assignments/service-names).
-    /// 
-    /// * Kubernetes-defined prefixed names:
-    ///   * 'kubernetes.io/h2c' - HTTP/2 prior knowledge over cleartext as described in https://www.rfc-editor.org/rfc/rfc9113.html#name-starting-http-2-with-prior-
-    ///   * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455
-    ///   * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455
-    /// 
-    /// * Other protocols should use implementation-defined prefixed names such as
-    /// mycompany.com/my-custom-protocol.
+    /// The application protocol for this port. This is used as a hint for implementations to offer richer behavior for protocols that they understand. This field follows standard Kubernetes label syntax. Valid values are either: 
+    ///  * Un-prefixed protocol names - reserved for IANA standard service names (as per RFC-6335 and https://www.iana.org/assignments/service-names). 
+    ///  * Kubernetes-defined prefixed names: * 'kubernetes.io/h2c' - HTTP/2 over cleartext as described in https://www.rfc-editor.org/rfc/rfc7540 * 'kubernetes.io/ws'  - WebSocket over cleartext as described in https://www.rfc-editor.org/rfc/rfc6455 * 'kubernetes.io/wss' - WebSocket over TLS as described in https://www.rfc-editor.org/rfc/rfc6455 
+    ///  * Other protocols should use implementation-defined prefixed names such as mycompany.com/my-custom-protocol.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
     pub app_protocol: Option<String>,
-    /// The name of this port within the service. This must be a DNS_LABEL.
-    /// All ports within a ServiceSpec must have unique names. When considering
-    /// the endpoints for a Service, this must match the 'name' field in the
-    /// EndpointPort.
-    /// Optional if only one ServicePort is defined on this service.
+    /// The name of this port within the service. This must be a DNS_LABEL. All ports within a ServiceSpec must have unique names. When considering the endpoints for a Service, this must match the 'name' field in the EndpointPort. Optional if only one ServicePort is defined on this service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The port on each node on which this service is exposed when type is
-    /// NodePort or LoadBalancer.  Usually assigned by the system. If a value is
-    /// specified, in-range, and not in use it will be used, otherwise the
-    /// operation will fail.  If not specified, a port will be allocated if this
-    /// Service requires one.  If this field is specified when creating a
-    /// Service which does not need it, creation will fail. This field will be
-    /// wiped when updating a Service to no longer need it (e.g. changing type
-    /// from NodePort to ClusterIP).
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+    /// The port on each node on which this service is exposed when type is NodePort or LoadBalancer.  Usually assigned by the system. If a value is specified, in-range, and not in use it will be used, otherwise the operation will fail.  If not specified, a port will be allocated if this Service requires one.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type from NodePort to ClusterIP). More info: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<i32>,
     /// The port that will be exposed by this service.
     pub port: i32,
-    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP".
-    /// Default is TCP.
+    /// The IP protocol for this port. Supports "TCP", "UDP", and "SCTP". Default is TCP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// Number or name of the port to access on the pods targeted by the service.
-    /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
-    /// If this is a string, it will be looked up as a named port in the
-    /// target Pod's container ports. If this is not specified, the value
-    /// of the 'port' field is used (an identity map).
-    /// This field is ignored for services with clusterIP=None, and should be
-    /// omitted or set equal to the 'port' field.
-    /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
+    /// Number or name of the port to access on the pods targeted by the service. Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME. If this is a string, it will be looked up as a named port in the target Pod's container ports. If this is not specified, the value of the 'port' field is used (an identity map). This field is ignored for services with clusterIP=None, and should be omitted or set equal to the 'port' field. More info: https://kubernetes.io/docs/concepts/services-networking/service/#defining-a-service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
 }
@@ -368,9 +180,7 @@ pub struct ElasticsearchHttpServiceSpecSessionAffinityConfig {
 /// clientIP contains the configurations of Client IP based session affinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpServiceSpecSessionAffinityConfigClientIp {
-    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time.
-    /// The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP".
-    /// Default value is 10800(for 3 hours).
+    /// timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP". Default value is 10800(for 3 hours).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
@@ -378,12 +188,8 @@ pub struct ElasticsearchHttpServiceSpecSessionAffinityConfigClientIp {
 /// TLS defines options for configuring TLS for HTTP.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpTls {
-    /// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
-    /// The referenced secret should contain the following:
-    /// 
-    /// - `ca.crt`: The certificate authority (optional).
-    /// - `tls.crt`: The certificate (or a chain).
-    /// - `tls.key`: The private key to the first certificate in the certificate chain.
+    /// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS. The referenced secret should contain the following: 
+    ///  - `ca.crt`: The certificate authority (optional). - `tls.crt`: The certificate (or a chain). - `tls.key`: The private key to the first certificate in the certificate chain.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub certificate: Option<ElasticsearchHttpTlsCertificate>,
     /// SelfSignedCertificate allows configuring the self-signed certificate generated by the operator.
@@ -391,12 +197,8 @@ pub struct ElasticsearchHttpTls {
     pub self_signed_certificate: Option<ElasticsearchHttpTlsSelfSignedCertificate>,
 }
 
-/// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS.
-/// The referenced secret should contain the following:
-/// 
-/// - `ca.crt`: The certificate authority (optional).
-/// - `tls.crt`: The certificate (or a chain).
-/// - `tls.key`: The private key to the first certificate in the certificate chain.
+/// Certificate is a reference to a Kubernetes secret that contains the certificate and private key for enabling TLS. The referenced secret should contain the following: 
+///  - `ca.crt`: The certificate authority (optional). - `tls.crt`: The certificate (or a chain). - `tls.key`: The private key to the first certificate in the certificate chain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchHttpTlsCertificate {
     /// SecretName is the name of the secret.
@@ -439,9 +241,7 @@ pub struct ElasticsearchNodeSets {
     /// PodTemplate provides customisation options (labels, annotations, affinity rules, resource requests, and so on) for the Pods belonging to this NodeSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<ElasticsearchNodeSetsPodTemplate>,
-    /// VolumeClaimTemplates is a list of persistent volume claims to be used by each Pod in this NodeSet.
-    /// Every claim in this list must have a matching volumeMount in one of the containers defined in the PodTemplate.
-    /// Items defined here take precedence over any default claims added by the operator with the same name.
+    /// VolumeClaimTemplates is a list of persistent volume claims to be used by each Pod in this NodeSet. Every claim in this list must have a matching volumeMount in one of the containers defined in the PodTemplate. Items defined here take precedence over any default claims added by the operator with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<Vec<ElasticsearchNodeSetsVolumeClaimTemplates>>,
 }
@@ -459,31 +259,21 @@ pub struct ElasticsearchNodeSetsPodTemplate {
 /// PersistentVolumeClaim is a user's request for and claim to a persistent volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplates {
-    /// APIVersion defines the versioned schema of this representation of an object.
-    /// Servers should convert recognized schemas to the latest internal value, and
-    /// may reject unrecognized values.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+    /// APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    /// Kind is a string value representing the REST resource this object represents.
-    /// Servers may infer this from the endpoint the client submits requests to.
-    /// Cannot be updated.
-    /// In CamelCase.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    /// Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    /// Standard object's metadata.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    /// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ElasticsearchNodeSetsVolumeClaimTemplatesMetadata>,
-    /// spec defines the desired characteristics of a volume requested by a pod author.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+    /// spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<ElasticsearchNodeSetsVolumeClaimTemplatesSpec>,
 }
 
-/// Standard object's metadata.
-/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+/// Standard object's metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -498,79 +288,28 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesMetadata {
     pub namespace: Option<String>,
 }
 
-/// spec defines the desired characteristics of a volume requested by a pod author.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
+/// spec defines the desired characteristics of a volume requested by a pod author. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpec {
-    /// accessModes contains the desired access modes the volume should have.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
+    /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
-    /// dataSource field can be used to specify either:
-    /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-    /// * An existing PVC (PersistentVolumeClaim)
-    /// If the provisioner or an external controller can support the specified data source,
-    /// it will create a new volume based on the contents of the specified data source.
-    /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-    /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-    /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+    /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<ElasticsearchNodeSetsVolumeClaimTemplatesSpecDataSource>,
-    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-    /// volume is desired. This may be any object from a non-empty API group (non
-    /// core object) or a PersistentVolumeClaim object.
-    /// When this field is specified, volume binding will only succeed if the type of
-    /// the specified object matches some installed volume populator or dynamic
-    /// provisioner.
-    /// This field will replace the functionality of the dataSource field and as such
-    /// if both fields are non-empty, they must have the same value. For backwards
-    /// compatibility, when namespace isn't specified in dataSourceRef,
-    /// both fields (dataSource and dataSourceRef) will be set to the same
-    /// value automatically if one of them is empty and the other is non-empty.
-    /// When namespace is specified in dataSourceRef,
-    /// dataSource isn't set to the same value and must be empty.
-    /// There are three important differences between dataSource and dataSourceRef:
-    /// * While dataSource only allows two specific types of objects, dataSourceRef
-    ///   allows any non-core object, as well as PersistentVolumeClaim objects.
-    /// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-    ///   preserves all values, and generates an error if a disallowed value is
-    ///   specified.
-    /// * While dataSource only allows local objects, dataSourceRef allows objects
-    ///   in any namespaces.
-    /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-    /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<ElasticsearchNodeSetsVolumeClaimTemplatesSpecDataSourceRef>,
-    /// resources represents the minimum resources the volume should have.
-    /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-    /// that are lower than previous value but must still be higher than capacity recorded in the
-    /// status field of the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+    /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ElasticsearchNodeSetsVolumeClaimTemplatesSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ElasticsearchNodeSetsVolumeClaimTemplatesSpecSelector>,
-    /// storageClassName is the name of the StorageClass required by the claim.
-    /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
+    /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
-    /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
-    /// If specified, the CSI driver will create or update the volume with the attributes defined
-    /// in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,
-    /// it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass
-    /// will be applied to the claim but it's not allowed to reset this field to empty string once it is set.
-    /// If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass
-    /// will be set by the persistentvolume controller if it exists.
-    /// If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
-    /// set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
-    /// exists.
-    /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
-    /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
-    pub volume_attributes_class_name: Option<String>,
-    /// volumeMode defines what type of volume is required by the claim.
-    /// Value of Filesystem is implied when not included in claim spec.
+    /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
@@ -578,19 +317,10 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpec {
     pub volume_name: Option<String>,
 }
 
-/// dataSource field can be used to specify either:
-/// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
-/// * An existing PVC (PersistentVolumeClaim)
-/// If the provisioner or an external controller can support the specified data source,
-/// it will create a new volume based on the contents of the specified data source.
-/// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
-/// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
-/// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
+/// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecDataSource {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
@@ -599,64 +329,42 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecDataSource {
     pub name: String,
 }
 
-/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
-/// volume is desired. This may be any object from a non-empty API group (non
-/// core object) or a PersistentVolumeClaim object.
-/// When this field is specified, volume binding will only succeed if the type of
-/// the specified object matches some installed volume populator or dynamic
-/// provisioner.
-/// This field will replace the functionality of the dataSource field and as such
-/// if both fields are non-empty, they must have the same value. For backwards
-/// compatibility, when namespace isn't specified in dataSourceRef,
-/// both fields (dataSource and dataSourceRef) will be set to the same
-/// value automatically if one of them is empty and the other is non-empty.
-/// When namespace is specified in dataSourceRef,
-/// dataSource isn't set to the same value and must be empty.
-/// There are three important differences between dataSource and dataSourceRef:
-/// * While dataSource only allows two specific types of objects, dataSourceRef
-///   allows any non-core object, as well as PersistentVolumeClaim objects.
-/// * While dataSource ignores disallowed values (dropping them), dataSourceRef
-///   preserves all values, and generates an error if a disallowed value is
-///   specified.
-/// * While dataSource only allows local objects, dataSourceRef allows objects
-///   in any namespaces.
-/// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
-/// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+/// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecDataSourceRef {
-    /// APIGroup is the group for the resource being referenced.
-    /// If APIGroup is not specified, the specified Kind must be in the core API group.
-    /// For any other third-party types, APIGroup is required.
+    /// APIGroup is the group for the resource being referenced. If APIGroup is not specified, the specified Kind must be in the core API group. For any other third-party types, APIGroup is required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     /// Kind is the type of resource being referenced
     pub kind: String,
     /// Name is the name of resource being referenced
     pub name: String,
-    /// Namespace is the namespace of resource being referenced
-    /// Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details.
-    /// (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
+    /// Namespace is the namespace of resource being referenced Note that when a namespace is specified, a gateway.networking.k8s.io/ReferenceGrant object is required in the referent namespace to allow that namespace's owner to accept the reference. See the ReferenceGrant documentation for details. (Alpha) This field requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
 
-/// resources represents the minimum resources the volume should have.
-/// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
-/// that are lower than previous value but must still be higher than capacity recorded in the
-/// status field of the claim.
-/// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
+/// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecResources {
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
+    ///  This field is immutable. It can only be set for containers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<ElasticsearchNodeSetsVolumeClaimTemplatesSpecResourcesClaims>>,
+    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// ResourceClaim references one entry in PodSpec.ResourceClaims.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecResourcesClaims {
+    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    pub name: String,
 }
 
 /// selector is a label query over volumes to consider for binding.
@@ -665,37 +373,27 @@ pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ElasticsearchNodeSetsVolumeClaimTemplatesSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchNodeSetsVolumeClaimTemplatesSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// PodDisruptionBudget provides access to the default pod disruption budget for the Elasticsearch cluster.
-/// The default budget selects all cluster pods and sets `maxUnavailable` to 1. To disable, set `PodDisruptionBudget`
-/// to the empty value (`{}` in YAML).
+/// PodDisruptionBudget provides access to the default pod disruption budget for the Elasticsearch cluster. The default budget selects all cluster pods and sets `maxUnavailable` to 1. To disable, set `PodDisruptionBudget` to the empty value (`{}` in YAML).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchPodDisruptionBudget {
-    /// ObjectMeta is the metadata of the PDB.
-    /// The name and namespace provided here are managed by ECK and will be ignored.
+    /// ObjectMeta is the metadata of the PDB. The name and namespace provided here are managed by ECK and will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ElasticsearchPodDisruptionBudgetMetadata>,
     /// Spec is the specification of the PDB.
@@ -703,8 +401,7 @@ pub struct ElasticsearchPodDisruptionBudget {
     pub spec: Option<ElasticsearchPodDisruptionBudgetSpec>,
 }
 
-/// ObjectMeta is the metadata of the PDB.
-/// The name and namespace provided here are managed by ECK and will be ignored.
+/// ObjectMeta is the metadata of the PDB. The name and namespace provided here are managed by ECK and will be ignored.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchPodDisruptionBudgetMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -722,81 +419,44 @@ pub struct ElasticsearchPodDisruptionBudgetMetadata {
 /// Spec is the specification of the PDB.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchPodDisruptionBudgetSpec {
-    /// An eviction is allowed if at most "maxUnavailable" pods selected by
-    /// "selector" are unavailable after the eviction, i.e. even in absence of
-    /// the evicted pod. For example, one can prevent all voluntary evictions
-    /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
+    /// An eviction is allowed if at most "maxUnavailable" pods selected by "selector" are unavailable after the eviction, i.e. even in absence of the evicted pod. For example, one can prevent all voluntary evictions by specifying 0. This is a mutually exclusive setting with "minAvailable".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    /// An eviction is allowed if at least "minAvailable" pods selected by
-    /// "selector" will still be available after the eviction, i.e. even in the
-    /// absence of the evicted pod.  So for example you can prevent all voluntary
-    /// evictions by specifying "100%".
+    /// An eviction is allowed if at least "minAvailable" pods selected by "selector" will still be available after the eviction, i.e. even in the absence of the evicted pod.  So for example you can prevent all voluntary evictions by specifying "100%".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
-    /// Label query over pods whose evictions are managed by the disruption
-    /// budget.
-    /// A null selector selects no pods.
-    /// An empty selector ({}) also selects no pods, which differs from standard behavior of selecting all pods.
-    /// In policy/v1, an empty selector will select all pods in the namespace.
+    /// Label query over pods whose evictions are managed by the disruption budget. A null selector selects no pods. An empty selector ({}) also selects no pods, which differs from standard behavior of selecting all pods. In policy/v1, an empty selector will select all pods in the namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<ElasticsearchPodDisruptionBudgetSpecSelector>,
-    /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods
-    /// should be considered for eviction. Current implementation considers healthy pods,
-    /// as pods that have status.conditions item with type="Ready",status="True".
-    /// 
-    /// Valid policies are IfHealthyBudget and AlwaysAllow.
-    /// If no policy is specified, the default behavior will be used,
-    /// which corresponds to the IfHealthyBudget policy.
-    /// 
-    /// IfHealthyBudget policy means that running pods (status.phase="Running"),
-    /// but not yet healthy can be evicted only if the guarded application is not
-    /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
-    /// Healthy pods will be subject to the PDB for eviction.
-    /// 
-    /// AlwaysAllow policy means that all running pods (status.phase="Running"),
-    /// but not yet healthy are considered disrupted and can be evicted regardless
-    /// of whether the criteria in a PDB is met. This means perspective running
-    /// pods of a disrupted application might not get a chance to become healthy.
-    /// Healthy pods will be subject to the PDB for eviction.
-    /// 
-    /// Additional policies may be added in the future.
-    /// Clients making eviction decisions should disallow eviction of unhealthy pods
-    /// if they encounter an unrecognized policy in this field.
+    /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods should be considered for eviction. Current implementation considers healthy pods, as pods that have status.conditions item with type="Ready",status="True". 
+    ///  Valid policies are IfHealthyBudget and AlwaysAllow. If no policy is specified, the default behavior will be used, which corresponds to the IfHealthyBudget policy. 
+    ///  IfHealthyBudget policy means that running pods (status.phase="Running"), but not yet healthy can be evicted only if the guarded application is not disrupted (status.currentHealthy is at least equal to status.desiredHealthy). Healthy pods will be subject to the PDB for eviction. 
+    ///  AlwaysAllow policy means that all running pods (status.phase="Running"), but not yet healthy are considered disrupted and can be evicted regardless of whether the criteria in a PDB is met. This means perspective running pods of a disrupted application might not get a chance to become healthy. Healthy pods will be subject to the PDB for eviction. 
+    ///  Additional policies may be added in the future. Clients making eviction decisions should disallow eviction of unhealthy pods if they encounter an unrecognized policy in this field. 
+    ///  This field is beta-level. The eviction API uses this field when the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
 
-/// Label query over pods whose evictions are managed by the disruption
-/// budget.
-/// A null selector selects no pods.
-/// An empty selector ({}) also selects no pods, which differs from standard behavior of selecting all pods.
-/// In policy/v1, an empty selector will select all pods in the namespace.
+/// Label query over pods whose evictions are managed by the disruption budget. A null selector selects no pods. An empty selector ({}) also selects no pods, which differs from standard behavior of selecting all pods. In policy/v1, an empty selector will select all pods in the namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchPodDisruptionBudgetSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ElasticsearchPodDisruptionBudgetSpecSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchPodDisruptionBudgetSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
+    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -804,9 +464,7 @@ pub struct ElasticsearchPodDisruptionBudgetSpecSelectorMatchExpressions {
 /// SecretSource defines a data source based on a Kubernetes Secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchSecureSettings {
-    /// Entries define how to project each key-value pair in the secret to filesystem paths.
-    /// If not defined, all keys will be projected to similarly named paths in the filesystem.
-    /// If defined, only the specified keys will be projected to the corresponding paths.
+    /// Entries define how to project each key-value pair in the secret to filesystem paths. If not defined, all keys will be projected to similarly named paths in the filesystem. If defined, only the specified keys will be projected to the corresponding paths.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entries: Option<Vec<ElasticsearchSecureSettingsEntries>>,
     /// SecretName is the name of the secret.
@@ -819,8 +477,7 @@ pub struct ElasticsearchSecureSettings {
 pub struct ElasticsearchSecureSettingsEntries {
     /// Key is the key contained in the secret.
     pub key: String,
-    /// Path is the relative file path to map the key to.
-    /// Path must not be an absolute file path and must not contain any ".." components.
+    /// Path is the relative file path to map the key to. Path must not be an absolute file path and must not contain any ".." components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
 }
@@ -836,14 +493,10 @@ pub struct ElasticsearchUpdateStrategy {
 /// ChangeBudget defines the constraints to consider when applying changes to the Elasticsearch cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ElasticsearchUpdateStrategyChangeBudget {
-    /// MaxSurge is the maximum number of new pods that can be created exceeding the original number of pods defined in
-    /// the specification. MaxSurge is only taken into consideration when scaling up. Setting a negative value will
-    /// disable the restriction. Defaults to unbounded if not specified.
+    /// MaxSurge is the maximum number of new pods that can be created exceeding the original number of pods defined in the specification. MaxSurge is only taken into consideration when scaling up. Setting a negative value will disable the restriction. Defaults to unbounded if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSurge")]
     pub max_surge: Option<i32>,
-    /// MaxUnavailable is the maximum number of pods that can be unavailable (not ready) during the update due to
-    /// circumstances under the control of the operator. Setting a negative value will disable this restriction.
-    /// Defaults to 1 if not specified.
+    /// MaxUnavailable is the maximum number of pods that can be unavailable (not ready) during the update due to circumstances under the control of the operator. Setting a negative value will disable this restriction. Defaults to 1 if not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i32>,
 }

@@ -409,6 +409,7 @@ spec:
                                   type: "string"
                                 matchResources:
                                   description: "matchResources selects templates based on where they are referenced."
+                                  minProperties: 1
                                   properties:
                                     controlPlane:
                                       description: "controlPlane selects templates referenced in .spec.ControlPlane.\nNote: this will match the controlPlane and also the controlPlane\nmachineInfrastructure (depending on the kind and apiVersion)."
@@ -1506,6 +1507,7 @@ spec:
                             - "schema"
                           type: "object"
                         maxItems: 100
+                        minItems: 1
                         type: "array"
                         x-kubernetes-list-type: "atomic"
                       definitionsConflict:

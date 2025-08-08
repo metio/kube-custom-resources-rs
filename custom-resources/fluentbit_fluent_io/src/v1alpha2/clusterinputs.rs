@@ -535,9 +535,6 @@ pub struct ClusterInputSyslog {
     /// Specify the key where the source address will be injected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceAddressKey")]
     pub source_address_key: Option<String>,
-    /// Specify TLS connector options.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tls: Option<ClusterInputSyslogTls>,
     /// If Mode is set to unix_tcp or unix_udp, set the permission of the Unix socket file, default: 0644
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unixPerm")]
     pub unix_perm: Option<i32>,
@@ -554,86 +551,6 @@ pub enum ClusterInputSyslogMode {
     Tcp,
     #[serde(rename = "udp")]
     Udp,
-}
-
-/// Specify TLS connector options.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInputSyslogTls {
-    /// Absolute path to CA certificate file
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caFile")]
-    pub ca_file: Option<String>,
-    /// Absolute path to scan for certificate files
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caPath")]
-    pub ca_path: Option<String>,
-    /// Absolute path to Certificate file
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "crtFile")]
-    pub crt_file: Option<String>,
-    /// Set TLS debug verbosity level.
-    /// It accept the following values: 0 (No debug), 1 (Error), 2 (State change), 3 (Informational) and 4 Verbose
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub debug: Option<i32>,
-    /// Absolute path to private Key file
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
-    pub key_file: Option<String>,
-    /// Optional password for tls.key_file file
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPassword")]
-    pub key_password: Option<ClusterInputSyslogTlsKeyPassword>,
-    /// Force certificate validation
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub verify: Option<bool>,
-    /// Hostname to be used for TLS SNI extension
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub vhost: Option<String>,
-}
-
-/// Specify TLS connector options.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterInputSyslogTlsDebug {
-    #[serde(rename = "0")]
-    r#_0,
-    #[serde(rename = "1")]
-    r#_1,
-    #[serde(rename = "2")]
-    r#_2,
-    #[serde(rename = "3")]
-    r#_3,
-    #[serde(rename = "4")]
-    r#_4,
-}
-
-/// Optional password for tls.key_file file
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInputSyslogTlsKeyPassword {
-    /// ValueSource defines how to find a value's key.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ClusterInputSyslogTlsKeyPasswordValueFrom>,
-}
-
-/// ValueSource defines how to find a value's key.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInputSyslogTlsKeyPasswordValueFrom {
-    /// Selects a key of a secret in the pod's namespace
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ClusterInputSyslogTlsKeyPasswordValueFromSecretKeyRef>,
-}
-
-/// Selects a key of a secret in the pod's namespace
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterInputSyslogTlsKeyPasswordValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// TODO: Add other useful fields. apiVersion, kind, uid?
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 /// Systemd defines Systemd Input configuration.
@@ -757,9 +674,6 @@ pub struct ClusterInputTail {
     /// Specify the database file to keep track of monitored files and offsets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub db: Option<String>,
-    /// Specify that the database will be accessed only by Fluent Bit.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbLocking")]
-    pub db_locking: Option<bool>,
     /// Set a default synchronization (I/O) method. Values: Extra, Full, Normal, Off.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbSync")]
     pub db_sync: Option<ClusterInputTailDbSync>,

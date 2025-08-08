@@ -281,7 +281,7 @@ pub struct ClusterManagerRegistrationConfigurationRegistrationDriversCsr {
 /// GRPC represents the configuration for gRPC driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerRegistrationConfigurationRegistrationDriversGrpc {
-    /// AutoApprovedIdentities represent a list of approved arn patterns
+    /// AutoApprovedIdentities represent a list of approved users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApprovedIdentities")]
     pub auto_approved_identities: Option<Vec<String>>,
     /// EndpointExposure represents the configuration for endpoint exposure.

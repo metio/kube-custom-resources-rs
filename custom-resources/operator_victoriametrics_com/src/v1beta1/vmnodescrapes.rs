@@ -208,7 +208,7 @@ pub struct VMNodeScrapeBearerTokenSecret {
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set
-/// More info: https://docs.victoriametrics.com/victoriametrics/#relabeling
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeMetricRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -228,7 +228,7 @@ pub struct VMNodeScrapeMetricRelabelConfigs {
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     /// victoriaMetrics supports multiline regex joined with |
-    /// https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
     /// Replacement value against which a regex replace is performed if the
@@ -355,7 +355,7 @@ pub struct VMNodeScrapeOauth2ClientSecret {
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set
-/// More info: https://docs.victoriametrics.com/victoriametrics/#relabeling
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -375,7 +375,7 @@ pub struct VMNodeScrapeRelabelConfigs {
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     /// victoriaMetrics supports multiline regex joined with |
-    /// https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
     /// Replacement value against which a regex replace is performed if the
@@ -596,7 +596,7 @@ pub struct VMNodeScrapeVmScrapeParams {
     /// disable_keepalive allows disabling HTTP keep-alive when scraping targets.
     /// By default, HTTP keep-alive is enabled, so TCP connections to scrape targets
     /// could be reused.
-    /// See https://docs.victoriametrics.com/victoriametrics/vmagent#scrape_config-enhancements
+    /// See https://docs.victoriametrics.com/vmagent#scrape_config-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_keep_alive: Option<bool>,
     /// Headers allows sending custom headers to scrape targets
@@ -609,7 +609,7 @@ pub struct VMNodeScrapeVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub no_stale_markers: Option<bool>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy
+    /// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMNodeScrapeVmScrapeParamsProxyClientConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -621,7 +621,7 @@ pub struct VMNodeScrapeVmScrapeParams {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy
+/// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMNodeScrapeVmScrapeParamsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication

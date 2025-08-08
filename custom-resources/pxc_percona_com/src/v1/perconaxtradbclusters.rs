@@ -146,27 +146,9 @@ pub struct PerconaXtraDBClusterBackupSchedule {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keep: Option<i64>,
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub retention: Option<PerconaXtraDBClusterBackupScheduleRetention>,
     pub schedule: String,
     #[serde(rename = "storageName")]
     pub storage_name: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct PerconaXtraDBClusterBackupScheduleRetention {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub count: Option<i64>,
-    #[serde(rename = "deleteFromStorage")]
-    pub delete_from_storage: bool,
-    #[serde(rename = "type")]
-    pub r#type: PerconaXtraDBClusterBackupScheduleRetentionType,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PerconaXtraDBClusterBackupScheduleRetentionType {
-    #[serde(rename = "count")]
-    Count,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -939,6 +921,8 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub expose_replicas: Option<PerconaXtraDBClusterHaproxyExposeReplicas>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
+    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -957,6 +941,8 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterHaproxyLivenessProbes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -973,6 +959,8 @@ pub struct PerconaXtraDBClusterHaproxy {
     pub readiness_probes: Option<PerconaXtraDBClusterHaproxyReadinessProbes>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasExternalTrafficPolicy")]
     pub replicas_external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasLoadBalancerIP")]
+    pub replicas_load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasLoadBalancerSourceRanges")]
     pub replicas_load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasServiceAnnotations")]
@@ -1417,8 +1405,6 @@ pub struct PerconaXtraDBClusterHaproxyExposePrimary {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
-    pub load_balancer_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -1441,8 +1427,6 @@ pub struct PerconaXtraDBClusterHaproxyExposeReplicas {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
-    pub load_balancer_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -1467,8 +1451,6 @@ pub struct PerconaXtraDBClusterHaproxyLifecycle {
     pub post_start: Option<PerconaXtraDBClusterHaproxyLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterHaproxyLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2764,8 +2746,6 @@ pub struct PerconaXtraDBClusterHaproxySidecarsLifecycle {
     pub post_start: Option<PerconaXtraDBClusterHaproxySidecarsLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterHaproxySidecarsLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3553,8 +3533,6 @@ pub struct PerconaXtraDBClusterLogcollectorResourcesClaims {
 pub struct PerconaXtraDBClusterPmm {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaXtraDBClusterPmmContainerSecurityContext>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customClusterName")]
-    pub custom_cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3816,6 +3794,8 @@ pub struct PerconaXtraDBClusterProxysql {
     pub expose: Option<PerconaXtraDBClusterProxysqlExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
+    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -3834,6 +3814,8 @@ pub struct PerconaXtraDBClusterProxysql {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterProxysqlLivenessProbes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -4290,8 +4272,6 @@ pub struct PerconaXtraDBClusterProxysqlExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
-    pub load_balancer_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -4314,8 +4294,6 @@ pub struct PerconaXtraDBClusterProxysqlLifecycle {
     pub post_start: Option<PerconaXtraDBClusterProxysqlLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterProxysqlLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5611,8 +5589,6 @@ pub struct PerconaXtraDBClusterProxysqlSidecarsLifecycle {
     pub post_start: Option<PerconaXtraDBClusterProxysqlSidecarsLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterProxysqlSidecarsLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6200,6 +6176,8 @@ pub struct PerconaXtraDBClusterPxc {
     pub expose: Option<PerconaXtraDBClusterPxcExpose>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnsafeBootstrap")]
+    pub force_unsafe_bootstrap: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hookScript")]
@@ -6218,6 +6196,8 @@ pub struct PerconaXtraDBClusterPxc {
     pub liveness_delay_sec: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbes")]
     pub liveness_probes: Option<PerconaXtraDBClusterPxcLivenessProbes>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
+    pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -6676,8 +6656,6 @@ pub struct PerconaXtraDBClusterPxcExpose {
     pub internal_traffic_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
-    pub load_balancer_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
@@ -6700,8 +6678,6 @@ pub struct PerconaXtraDBClusterPxcLifecycle {
     pub post_start: Option<PerconaXtraDBClusterPxcLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterPxcLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8033,8 +8009,6 @@ pub struct PerconaXtraDBClusterPxcSidecarsLifecycle {
     pub post_start: Option<PerconaXtraDBClusterPxcSidecarsLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PerconaXtraDBClusterPxcSidecarsLifecyclePreStop>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

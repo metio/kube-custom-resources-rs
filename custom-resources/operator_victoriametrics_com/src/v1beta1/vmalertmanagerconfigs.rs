@@ -527,7 +527,7 @@ pub struct VMAlertmanagerConfigReceiversEmailConfigs {
     /// AuthPassword defines secret name and key at CRD namespace.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_password: Option<VMAlertmanagerConfigReceiversEmailConfigsAuthPassword>,
-    /// AuthSecret defines secret name and key at CRD namespace.
+    /// AuthSecret defines secrent name and key at CRD namespace.
     /// It must contain the CRAM-MD5 secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth_secret: Option<VMAlertmanagerConfigReceiversEmailConfigsAuthSecret>,
@@ -587,7 +587,7 @@ pub struct VMAlertmanagerConfigReceiversEmailConfigsAuthPassword {
     pub optional: Option<bool>,
 }
 
-/// AuthSecret defines secret name and key at CRD namespace.
+/// AuthSecret defines secrent name and key at CRD namespace.
 /// It must contain the CRAM-MD5 secret.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMAlertmanagerConfigReceiversEmailConfigsAuthSecret {

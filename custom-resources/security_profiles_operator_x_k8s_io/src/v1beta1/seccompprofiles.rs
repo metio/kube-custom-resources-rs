@@ -13,6 +13,7 @@ use self::prelude::*;
 /// SeccompProfileSpec defines the desired state of SeccompProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1beta1", kind = "SeccompProfile", plural = "seccompprofiles")]
+#[kube(namespaced)]
 #[kube(status = "SeccompProfileStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]

@@ -87,7 +87,10 @@ spec:
                   description: "The erasure code settings"
                   properties:
                     algorithm:
-                      description: "The algorithm for erasure coding"
+                      description: "The algorithm for erasure coding.\nIf absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile."
+                      enum:
+                        - "isa"
+                        - "jerasure"
                       type: "string"
                     codingChunks:
                       description: "Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).\nThis is the number of OSDs that can be lost simultaneously before data cannot be recovered."

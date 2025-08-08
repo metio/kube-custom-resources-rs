@@ -47,10 +47,6 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     /// SPOD instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableBpfRecorder")]
     pub enable_bpf_recorder: Option<bool>,
-    /// tells the operator whether or not to enable audit JSON enrichment support for this
-    /// SPOD instance.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableJsonEnricher")]
-    pub enable_json_enricher: Option<bool>,
     /// tells the operator whether or not to enable log enrichment support for this
     /// SPOD instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLogEnricher")]
@@ -79,19 +75,6 @@ pub struct SecurityProfilesOperatorDaemonSpec {
     /// namespace to use for pulling the images from SPOD pod from a private registry.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<SecurityProfilesOperatorDaemonImagePullSecrets>>,
-    /// JsonEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted
-    /// for the json-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonEnricherFilters")]
-    pub json_enricher_filters: Option<String>,
-    /// Defines options specific to the JsonEnricher
-    /// functionality of the SecurityProfilesOperator
-    /// Its optional to provide this configuration
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonEnricherOptions")]
-    pub json_enricher_options: Option<SecurityProfilesOperatorDaemonJsonEnricherOptions>,
-    /// LogEnricherFilters if defined, an optional JSON-format filter to determine if log lines should be emitted
-    /// for the log-enricher. Defaults to an empty string, meaning no filter is applied and all lines are logged.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logEnricherFilters")]
-    pub log_enricher_filters: Option<String>,
     /// PriorityClassName if defined, indicates the spod pod priority class.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
@@ -319,22 +302,24 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSched
     pub label_selector: Option<SecurityProfilesOperatorDaemonAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -438,22 +423,24 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedu
     pub label_selector: Option<SecurityProfilesOperatorDaemonAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -588,22 +575,24 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringS
     pub label_selector: Option<SecurityProfilesOperatorDaemonAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -707,22 +696,24 @@ pub struct SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSc
     pub label_selector: Option<SecurityProfilesOperatorDaemonAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
-    /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
     /// to select the group of existing pods which pods will be taken into consideration
     /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
     /// pod labels will be ignored. The default value is empty.
-    /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
-    /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -819,8 +810,10 @@ pub struct SecurityProfilesOperatorDaemonDaemonResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
+    /// 
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -844,11 +837,6 @@ pub struct SecurityProfilesOperatorDaemonDaemonResourceRequirementsClaims {
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
     pub name: String,
-    /// Request is the name chosen for a request in the referenced claim.
-    /// If empty, everything from the claim is made available, otherwise
-    /// only the result of this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub request: Option<String>,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
@@ -856,43 +844,10 @@ pub struct SecurityProfilesOperatorDaemonDaemonResourceRequirementsClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecurityProfilesOperatorDaemonImagePullSecrets {
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-}
-
-/// Defines options specific to the JsonEnricher
-/// functionality of the SecurityProfilesOperator
-/// Its optional to provide this configuration
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SecurityProfilesOperatorDaemonJsonEnricherOptions {
-    /// Specifies the interval, in seconds, at which the accumulated audit log
-    /// data is output in JSON format. For each process, syscalls occurring
-    /// within this interval are grouped together. The default is 60 seconds.
-    /// Increasing this interval will reduce the rate at which logs are written.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogIntervalSeconds")]
-    pub audit_log_interval_seconds: Option<i32>,
-    /// This field specifies the maximum number of days to retain old audit log files
-    /// The default is not to remove old log files based on age
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxAge")]
-    pub audit_log_max_age: Option<i32>,
-    /// This field specifies the maximum size in megabytes of the audit log file before it gets rotated.
-    /// The default is to retain all old log files (though MaxAge may still cause them to get deleted.)
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxBackups")]
-    pub audit_log_max_backups: Option<i32>,
-    /// This field specifies the maximum number of audit log files to retain.
-    /// If left unspecified it defaults to 100 MB.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogMaxSize")]
-    pub audit_log_max_size: Option<i32>,
-    /// This field specifies the path for the accumulated audit log data.
-    /// The audit log will be written to this file in JSON format if a file path
-    /// is provided. If left unspecified, the output will be directed to
-    /// standard output (stdout).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditLogPath")]
-    pub audit_log_path: Option<String>,
 }
 
 /// Defines options specific to the SELinux

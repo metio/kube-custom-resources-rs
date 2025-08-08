@@ -59,6 +59,8 @@ spec:
             spec:
               description: "DNSRecordSpec defines the desired state of DNSRecord"
               properties:
+                delegate:
+                  type: "boolean"
                 endpoints:
                   description: "endpoints is a list of endpoints that will be published into the dns provider."
                   items:
@@ -175,6 +177,12 @@ spec:
                   rule: "!has(oldSelf.ownerID) || has(self.ownerID)"
                 - message: "OwnerID can't be set if it was previously unset"
                   rule: "has(oldSelf.ownerID) || !has(self.ownerID)"
+                - message: "Delegate can't be unset if it was previously set"
+                  rule: "!has(oldSelf.delegate) || has(self.delegate)"
+                - message: "Delegate can't be set if it was previously unset"
+                  rule: "has(oldSelf.delegate) || !has(self.delegate)"
+                - message: "delegate=true and providerRef are mutually exclusive"
+                  rule: "!(has(self.providerRef) && has(self.delegate) && self.delegate == true)"
             status:
               description: "DNSRecordStatus defines the observed state of DNSRecord"
               properties:

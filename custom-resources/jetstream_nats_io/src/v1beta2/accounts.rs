@@ -6,14 +6,12 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "jetstream.nats.io", version = "v1beta2", kind = "Account", plural = "accounts")]
 #[kube(namespaced)]
-#[kube(status = "AccountStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -30,15 +28,6 @@ pub struct AccountSpec {
     /// The TLS certs to be used to connect to the NATS Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<AccountTls>,
-    /// When true, the KV Store will initiate TLS before server INFO.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsFirst")]
-    pub tls_first: Option<bool>,
-    /// The token to be used to connect to the NATS Service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token: Option<AccountToken>,
-    /// The user and password to be used to connect to the NATS Service.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<AccountUser>,
 }
 
 /// The creds to be used to connect to the NATS Service.
@@ -79,50 +68,5 @@ pub struct AccountTlsSecret {
     /// Name of the TLS secret with the certs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-}
-
-/// The token to be used to connect to the NATS Service.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AccountToken {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<AccountTokenSecret>,
-    /// Key in the secret that contains the token.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AccountTokenSecret {
-    /// Name of the secret with the token.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-/// The user and password to be used to connect to the NATS Service.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AccountUser {
-    /// Key in the secret that contains the password.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub password: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<AccountUserSecret>,
-    /// Key in the secret that contains the user.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AccountUserSecret {
-    /// Name of the secret with the user and password.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AccountStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
-    pub observed_generation: Option<i64>,
 }
 

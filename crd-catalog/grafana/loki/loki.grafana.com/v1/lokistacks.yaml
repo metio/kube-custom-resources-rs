@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.2"
+    controller-gen.kubebuilder.io/version: "v0.16.3"
   name: "lokistacks.loki.grafana.com"
 spec:
   group: "loki.grafana.com"
@@ -109,8 +109,26 @@ spec:
                         otlp:
                           description: "OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.\n\nTenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even\nenforce the use of some required attributes."
                           properties:
-                            drop:
-                              description: "Drop configures which attributes are dropped from the log entry."
+                            streamLabels:
+                              description: "StreamLabels configures which resource attributes are converted to Loki stream labels."
+                              properties:
+                                resourceAttributes:
+                                  description: "ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels."
+                                  items:
+                                    properties:
+                                      name:
+                                        description: "Name contains either a verbatim name of an attribute or a regular expression matching many attributes."
+                                        type: "string"
+                                      regex:
+                                        description: "If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name."
+                                        type: "boolean"
+                                    required:
+                                      - "name"
+                                    type: "object"
+                                  type: "array"
+                              type: "object"
+                            structuredMetadata:
+                              description: "StructuredMetadata configures which attributes are saved in structured metadata."
                               properties:
                                 logAttributes:
                                   description: "LogAttributes lists the names of log attributes that should be included in structured metadata."
@@ -155,24 +173,6 @@ spec:
                                     type: "object"
                                   type: "array"
                               type: "object"
-                            streamLabels:
-                              description: "StreamLabels configures which resource attributes are converted to Loki stream labels."
-                              properties:
-                                resourceAttributes:
-                                  description: "ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels."
-                                  items:
-                                    properties:
-                                      name:
-                                        description: "Name contains either a verbatim name of an attribute or a regular expression matching many attributes."
-                                        type: "string"
-                                      regex:
-                                        description: "If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name."
-                                        type: "boolean"
-                                    required:
-                                      - "name"
-                                    type: "object"
-                                  type: "array"
-                              type: "object"
                           type: "object"
                         queries:
                           description: "QueryLimits defines the limit applied on querying log streams."
@@ -186,7 +186,7 @@ spec:
                               format: "int32"
                               type: "integer"
                             maxEntriesLimitPerQuery:
-                              description: "MaxEntriesLimitPerQuery defines the maximum number of log entries\nthat will be returned for a query."
+                              description: "MaxEntriesLimitsPerQuery defines the maximum number of log entries\nthat will be returned for a query."
                               format: "int32"
                               type: "integer"
                             maxQuerySeries:
@@ -286,8 +286,26 @@ spec:
                           otlp:
                             description: "OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.\n\nTenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even\nenforce the use of some required attributes.\n\nThe per-tenant configuration for OTLP attributes will be merged with the global configuration."
                             properties:
-                              drop:
-                                description: "Drop configures which attributes are dropped from the log entry."
+                              streamLabels:
+                                description: "StreamLabels configures which resource attributes are converted to Loki stream labels."
+                                properties:
+                                  resourceAttributes:
+                                    description: "ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels."
+                                    items:
+                                      properties:
+                                        name:
+                                          description: "Name contains either a verbatim name of an attribute or a regular expression matching many attributes."
+                                          type: "string"
+                                        regex:
+                                          description: "If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name."
+                                          type: "boolean"
+                                      required:
+                                        - "name"
+                                      type: "object"
+                                    type: "array"
+                                type: "object"
+                              structuredMetadata:
+                                description: "StructuredMetadata configures which attributes are saved in structured metadata."
                                 properties:
                                   logAttributes:
                                     description: "LogAttributes lists the names of log attributes that should be included in structured metadata."
@@ -319,24 +337,6 @@ spec:
                                     type: "array"
                                   scopeAttributes:
                                     description: "ScopeAttributes lists the names of scope attributes that should be included in structured metadata."
-                                    items:
-                                      properties:
-                                        name:
-                                          description: "Name contains either a verbatim name of an attribute or a regular expression matching many attributes."
-                                          type: "string"
-                                        regex:
-                                          description: "If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name."
-                                          type: "boolean"
-                                      required:
-                                        - "name"
-                                      type: "object"
-                                    type: "array"
-                                type: "object"
-                              streamLabels:
-                                description: "StreamLabels configures which resource attributes are converted to Loki stream labels."
-                                properties:
-                                  resourceAttributes:
-                                    description: "ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels."
                                     items:
                                       properties:
                                         name:
@@ -391,7 +391,7 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               maxEntriesLimitPerQuery:
-                                description: "MaxEntriesLimitPerQuery defines the maximum number of log entries\nthat will be returned for a query."
+                                description: "MaxEntriesLimitsPerQuery defines the maximum number of log entries\nthat will be returned for a query."
                                 format: "int32"
                                 type: "integer"
                               maxQuerySeries:
@@ -2321,9 +2321,6 @@ spec:
                             type: "object"
                           type: "array"
                       type: "object"
-                    useRequestsAsLimits:
-                      description: "When UseRequestsAsLimits is true, the operand Pods are configured to have resource limits equal to the resource\nrequests. This imposes a hard limit on resource usage of the LokiStack, but limits its ability to react to load\nspikes, whether on the ingestion or query side.\n\nNote: This is currently a tech-preview feature."
-                      type: "boolean"
                   type: "object"
                 tenants:
                   description: "Tenants defines the per-tenant authentication and authorization spec for the lokistack-gateway component."
@@ -2500,7 +2497,7 @@ spec:
                           description: "OTLP contains settings for ingesting data using OTLP in the OpenShift tenancy mode."
                           properties:
                             disableRecommendedAttributes:
-                              description: "DisableRecommendedAttributes can be used to reduce the number of attributes used as stream labels.\n\nEnabling this setting removes the \"recommended attributes\" from the stream labels. This requires an update\nto queries that relied on these attributes as stream labels, as they will no longer be indexed as such.\n\nThe recommended attributes are:\n\n - k8s.container.name\n - k8s.cronjob.name\n - k8s.daemonset.name\n - k8s.deployment.name\n - k8s.job.name\n - k8s.node.name\n - k8s.pod.name\n - k8s.statefulset.name\n - kubernetes.container_name\n - kubernetes.host\n - kubernetes.pod_name\n - service.name\n\nThis option is supposed to be combined with a custom attribute configuration listing the stream labels that\nshould continue to exist.\n\nSee also: https://github.com/rhobs/observability-data-model/blob/main/cluster-logging.md#attributes"
+                              description: "DisableRecommendedAttributes can be used to reduce the number of attributes used for stream labels and structured\nmetadata.\n\nEnabling this setting removes the \"recommended attributes\" from the generated Loki configuration. This will cause\nmeta information to not be available as stream labels or structured metadata, potentially making queries more\nexpensive and less performant.\n\nNote that there is a set of \"required attributes\", needed for OpenShift Logging to work properly. Those will be\nadded to the configuration, even if this field is set to true.\n\nThis option is supposed to be combined with a custom label configuration customizing the labels for the specific\nusecase."
                               type: "boolean"
                           type: "object"
                       type: "object"

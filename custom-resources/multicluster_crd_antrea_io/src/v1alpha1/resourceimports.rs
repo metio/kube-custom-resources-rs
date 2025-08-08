@@ -2076,6 +2076,8 @@ pub struct ResourceImportEndpoints {
 /// 
 /// 	a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
 /// 	b: [ 10.10.1.1:309, 10.10.2.2:309 ]
+/// 
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceImportEndpointsSubsets {
     /// IP addresses which offer the related ports that are marked as ready. These endpoints
@@ -2093,6 +2095,7 @@ pub struct ResourceImportEndpointsSubsets {
 }
 
 /// EndpointAddress is a tuple that describes single IP address.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceImportEndpointsSubsetsAddresses {
     /// The Hostname of this endpoint
@@ -2148,6 +2151,7 @@ pub struct ResourceImportEndpointsSubsetsAddressesTargetRef {
 }
 
 /// EndpointAddress is a tuple that describes single IP address.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceImportEndpointsSubsetsNotReadyAddresses {
     /// The Hostname of this endpoint
@@ -2203,6 +2207,7 @@ pub struct ResourceImportEndpointsSubsetsNotReadyAddressesTargetRef {
 }
 
 /// EndpointPort is a tuple that describes a single port.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceImportEndpointsSubsetsPorts {
     /// The application protocol for this port.

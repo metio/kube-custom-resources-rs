@@ -102,6 +102,8 @@ pub struct IstioMeshConfig {
     pub service_settings: Option<Vec<IstioMeshConfigServiceSettings>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<IstioMeshConfigTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thriftConfig")]
+    pub thrift_config: Option<IstioMeshConfigThriftConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomain")]
     pub trust_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustDomainAliases")]
@@ -262,6 +264,8 @@ pub struct IstioMeshConfigDefaultConfig {
     pub interception_mode: Option<IstioMeshConfigDefaultConfigInterceptionMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshId")]
     pub mesh_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentShutdownDuration")]
+    pub parent_shutdown_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKeyProvider")]
     pub private_key_provider: Option<IstioMeshConfigDefaultConfigPrivateKeyProvider>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyAdminPort")]
@@ -452,18 +456,10 @@ pub enum IstioMeshConfigDefaultConfigInterceptionMode {
 pub struct IstioMeshConfigDefaultConfigPrivateKeyProvider {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cryptomb: Option<IstioMeshConfigDefaultConfigPrivateKeyProviderCryptomb>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub qat: Option<IstioMeshConfigDefaultConfigPrivateKeyProviderQat>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigDefaultConfigPrivateKeyProviderCryptomb {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
-    pub poll_delay: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioMeshConfigDefaultConfigPrivateKeyProviderQat {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollDelay")]
     pub poll_delay: Option<String>,
 }
@@ -737,8 +733,6 @@ pub struct IstioMeshConfigExtensionProviders {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opencensus: Option<IstioMeshConfigExtensionProvidersOpencensus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub opentelemetry: Option<IstioMeshConfigExtensionProvidersOpentelemetry>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prometheus: Option<IstioMeshConfigExtensionProvidersPrometheus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skywalking: Option<IstioMeshConfigExtensionProvidersSkywalking>,
@@ -923,16 +917,6 @@ pub struct IstioMeshConfigExtensionProvidersOpencensus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct IstioMeshConfigExtensionProvidersOpentelemetry {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxTagLength")]
-    pub max_tag_length: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IstioMeshConfigExtensionProvidersPrometheus {
 }
 
@@ -1098,6 +1082,14 @@ pub struct IstioMeshConfigTcpKeepalive {
     pub probes: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IstioMeshConfigThriftConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitTimeout")]
+    pub rate_limit_timeout: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitUrl")]
+    pub rate_limit_url: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

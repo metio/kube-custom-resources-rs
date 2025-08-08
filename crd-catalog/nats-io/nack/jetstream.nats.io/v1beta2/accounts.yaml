@@ -60,59 +60,6 @@ spec:
                           type: "string"
                       type: "object"
                   type: "object"
-                tlsFirst:
-                  default: false
-                  description: "When true, the KV Store will initiate TLS before server INFO."
-                  type: "boolean"
-                token:
-                  description: "The token to be used to connect to the NATS Service."
-                  properties:
-                    secret:
-                      properties:
-                        name:
-                          description: "Name of the secret with the token."
-                          type: "string"
-                      type: "object"
-                    token:
-                      description: "Key in the secret that contains the token."
-                      type: "string"
-                  type: "object"
-                user:
-                  description: "The user and password to be used to connect to the NATS Service."
-                  properties:
-                    password:
-                      description: "Key in the secret that contains the password."
-                      type: "string"
-                    secret:
-                      properties:
-                        name:
-                          description: "Name of the secret with the user and password."
-                          type: "string"
-                      type: "object"
-                    user:
-                      description: "Key in the secret that contains the user."
-                      type: "string"
-                  type: "object"
-              type: "object"
-            status:
-              properties:
-                conditions:
-                  items:
-                    properties:
-                      lastTransitionTime:
-                        type: "string"
-                      message:
-                        type: "string"
-                      reason:
-                        type: "string"
-                      status:
-                        type: "string"
-                      type:
-                        type: "string"
-                    type: "object"
-                  type: "array"
-                observedGeneration:
-                  type: "integer"
               type: "object"
           type: "object"
       served: true

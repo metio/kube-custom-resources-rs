@@ -21,9 +21,12 @@ pub struct GatewayClassSpec {
     /// ControllerName is the name of the controller that is managing Gateways of
     /// this class. The value of this field MUST be a domain prefixed path.
     /// 
+    /// 
     /// Example: "example.net/gateway-controller".
     /// 
+    /// 
     /// This field is not mutable and cannot be empty.
+    /// 
     /// 
     /// Support: Core
     #[serde(rename = "controllerName")]
@@ -35,18 +38,20 @@ pub struct GatewayClassSpec {
     /// parameters corresponding to the GatewayClass. This is optional if the
     /// controller does not require any additional configuration.
     /// 
+    /// 
     /// ParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,
     /// or an implementation-specific custom resource. The resource can be
     /// cluster-scoped or namespace-scoped.
     /// 
-    /// If the referent cannot be found, refers to an unsupported kind, or when
-    /// the data within that resource is malformed, the GatewayClass SHOULD be
-    /// rejected with the "Accepted" status condition set to "False" and an
-    /// "InvalidParameters" reason.
+    /// 
+    /// If the referent cannot be found, the GatewayClass's "InvalidParameters"
+    /// status condition will be true.
+    /// 
     /// 
     /// A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
     /// the merging behavior is implementation specific.
     /// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+    /// 
     /// 
     /// Support: Implementation-specific
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parametersRef")]
@@ -57,18 +62,20 @@ pub struct GatewayClassSpec {
 /// parameters corresponding to the GatewayClass. This is optional if the
 /// controller does not require any additional configuration.
 /// 
+/// 
 /// ParametersRef can reference a standard Kubernetes resource, i.e. ConfigMap,
 /// or an implementation-specific custom resource. The resource can be
 /// cluster-scoped or namespace-scoped.
 /// 
-/// If the referent cannot be found, refers to an unsupported kind, or when
-/// the data within that resource is malformed, the GatewayClass SHOULD be
-/// rejected with the "Accepted" status condition set to "False" and an
-/// "InvalidParameters" reason.
+/// 
+/// If the referent cannot be found, the GatewayClass's "InvalidParameters"
+/// status condition will be true.
+/// 
 /// 
 /// A Gateway for this GatewayClass may provide its own `parametersRef`. When both are specified,
 /// the merging behavior is implementation specific.
 /// It is generally recommended that GatewayClass provides defaults that can be overridden by a Gateway.
+/// 
 /// 
 /// Support: Implementation-specific
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -88,12 +95,14 @@ pub struct GatewayClassParametersRef {
 
 /// Status defines the current state of GatewayClass.
 /// 
+/// 
 /// Implementations MUST populate status on all GatewayClass resources which
 /// specify their controller name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GatewayClassStatus {
     /// Conditions is the current status from the controller for
     /// this GatewayClass.
+    /// 
     /// 
     /// Controllers should prefer to publish conditions using values
     /// of GatewayClassConditionType for the type of each Condition.

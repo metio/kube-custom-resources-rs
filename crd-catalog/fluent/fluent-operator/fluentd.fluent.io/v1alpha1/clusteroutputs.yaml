@@ -1400,12 +1400,6 @@ spec:
                                     type: "object"
                                 type: "object"
                             type: "object"
-                          compress:
-                            description: "Compress enables the given compression method for HTTP requests."
-                            enum:
-                              - "text"
-                              - "gzip"
-                            type: "string"
                           contentType:
                             description: "ContentType defines Content-Type for HTTP request. out_http automatically set Content-Type for built-in formatters when this parameter is not specified."
                             type: "string"
@@ -1675,13 +1669,6 @@ spec:
                             type: "string"
                         required:
                           - "url"
-                        type: "object"
-                      nullPlugin:
-                        description: "null plugin"
-                        properties:
-                          neverFlush:
-                            description: "NeverFlush for testing to simulate the output plugin that never succeeds to flush."
-                            type: "boolean"
                         type: "object"
                       opensearch:
                         description: "out_opensearch plugin"

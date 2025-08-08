@@ -6781,12 +6781,25 @@ pub struct OpsDefinitionComponentInfos {
     /// - "^mysql-8.0.\d{1,2}$": Matches all names starting with "mysql-8.0." followed by one or two digits.
     #[serde(rename = "componentDefinitionName")]
     pub component_definition_name: String,
+    /// ImageMappings specifies the mapping from service versions to image addresses.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageMappings")]
+    pub image_mappings: Option<Vec<OpsDefinitionComponentInfosImageMappings>>,
     /// Specifies the name of the Service.
     /// If set, the service name is injected as the `KB_COMP_SVC_NAME` environment variable in the containers,
     /// and each service port is mapped to a corresponding environment variable named `KB_COMP_SVC_PORT_$(portName)`.
     /// The `portName` is transformed by replacing '-' with '_' and converting to uppercase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpsDefinitionComponentInfosImageMappings {
+    /// Images are the container image addresses to use for the matched service versions.
+    /// Key is the container name, and value is the image address.
+    pub images: BTreeMap<String, String>,
+    /// ServiceVersions is a list of service versions that this mapping applies to.
+    #[serde(rename = "serviceVersions")]
+    pub service_versions: Vec<String>,
 }
 
 /// Specifies the schema for validating the data types and value ranges of parameters in OpsActions before their usage.

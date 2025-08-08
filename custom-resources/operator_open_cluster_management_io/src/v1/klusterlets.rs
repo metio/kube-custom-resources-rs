@@ -303,6 +303,8 @@ pub enum KlusterletRegistrationConfigurationRegistrationDriverAuthType {
     Csr,
     #[serde(rename = "awsirsa")]
     Awsirsa,
+    #[serde(rename = "grpc")]
+    Grpc,
 }
 
 /// Contain the details required for registering with hub cluster (ie: an EKS cluster) using AWS IAM roles for service account.

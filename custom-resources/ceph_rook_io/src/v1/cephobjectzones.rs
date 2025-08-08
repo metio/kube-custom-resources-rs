@@ -113,9 +113,10 @@ pub enum CephObjectZoneDataPoolCompressionMode {
 /// The erasure code settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneDataPoolErasureCoded {
-    /// The algorithm for erasure coding
+    /// The algorithm for erasure coding.
+    /// If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub algorithm: Option<String>,
+    pub algorithm: Option<CephObjectZoneDataPoolErasureCodedAlgorithm>,
     /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
     /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
@@ -125,6 +126,15 @@ pub struct CephObjectZoneDataPoolErasureCoded {
     /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
+}
+
+/// The erasure code settings
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephObjectZoneDataPoolErasureCodedAlgorithm {
+    #[serde(rename = "isa")]
+    Isa,
+    #[serde(rename = "jerasure")]
+    Jerasure,
 }
 
 /// The mirroring settings
@@ -309,9 +319,10 @@ pub enum CephObjectZoneMetadataPoolCompressionMode {
 /// The erasure code settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneMetadataPoolErasureCoded {
-    /// The algorithm for erasure coding
+    /// The algorithm for erasure coding.
+    /// If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub algorithm: Option<String>,
+    pub algorithm: Option<CephObjectZoneMetadataPoolErasureCodedAlgorithm>,
     /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
     /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
@@ -321,6 +332,15 @@ pub struct CephObjectZoneMetadataPoolErasureCoded {
     /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
+}
+
+/// The erasure code settings
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephObjectZoneMetadataPoolErasureCodedAlgorithm {
+    #[serde(rename = "isa")]
+    Isa,
+    #[serde(rename = "jerasure")]
+    Jerasure,
 }
 
 /// The mirroring settings

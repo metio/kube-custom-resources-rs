@@ -47,6 +47,9 @@ pub struct TargetGroupBindingSpec {
     /// targetGroupName is the Name of the TargetGroup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetGroupName")]
     pub target_group_name: Option<String>,
+    /// targetGroupProtocol is the Protocol of the TargetGroup. If unspecified, it will be automatically inferred.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetGroupProtocol")]
+    pub target_group_protocol: Option<TargetGroupBindingTargetGroupProtocol>,
     /// targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<TargetGroupBindingTargetType>,
@@ -175,6 +178,23 @@ pub struct TargetGroupBindingServiceRef {
     pub name: String,
     /// Port is the port of the ServicePort.
     pub port: IntOrString,
+}
+
+/// TargetGroupBindingSpec defines the desired state of TargetGroupBinding
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TargetGroupBindingTargetGroupProtocol {
+    #[serde(rename = "HTTP")]
+    Http,
+    #[serde(rename = "HTTPS")]
+    Https,
+    #[serde(rename = "TCP")]
+    Tcp,
+    #[serde(rename = "TLS")]
+    Tls,
+    #[serde(rename = "UDP")]
+    Udp,
+    #[serde(rename = "TCP_UDP")]
+    TcpUdp,
 }
 
 /// TargetGroupBindingSpec defines the desired state of TargetGroupBinding

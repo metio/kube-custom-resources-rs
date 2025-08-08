@@ -43,6 +43,8 @@ pub struct BGPConfigurationSpec {
     pub service_cluster_i_ps: Option<Vec<BGPConfigurationServiceClusterIPs>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceExternalIPs")]
     pub service_external_i_ps: Option<Vec<BGPConfigurationServiceExternalIPs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLoadBalancerAggregation")]
+    pub service_load_balancer_aggregation: Option<BGPConfigurationServiceLoadBalancerAggregation>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLoadBalancerIPs")]
     pub service_load_balancer_i_ps: Option<Vec<BGPConfigurationServiceLoadBalancerIPs>>,
 }
@@ -88,6 +90,12 @@ pub struct BGPConfigurationServiceClusterIPs {
 pub struct BGPConfigurationServiceExternalIPs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cidr: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BGPConfigurationServiceLoadBalancerAggregation {
+    Enabled,
+    Disabled,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

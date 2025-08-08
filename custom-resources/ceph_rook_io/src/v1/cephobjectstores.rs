@@ -35,6 +35,12 @@ pub struct CephObjectStoreSpec {
     /// The data pool settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPool")]
     pub data_pool: Option<CephObjectStoreDataPool>,
+    /// Set this realm as the default in Ceph. Only one realm should be default.
+    /// Do not set this true on more than one CephObjectStore.
+    /// This may not be set when zone is also specified; in this case, the realm
+    /// referenced by the zone's zonegroup should configure defaulting behavior.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRealm")]
+    pub default_realm: Option<bool>,
     /// The rgw pod info
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<CephObjectStoreGateway>,
@@ -160,9 +166,10 @@ pub enum CephObjectStoreDataPoolCompressionMode {
 /// The erasure code settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreDataPoolErasureCoded {
-    /// The algorithm for erasure coding
+    /// The algorithm for erasure coding.
+    /// If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub algorithm: Option<String>,
+    pub algorithm: Option<CephObjectStoreDataPoolErasureCodedAlgorithm>,
     /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
     /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
@@ -172,6 +179,15 @@ pub struct CephObjectStoreDataPoolErasureCoded {
     /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
+}
+
+/// The erasure code settings
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephObjectStoreDataPoolErasureCodedAlgorithm {
+    #[serde(rename = "isa")]
+    Isa,
+    #[serde(rename = "jerasure")]
+    Jerasure,
 }
 
 /// The mirroring settings
@@ -1472,9 +1488,10 @@ pub enum CephObjectStoreMetadataPoolCompressionMode {
 /// The erasure code settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreMetadataPoolErasureCoded {
-    /// The algorithm for erasure coding
+    /// The algorithm for erasure coding.
+    /// If absent, defaults to the plugin specified in osd_pool_default_erasure_code_profile.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub algorithm: Option<String>,
+    pub algorithm: Option<CephObjectStoreMetadataPoolErasureCodedAlgorithm>,
     /// Number of coding chunks per object in an erasure coded storage pool (required for erasure-coded pool type).
     /// This is the number of OSDs that can be lost simultaneously before data cannot be recovered.
     #[serde(rename = "codingChunks")]
@@ -1484,6 +1501,15 @@ pub struct CephObjectStoreMetadataPoolErasureCoded {
     /// as dataChunks so be aware that the larger the number of data chunks, the higher the cost of recovery.
     #[serde(rename = "dataChunks")]
     pub data_chunks: i64,
+}
+
+/// The erasure code settings
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum CephObjectStoreMetadataPoolErasureCodedAlgorithm {
+    #[serde(rename = "isa")]
+    Isa,
+    #[serde(rename = "jerasure")]
+    Jerasure,
 }
 
 /// The mirroring settings

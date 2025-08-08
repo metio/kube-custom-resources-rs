@@ -949,6 +949,12 @@ spec:
                           name:
                             description: "Unique name for the port that can be referred to by services."
                             type: "string"
+                          nodePort:
+                            description: "NodePort specifies a fixed node port when service type is NodePort"
+                            format: "int32"
+                            maximum: 32767.0
+                            minimum: 30000.0
+                            type: "number"
                           protocol:
                             default: "TCP"
                             description: "Protocol for port. Must be UDP, TCP, or SCTP."

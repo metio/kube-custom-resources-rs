@@ -156,7 +156,7 @@ pub struct AlertmanagerSpec {
     pub image_pull_policy: Option<AlertmanagerImagePullPolicy>,
     /// An optional list of references to secrets in the same namespace
     /// to use for pulling prometheus and alertmanager images from registries
-    /// see https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    /// see http://kubernetes.io/docs/user-guide/images#specifying-imagepullsecrets-on-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<AlertmanagerImagePullSecrets>>,
     /// InitContainers allows adding initContainers to the pod definition. Those can be used to e.g.
@@ -170,9 +170,6 @@ pub struct AlertmanagerSpec {
     /// this behaviour may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AlertmanagerInitContainers>>,
-    /// Defines the limits command line flags when starting Alertmanager.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<AlertmanagerLimits>,
     /// ListenLocal makes the Alertmanager server listen on loopback, so that it
     /// does not bind against the Pod IP. Note this is only for the Alertmanager
     /// UI, not the gossip communication.
@@ -194,7 +191,7 @@ pub struct AlertmanagerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// If set to true all actions on the underlying managed objects are not
-    /// going to be performed, except for delete actions.
+    /// goint to be performed, except for delete actions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
     /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
@@ -522,6 +519,7 @@ pub struct AlertmanagerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -532,6 +530,7 @@ pub struct AlertmanagerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -641,6 +640,7 @@ pub struct AlertmanagerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -651,6 +651,7 @@ pub struct AlertmanagerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -791,6 +792,7 @@ pub struct AlertmanagerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -801,6 +803,7 @@ pub struct AlertmanagerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -910,6 +913,7 @@ pub struct AlertmanagerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -920,6 +924,7 @@ pub struct AlertmanagerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1027,7 +1032,6 @@ pub struct AlertmanagerAlertmanagerConfigMatcherStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum AlertmanagerAlertmanagerConfigMatcherStrategyType {
     OnNamespace,
-    OnNamespaceExceptForAlertmanagerNamespace,
     None,
 }
 
@@ -1119,9 +1123,6 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// HTTP client configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpConfig")]
     pub http_config: Option<AlertmanagerAlertmanagerConfigurationGlobalHttpConfig>,
-    /// The default configuration for Jira.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub jira: Option<AlertmanagerAlertmanagerConfigurationGlobalJira>,
     /// The default OpsGenie API Key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "opsGenieApiKey")]
     pub ops_genie_api_key: Option<AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey>,
@@ -1136,27 +1137,12 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobal {
     /// This has no impact on alerts from Prometheus, as they always include EndsAt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolveTimeout")]
     pub resolve_timeout: Option<String>,
-    /// The default configuration for Rocket Chat.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rocketChat")]
-    pub rocket_chat: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChat>,
     /// The default Slack API URL.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slackApiUrl")]
     pub slack_api_url: Option<AlertmanagerAlertmanagerConfigurationGlobalSlackApiUrl>,
     /// Configures global SMTP parameters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub smtp: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtp>,
-    /// The default Telegram config
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub telegram: Option<AlertmanagerAlertmanagerConfigurationGlobalTelegram>,
-    /// The default configuration for VictorOps.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub victorops: Option<AlertmanagerAlertmanagerConfigurationGlobalVictorops>,
-    /// The default configuration for Jira.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub webex: Option<AlertmanagerAlertmanagerConfigurationGlobalWebex>,
-    /// The default WeChat Config
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub wechat: Option<AlertmanagerAlertmanagerConfigurationGlobalWechat>,
 }
 
 /// HTTP client configuration.
@@ -1786,16 +1772,6 @@ pub enum AlertmanagerAlertmanagerConfigurationGlobalHttpConfigTlsConfigMinVersio
     Tls13,
 }
 
-/// The default configuration for Jira.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalJira {
-    /// The default Jira API URL.
-    /// 
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-}
-
 /// The default OpsGenie API Key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey {
@@ -1816,64 +1792,6 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiKey {
 /// The default OpsGenie API URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerAlertmanagerConfigurationGlobalOpsGenieApiUrl {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The default configuration for Rocket Chat.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChat {
-    /// The default Rocket Chat API URL.
-    /// 
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-    /// The default Rocket Chat token.
-    /// 
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub token: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChatToken>,
-    /// The default Rocket Chat Token ID.
-    /// 
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenID")]
-    pub token_id: Option<AlertmanagerAlertmanagerConfigurationGlobalRocketChatTokenId>,
-}
-
-/// The default Rocket Chat token.
-/// 
-/// It requires Alertmanager >= v0.28.0.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChatToken {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The default Rocket Chat Token ID.
-/// 
-/// It requires Alertmanager >= v0.28.0.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalRocketChatTokenId {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -1933,9 +1851,6 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtp {
     /// The default SMTP smarthost used for sending emails.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "smartHost")]
     pub smart_host: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpSmartHost>,
-    /// The default TLS configuration for SMTP receivers
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
-    pub tls_config: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfig>,
 }
 
 /// SMTP Auth using LOGIN and PLAIN.
@@ -1979,249 +1894,6 @@ pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpSmartHost {
     pub host: String,
     /// Defines the host's port, it can be a literal port number or a port name.
     pub port: String,
-}
-
-/// The default TLS configuration for SMTP receivers
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfig {
-    /// Certificate authority used when verifying server certificates.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ca: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCa>,
-    /// Client certificate to present when doing client-authentication.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cert: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCert>,
-    /// Disable target certificate validation.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
-    pub insecure_skip_verify: Option<bool>,
-    /// Secret containing the client key file for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigKeySecret>,
-    /// Maximum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.41.0 or Thanos >= v0.31.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
-    pub max_version: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigMaxVersion>,
-    /// Minimum acceptable TLS version.
-    /// 
-    /// It requires Prometheus >= v2.35.0 or Thanos >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
-    pub min_version: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigMinVersion>,
-    /// Used to verify the hostname for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
-    pub server_name: Option<String>,
-}
-
-/// Certificate authority used when verifying server certificates.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCa {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCaConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCaSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCaConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCaSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Client certificate to present when doing client-authentication.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCert {
-    /// ConfigMap containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCertConfigMap>,
-    /// Secret containing data to use for the targets.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCertSecret>,
-}
-
-/// ConfigMap containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCertConfigMap {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing data to use for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigCertSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Secret containing the client key file for the targets.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigKeySecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The default TLS configuration for SMTP receivers
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigMaxVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
-}
-
-/// The default TLS configuration for SMTP receivers
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum AlertmanagerAlertmanagerConfigurationGlobalSmtpTlsConfigMinVersion {
-    #[serde(rename = "TLS10")]
-    Tls10,
-    #[serde(rename = "TLS11")]
-    Tls11,
-    #[serde(rename = "TLS12")]
-    Tls12,
-    #[serde(rename = "TLS13")]
-    Tls13,
-}
-
-/// The default Telegram config
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalTelegram {
-    /// The default Telegram API URL.
-    /// 
-    /// It requires Alertmanager >= v0.24.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-}
-
-/// The default configuration for VictorOps.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalVictorops {
-    /// The default VictorOps API Key.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
-    pub api_key: Option<AlertmanagerAlertmanagerConfigurationGlobalVictoropsApiKey>,
-    /// The default VictorOps API URL.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-}
-
-/// The default VictorOps API Key.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalVictoropsApiKey {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The default configuration for Jira.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalWebex {
-    /// The default Webex API URL.
-    /// 
-    /// It requires Alertmanager >= v0.25.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-}
-
-/// The default WeChat Config
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalWechat {
-    /// The default WeChat API Corporate ID.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiCorpID")]
-    pub api_corp_id: Option<String>,
-    /// The default WeChat API Secret.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiSecret")]
-    pub api_secret: Option<AlertmanagerAlertmanagerConfigurationGlobalWechatApiSecret>,
-    /// The default WeChat API URL.
-    /// The default value is "https://qyapi.weixin.qq.com/cgi-bin/"
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
-    pub api_url: Option<String>,
-}
-
-/// The default WeChat API Secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerAlertmanagerConfigurationGlobalWechatApiSecret {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
 }
 
 /// SecretOrConfigMap allows to specify data as a Secret or ConfigMap. Fields are mutually exclusive.
@@ -2906,13 +2578,13 @@ pub struct AlertmanagerContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AlertmanagerContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2971,11 +2643,6 @@ pub struct AlertmanagerContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<AlertmanagerContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4201,13 +3868,13 @@ pub struct AlertmanagerInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AlertmanagerInitContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4266,11 +3933,6 @@ pub struct AlertmanagerInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<AlertmanagerInitContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -5156,21 +4818,6 @@ pub struct AlertmanagerInitContainersVolumeMounts {
     pub sub_path_expr: Option<String>,
 }
 
-/// Defines the limits command line flags when starting Alertmanager.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AlertmanagerLimits {
-    /// The maximum size of an individual silence as stored on disk. This corresponds to the Alertmanager's
-    /// `--silences.max-per-silence-bytes` flag.
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPerSilenceBytes")]
-    pub max_per_silence_bytes: Option<String>,
-    /// The maximum number active and pending silences. This corresponds to the
-    /// Alertmanager's `--silences.max-silences` flag.
-    /// It requires Alertmanager >= v0.28.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSilences")]
-    pub max_silences: Option<i32>,
-}
-
 /// Specification of the desired behavior of the Alertmanager cluster. More info:
 /// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -5234,13 +4881,13 @@ pub struct AlertmanagerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5248,7 +4895,7 @@ pub struct AlertmanagerPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
+    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5858,13 +5505,13 @@ pub struct AlertmanagerStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5872,7 +5519,7 @@ pub struct AlertmanagerStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
+    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6275,6 +5922,7 @@ pub struct AlertmanagerTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -6284,6 +5932,7 @@ pub struct AlertmanagerTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -6521,7 +6170,7 @@ pub struct AlertmanagerVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<AlertmanagerVolumesImage>,
@@ -7387,7 +7036,7 @@ pub struct AlertmanagerVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AlertmanagerVolumesImage {

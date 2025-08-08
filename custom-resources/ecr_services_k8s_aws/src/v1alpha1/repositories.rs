@@ -12,6 +12,7 @@ use self::prelude::*;
 
 /// RepositorySpec defines the desired state of Repository.
 /// 
+/// 
 /// An object representing a repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ecr.services.k8s.aws", version = "v1alpha1", kind = "Repository", plural = "repositories")]
@@ -41,11 +42,6 @@ pub struct RepositorySpec {
     /// The name to use for the repository. The repository name may be specified
     /// on its own (such as nginx-web-app) or it can be prepended with a namespace
     /// to group the repository into a category (such as project-a/nginx-web-app).
-    /// 
-    /// The repository name must start with a letter and can only contain lowercase
-    /// letters, numbers, hyphens, underscores, and forward slashes.
-    /// 
-    /// Regex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`
     pub name: String,
     /// The JSON repository policy text to apply to the repository. For more information,
     /// see Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)
@@ -55,8 +51,6 @@ pub struct RepositorySpec {
     /// The Amazon Web Services account ID associated with the registry to create
     /// the repository. If you do not specify a registry, the default registry is
     /// assumed.
-    /// 
-    /// Regex Pattern: `^[0-9]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The metadata that you apply to the repository to help you categorize and
@@ -105,7 +99,7 @@ pub struct RepositoryStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RepositoryStatusAckResourceMetadata>,
-    /// All CRs managed by ACK have a common `Status.Conditions` member that
+    /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
@@ -131,6 +125,7 @@ pub struct RepositoryStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
+    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

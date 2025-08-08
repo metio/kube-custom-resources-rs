@@ -780,6 +780,9 @@ pub struct IBMVPCClusterStatus {
     /// Subnet describes a subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnet: Option<IBMVPCClusterStatusSubnet>,
+    /// V1beta2 groups all the fields that will be added or modified in IBMVPCCluster's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<IBMVPCClusterStatusV1beta2>,
     /// Important: Run "make" to regenerate code after modifying this file
     /// dep: rely on Network instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -959,6 +962,14 @@ pub struct IBMVPCClusterStatusSubnet {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
+}
+
+/// V1beta2 groups all the fields that will be added or modified in IBMVPCCluster's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCClusterStatusV1beta2 {
+    /// Conditions represents the observations of a IBMVPCCluster's current state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 
 /// Important: Run "make" to regenerate code after modifying this file

@@ -15,7 +15,7 @@ spec:
           jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
           name: "State"
           type: "string"
-        - description: "The name of the JetStream Stream."
+        - description: "The name of the Jetstream Stream."
           jsonPath: ".spec.name"
           name: "Stream Name"
           type: "string"
@@ -35,11 +35,7 @@ spec:
                   type: "string"
                 allowDirect:
                   default: false
-                  description: "When true, allow higher performance, direct access to get individual messages."
-                  type: "boolean"
-                allowMsgTtl:
-                  default: false
-                  description: "When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored."
+                  description: "When true, allow higher performance, direct access to get individual messages"
                   type: "boolean"
                 allowRollup:
                   default: false
@@ -53,26 +49,13 @@ spec:
                     - "none"
                     - ""
                   type: "string"
-                consumerLimits:
-                  properties:
-                    inactiveThreshold:
-                      description: "The duration of inactivity after which a consumer is considered inactive."
-                      type: "string"
-                    maxAckPending:
-                      description: "Maximum number of outstanding unacknowledged messages."
-                      type: "integer"
-                  type: "object"
                 creds:
                   default: ""
-                  description: "NATS user credentials for connecting to servers. Please make sure your controller has mounted the creds on this path."
+                  description: "NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path."
                   type: "string"
                 denyDelete:
                   default: false
                   description: "When true, restricts the ability to delete messages from a stream via the API. Cannot be changed once set to true."
-                  type: "boolean"
-                denyPurge:
-                  default: false
-                  description: "When true, restricts the ability to purge a stream via the API. Cannot be changed once set to true."
                   type: "boolean"
                 description:
                   description: "The description of the stream."
@@ -86,7 +69,7 @@ spec:
                   type: "string"
                 discardPerSubject:
                   default: false
-                  description: "Applies discard policy on a per-subject basis. Requires discard policy 'new' and 'maxMsgs' to be set."
+                  description: "Allows to discard messages on a subject basis."
                   type: "boolean"
                 duplicateWindow:
                   description: "The duration window to track duplicate messages for."
@@ -95,9 +78,6 @@ spec:
                   default: 0
                   description: "Sequence number from which the Stream will start."
                   type: "number"
-                jsDomain:
-                  description: "The JetStream domain to use for the stream."
-                  type: "string"
                 maxAge:
                   default: ""
                   description: "Maximum age of any message in the stream, expressed in Go's time.Duration format. Empty for unlimited."
@@ -124,7 +104,7 @@ spec:
                   type: "integer"
                 maxMsgsPerSubject:
                   default: 0
-                  description: "The maximum number of messages per subject."
+                  description: "The maximum of messages per subject."
                   type: "integer"
                 metadata:
                   additionalProperties:
@@ -161,10 +141,6 @@ spec:
                         type: "object"
                       type: "array"
                   type: "object"
-                mirrorDirect:
-                  default: false
-                  description: "When true, enables direct access to messages from the origin stream."
-                  type: "boolean"
                 name:
                   description: "A unique name for the Stream."
                   minLength: 1
@@ -190,11 +166,11 @@ spec:
                   type: "object"
                 preventDelete:
                   default: false
-                  description: "When true, the managed Stream will not be deleted when the resource is deleted."
+                  description: "When true, the managed Stream will not be deleted when the resource is deleted"
                   type: "boolean"
                 preventUpdate:
                   default: false
-                  description: "When true, the managed Stream will not be updated when the resource is updated."
+                  description: "When true, the managed Stream will not be updated when the resource is updated"
                   type: "boolean"
                 replicas:
                   default: 1
@@ -205,10 +181,10 @@ spec:
                   description: "Republish configuration of the stream."
                   properties:
                     destination:
-                      description: "Messages will be additionally published to this subject."
+                      description: "Messages will be additionally published to that subject."
                       type: "string"
                     source:
-                      description: "Messages will be published from this subject to the destination subject."
+                      description: "Messages will be published from that subject to the destination subject."
                       type: "string"
                   type: "object"
                 retention:
@@ -219,13 +195,9 @@ spec:
                     - "interest"
                     - "workqueue"
                   type: "string"
-                sealed:
-                  default: false
-                  description: "Seal an existing stream so no new messages may be added."
-                  type: "boolean"
                 servers:
                   default: []
-                  description: "A list of servers for creating stream."
+                  description: "A list of servers for creating stream"
                   items:
                     type: "string"
                   type: "array"
@@ -268,18 +240,14 @@ spec:
                     - "file"
                     - "memory"
                   type: "string"
-                subjectDeleteMarkerTtl:
-                  default: ""
-                  description: "Enables and sets a duration for adding server markers for delete, purge and max age limits."
-                  type: "string"
                 subjectTransform:
-                  description: "SubjectTransform is for applying a subject transform (to matching messages) when a new message is received."
+                  description: "SubjectTransform is for applying a subject transform (to matching messages) when a new message is received"
                   properties:
                     dest:
-                      description: "Destination subject to transform into."
+                      description: "Destination subject to transform into"
                       type: "string"
                     source:
-                      description: "Source subject."
+                      description: "Source subject"
                       type: "string"
                   type: "object"
                 subjects:
@@ -304,10 +272,6 @@ spec:
                         type: "string"
                       type: "array"
                   type: "object"
-                tlsFirst:
-                  default: false
-                  description: "When true, the KV Store will initiate TLS before server INFO."
-                  type: "boolean"
               type: "object"
             status:
               properties:

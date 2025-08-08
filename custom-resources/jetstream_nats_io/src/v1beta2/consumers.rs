@@ -28,10 +28,10 @@ pub struct ConsumerSpec {
     /// How long to allow messages to remain un-acknowledged before attempting redelivery.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackWait")]
     pub ack_wait: Option<String>,
-    /// List of durations representing a retry time scale for NaK'd or retried messages.
+    /// List of durations representing a retry time scale for NaK'd or retried messages
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backoff: Option<Vec<String>>,
-    /// NATS user credentials for connecting to servers. Please make sure your controller has mounted the creds on its path.
+    /// NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creds: Option<String>,
     /// The name of a queue group.
@@ -57,18 +57,12 @@ pub struct ConsumerSpec {
     /// Enables flow control.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flowControl")]
     pub flow_control: Option<bool>,
-    /// When set, only the headers of messages in the stream are delivered, and not the bodies. Additionally, Nats-Msg-Size header is added to indicate the size of the removed payload.
+    /// When set, only the headers of messages in the stream are delivered, and not the bodies. Additionally, Nats-Msg-Size header is added to indicate the size of the removed payload
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "headersOnly")]
     pub headers_only: Option<bool>,
     /// The interval used to deliver idle heartbeats for push-based consumers, in Go's time.Duration format.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "heartbeatInterval")]
     pub heartbeat_interval: Option<String>,
-    /// The idle time an Ephemeral Consumer allows before it is removed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inactiveThreshold")]
-    pub inactive_threshold: Option<String>,
-    /// The JetStream domain to use for the consumer.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
-    pub js_domain: Option<String>,
     /// Maximum pending Acks before consumers are paused.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAckPending")]
     pub max_ack_pending: Option<i64>,
@@ -100,13 +94,13 @@ pub struct ConsumerSpec {
     /// Time format must be RFC3339.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "optStartTime")]
     pub opt_start_time: Option<String>,
-    /// When true, the managed Consumer will not be deleted when the resource is deleted.
+    /// When true, the managed Consumer will not be deleted when the resource is deleted
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventDelete")]
     pub prevent_delete: Option<bool>,
-    /// When true, the managed Consumer will not be updated when the resource is updated.
+    /// When true, the managed Consumer will not be updated when the resource is updated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventUpdate")]
     pub prevent_update: Option<bool>,
-    /// Rate at which messages will be delivered to clients, expressed in bit per second.
+    /// rate at which messages will be delivered to clients, expressed in bit per second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitBps")]
     pub rate_limit_bps: Option<i64>,
     /// How messages are sent.
@@ -118,7 +112,7 @@ pub struct ConsumerSpec {
     /// What percentage of acknowledgements should be samples for observability.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleFreq")]
     pub sample_freq: Option<String>,
-    /// A list of servers for creating consumer.
+    /// A list of servers for creating consumer
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<String>>,
     /// The name of the Stream to create the Consumer in.
@@ -127,9 +121,6 @@ pub struct ConsumerSpec {
     /// A client's TLS certs and keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ConsumerTls>,
-    /// When true, the KV Store will initiate TLS before server INFO.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsFirst")]
-    pub tls_first: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]

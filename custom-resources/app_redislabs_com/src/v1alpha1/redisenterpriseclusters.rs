@@ -3104,7 +3104,7 @@ pub enum RedisEnterpriseClusterServicesApiServiceType {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterServicesRiggerSpec {
-    /// databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. Note - Regardless whether this flag is set or not, if an REDB/REAADB configured with databaseServicePort that would be the port exposed by the Service. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379).
+    /// databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseServicePortPolicy")]
     pub database_service_port_policy: Option<RedisEnterpriseClusterServicesRiggerSpecDatabaseServicePortPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseServiceType")]
@@ -6013,8 +6013,6 @@ pub struct RedisEnterpriseClusterUsageMeterCallHomeClient {
     pub disabled: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSpec")]
     pub image_spec: Option<RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretName")]
-    pub proxy_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RedisEnterpriseClusterUsageMeterCallHomeClientResources>,
 }

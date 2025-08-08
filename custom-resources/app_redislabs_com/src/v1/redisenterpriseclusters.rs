@@ -3280,7 +3280,7 @@ pub enum RedisEnterpriseClusterServicesApiServiceType {
 /// Specification for service rigger
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseClusterServicesRiggerSpec {
-    /// databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. Note - Regardless whether this flag is set or not, if an REDB/REAADB configured with databaseServicePort that would be the port exposed by the Service. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379).
+    /// databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseServicePortPolicy")]
     pub database_service_port_policy: Option<RedisEnterpriseClusterServicesRiggerSpecDatabaseServicePortPolicy>,
     /// Service types for access to databases. should be a comma separated list. The possible values are cluster_ip, headless and load_balancer.
@@ -6225,9 +6225,6 @@ pub struct RedisEnterpriseClusterUsageMeterCallHomeClient {
     /// Image specification
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageSpec")]
     pub image_spec: Option<RedisEnterpriseClusterUsageMeterCallHomeClientImageSpec>,
-    /// if needed, add proxy details in secret. the name of the proxy secret in the secret, can send the following keys: proxy-url, proxy-username, proxy-password (the url includes the proxy port).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretName")]
-    pub proxy_secret_name: Option<String>,
     /// Compute resource requirements for Call Home Client pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<RedisEnterpriseClusterUsageMeterCallHomeClientResources>,

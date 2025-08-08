@@ -17,7 +17,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IngressClassParamsSpec {
-    /// PrefixListsIDs defines the security group prefix lists for all Ingresses that belong to IngressClass with this IngressClassParams.
+    /// PrefixListsIDsLegacy defines the security group prefix lists for all Ingresses that belong to IngressClass with this IngressClassParams.
+    /// Not Recommended, Use PrefixListsIDs (prefixListsIDs in JSON) instead
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "PrefixListsIDs")]
     pub prefix_lists_i_ds: Option<Vec<String>>,
     /// CertificateArn specifies the ARN of the certificates for all Ingresses that belong to IngressClass with this IngressClassParams.
@@ -48,6 +49,9 @@ pub struct IngressClassParamsSpec {
     /// * if absent or present but empty, it selects all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<IngressClassParamsNamespaceSelector>,
+    /// PrefixListsIDs defines the security group prefix lists for all Ingresses that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixListsIDs")]
+    pub prefix_lists_i_ds_x: Option<Vec<String>>,
     /// Scheme defines the scheme for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<IngressClassParamsScheme>,
