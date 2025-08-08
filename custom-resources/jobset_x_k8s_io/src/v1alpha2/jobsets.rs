@@ -7534,10 +7534,9 @@ pub enum JobSetSuccessPolicyOperator {
 pub struct JobSetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// IndividualJobRecreates tracks the number of times an individual Job within
-    /// the JobSet has been recreated (i.e. in case of RecreateJob failure policy).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "individualJobRecreates")]
-    pub individual_job_recreates: Option<BTreeMap<String, i32>>,
+    /// IndividualJobsStatus tracks the status of individual Jobs within ReplicatedJobs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "individualJobsStatus")]
+    pub individual_jobs_status: Option<Vec<JobSetStatusIndividualJobsStatus>>,
     /// ReplicatedJobsStatus track the number of JobsReady for each replicatedJob.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicatedJobsStatus")]
     pub replicated_jobs_status: Option<Vec<JobSetStatusReplicatedJobsStatus>>,
@@ -7551,6 +7550,16 @@ pub struct JobSetStatus {
     /// It can be either Completed or Failed. Otherwise, it is empty by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminalState")]
     pub terminal_state: Option<String>,
+}
+
+/// IndividualJobStatus holds the status of an individual Job within a ReplicatedJob.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobSetStatusIndividualJobsStatus {
+    /// Name of the Job.
+    pub name: String,
+    /// Recreates is the number of times an individual Job has been recreated.
+    /// This counter is reset to 0 if the parent ReplicatedJob or JobSet is restarted.
+    pub recreates: i32,
 }
 
 /// ReplicatedJobStatus defines the observed ReplicatedJobs Readiness.

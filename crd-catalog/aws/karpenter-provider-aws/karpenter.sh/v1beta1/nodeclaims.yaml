@@ -2,20 +2,9 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.1"
+    controller-gen.kubebuilder.io/version: "v0.13.0"
   name: "nodeclaims.karpenter.sh"
 spec:
-  conversion:
-    strategy: "Webhook"
-    webhook:
-      clientConfig:
-        service:
-          name: "karpenter"
-          namespace: "kube-system"
-          port: 8443
-      conversionReviewVersions:
-        - "v1beta1"
-        - "v1"
   group: "karpenter.sh"
   names:
     categories:
@@ -60,10 +49,10 @@ spec:
           description: "NodeClaim is the Schema for the NodeClaims API"
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -71,10 +60,10 @@ spec:
               description: "NodeClaimSpec describes the desired state of the NodeClaim"
               properties:
                 kubelet:
-                  description: "Kubelet defines args to be used when configuring kubelet on provisioned nodes.\nThey are a subset of the upstream types, recognizing not all options may be supported.\nWherever possible, the types and names should reflect the upstream kubelet types."
+                  description: "Kubelet defines args to be used when configuring kubelet on provisioned nodes. They are a subset of the upstream types, recognizing not all options may be supported. Wherever possible, the types and names should reflect the upstream kubelet types."
                   properties:
                     clusterDNS:
-                      description: "clusterDNS is a list of IP addresses for the cluster DNS server.\nNote that not all providers may use all addresses."
+                      description: "clusterDNS is a list of IP addresses for the cluster DNS server. Note that not all providers may use all addresses."
                       items:
                         type: "string"
                       type: "array"
@@ -91,7 +80,7 @@ spec:
                         - message: "valid keys for evictionHard are ['memory.available','nodefs.available','nodefs.inodesFree','imagefs.available','imagefs.inodesFree','pid.available']"
                           rule: "self.all(x, x in ['memory.available','nodefs.available','nodefs.inodesFree','imagefs.available','imagefs.inodesFree','pid.available'])"
                     evictionMaxPodGracePeriod:
-                      description: "EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in\nresponse to soft eviction thresholds being met."
+                      description: "EvictionMaxPodGracePeriod is the maximum allowed grace period (in seconds) to use when terminating pods in response to soft eviction thresholds being met."
                       format: "int32"
                       type: "integer"
                     evictionSoft:
@@ -112,21 +101,24 @@ spec:
                         - message: "valid keys for evictionSoftGracePeriod are ['memory.available','nodefs.available','nodefs.inodesFree','imagefs.available','imagefs.inodesFree','pid.available']"
                           rule: "self.all(x, x in ['memory.available','nodefs.available','nodefs.inodesFree','imagefs.available','imagefs.inodesFree','pid.available'])"
                     imageGCHighThresholdPercent:
-                      description: "ImageGCHighThresholdPercent is the percent of disk usage after which image\ngarbage collection is always run. The percent is calculated by dividing this\nfield value by 100, so this field must be between 0 and 100, inclusive.\nWhen specified, the value must be greater than ImageGCLowThresholdPercent."
+                      description: "ImageGCHighThresholdPercent is the percent of disk usage after which image garbage collection is always run. The percent is calculated by dividing this field value by 100, so this field must be between 0 and 100, inclusive. When specified, the value must be greater than ImageGCLowThresholdPercent."
                       format: "int32"
                       maximum: 100.0
                       minimum: 0.0
                       type: "integer"
                     imageGCLowThresholdPercent:
-                      description: "ImageGCLowThresholdPercent is the percent of disk usage before which image\ngarbage collection is never run. Lowest disk usage to garbage collect to.\nThe percent is calculated by dividing this field value by 100,\nso the field value must be between 0 and 100, inclusive.\nWhen specified, the value must be less than imageGCHighThresholdPercent"
+                      description: "ImageGCLowThresholdPercent is the percent of disk usage before which image garbage collection is never run. Lowest disk usage to garbage collect to. The percent is calculated by dividing this field value by 100, so the field value must be between 0 and 100, inclusive. When specified, the value must be less than imageGCHighThresholdPercent"
                       format: "int32"
                       maximum: 100.0
                       minimum: 0.0
                       type: "integer"
                     kubeReserved:
                       additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                        type: "string"
+                        x-kubernetes-int-or-string: true
                       description: "KubeReserved contains resources reserved for Kubernetes system components."
                       type: "object"
                       x-kubernetes-validations:
@@ -135,19 +127,22 @@ spec:
                         - message: "kubeReserved value cannot be a negative resource quantity"
                           rule: "self.all(x, !self[x].startsWith('-'))"
                     maxPods:
-                      description: "MaxPods is an override for the maximum number of pods that can run on\na worker node instance."
+                      description: "MaxPods is an override for the maximum number of pods that can run on a worker node instance."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
                     podsPerCore:
-                      description: "PodsPerCore is an override for the number of pods that can run on a worker node\ninstance based on the number of cpu cores. This value cannot exceed MaxPods, so, if\nMaxPods is a lower value, that value will be used."
+                      description: "PodsPerCore is an override for the number of pods that can run on a worker node instance based on the number of cpu cores. This value cannot exceed MaxPods, so, if MaxPods is a lower value, that value will be used."
                       format: "int32"
                       minimum: 0.0
                       type: "integer"
                     systemReserved:
                       additionalProperties:
+                        anyOf:
+                          - type: "integer"
+                          - type: "string"
                         pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
-                        type: "string"
+                        x-kubernetes-int-or-string: true
                       description: "SystemReserved contains resources reserved for OS system daemons and kernel memory."
                       type: "object"
                       x-kubernetes-validations:
@@ -181,7 +176,7 @@ spec:
                 requirements:
                   description: "Requirements are layered with GetLabels and applied to every node."
                   items:
-                    description: "A node selector requirement with min values is a selector that contains values, a key, an operator that relates the key and values\nand minValues that represent the requirement to have at least that many values."
+                    description: "A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values."
                     properties:
                       key:
                         description: "The label key that the selector applies to."
@@ -198,14 +193,9 @@ spec:
                           - message: "label \"kubernetes.io/hostname\" is restricted"
                             rule: "self != \"kubernetes.io/hostname\""
                           - message: "label domain \"karpenter.k8s.aws\" is restricted"
-                            rule: "self in [\"karpenter.k8s.aws/instance-encryption-in-transit-supported\", \"karpenter.k8s.aws/instance-category\", \"karpenter.k8s.aws/instance-hypervisor\", \"karpenter.k8s.aws/instance-family\", \"karpenter.k8s.aws/instance-generation\", \"karpenter.k8s.aws/instance-local-nvme\", \"karpenter.k8s.aws/instance-size\", \"karpenter.k8s.aws/instance-cpu\",\"karpenter.k8s.aws/instance-cpu-manufacturer\",\"karpenter.k8s.aws/instance-memory\", \"karpenter.k8s.aws/instance-ebs-bandwidth\", \"karpenter.k8s.aws/instance-network-bandwidth\", \"karpenter.k8s.aws/instance-gpu-name\", \"karpenter.k8s.aws/instance-gpu-manufacturer\", \"karpenter.k8s.aws/instance-gpu-count\", \"karpenter.k8s.aws/instance-gpu-memory\", \"karpenter.k8s.aws/instance-accelerator-name\", \"karpenter.k8s.aws/instance-accelerator-manufacturer\", \"karpenter.k8s.aws/instance-accelerator-count\"] || !self.find(\"^([^/]+)\").endsWith(\"karpenter.k8s.aws\")"
-                      minValues:
-                        description: "This field is ALPHA and can be dropped or replaced at any time\nMinValues is the minimum number of unique values required to define the flexibility of the specific requirement."
-                        maximum: 50.0
-                        minimum: 1.0
-                        type: "integer"
+                            rule: "self in [\"karpenter.k8s.aws/instance-encryption-in-transit-supported\", \"karpenter.k8s.aws/instance-category\", \"karpenter.k8s.aws/instance-hypervisor\", \"karpenter.k8s.aws/instance-family\", \"karpenter.k8s.aws/instance-generation\", \"karpenter.k8s.aws/instance-local-nvme\", \"karpenter.k8s.aws/instance-size\", \"karpenter.k8s.aws/instance-cpu\",\"karpenter.k8s.aws/instance-memory\", \"karpenter.k8s.aws/instance-network-bandwidth\", \"karpenter.k8s.aws/instance-gpu-name\", \"karpenter.k8s.aws/instance-gpu-manufacturer\", \"karpenter.k8s.aws/instance-gpu-count\", \"karpenter.k8s.aws/instance-gpu-memory\", \"karpenter.k8s.aws/instance-accelerator-name\", \"karpenter.k8s.aws/instance-accelerator-manufacturer\", \"karpenter.k8s.aws/instance-accelerator-count\"] || !self.find(\"^([^/]+)\").endsWith(\"karpenter.k8s.aws\")"
                       operator:
-                        description: "Represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
+                        description: "Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt."
                         enum:
                           - "In"
                           - "NotIn"
@@ -215,26 +205,23 @@ spec:
                           - "Lt"
                         type: "string"
                       values:
-                        description: "An array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. If the operator is Gt or Lt, the values\narray must have a single element, which will be interpreted as an integer.\nThis array is replaced during a strategic merge patch."
+                        description: "An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch."
                         items:
                           type: "string"
                         maxLength: 63
                         pattern: "^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$"
                         type: "array"
-                        x-kubernetes-list-type: "atomic"
                     required:
                       - "key"
                       - "operator"
                     type: "object"
-                  maxItems: 100
+                  maxItems: 30
                   type: "array"
                   x-kubernetes-validations:
                     - message: "requirements with operator 'In' must have a value defined"
                       rule: "self.all(x, x.operator == 'In' ? x.values.size() != 0 : true)"
                     - message: "requirements operator 'Gt' or 'Lt' must have a single positive integer value"
                       rule: "self.all(x, (x.operator == 'Gt' || x.operator == 'Lt') ? (x.values.size() == 1 && int(x.values[0]) >= 0) : true)"
-                    - message: "requirements with 'minValues' must have at least that many values specified in the 'values' field"
-                      rule: "self.all(x, (x.operator == 'In' && has(x.minValues)) ? x.values.size() >= x.minValues : true)"
                 resources:
                   description: "Resources models the resource requirements for the NodeClaim to launch"
                   properties:
@@ -249,12 +236,12 @@ spec:
                       type: "object"
                   type: "object"
                 startupTaints:
-                  description: "StartupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically\nwithin a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by\ndaemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning\npurposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them."
+                  description: "StartupTaints are taints that are applied to nodes upon startup which are expected to be removed automatically within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them."
                   items:
-                    description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
+                    description: "The node this Taint is attached to has the \"effect\" on any pod that does not tolerate the Taint."
                     properties:
                       effect:
-                        description: "Required. The effect of the taint on pods\nthat do not tolerate the taint.\nValid effects are NoSchedule, PreferNoSchedule and NoExecute."
+                        description: "Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute."
                         enum:
                           - "NoSchedule"
                           - "PreferNoSchedule"
@@ -266,7 +253,7 @@ spec:
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(\\/))?([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
                         type: "string"
                       timeAdded:
-                        description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                        description: "TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints."
                         format: "date-time"
                         type: "string"
                       value:
@@ -281,10 +268,10 @@ spec:
                 taints:
                   description: "Taints will be applied to the NodeClaim's node."
                   items:
-                    description: "The node this Taint is attached to has the \"effect\" on\nany pod that does not tolerate the Taint."
+                    description: "The node this Taint is attached to has the \"effect\" on any pod that does not tolerate the Taint."
                     properties:
                       effect:
-                        description: "Required. The effect of the taint on pods\nthat do not tolerate the taint.\nValid effects are NoSchedule, PreferNoSchedule and NoExecute."
+                        description: "Required. The effect of the taint on pods that do not tolerate the taint. Valid effects are NoSchedule, PreferNoSchedule and NoExecute."
                         enum:
                           - "NoSchedule"
                           - "PreferNoSchedule"
@@ -296,7 +283,7 @@ spec:
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(\\/))?([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
                         type: "string"
                       timeAdded:
-                        description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                        description: "TimeAdded represents the time at which the taint was added. It is only written for NoExecute taints."
                         format: "date-time"
                         type: "string"
                       value:
@@ -336,40 +323,27 @@ spec:
                 conditions:
                   description: "Conditions contains signals for health and readiness"
                   items:
-                    description: "Condition aliases the upstream type and adds additional helper methods"
+                    description: "Condition defines a readiness condition for a Knative resource. See: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties"
                     properties:
                       lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
-                        format: "date-time"
+                        description: "LastTransitionTime is the last time the condition transitioned from one status to another. We use VolatileTime in place of metav1.Time to exclude this from creating equality.Semantic differences (all other things held constant)."
                         type: "string"
                       message:
-                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
-                        maxLength: 32768
+                        description: "A human readable message indicating details about the transition."
                         type: "string"
-                      observedGeneration:
-                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
-                        format: "int64"
-                        minimum: 0.0
-                        type: "integer"
                       reason:
-                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
-                        maxLength: 1024
-                        pattern: "^([A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?|)$"
+                        description: "The reason for the condition's last transition."
+                        type: "string"
+                      severity:
+                        description: "Severity with which to treat failures of this type of condition. When this is not specified, it defaults to Error."
                         type: "string"
                       status:
-                        description: "status of the condition, one of True, False, Unknown."
-                        enum:
-                          - "True"
-                          - "False"
-                          - "Unknown"
+                        description: "Status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
-                        maxLength: 316
-                        pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
+                        description: "Type of condition."
                         type: "string"
                     required:
-                      - "lastTransitionTime"
                       - "status"
                       - "type"
                     type: "object"
@@ -384,10 +358,8 @@ spec:
                   description: "ProviderID of the corresponding node object"
                   type: "string"
               type: "object"
-          required:
-            - "spec"
           type: "object"
       served: true
-      storage: false
+      storage: true
       subresources:
         status: {}

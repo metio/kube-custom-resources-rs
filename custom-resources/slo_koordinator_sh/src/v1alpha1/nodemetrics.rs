@@ -8,6 +8,7 @@ mod prelude {
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -107,6 +108,9 @@ pub struct NodeMetricStatusHostApplicationMetricUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusHostApplicationMetricUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -208,6 +212,9 @@ pub struct NodeMetricStatusNodeMetricAggregatedNodeUsagesUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusNodeMetricAggregatedNodeUsagesUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -291,6 +298,9 @@ pub struct NodeMetricStatusNodeMetricAggregatedSystemUsagesUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusNodeMetricAggregatedSystemUsagesUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -367,6 +377,9 @@ pub struct NodeMetricStatusNodeMetricNodeUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusNodeMetricNodeUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -443,6 +456,9 @@ pub struct NodeMetricStatusNodeMetricSystemUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusNodeMetricSystemUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -537,6 +553,9 @@ pub struct NodeMetricStatusPodsMetricPodUsage {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusPodsMetricPodUsageDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device
@@ -621,6 +640,9 @@ pub struct NodeMetricStatusProdReclaimableMetricResource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusProdReclaimableMetricResourceDevices {
+    /// Conditions represents current conditions of device
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
     /// Health indicates whether the device is normal
     pub health: bool,
     /// UUID represents the UUID of device

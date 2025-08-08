@@ -213,7 +213,7 @@ spec:
                             description: "GRPC represents the configuration for gRPC driver."
                             properties:
                               autoApprovedIdentities:
-                                description: "AutoApprovedIdentities represent a list of approved arn patterns"
+                                description: "AutoApprovedIdentities represent a list of approved users"
                                 items:
                                   type: "string"
                                 type: "array"

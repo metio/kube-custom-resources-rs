@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct CephObjectRealmSpec {
+    /// Set this realm as the default in Ceph. Only one realm should be default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultRealm")]
+    pub default_realm: Option<bool>,
     /// PullSpec represents the pulling specification of a Ceph Object Storage Gateway Realm
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pull: Option<CephObjectRealmPull>,

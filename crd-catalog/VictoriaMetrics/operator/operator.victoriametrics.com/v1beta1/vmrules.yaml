@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmrules.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -59,7 +59,7 @@ spec:
                       extra_filter_labels:
                         additionalProperties:
                           type: "string"
-                        description: "ExtraFilterLabels optional list of label filters applied to every rule's\nrequest within a group. Is compatible only with VM datasource.\nSee more details [here](https://docs.victoriametrics.com/victoriametrics/#prometheus-querying-api-enhancements)\nDeprecated: use params instead"
+                        description: "ExtraFilterLabels optional list of label filters applied to every rule's\nrequest within a group. Is compatible only with VM datasource.\nSee more details [here](https://docs.victoriametrics.com/#prometheus-querying-api-enhancements)\nDeprecated, use params instead"
                         type: "object"
                       headers:
                         description: "Headers contains optional HTTP headers added to each rule request\nMust be in form `header-name: value`\nFor example:\n headers:\n   - \"CustomHeader: foo\"\n   - \"CustomHeader2: bar\""
@@ -131,7 +131,7 @@ spec:
                           type: "object"
                         type: "array"
                       tenant:
-                        description: "Tenant id for group, can be used only with enterprise version of vmalert.\nSee more details [here](https://docs.victoriametrics.com/victoriametrics/vmalert#multitenancy)."
+                        description: "Tenant id for group, can be used only with enterprise version of vmalert.\nSee more details [here](https://docs.victoriametrics.com/vmalert#multitenancy)."
                         type: "string"
                       type:
                         description: "Type defines datasource type for enterprise version of vmalert\npossible values - prometheus,graphite,vlogs"

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmalertmanagerconfigs.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -428,7 +428,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             auth_secret:
-                              description: "AuthSecret defines secret name and key at CRD namespace.\nIt must contain the CRAM-MD5 secret."
+                              description: "AuthSecret defines secrent name and key at CRD namespace.\nIt must contain the CRAM-MD5 secret."
                               properties:
                                 key:
                                   description: "The key of the secret to select from.  Must be a valid secret key."

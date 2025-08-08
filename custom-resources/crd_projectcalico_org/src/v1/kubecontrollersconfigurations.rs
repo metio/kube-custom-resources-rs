@@ -86,6 +86,8 @@ pub struct KubeControllersConfigurationControllersNodeHostEndpointTemplates {
     pub generate_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceCIDRs")]
     pub interface_cid_rs: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceSelector")]
+    pub interface_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
@@ -189,6 +191,8 @@ pub struct KubeControllersConfigurationStatusRunningConfigControllersNodeHostEnd
     pub generate_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceCIDRs")]
     pub interface_cid_rs: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interfaceSelector")]
+    pub interface_selector: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]

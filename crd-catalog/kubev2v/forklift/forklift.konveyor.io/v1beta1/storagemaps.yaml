@@ -79,6 +79,7 @@ spec:
                                   - "primera3par"
                                   - "pureFlashArray"
                                   - "powerflex"
+                                  - "powermax"
                                 type: "string"
                             required:
                               - "secretRef"

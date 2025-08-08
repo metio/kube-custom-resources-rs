@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmauths.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -116,7 +116,7 @@ spec:
                       type: "object"
                   type: "object"
                 configSecret:
-                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders\nDeprecated: use externalConfig.secretRef instead"
+                  description: "ConfigSecret is the name of a Kubernetes Secret in the same namespace as the\nVMAuth object, which contains auth configuration for vmauth,\nconfiguration must be inside secret key: config.yaml.\nIt must be created and managed manually.\nIf it's defined, configuration for vmauth becomes unmanaged and operator'll not create any related secrets/config-reloaders\nDeprecated, use externalConfig.secretRef instead"
                   type: "string"
                 containers:
                   description: "Containers property allows to inject additions sidecars or to patch existing containers.\nIt can be useful for proxies, backup, etc."
@@ -443,16 +443,16 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 internalListenPort:
-                  description: "InternalListenPort instructs vmauth to serve internal routes at given port\navailable from v0.56.0 operator\nand v1.111.0 vmauth version\nrelated doc https://docs.victoriametrics.com/victoriametrics/vmauth/#security"
+                  description: "InternalListenPort instructs vmauth to serve internal routes at given port\navailable from v0.56.0 operator\nand v1.111.0 vmauth version\nrelated doc https://docs.victoriametrics.com/vmauth/#security"
                   type: "string"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise/)"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:
                     forceOffline:
                       description: "Enforce offline verification of the license key."
                       type: "boolean"
                     key:
-                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/victoriametrics/enterprise/).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
+                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
                     keyRef:
                       description: "KeyRef is reference to secret with license key for enterprise features."
@@ -728,7 +728,7 @@ spec:
                     x-kubernetes-preserve-unknown-fields: true
                   type: "array"
                 unauthorizedAccessConfig:
-                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated: use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
+                  description: "UnauthorizedAccessConfig configures access for un authorized users\n\nDeprecated, use unauthorizedUserAccessSpec instead\nwill be removed at v1.0 release"
                   x-kubernetes-preserve-unknown-fields: true
                 unauthorizedUserAccessSpec:
                   description: "UnauthorizedUserAccessSpec defines unauthorized_user config section of vmauth config"
@@ -742,7 +742,7 @@ spec:
                       description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                       type: "boolean"
                     drop_src_path_prefix_parts:
-                      description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details."
+                      description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                       type: "integer"
                     dump_request_on_errors:
                       description: "DumpRequestOnErrors instructs vmauth to return detailed request params to the client\nif routing rules don't allow to forward request to the backends.\nUseful for debugging `src_hosts` and `src_headers` based routing rules\n\navailable since v1.107.0 vmauth version"
@@ -753,7 +753,7 @@ spec:
                         type: "string"
                       type: "array"
                     ip_filters:
-                      description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)"
+                      description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
                       properties:
                         allow_list:
                           items:
@@ -765,7 +765,7 @@ spec:
                           type: "array"
                       type: "object"
                     load_balancing_policy:
-                      description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                      description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                       enum:
                         - "least_loaded"
                         - "first_available"
@@ -908,7 +908,7 @@ spec:
                             description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                             type: "boolean"
                           drop_src_path_prefix_parts:
-                            description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details."
+                            description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
                             type: "integer"
                           headers:
                             description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
@@ -916,7 +916,7 @@ spec:
                               type: "string"
                             type: "array"
                           load_balancing_policy:
-                            description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default \"least_loaded\")"
+                            description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
                             enum:
                               - "least_loaded"
                               - "first_available"

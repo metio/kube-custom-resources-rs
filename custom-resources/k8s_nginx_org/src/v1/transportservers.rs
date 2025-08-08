@@ -18,66 +18,57 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TransportServerSpec {
-    /// The action to perform for a request.
+    /// TransportServerAction defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<TransportServerAction>,
-    /// The host (domain name) of the server. Must be a valid subdomain as defined in RFC 1123, such as my-app or hello.example.com. When using a wildcard domain like *.example.com the domain must be contained in double quotes. The host value needs to be unique among all Ingress and VirtualServer resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Specifies which Ingress Controller must handle the VirtualServer resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
-    /// Sets a custom HTTP and/or HTTPS listener. Valid fields are listener.http and listener.https. Each field must reference the name of a valid listener defined in a GlobalConfiguration resource
+    /// TransportServerListener defines a listener for a TransportServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listener: Option<TransportServerListener>,
-    /// Sets a custom snippet in server context. Overrides the server-snippets ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSnippets")]
     pub server_snippets: Option<String>,
-    /// The parameters of the session to be used for the Server context
+    /// SessionParameters defines session parameters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionParameters")]
     pub session_parameters: Option<TransportServerSessionParameters>,
-    /// Sets a custom snippet in the stream context. Overrides the stream-snippets ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamSnippets")]
     pub stream_snippets: Option<String>,
-    /// The TLS termination configuration.
+    /// TransportServerTLS defines TransportServerTLS configuration for a TransportServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TransportServerTls>,
     /// UpstreamParameters defines parameters for an upstream.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamParameters")]
     pub upstream_parameters: Option<TransportServerUpstreamParameters>,
-    /// A list of upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstreams: Option<Vec<TransportServerUpstreams>>,
 }
 
-/// The action to perform for a request.
+/// TransportServerAction defines an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerAction {
-    /// Passes connections/datagrams to an upstream. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<String>,
 }
 
-/// Sets a custom HTTP and/or HTTPS listener. Valid fields are listener.http and listener.https. Each field must reference the name of a valid listener defined in a GlobalConfiguration resource
+/// TransportServerListener defines a listener for a TransportServer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerListener {
-    /// The name of a listener defined in a GlobalConfiguration resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The protocol of the listener.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
 }
 
-/// The parameters of the session to be used for the Server context
+/// SessionParameters defines session parameters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerSessionParameters {
-    /// The timeout between two successive read or write operations on client or proxied server connections. The default is 10m.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// The TLS termination configuration.
+/// TransportServerTLS defines TransportServerTLS configuration for a TransportServer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerTls {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -87,22 +78,16 @@ pub struct TransportServerTls {
 /// UpstreamParameters defines parameters for an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreamParameters {
-    /// The timeout for establishing a connection with a proxied server.  The default is 60s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    /// If a connection to the proxied server cannot be established, determines whether a client connection will be passed to the next server. The default is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstream")]
     pub next_upstream: Option<bool>,
-    /// The time allowed to pass a connection to the next server. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstreamTimeout")]
     pub next_upstream_timeout: Option<String>,
-    /// The number of tries for passing a connection to the next server. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstreamTries")]
     pub next_upstream_tries: Option<i64>,
-    /// The number of datagrams, after receiving which, the next datagram from the same client starts a new session. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "udpRequests")]
     pub udp_requests: Option<i64>,
-    /// The number of datagrams expected from the proxied server in response to a client datagram.  By default, the number of datagrams is not limited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "udpResponses")]
     pub udp_responses: Option<i64>,
 }
@@ -110,88 +95,67 @@ pub struct TransportServerUpstreamParameters {
 /// TransportServerUpstream defines an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreams {
-    /// The name of the backup service of type ExternalName. This will be used when the primary servers are unavailable. Note: The parameter cannot be used along with the random, hash or ip_hash load balancing methods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
-    /// The port of the backup service. The backup port is required if the backup service name is provided. The port must fall into the range 1..65535.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
     pub backup_port: Option<i64>,
-    /// Sets the number of unsuccessful attempts to communicate with the server that should happen in the duration set by the failTimeout parameter to consider the server unavailable. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failTimeout")]
     pub fail_timeout: Option<String>,
-    /// The health check configuration for the Upstream. Note: this feature is supported only in NGINX Plus.
+    /// TransportServerHealthCheck defines the parameters for active Upstream HealthChecks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TransportServerUpstreamsHealthCheck>,
-    /// The method used to load balance the upstream servers. By default, connections are distributed between the servers using a weighted round-robin balancing method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancingMethod")]
     pub load_balancing_method: Option<String>,
-    /// Sets the time during which the specified number of unsuccessful attempts to communicate with the server should happen to consider the server unavailable and the period of time the server will be considered unavailable. The default is 10s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConns")]
     pub max_conns: Option<i64>,
-    /// Sets the number of maximum connections to the proxied server. Default value is zero, meaning there is no limit. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxFails")]
     pub max_fails: Option<i64>,
-    /// The name of the upstream. Must be a valid DNS label as defined in RFC 1035. For example, hello and upstream-123 are valid. The name must be unique among all upstreams of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The port of the service. If the service doesn’t define that port, NGINX will assume the service has zero endpoints and close client connections/ignore datagrams. The port must fall into the range 1..65535.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// The name of a service. The service must belong to the same namespace as the resource. If the service doesn’t exist, NGINX will assume the service has zero endpoints and close client connections/ignore datagrams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
 }
 
-/// The health check configuration for the Upstream. Note: this feature is supported only in NGINX Plus.
+/// TransportServerHealthCheck defines the parameters for active Upstream HealthChecks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreamsHealthCheck {
-    /// Enables a health check for an upstream server. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// The number of consecutive failed health checks of a particular upstream server after which this server will be considered unhealthy. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fails: Option<i64>,
-    /// The interval between two consecutive health checks. The default is 5s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// The time within which each health check will be randomly delayed. By default, there is no delay.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jitter: Option<String>,
-    /// Controls the data to send and the response to expect for the healthcheck.
+    /// TransportServerMatch defines the parameters of a custom health check.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
     pub r#match: Option<TransportServerUpstreamsHealthCheckMatch>,
-    /// The number of consecutive passed health checks of a particular upstream server after which the server will be considered healthy. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passes: Option<i64>,
-    /// The port used for health check requests. By default, the server port is used. Note: in contrast with the port of the upstream, this port is not a service port, but a port of a pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// This overrides the timeout set by proxy_timeout which is set in SessionParameters for health checks. The default value is 5s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// Controls the data to send and the response to expect for the healthcheck.
+/// TransportServerMatch defines the parameters of a custom health check.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreamsHealthCheckMatch {
-    /// A literal string or a regular expression that the data obtained from the server should match. The regular expression is specified with the preceding ~* modifier (for case-insensitive matching), or the ~ modifier (for case-sensitive matching). NGINX Ingress Controller validates a regular expression using the RE2 syntax.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expect: Option<String>,
-    /// A string to send to an upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub send: Option<String>,
 }
 
-/// The status of the TransportServer resource
+/// TransportServerStatus defines the status for the TransportServer resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerStatus {
-    /// The message of the current state of the resource. It can contain more detailed information about the reason.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    /// The reason of the current state of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
-    /// Represents the current state of the resource. Possible values: Valid (resource validated and accepted), Invalid (validation failed or config reload failed), or Warning (validated but may work in degraded state).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }

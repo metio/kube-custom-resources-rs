@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "tests.tests.testkube.io"
 spec:
   group: "tests.testkube.io"
@@ -50,6 +50,7 @@ spec:
                           enum:
                             - "basic"
                             - "header"
+                            - "github"
                           type: "string"
                         branch:
                           description: "branch/tag name for checkout"
@@ -201,7 +202,8 @@ spec:
                             description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                             properties:
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
@@ -227,7 +229,8 @@ spec:
                             description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                             properties:
                               name:
-                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                default: ""
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
@@ -266,7 +269,8 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                         properties:
                           name:
-                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            default: ""
+                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -386,7 +390,8 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -435,7 +440,8 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                    default: ""
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"

@@ -53,9 +53,6 @@ pub struct RedisEnterpriseActiveActiveDatabaseGlobalConfigurations {
     /// The name of the secret that holds the password to the database (redis databases only). If secret does not exist, it will be created. To define the password, create an opaque secret and set the name in the spec. The password will be taken from the value of the 'password' key. Use an empty string as value within the secret to disable authentication for the database. Notes - For Active-Active databases this secret will not be automatically created, and also, memcached databases must not be set with a value, and a secret/password will not be automatically created for them. Use the memcachedSaslSecretName field to set authentication parameters for memcached databases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSecretName")]
     pub database_secret_name: Option<String>,
-    /// A custom port to be exposed by the database services. Can be be modified/added/removed after REDB creation. If set, it'll replace the default service port (namely, databasePort or defaultRedisPort).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseServicePort")]
-    pub database_service_port: Option<i64>,
     /// Is connecting with a default user allowed?  If disabled, the DatabaseSecret will not be created or updated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultUser")]
     pub default_user: Option<bool>,

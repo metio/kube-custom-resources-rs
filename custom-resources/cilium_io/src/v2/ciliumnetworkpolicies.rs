@@ -648,6 +648,7 @@ pub struct CiliumNetworkPolicyEgressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumNetworkPolicyEgressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumNetworkPolicyEgressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -2135,6 +2136,7 @@ pub struct CiliumNetworkPolicyIngressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumNetworkPolicyIngressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumNetworkPolicyIngressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -3509,6 +3511,7 @@ pub struct CiliumNetworkPolicysEgressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumNetworkPolicysEgressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumNetworkPolicysEgressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -4996,6 +4999,7 @@ pub struct CiliumNetworkPolicysIngressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumNetworkPolicysIngressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumNetworkPolicysIngressToPortsRulesKafka>>,
     /// Key-value pair rules.

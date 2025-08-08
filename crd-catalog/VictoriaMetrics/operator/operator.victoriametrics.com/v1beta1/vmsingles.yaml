@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.18.0"
+    controller-gen.kubebuilder.io/version: "v0.17.2"
   name: "vmsingles.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -241,13 +241,13 @@ spec:
                       type: "string"
                   type: "object"
                 license:
-                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/victoriametrics/enterprise/)"
+                  description: "License allows to configure license key to be used for enterprise features.\nUsing license key is supported starting from VictoriaMetrics v1.94.0.\nSee [here](https://docs.victoriametrics.com/enterprise)"
                   properties:
                     forceOffline:
                       description: "Enforce offline verification of the license key."
                       type: "boolean"
                     key:
-                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/victoriametrics/enterprise/).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
+                      description: "Enterprise license key. This flag is available only in [VictoriaMetrics enterprise](https://docs.victoriametrics.com/enterprise).\nTo request a trial license, [go to](https://victoriametrics.com/products/enterprise/trial)"
                       type: "string"
                     keyRef:
                       description: "KeyRef is reference to secret with license key for enterprise features."
@@ -403,7 +403,7 @@ spec:
                   type: "object"
                 retentionPeriod:
                   description: "RetentionPeriod defines how long to retain stored metrics, specified as a duration (e.g., \"1d\", \"1w\", \"1m\").\nData with timestamps outside the RetentionPeriod is automatically deleted. The minimum allowed value is 1d, or 24h.\nThe default value is 1 (one month).\nSee [retention](https://docs.victoriametrics.com/victoriametrics/single-server-victoriametrics/#retention) docs for details."
-                  pattern: "^[0-9]+(h|d|w|y)?$"
+                  pattern: "^[0-9]+(h|d|y)?$"
                   type: "string"
                 revisionHistoryLimitCount:
                   description: "The number of old ReplicaSets to retain to allow rollback in deployment or\nmaximum number of revisions that will be maintained in the Deployment revision history.\nHas no effect at StatefulSets\nDefaults to 10."
@@ -675,7 +675,7 @@ spec:
                           input_relabel_configs:
                             description: "InputRelabelConfigs is an optional relabeling rules, which are applied on the input\nbefore aggregation."
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
+                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
                               properties:
                                 action:
                                   description: "Action to perform based on regex matching. Default is 'replace'"
@@ -696,7 +696,7 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
                                   x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -737,7 +737,7 @@ spec:
                           output_relabel_configs:
                             description: "OutputRelabelConfigs is an optional relabeling rules, which are applied\non the aggregated output before being sent to remote storage."
                             items:
-                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/victoriametrics/#relabeling"
+                              description: "RelabelConfig allows dynamic rewriting of the label set\nMore info: https://docs.victoriametrics.com/#relabeling"
                               properties:
                                 action:
                                   description: "Action to perform based on regex matching. Default is 'replace'"
@@ -758,7 +758,7 @@ spec:
                                   format: "int64"
                                   type: "integer"
                                 regex:
-                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements"
+                                  description: "Regular expression against which the extracted value is matched. Default is '(.*)'\nvictoriaMetrics supports multiline regex joined with |\nhttps://docs.victoriametrics.com/vmagent/#relabeling-enhancements"
                                   x-kubernetes-preserve-unknown-fields: true
                                 replacement:
                                   description: "Replacement value against which a regex replace is performed if the\nregular expression matches. Regex capture groups are available. Default is '$1'"
@@ -851,7 +851,7 @@ spec:
                   description: "VMBackup configuration for backup"
                   properties:
                     acceptEULA:
-                      description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/\nDeprecated: use license.key or license.keyRef instead"
+                      description: "AcceptEULA accepts enterprise feature usage, must be set to true.\notherwise backupmanager cannot be added to single/cluster version.\nhttps://victoriametrics.com/legal/esa/"
                       type: "boolean"
                     concurrency:
                       description: "Defines number of concurrent workers. Higher concurrency may reduce backup duration (default 10)"
@@ -1091,7 +1091,7 @@ spec:
                           type: "object"
                       type: "object"
                     restore:
-                      description: "Restore Allows to enable restore options for pod\nRead [more](https://docs.victoriametrics.com/victoriametrics/vmbackupmanager/#restore-commands)"
+                      description: "Restore Allows to enable restore options for pod\nRead [more](https://docs.victoriametrics.com/vmbackupmanager#restore-commands)"
                       properties:
                         onStart:
                           description: "OnStart defines configuration for restore on pod start"

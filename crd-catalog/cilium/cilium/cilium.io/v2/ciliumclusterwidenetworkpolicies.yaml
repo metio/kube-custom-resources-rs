@@ -553,7 +553,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 kafka:
-                                  description: "Kafka-specific rules."
+                                  description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
                                   items:
                                     description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
                                     properties:
@@ -1690,7 +1690,7 @@ spec:
                                     type: "object"
                                   type: "array"
                                 kafka:
-                                  description: "Kafka-specific rules."
+                                  description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
                                   items:
                                     description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
                                     properties:
@@ -2686,7 +2686,7 @@ spec:
                                       type: "object"
                                     type: "array"
                                   kafka:
-                                    description: "Kafka-specific rules."
+                                    description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
                                     items:
                                       description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
                                       properties:
@@ -3823,7 +3823,7 @@ spec:
                                       type: "object"
                                     type: "array"
                                   kafka:
-                                    description: "Kafka-specific rules."
+                                    description: "Kafka-specific rules.\nDeprecated: This beta feature is deprecated and will be removed in a future release."
                                     items:
                                       description: "PortRule is a list of Kafka protocol constraints. All fields are\noptional, if all fields are empty or missing, the rule will match all\nKafka messages."
                                       properties:

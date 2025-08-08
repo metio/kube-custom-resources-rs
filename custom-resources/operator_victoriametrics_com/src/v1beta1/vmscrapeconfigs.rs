@@ -157,7 +157,7 @@ pub struct VMScrapeConfigAuthorizationCredentials {
 }
 
 /// AzureSDConfig allow retrieving scrape targets from Azure VMs.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#azure_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#azure_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigAzureSdConfigs {
     /// # The authentication method, either OAuth or ManagedIdentity.
@@ -189,7 +189,7 @@ pub struct VMScrapeConfigAzureSdConfigs {
 }
 
 /// AzureSDConfig allow retrieving scrape targets from Azure VMs.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#azure_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#azure_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMScrapeConfigAzureSdConfigsAuthenticationMethod {
     OAuth,
@@ -286,7 +286,7 @@ pub struct VMScrapeConfigBearerTokenSecret {
 }
 
 /// ConsulSDConfig defines a Consul service discovery configuration.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#consul_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs/#consul_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigConsulSdConfigs {
     /// Allow stale Consul results (see https://developer.hashicorp.com/consul/api-docs/features/consistency ). Will reduce load on Consul.
@@ -326,7 +326,7 @@ pub struct VMScrapeConfigConsulSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+    /// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMScrapeConfigConsulSdConfigsProxyClientConfig>,
     /// HTTP Scheme default "http"
@@ -530,7 +530,7 @@ pub struct VMScrapeConfigConsulSdConfigsOauth2ClientSecret {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+/// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigConsulSdConfigsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication
@@ -616,7 +616,7 @@ pub struct VMScrapeConfigConsulSdConfigsProxyClientConfigBearerToken {
 }
 
 /// ConsulSDConfig defines a Consul service discovery configuration.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#consul_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs/#consul_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMScrapeConfigConsulSdConfigsScheme {
     #[serde(rename = "HTTP")]
@@ -780,7 +780,7 @@ pub struct VMScrapeConfigConsulSdConfigsTokenRef {
 
 /// DigitalOceanSDConfig allow retrieving scrape targets from DigitalOcean's Droplets API.
 /// This service discovery uses the public IPv4 address by default, by that can be changed with relabeling.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#digitalocean_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#digitalocean_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigDigitalOceanSdConfigs {
     /// Authorization header to use on every scrape request.
@@ -799,7 +799,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+    /// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMScrapeConfigDigitalOceanSdConfigsProxyClientConfig>,
     /// TLS configuration to use on every scrape request
@@ -932,7 +932,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+/// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigDigitalOceanSdConfigsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication
@@ -1155,7 +1155,7 @@ pub struct VMScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret {
 
 /// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
 /// The DNS servers to be contacted are read from /etc/resolv.conf.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#dns_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#dns_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigDnsSdConfigs {
     /// A list of DNS domain names to be queried.
@@ -1170,7 +1170,7 @@ pub struct VMScrapeConfigDnsSdConfigs {
 
 /// DNSSDConfig allows specifying a set of DNS domain names which are periodically queried to discover a list of targets.
 /// The DNS servers to be contacted are read from /etc/resolv.conf.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#dns_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#dns_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMScrapeConfigDnsSdConfigsType {
     #[serde(rename = "SRV")]
@@ -1185,7 +1185,7 @@ pub enum VMScrapeConfigDnsSdConfigsType {
 /// EC2SDConfig allow retrieving scrape targets from AWS EC2 instances.
 /// The private IP address is used by default, but may be changed to the public IP address with relabeling.
 /// The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#ec2_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#ec2_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigEc2SdConfigs {
     /// AccessKey is the AWS API key.
@@ -1254,7 +1254,7 @@ pub struct VMScrapeConfigEc2SdConfigsSecretKey {
 }
 
 /// FileSDConfig defines a file service discovery configuration.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#file_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#file_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigFileSdConfigs {
     /// List of files to be used for file discovery.
@@ -1264,7 +1264,7 @@ pub struct VMScrapeConfigFileSdConfigs {
 /// GCESDConfig configures scrape targets from GCP GCE instances.
 /// The private IP address is used by default, but may be changed to
 /// the public IP address with relabeling.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#gce_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#gce_sd_configs)
 /// 
 /// The GCE service discovery will load the Google Cloud credentials
 /// from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable.
@@ -1290,7 +1290,7 @@ pub struct VMScrapeConfigGceSdConfigs {
 }
 
 /// HTTPSDConfig defines a HTTP service discovery configuration.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#http_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#http_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigHttpSdConfigs {
     /// Authorization header to use on every scrape request.
@@ -1303,7 +1303,7 @@ pub struct VMScrapeConfigHttpSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+    /// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMScrapeConfigHttpSdConfigsProxyClientConfig>,
     /// TLS configuration to use on every scrape request
@@ -1398,7 +1398,7 @@ pub struct VMScrapeConfigHttpSdConfigsBasicAuthUsername {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+/// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigHttpSdConfigsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication
@@ -1620,7 +1620,7 @@ pub struct VMScrapeConfigHttpSdConfigsTlsConfigKeySecret {
 }
 
 /// KubernetesSDConfig allows retrieving scrape targets from Kubernetes' REST API.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#kubernetes_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#kubernetes_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigKubernetesSdConfigs {
     /// The API server address consisting of a hostname or IP address followed
@@ -1652,7 +1652,7 @@ pub struct VMScrapeConfigKubernetesSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+    /// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMScrapeConfigKubernetesSdConfigsProxyClientConfig>,
     /// Role of the Kubernetes entities that should be discovered.
@@ -1864,7 +1864,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsOauth2ClientSecret {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See [feature description](https://docs.victoriametrics.com/victoriametrics/vmagent/#scraping-targets-via-a-proxy)
+/// See [feature description](https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigKubernetesSdConfigsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication
@@ -2096,7 +2096,7 @@ pub struct VMScrapeConfigKubernetesSdConfigsTlsConfigKeySecret {
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set
-/// More info: https://docs.victoriametrics.com/victoriametrics/#relabeling
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigMetricRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -2116,7 +2116,7 @@ pub struct VMScrapeConfigMetricRelabelConfigs {
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     /// victoriaMetrics supports multiline regex joined with |
-    /// https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
     /// Replacement value against which a regex replace is performed if the
@@ -2243,7 +2243,7 @@ pub struct VMScrapeConfigOauth2ClientSecret {
 }
 
 /// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#openstack_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct VMScrapeConfigOpenstackSdConfigs {
     /// Whether the service discovery should list all instances for all projects.
@@ -2331,7 +2331,7 @@ pub struct VMScrapeConfigOpenstackSdConfigsApplicationCredentialSecret {
 }
 
 /// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#openstack_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMScrapeConfigOpenstackSdConfigsAvailability {
     Public,
@@ -2364,7 +2364,7 @@ pub struct VMScrapeConfigOpenstackSdConfigsPassword {
 }
 
 /// OpenStackSDConfig allow retrieving scrape targets from OpenStack Nova instances.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#openstack_sd_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#openstack_sd_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum VMScrapeConfigOpenstackSdConfigsRole {
     Instance,
@@ -2512,7 +2512,7 @@ pub struct VMScrapeConfigOpenstackSdConfigsTlsConfigKeySecret {
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set
-/// More info: https://docs.victoriametrics.com/victoriametrics/#relabeling
+/// More info: https://docs.victoriametrics.com/#relabeling
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigRelabelConfigs {
     /// Action to perform based on regex matching. Default is 'replace'
@@ -2532,7 +2532,7 @@ pub struct VMScrapeConfigRelabelConfigs {
     pub modulus: Option<i64>,
     /// Regular expression against which the extracted value is matched. Default is '(.*)'
     /// victoriaMetrics supports multiline regex joined with |
-    /// https://docs.victoriametrics.com/victoriametrics/vmagent/#relabeling-enhancements
+    /// https://docs.victoriametrics.com/vmagent/#relabeling-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<serde_json::Value>,
     /// Replacement value against which a regex replace is performed if the
@@ -2579,7 +2579,7 @@ pub enum VMScrapeConfigScheme {
 }
 
 /// StaticConfig defines a static configuration.
-/// See [here](https://docs.victoriametrics.com/victoriametrics/sd_configs/#static_configs)
+/// See [here](https://docs.victoriametrics.com/sd_configs#static_configs)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigStaticConfigs {
     /// Labels assigned to all metrics scraped from the targets.
@@ -2735,7 +2735,7 @@ pub struct VMScrapeConfigVmScrapeParams {
     /// disable_keepalive allows disabling HTTP keep-alive when scraping targets.
     /// By default, HTTP keep-alive is enabled, so TCP connections to scrape targets
     /// could be reused.
-    /// See https://docs.victoriametrics.com/victoriametrics/vmagent#scrape_config-enhancements
+    /// See https://docs.victoriametrics.com/vmagent#scrape_config-enhancements
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable_keep_alive: Option<bool>,
     /// Headers allows sending custom headers to scrape targets
@@ -2748,7 +2748,7 @@ pub struct VMScrapeConfigVmScrapeParams {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub no_stale_markers: Option<bool>,
     /// ProxyClientConfig configures proxy auth settings for scraping
-    /// See feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy
+    /// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy_client_config: Option<VMScrapeConfigVmScrapeParamsProxyClientConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2760,7 +2760,7 @@ pub struct VMScrapeConfigVmScrapeParams {
 }
 
 /// ProxyClientConfig configures proxy auth settings for scraping
-/// See feature description https://docs.victoriametrics.com/victoriametrics/vmagent#scraping-targets-via-a-proxy
+/// See feature description https://docs.victoriametrics.com/vmagent#scraping-targets-via-a-proxy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMScrapeConfigVmScrapeParamsProxyClientConfig {
     /// BasicAuth allow an endpoint to authenticate over basic authentication

@@ -2383,9 +2383,13 @@ pub struct SyslogNGClusterOutputS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compresslevel: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub content_type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disk_buffer: Option<SyslogNGClusterOutputS3DiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flush_grace_period: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kms_key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2403,7 +2407,11 @@ pub struct SyslogNGClusterOutputS3 {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub role: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret_key: Option<SyslogNGClusterOutputS3SecretKey>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub server_side_encryption: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage_class: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

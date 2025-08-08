@@ -21,6 +21,9 @@ pub struct MeshTrafficPermissionSpec {
     /// From list makes a match between clients and corresponding configurations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<Vec<MeshTrafficPermissionFrom>>,
+    /// Rules defines inbound permissions configuration
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rules: Option<Vec<MeshTrafficPermissionRules>>,
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
     /// defined inplace.
@@ -107,6 +110,97 @@ pub enum MeshTrafficPermissionFromTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
     Dataplane,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshTrafficPermissionRules {
+    pub default: MeshTrafficPermissionRulesDefault,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefault {
+    /// Allow definees a list of matches for which access will be allowed
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub allow: Option<Vec<MeshTrafficPermissionRulesDefaultAllow>>,
+    /// AllowWithShadowDeny defines a list of matches for which access will be allowed but emits logs as if
+    /// requests are denied
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowWithShadowDeny")]
+    pub allow_with_shadow_deny: Option<Vec<MeshTrafficPermissionRulesDefaultAllowWithShadowDeny>>,
+    /// Deny defines a list of matches for which access will be denied
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deny: Option<Vec<MeshTrafficPermissionRulesDefaultDeny>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultAllow {
+    /// SpiffeId defines a matcher configuration for SpiffeId matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeId")]
+    pub spiffe_id: Option<MeshTrafficPermissionRulesDefaultAllowSpiffeId>,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultAllowSpiffeId {
+    /// Type defines how to match incoming traffic by SpiffeId. `Exact` or `Prefix` are allowed.
+    #[serde(rename = "type")]
+    pub r#type: MeshTrafficPermissionRulesDefaultAllowSpiffeIdType,
+    /// Value is SpiffeId of a client that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshTrafficPermissionRulesDefaultAllowSpiffeIdType {
+    Exact,
+    Prefix,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultAllowWithShadowDeny {
+    /// SpiffeId defines a matcher configuration for SpiffeId matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeId")]
+    pub spiffe_id: Option<MeshTrafficPermissionRulesDefaultAllowWithShadowDenySpiffeId>,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultAllowWithShadowDenySpiffeId {
+    /// Type defines how to match incoming traffic by SpiffeId. `Exact` or `Prefix` are allowed.
+    #[serde(rename = "type")]
+    pub r#type: MeshTrafficPermissionRulesDefaultAllowWithShadowDenySpiffeIdType,
+    /// Value is SpiffeId of a client that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshTrafficPermissionRulesDefaultAllowWithShadowDenySpiffeIdType {
+    Exact,
+    Prefix,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultDeny {
+    /// SpiffeId defines a matcher configuration for SpiffeId matching
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spiffeId")]
+    pub spiffe_id: Option<MeshTrafficPermissionRulesDefaultDenySpiffeId>,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct MeshTrafficPermissionRulesDefaultDenySpiffeId {
+    /// Type defines how to match incoming traffic by SpiffeId. `Exact` or `Prefix` are allowed.
+    #[serde(rename = "type")]
+    pub r#type: MeshTrafficPermissionRulesDefaultDenySpiffeIdType,
+    /// Value is SpiffeId of a client that needs to match for the configuration to be applied
+    pub value: String,
+}
+
+/// SpiffeId defines a matcher configuration for SpiffeId matching
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum MeshTrafficPermissionRulesDefaultDenySpiffeIdType {
+    Exact,
+    Prefix,
 }
 
 /// TargetRef is a reference to the resource the policy takes an effect on.

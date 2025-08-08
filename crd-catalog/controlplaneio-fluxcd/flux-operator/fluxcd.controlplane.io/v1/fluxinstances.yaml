@@ -60,6 +60,13 @@ spec:
                     objectLevelWorkloadIdentity:
                       description: "ObjectLevelWorkloadIdentity enables the feature gate\nrequired for object-level workload identity.\nThis feature is only available in Flux v2.6.0 and later."
                       type: "boolean"
+                    size:
+                      description: "Size defines the vertical scaling profile of the Flux controllers.\nThe size is used to determine the concurrency and CPU/Memory limits for the Flux controllers.\nAccepted values are: 'small', 'medium' and 'large'."
+                      enum:
+                        - "small"
+                        - "medium"
+                        - "large"
+                      type: "string"
                     tenantDefaultServiceAccount:
                       description: "TenantDefaultServiceAccount is the name of the service account\nto use as default when the multitenant lockdown is enabled.\nDefaults to the 'default' service account from the tenant namespace."
                       type: "string"

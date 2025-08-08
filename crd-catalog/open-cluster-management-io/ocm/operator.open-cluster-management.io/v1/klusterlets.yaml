@@ -218,6 +218,7 @@ spec:
                           enum:
                             - "csr"
                             - "awsirsa"
+                            - "grpc"
                           type: "string"
                         awsIrsa:
                           description: "Contain the details required for registering with hub cluster (ie: an EKS cluster) using AWS IAM roles for service account.\nThis is required only when the authType is awsirsa."

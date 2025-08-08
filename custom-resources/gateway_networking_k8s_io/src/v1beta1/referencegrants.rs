@@ -22,12 +22,14 @@ pub struct ReferenceGrantSpec {
     /// to be an additional place that references can be valid from, or to put
     /// this another way, entries MUST be combined using OR.
     /// 
+    /// 
     /// Support: Core
     pub from: Vec<ReferenceGrantFrom>,
     /// To describes the resources that may be referenced by the resources
     /// described in "From". Each entry in this list MUST be considered to be an
     /// additional place that references can be valid to, or to put this another
     /// way, entries MUST be combined using OR.
+    /// 
     /// 
     /// Support: Core
     pub to: Vec<ReferenceGrantTo>,
@@ -39,17 +41,22 @@ pub struct ReferenceGrantFrom {
     /// Group is the group of the referent.
     /// When empty, the Kubernetes core API group is inferred.
     /// 
+    /// 
     /// Support: Core
     pub group: String,
     /// Kind is the kind of the referent. Although implementations may support
     /// additional resources, the following types are part of the "Core"
     /// support level for this field.
     /// 
+    /// 
     /// When used to permit a SecretObjectReference:
+    /// 
     /// 
     /// * Gateway
     /// 
+    /// 
     /// When used to permit a BackendObjectReference:
+    /// 
     /// 
     /// * GRPCRoute
     /// * HTTPRoute
@@ -58,6 +65,7 @@ pub struct ReferenceGrantFrom {
     /// * UDPRoute
     pub kind: String,
     /// Namespace is the namespace of the referent.
+    /// 
     /// 
     /// Support: Core
     pub namespace: String,
@@ -70,11 +78,13 @@ pub struct ReferenceGrantTo {
     /// Group is the group of the referent.
     /// When empty, the Kubernetes core API group is inferred.
     /// 
+    /// 
     /// Support: Core
     pub group: String,
     /// Kind is the kind of the referent. Although implementations may support
     /// additional resources, the following types are part of the "Core"
     /// support level for this field:
+    /// 
     /// 
     /// * Secret when used to permit a SecretObjectReference
     /// * Service when used to permit a BackendObjectReference

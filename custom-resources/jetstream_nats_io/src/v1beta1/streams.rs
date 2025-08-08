@@ -42,7 +42,7 @@ pub struct StreamSpec {
     /// How many messages may be in a Stream, oldest messages will be removed if the Stream exceeds this size. -1 for unlimited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxMsgs")]
     pub max_msgs: Option<i64>,
-    /// The maximum number of messages per subject.
+    /// The maximum of messages per subject.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxMsgsPerSubject")]
     pub max_msgs_per_subject: Option<i64>,
     /// A stream mirror.

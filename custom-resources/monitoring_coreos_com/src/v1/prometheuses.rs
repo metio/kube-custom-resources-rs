@@ -150,12 +150,6 @@ pub struct PrometheusSpec {
     /// may break at any time without notice.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<PrometheusContainers>>,
-    /// Whether to convert all scraped classic histograms into a native
-    /// histogram with custom buckets.
-    /// 
-    /// It requires Prometheus >= v3.4.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertClassicHistogramsToNHCB")]
-    pub convert_classic_histograms_to_nhcb: Option<bool>,
     /// When true, the Prometheus compaction is disabled.
     /// When `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically
     /// disables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends).
@@ -357,7 +351,7 @@ pub struct PrometheusSpec {
     /// Use the host's network namespace if true.
     /// 
     /// Make sure to understand the security implications if you want to enable
-    /// it (https://kubernetes.io/docs/concepts/configuration/overview/ ).
+    /// it (https://kubernetes.io/docs/concepts/configuration/overview/).
     /// 
     /// When hostNetwork is enabled, this will set the DNS policy to
     /// `ClusterFirstWithHostNet` automatically (unless `.spec.DNSPolicy` is set
@@ -459,16 +453,7 @@ pub struct PrometheusSpec {
     /// enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// Specifies the character escaping scheme that will be requested when scraping
-    /// for metric and label names that do not conform to the legacy Prometheus
-    /// character set.
-    /// 
-    /// It requires Prometheus >= v3.4.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameEscapingScheme")]
-    pub name_escaping_scheme: Option<PrometheusNameEscapingScheme>,
     /// Specifies the validation scheme for metric and label names.
-    /// 
-    /// It requires Prometheus >= v2.55.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
     pub name_validation_scheme: Option<PrometheusNameValidationScheme>,
     /// Defines on which Nodes the Pods are scheduled.
@@ -672,10 +657,6 @@ pub struct PrometheusSpec {
     /// in a breaking way.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClasses")]
     pub scrape_classes: Option<Vec<PrometheusScrapeClasses>>,
-    /// Whether to scrape a classic histogram that is also exposed as a native histogram.
-    /// It requires Prometheus >= v3.5.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
-    pub scrape_classic_histograms: Option<bool>,
     /// Namespaces to match for ScrapeConfig discovery. An empty label selector
     /// matches all namespaces. A null label selector matches the current
     /// namespace only.
@@ -807,10 +788,6 @@ pub struct PrometheusSpec {
     /// Users can define their own sharding implementation by setting the
     /// `__tmp_hash` label during the target discovery with relabeling
     /// configuration (either in the monitoring resources or via scrape class).
-    /// 
-    /// You can also disable sharding on a specific target by setting the
-    /// `__tmp_disable_sharding` label with relabeling configuration. When
-    /// the label value isn't empty, all Prometheus shards will scrape the target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
     /// Storage defines the storage used by Prometheus.
@@ -1186,6 +1163,7 @@ pub struct PrometheusAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1196,6 +1174,7 @@ pub struct PrometheusAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1305,6 +1284,7 @@ pub struct PrometheusAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1315,6 +1295,7 @@ pub struct PrometheusAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1455,6 +1436,7 @@ pub struct PrometheusAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1465,6 +1447,7 @@ pub struct PrometheusAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1574,6 +1557,7 @@ pub struct PrometheusAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -1584,6 +1568,7 @@ pub struct PrometheusAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
+    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -2337,27 +2322,6 @@ pub struct PrometheusApiserverConfig {
     /// Kubernetes API address consisting of a hostname or IP address followed
     /// by an optional port number.
     pub host: String,
-    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
-    /// that should be excluded from proxying. IP and domain names can
-    /// contain port numbers.
-    /// 
-    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
-    pub no_proxy: Option<String>,
-    /// ProxyConnectHeader optionally specifies headers to send to
-    /// proxies during CONNECT requests.
-    /// 
-    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
-    pub proxy_connect_header: Option<BTreeMap<String, PrometheusApiserverConfigProxyConnectHeader>>,
-    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    /// 
-    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
-    pub proxy_from_environment: Option<bool>,
-    /// `proxyURL` defines the HTTP proxy server to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
-    pub proxy_url: Option<String>,
     /// TLS Config to use for the API server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
     pub tls_config: Option<PrometheusApiserverConfigTlsConfig>,
@@ -2439,23 +2403,6 @@ pub struct PrometheusApiserverConfigBasicAuthPassword {
 /// authentication.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusApiserverConfigBasicAuthUsername {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// SecretKeySelector selects a key of a Secret.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PrometheusApiserverConfigProxyConnectHeader {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -2925,13 +2872,13 @@ pub struct PrometheusContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PrometheusContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2990,11 +2937,6 @@ pub struct PrometheusContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PrometheusContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -4273,13 +4215,13 @@ pub struct PrometheusInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
+/// EnvFromSource represents the source of a set of ConfigMaps
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<PrometheusInitContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
+    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -4338,11 +4280,6 @@ pub struct PrometheusInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<PrometheusInitContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -5259,17 +5196,6 @@ pub enum PrometheusLogLevel {
 /// Specification of the desired behavior of the Prometheus cluster. More info:
 /// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum PrometheusNameEscapingScheme {
-    #[serde(rename = "AllowUTF8")]
-    AllowUtf8,
-    Underscores,
-    Dots,
-    Values,
-}
-
-/// Specification of the desired behavior of the Prometheus cluster. More info:
-/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum PrometheusNameValidationScheme {
     #[serde(rename = "UTF8")]
     Utf8,
@@ -5280,30 +5206,13 @@ pub enum PrometheusNameValidationScheme {
 /// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusOtlp {
-    /// Configures optional translation of OTLP explicit bucket histograms into native histograms with custom buckets.
-    /// It requires Prometheus >= v3.4.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "convertHistogramsToNHCB")]
-    pub convert_histograms_to_nhcb: Option<bool>,
-    /// List of OpenTelemetry resource attributes to ignore when `promoteAllResourceAttributes` is true.
-    /// 
-    /// It requires `promoteAllResourceAttributes` to be true.
-    /// It requires Prometheus >= v3.5.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreResourceAttributes")]
-    pub ignore_resource_attributes: Option<Vec<String>>,
     /// Enables adding `service.name`, `service.namespace` and `service.instance.id`
     /// resource attributes to the `target_info` metric, on top of converting them into the `instance` and `job` labels.
     /// 
     /// It requires Prometheus >= v3.1.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepIdentifyingResourceAttributes")]
     pub keep_identifying_resource_attributes: Option<bool>,
-    /// Promote all resource attributes to metric labels except the ones defined in `ignoreResourceAttributes`.
-    /// 
-    /// Cannot be true when `promoteResourceAttributes` is defined.
-    /// It requires Prometheus >= v3.5.0.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteAllResourceAttributes")]
-    pub promote_all_resource_attributes: Option<bool>,
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
-    /// Cannot be defined when `promoteAllResourceAttributes` is true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
     /// Configures how the OTLP receiver endpoint translates the incoming metrics.
@@ -5320,7 +5229,6 @@ pub enum PrometheusOtlpTranslationStrategy {
     #[serde(rename = "NoUTF8EscapingWithSuffixes")]
     NoUtf8EscapingWithSuffixes,
     UnderscoreEscapingWithSuffixes,
-    NoTranslation,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
@@ -5360,13 +5268,13 @@ pub struct PrometheusPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5374,7 +5282,7 @@ pub struct PrometheusPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
+    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -8672,13 +8580,13 @@ pub struct PrometheusStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+    /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+    /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -8686,7 +8594,7 @@ pub struct PrometheusStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
+    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -9575,6 +9483,7 @@ pub struct PrometheusTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -9584,6 +9493,7 @@ pub struct PrometheusTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
+    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -10070,7 +9980,7 @@ pub struct PrometheusVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<PrometheusVolumesImage>,
@@ -10936,7 +10846,7 @@ pub struct PrometheusVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusVolumesImage {

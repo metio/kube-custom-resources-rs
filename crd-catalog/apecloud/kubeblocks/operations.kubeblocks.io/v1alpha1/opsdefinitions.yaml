@@ -4659,6 +4659,25 @@ spec:
                         description: "Specifies the name of the ComponentDefinition.\nThe name can represent an exact name, a name prefix, or a regular expression pattern.\n\n\nFor example:\n\n\n- \"mysql-8.0.30-v1alpha1\": Matches the exact name \"mysql-8.0.30-v1alpha1\"\n- \"mysql-8.0.30\": Matches all names starting with \"mysql-8.0.30\"\n- \"^mysql-8.0.\\d{1,2}$\": Matches all names starting with \"mysql-8.0.\" followed by one or two digits."
                         maxLength: 32
                         type: "string"
+                      imageMappings:
+                        description: "ImageMappings specifies the mapping from service versions to image addresses."
+                        items:
+                          properties:
+                            images:
+                              additionalProperties:
+                                type: "string"
+                              description: "Images are the container image addresses to use for the matched service versions.\nKey is the container name, and value is the image address."
+                              type: "object"
+                            serviceVersions:
+                              description: "ServiceVersions is a list of service versions that this mapping applies to."
+                              items:
+                                type: "string"
+                              type: "array"
+                          required:
+                            - "images"
+                            - "serviceVersions"
+                          type: "object"
+                        type: "array"
                       serviceName:
                         description: "Specifies the name of the Service.\nIf set, the service name is injected as the `KB_COMP_SVC_NAME` environment variable in the containers,\nand each service port is mapped to a corresponding environment variable named `KB_COMP_SVC_PORT_$(portName)`.\nThe `portName` is transformed by replacing '-' with '_' and converting to uppercase."
                         type: "string"

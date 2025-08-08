@@ -270,9 +270,6 @@ pub struct FilterFiltersKubernetes {
     /// If this is set, the values of Labels and Annotations are ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceMetadataOnly")]
     pub namespace_metadata_only: Option<bool>,
-    /// Include Kubernetes owner references in the extra metadata.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
-    pub owner_references: Option<bool>,
     /// Set an alternative Parser to process record Tag and extract pod_name, namespace_name, container_name and docker_id.
     /// The parser must be registered in a parsers file (refer to parser filter-kube-test as an example).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "regexParser")]
@@ -294,9 +291,6 @@ pub struct FilterFiltersKubernetes {
     /// This could mitigate the Kube API heavy traffic issue for large cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "useKubelet")]
     pub use_kubelet: Option<bool>,
-    /// If true, Kubernetes metadata (e.g., pod_name, container_name, namespace_name etc) will be extracted from the tag itself.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useTagForMeta")]
-    pub use_tag_for_meta: Option<bool>,
 }
 
 /// LogToMetrics defines a Log to Metrics Filter configuration.

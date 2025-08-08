@@ -2075,6 +2075,8 @@ pub struct ResourceExportEndpoints {
 /// 
 /// 	a: [ 10.10.1.1:8675, 10.10.2.2:8675 ],
 /// 	b: [ 10.10.1.1:309, 10.10.2.2:309 ]
+/// 
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsets {
     /// IP addresses which offer the related ports that are marked as ready. These endpoints
@@ -2092,6 +2094,7 @@ pub struct ResourceExportEndpointsSubsets {
 }
 
 /// EndpointAddress is a tuple that describes single IP address.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsetsAddresses {
     /// The Hostname of this endpoint
@@ -2147,6 +2150,7 @@ pub struct ResourceExportEndpointsSubsetsAddressesTargetRef {
 }
 
 /// EndpointAddress is a tuple that describes single IP address.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsetsNotReadyAddresses {
     /// The Hostname of this endpoint
@@ -2202,6 +2206,7 @@ pub struct ResourceExportEndpointsSubsetsNotReadyAddressesTargetRef {
 }
 
 /// EndpointPort is a tuple that describes a single port.
+/// Deprecated: This API is deprecated in v1.33+.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceExportEndpointsSubsetsPorts {
     /// The application protocol for this port.
@@ -2496,13 +2501,12 @@ pub struct ResourceExportServiceServiceSpec {
     /// sessionAffinityConfig contains the configurations of session affinity.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<ResourceExportServiceServiceSpecSessionAffinityConfig>,
-    /// TrafficDistribution offers a way to express preferences for how traffic is
-    /// distributed to Service endpoints. Implementations can use this field as a
-    /// hint, but are not required to guarantee strict adherence. If the field is
-    /// not set, the implementation will apply its default routing strategy. If set
-    /// to "PreferClose", implementations should prioritize endpoints that are
-    /// topologically close (e.g., same zone).
-    /// This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+    /// TrafficDistribution offers a way to express preferences for how traffic
+    /// is distributed to Service endpoints. Implementations can use this field
+    /// as a hint, but are not required to guarantee strict adherence. If the
+    /// field is not set, the implementation will apply its default routing
+    /// strategy. If set to "PreferClose", implementations should prioritize
+    /// endpoints that are in the same zone.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficDistribution")]
     pub traffic_distribution: Option<String>,
     /// type determines how the Service is exposed. Defaults to ClusterIP. Valid

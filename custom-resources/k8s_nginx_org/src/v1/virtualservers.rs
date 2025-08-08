@@ -19,63 +19,52 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct VirtualServerSpec {
-    /// A reference to a DosProtectedResource, setting this enables DOS protection of the VirtualServer route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dos: Option<String>,
-    /// The externalDNS configuration for a VirtualServer.
+    /// ExternalDNS defines externaldns sub-resource of a virtual server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalDNS")]
     pub external_dns: Option<VirtualServerExternalDns>,
-    /// Enables or disables decompression of gzipped responses for clients. Allowed values “on”/“off”, “true”/“false” or “yes”/“no”. If the gunzip value is not set, it defaults to off.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gunzip: Option<bool>,
-    /// The host (domain name) of the server. Must be a valid subdomain as defined in RFC 1123, such as my-app or hello.example.com. When using a wildcard domain like *.example.com the domain must be contained in double quotes. The host value needs to be unique among all Ingress and VirtualServer resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Sets a custom snippet in the http context.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-snippets")]
     pub http_snippets: Option<String>,
-    /// Specifies which Ingress Controller must handle the VirtualServerRoute resource. Must be the same as the ingressClassName of the VirtualServer that references this resource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// InternalRoute allows for the configuration of internal routing.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalRoute")]
     pub internal_route: Option<bool>,
-    /// Sets a custom HTTP and/or HTTPS listener. Valid fields are listener.http and listener.https. Each field must reference the name of a valid listener defined in a GlobalConfiguration resource
+    /// VirtualServerListener references a custom http and/or https listener defined in GlobalConfiguration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listener: Option<VirtualServerListener>,
-    /// A list of policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<VirtualServerPolicies>>,
-    /// A list of routes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<VirtualServerRoutes>>,
-    /// Sets a custom snippet in server context. Overrides the server-snippets ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "server-snippets")]
     pub server_snippets: Option<String>,
-    /// The TLS termination configuration.
+    /// TLS defines TLS configuration for a VirtualServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<VirtualServerTls>,
-    /// A list of upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstreams: Option<Vec<VirtualServerUpstreams>>,
 }
 
-/// The externalDNS configuration for a VirtualServer.
+/// ExternalDNS defines externaldns sub-resource of a virtual server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerExternalDns {
-    /// Enables ExternalDNS integration for a VirtualServer resource. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// Configure labels to be applied to the Endpoint resources that will be consumed by ExternalDNS.
+    /// Labels stores labels defined for the Endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Configure provider specific properties which holds the name and value of a configuration which is specific to individual DNS providers.
+    /// ProviderSpecific stores provider specific config
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
     pub provider_specific: Option<Vec<VirtualServerExternalDnsProviderSpecific>>,
-    /// TTL for the DNS record. This defaults to 0 if not defined.
+    /// TTL for the record
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
     pub record_ttl: Option<i64>,
-    /// The record Type that should be created, e.g. “A”, “AAAA”, “CNAME”. This is automatically computed based on the external endpoints if not defined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
     pub record_type: Option<String>,
 }
@@ -92,13 +81,11 @@ pub struct VirtualServerExternalDnsProviderSpecific {
     pub value: Option<String>,
 }
 
-/// Sets a custom HTTP and/or HTTPS listener. Valid fields are listener.http and listener.https. Each field must reference the name of a valid listener defined in a GlobalConfiguration resource
+/// VirtualServerListener references a custom http and/or https listener defined in GlobalConfiguration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerListener {
-    /// The name of an HTTP listener defined in a GlobalConfiguration resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<String>,
-    /// The name of an HTTPS listener defined in a GlobalConfiguration resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub https: Option<String>,
 }
@@ -106,10 +93,8 @@ pub struct VirtualServerListener {
 /// PolicyReference references a policy by name and an optional namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerPolicies {
-    /// The name of a policy. If the policy doesn’t exist or invalid, NGINX will respond with an error response with the 500 status code.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The namespace of a policy. If not specified, the namespace of the VirtualServer resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -117,76 +102,63 @@ pub struct VirtualServerPolicies {
 /// Route defines a route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutes {
-    /// The default action to perform for a request.
+    /// Action defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<VirtualServerRoutesAction>,
-    /// A reference to a DosProtectedResource, setting this enables DOS protection of the VirtualServer route.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dos: Option<String>,
-    /// The custom responses for error codes. NGINX will use those responses instead of returning the error responses from the upstream servers or the default responses generated by NGINX. A custom response can be a redirect or a canned response. For example, a redirect to another URL if an upstream server responded with a 404 status code.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorPages")]
     pub error_pages: Option<Vec<VirtualServerRoutesErrorPages>>,
-    /// Sets a custom snippet in the location context. Overrides the location-snippets ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "location-snippets")]
     pub location_snippets: Option<String>,
-    /// The matching rules for advanced content-based routing. Requires the default Action or Splits. Unmatched requests will be handled by the default Action or Splits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub matches: Option<Vec<VirtualServerRoutesMatches>>,
-    /// The path of the route. NGINX will match it against the URI of a request. Possible values are: a prefix ( / , /path ), an exact match ( =/exact/match ), a case insensitive regular expression ( ~*^/Bar.*\.jpg ) or a case sensitive regular expression ( ~^/foo.*\.jpg ). In the case of a prefix (must start with / ) or an exact match (must start with = ), the path must not include any whitespace characters, { , } or ;. In the case of the regex matches, all double quotes " must be escaped and the match can’t end in an unescaped backslash \. The path must be unique among the paths of all routes of the VirtualServer. Check the location directive for more information.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// A list of policies. The policies override the policies of the same type defined in the spec of the VirtualServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<VirtualServerRoutesPolicies>>,
-    /// The name of a VirtualServerRoute resource that defines this route. If the VirtualServerRoute belongs to a different namespace than the VirtualServer, you need to include the namespace. For example, tea-namespace/tea.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<String>,
-    /// The default splits configuration for traffic splitting. Must include at least 2 splits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub splits: Option<Vec<VirtualServerRoutesSplits>>,
 }
 
-/// The default action to perform for a request.
+/// Action defines an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesAction {
-    /// Passes requests to an upstream. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<String>,
-    /// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+    /// ActionProxy defines a proxy in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<VirtualServerRoutesActionProxy>,
-    /// Redirects requests to a provided URL.
+    /// ActionRedirect defines a redirect in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerRoutesActionRedirect>,
-    /// Returns a preconfigured response.
+    /// ActionReturn defines a return in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "return")]
     pub r#return: Option<VirtualServerRoutesActionReturn>,
 }
 
-/// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+/// ActionProxy defines a proxy in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxy {
-    /// The request headers modifications.
+    /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesActionProxyRequestHeaders>,
-    /// The response headers modifications.
+    /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesActionProxyResponseHeaders>,
-    /// The rewritten URI. If the route path is a regular expression – starts with ~ – the rewritePath can include capture groups with $1-9. For example $1 for the first group, and so on. For more information, check the rewrite example.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
-    /// The name of the upstream which the requests will be proxied to. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
 }
 
-/// The request headers modifications.
+/// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxyRequestHeaders {
-    /// Passes the original request headers to the proxied upstream server.  Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<bool>,
-    /// Allows redefining or appending fields to present request headers passed to the proxied upstream servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub set: Option<Vec<VirtualServerRoutesActionProxyRequestHeadersSet>>,
 }
@@ -194,27 +166,21 @@ pub struct VirtualServerRoutesActionProxyRequestHeaders {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxyRequestHeadersSet {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// The response headers modifications.
+/// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxyResponseHeaders {
-    /// Adds headers to the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<VirtualServerRoutesActionProxyResponseHeadersAdd>>,
-    /// The headers that will not be passed* in the response to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hide: Option<Vec<String>>,
-    /// Disables processing of certain headers** to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<String>>,
-    /// Allows passing the hidden header fields* to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<Vec<String>>,
 }
@@ -222,94 +188,65 @@ pub struct VirtualServerRoutesActionProxyResponseHeaders {
 /// AddHeader defines an HTTP Header with an optional Always field to use with the add_header NGINX directive.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionProxyResponseHeadersAdd {
-    /// If set to true, add the header regardless of the response status code**. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub always: Option<bool>,
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Redirects requests to a provided URL.
+/// ActionRedirect defines a redirect in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionRedirect {
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The URL to redirect the request to. Supported NGINX variables: $scheme, $http_x_forwarded_proto, $request_uri or $host. Variables must be enclosed in curly braces. For example: ${host}${request_uri}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// Returns a preconfigured response.
+/// ActionReturn defines a return in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesActionReturn {
-    /// The body of the response. Supports NGINX variables*. Variables must be enclosed in curly brackets. For example: Request is ${request_uri}\n.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// The status code of the response. The allowed values are: 2XX, 4XX or 5XX. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The custom headers of the response.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<Vec<VirtualServerRoutesActionReturnHeaders>>,
-    /// The MIME type of the response. The default is text/plain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-}
-
-/// Header defines an HTTP Header.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VirtualServerRoutesActionReturnHeaders {
-    /// The name of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The value of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
 }
 
 /// ErrorPage defines an ErrorPage in a Route.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesErrorPages {
-    /// A list of error status codes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub codes: Option<Vec<i64>>,
-    /// The canned response action for the given status codes.
+    /// ErrorPageRedirect defines a redirect for an ErrorPage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerRoutesErrorPagesRedirect>,
-    /// The redirect action for the given status codes.
+    /// ErrorPageReturn defines a return for an ErrorPage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "return")]
     pub r#return: Option<VirtualServerRoutesErrorPagesReturn>,
 }
 
-/// The canned response action for the given status codes.
+/// ErrorPageRedirect defines a redirect for an ErrorPage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesErrorPagesRedirect {
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The URL to redirect the request to. Supported NGINX variables: $scheme, $http_x_forwarded_proto, $request_uri or $host. Variables must be enclosed in curly braces. For example: ${host}${request_uri}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// The redirect action for the given status codes.
+/// ErrorPageReturn defines a return for an ErrorPage.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesErrorPagesReturn {
-    /// The body of the response. Supports NGINX variables*. Variables must be enclosed in curly brackets. For example: Request is ${request_uri}\n.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// The status code of the response. The allowed values are: 2XX, 4XX or 5XX. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The custom headers of the response.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<VirtualServerRoutesErrorPagesReturnHeaders>>,
-    /// The MIME type of the response. The default is text/plain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -317,10 +254,8 @@ pub struct VirtualServerRoutesErrorPagesReturn {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesErrorPagesReturnHeaders {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
@@ -328,58 +263,51 @@ pub struct VirtualServerRoutesErrorPagesReturnHeaders {
 /// Match defines a match.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatches {
-    /// The action to perform for a request.
+    /// Action defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<VirtualServerRoutesMatchesAction>,
-    /// A list of conditions. Must include at least 1 condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<VirtualServerRoutesMatchesConditions>>,
-    /// The splits configuration for traffic splitting. Must include at least 2 splits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub splits: Option<Vec<VirtualServerRoutesMatchesSplits>>,
 }
 
-/// The action to perform for a request.
+/// Action defines an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesAction {
-    /// Passes requests to an upstream. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<String>,
-    /// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+    /// ActionProxy defines a proxy in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<VirtualServerRoutesMatchesActionProxy>,
-    /// Redirects requests to a provided URL.
+    /// ActionRedirect defines a redirect in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerRoutesMatchesActionRedirect>,
-    /// Returns a preconfigured response.
+    /// ActionReturn defines a return in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "return")]
     pub r#return: Option<VirtualServerRoutesMatchesActionReturn>,
 }
 
-/// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+/// ActionProxy defines a proxy in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxy {
-    /// The request headers modifications.
+    /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesMatchesActionProxyRequestHeaders>,
-    /// The response headers modifications.
+    /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesMatchesActionProxyResponseHeaders>,
-    /// The rewritten URI. If the route path is a regular expression – starts with ~ – the rewritePath can include capture groups with $1-9. For example $1 for the first group, and so on. For more information, check the rewrite example.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
-    /// The name of the upstream which the requests will be proxied to. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
 }
 
-/// The request headers modifications.
+/// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxyRequestHeaders {
-    /// Passes the original request headers to the proxied upstream server.  Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<bool>,
-    /// Allows redefining or appending fields to present request headers passed to the proxied upstream servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub set: Option<Vec<VirtualServerRoutesMatchesActionProxyRequestHeadersSet>>,
 }
@@ -387,27 +315,21 @@ pub struct VirtualServerRoutesMatchesActionProxyRequestHeaders {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxyRequestHeadersSet {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// The response headers modifications.
+/// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxyResponseHeaders {
-    /// Adds headers to the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<VirtualServerRoutesMatchesActionProxyResponseHeadersAdd>>,
-    /// The headers that will not be passed* in the response to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hide: Option<Vec<String>>,
-    /// Disables processing of certain headers** to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<String>>,
-    /// Allows passing the hidden header fields* to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<Vec<String>>,
 }
@@ -415,72 +337,45 @@ pub struct VirtualServerRoutesMatchesActionProxyResponseHeaders {
 /// AddHeader defines an HTTP Header with an optional Always field to use with the add_header NGINX directive.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionProxyResponseHeadersAdd {
-    /// If set to true, add the header regardless of the response status code**. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub always: Option<bool>,
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Redirects requests to a provided URL.
+/// ActionRedirect defines a redirect in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionRedirect {
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The URL to redirect the request to. Supported NGINX variables: $scheme, $http_x_forwarded_proto, $request_uri or $host. Variables must be enclosed in curly braces. For example: ${host}${request_uri}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// Returns a preconfigured response.
+/// ActionReturn defines a return in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesActionReturn {
-    /// The body of the response. Supports NGINX variables*. Variables must be enclosed in curly brackets. For example: Request is ${request_uri}\n.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// The status code of the response. The allowed values are: 2XX, 4XX or 5XX. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The custom headers of the response.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<Vec<VirtualServerRoutesMatchesActionReturnHeaders>>,
-    /// The MIME type of the response. The default is text/plain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-}
-
-/// Header defines an HTTP Header.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VirtualServerRoutesMatchesActionReturnHeaders {
-    /// The name of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The value of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
 }
 
 /// Condition defines a condition in a MatchRule.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesConditions {
-    /// The name of an argument. Must consist of alphanumeric characters or _.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub argument: Option<String>,
-    /// The name of a cookie. Must consist of alphanumeric characters or _.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cookie: Option<String>,
-    /// The name of a header. Must consist of alphanumeric characters or -.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<String>,
-    /// The value to match the condition against.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
-    /// The name of an NGINX variable. Must start with $.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variable: Option<String>,
 }
@@ -488,55 +383,49 @@ pub struct VirtualServerRoutesMatchesConditions {
 /// Split defines a split.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplits {
-    /// The action to perform for a request.
+    /// Action defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<VirtualServerRoutesMatchesSplitsAction>,
-    /// The weight of an action. Must fall into the range 0..100. The sum of the weights of all splits must be equal to 100.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i64>,
 }
 
-/// The action to perform for a request.
+/// Action defines an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsAction {
-    /// Passes requests to an upstream. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<String>,
-    /// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+    /// ActionProxy defines a proxy in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<VirtualServerRoutesMatchesSplitsActionProxy>,
-    /// Redirects requests to a provided URL.
+    /// ActionRedirect defines a redirect in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerRoutesMatchesSplitsActionRedirect>,
-    /// Returns a preconfigured response.
+    /// ActionReturn defines a return in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "return")]
     pub r#return: Option<VirtualServerRoutesMatchesSplitsActionReturn>,
 }
 
-/// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+/// ActionProxy defines a proxy in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxy {
-    /// The request headers modifications.
+    /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesMatchesSplitsActionProxyRequestHeaders>,
-    /// The response headers modifications.
+    /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesMatchesSplitsActionProxyResponseHeaders>,
-    /// The rewritten URI. If the route path is a regular expression – starts with ~ – the rewritePath can include capture groups with $1-9. For example $1 for the first group, and so on. For more information, check the rewrite example.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
-    /// The name of the upstream which the requests will be proxied to. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
 }
 
-/// The request headers modifications.
+/// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxyRequestHeaders {
-    /// Passes the original request headers to the proxied upstream server.  Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<bool>,
-    /// Allows redefining or appending fields to present request headers passed to the proxied upstream servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub set: Option<Vec<VirtualServerRoutesMatchesSplitsActionProxyRequestHeadersSet>>,
 }
@@ -544,27 +433,21 @@ pub struct VirtualServerRoutesMatchesSplitsActionProxyRequestHeaders {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxyRequestHeadersSet {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// The response headers modifications.
+/// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxyResponseHeaders {
-    /// Adds headers to the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<VirtualServerRoutesMatchesSplitsActionProxyResponseHeadersAdd>>,
-    /// The headers that will not be passed* in the response to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hide: Option<Vec<String>>,
-    /// Disables processing of certain headers** to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<String>>,
-    /// Allows passing the hidden header fields* to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<Vec<String>>,
 }
@@ -572,63 +455,39 @@ pub struct VirtualServerRoutesMatchesSplitsActionProxyResponseHeaders {
 /// AddHeader defines an HTTP Header with an optional Always field to use with the add_header NGINX directive.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionProxyResponseHeadersAdd {
-    /// If set to true, add the header regardless of the response status code**. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub always: Option<bool>,
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Redirects requests to a provided URL.
+/// ActionRedirect defines a redirect in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionRedirect {
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The URL to redirect the request to. Supported NGINX variables: $scheme, $http_x_forwarded_proto, $request_uri or $host. Variables must be enclosed in curly braces. For example: ${host}${request_uri}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// Returns a preconfigured response.
+/// ActionReturn defines a return in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesMatchesSplitsActionReturn {
-    /// The body of the response. Supports NGINX variables*. Variables must be enclosed in curly brackets. For example: Request is ${request_uri}\n.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// The status code of the response. The allowed values are: 2XX, 4XX or 5XX. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The custom headers of the response.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<Vec<VirtualServerRoutesMatchesSplitsActionReturnHeaders>>,
-    /// The MIME type of the response. The default is text/plain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-}
-
-/// Header defines an HTTP Header.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VirtualServerRoutesMatchesSplitsActionReturnHeaders {
-    /// The name of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The value of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
 }
 
 /// PolicyReference references a policy by name and an optional namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesPolicies {
-    /// The name of a policy. If the policy doesn’t exist or invalid, NGINX will respond with an error response with the 500 status code.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The namespace of a policy. If not specified, the namespace of the VirtualServer resource is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
@@ -636,55 +495,49 @@ pub struct VirtualServerRoutesPolicies {
 /// Split defines a split.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplits {
-    /// The action to perform for a request.
+    /// Action defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<VirtualServerRoutesSplitsAction>,
-    /// The weight of an action. Must fall into the range 0..100. The sum of the weights of all splits must be equal to 100.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub weight: Option<i64>,
 }
 
-/// The action to perform for a request.
+/// Action defines an action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsAction {
-    /// Passes requests to an upstream. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<String>,
-    /// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+    /// ActionProxy defines a proxy in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<VirtualServerRoutesSplitsActionProxy>,
-    /// Redirects requests to a provided URL.
+    /// ActionRedirect defines a redirect in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerRoutesSplitsActionRedirect>,
-    /// Returns a preconfigured response.
+    /// ActionReturn defines a return in an Action.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "return")]
     pub r#return: Option<VirtualServerRoutesSplitsActionReturn>,
 }
 
-/// Passes requests to an upstream with the ability to modify the request/response (for example, rewrite the URI or modify the headers).
+/// ActionProxy defines a proxy in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxy {
-    /// The request headers modifications.
+    /// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<VirtualServerRoutesSplitsActionProxyRequestHeaders>,
-    /// The response headers modifications.
+    /// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<VirtualServerRoutesSplitsActionProxyResponseHeaders>,
-    /// The rewritten URI. If the route path is a regular expression – starts with ~ – the rewritePath can include capture groups with $1-9. For example $1 for the first group, and so on. For more information, check the rewrite example.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rewritePath")]
     pub rewrite_path: Option<String>,
-    /// The name of the upstream which the requests will be proxied to. The upstream with that name must be defined in the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstream: Option<String>,
 }
 
-/// The request headers modifications.
+/// ProxyRequestHeaders defines the request headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxyRequestHeaders {
-    /// Passes the original request headers to the proxied upstream server.  Default is true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<bool>,
-    /// Allows redefining or appending fields to present request headers passed to the proxied upstream servers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub set: Option<Vec<VirtualServerRoutesSplitsActionProxyRequestHeadersSet>>,
 }
@@ -692,27 +545,21 @@ pub struct VirtualServerRoutesSplitsActionProxyRequestHeaders {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxyRequestHeadersSet {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// The response headers modifications.
+/// ProxyResponseHeaders defines the response headers manipulation in an ActionProxy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxyResponseHeaders {
-    /// Adds headers to the response to the client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<VirtualServerRoutesSplitsActionProxyResponseHeadersAdd>>,
-    /// The headers that will not be passed* in the response to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hide: Option<Vec<String>>,
-    /// Disables processing of certain headers** to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ignore: Option<Vec<String>>,
-    /// Allows passing the hidden header fields* to the client from a proxied upstream server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pass: Option<Vec<String>>,
 }
@@ -720,112 +567,77 @@ pub struct VirtualServerRoutesSplitsActionProxyResponseHeaders {
 /// AddHeader defines an HTTP Header with an optional Always field to use with the add_header NGINX directive.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionProxyResponseHeadersAdd {
-    /// If set to true, add the header regardless of the response status code**. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub always: Option<bool>,
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// Redirects requests to a provided URL.
+/// ActionRedirect defines a redirect in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionRedirect {
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The URL to redirect the request to. Supported NGINX variables: $scheme, $http_x_forwarded_proto, $request_uri or $host. Variables must be enclosed in curly braces. For example: ${host}${request_uri}.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
 }
 
-/// Returns a preconfigured response.
+/// ActionReturn defines a return in an Action.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerRoutesSplitsActionReturn {
-    /// The body of the response. Supports NGINX variables*. Variables must be enclosed in curly brackets. For example: Request is ${request_uri}\n.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    /// The status code of the response. The allowed values are: 2XX, 4XX or 5XX. The default is 200.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// The custom headers of the response.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub headers: Option<Vec<VirtualServerRoutesSplitsActionReturnHeaders>>,
-    /// The MIME type of the response. The default is text/plain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
 
-/// Header defines an HTTP Header.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct VirtualServerRoutesSplitsActionReturnHeaders {
-    /// The name of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// The value of the header.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-/// The TLS termination configuration.
+/// TLS defines TLS configuration for a VirtualServer.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerTls {
-    /// The cert-manager configuration of the TLS for a VirtualServer.
+    /// CertManager defines a cert manager config for a TLS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cert-manager")]
     pub cert_manager: Option<VirtualServerTlsCertManager>,
-    /// The redirect configuration of the TLS for a VirtualServer.
+    /// TLSRedirect defines a redirect for a TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect: Option<VirtualServerTlsRedirect>,
-    /// The name of a secret with a TLS certificate and key. The secret must belong to the same namespace as the VirtualServer. The secret must be of the type kubernetes.io/tls and contain keys named tls.crt and tls.key that contain the certificate and private key as described here. If the secret doesn’t exist or is invalid, NGINX will break any attempt to establish a TLS connection to the host of the VirtualServer. If the secret is not specified but wildcard TLS secret is configured, NGINX will use the wildcard secret for TLS termination.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<String>,
 }
 
-/// The cert-manager configuration of the TLS for a VirtualServer.
+/// CertManager defines a cert manager config for a TLS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerTlsCertManager {
-    /// the name of a ClusterIssuer. A ClusterIssuer is a cert-manager resource which describes the certificate authority capable of signing certificates. It does not matter which namespace your VirtualServer resides, as ClusterIssuers are non-namespaced resources. Please note that one of issuer and cluster-issuer are required, but they are mutually exclusive - one and only one must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cluster-issuer")]
     pub cluster_issuer: Option<String>,
-    /// This field allows you to configure spec.commonName for the Certificate to be generated. This configuration adds a CN to the x509 certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "common-name")]
     pub common_name: Option<String>,
-    /// This field allows you to configure spec.duration field for the Certificate to be generated. Must be specified using a Go time.Duration string format, which does not allow the d (days) suffix. You must specify these values using s, m, and h suffixes instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// When true, ask cert-manager for a temporary self-signed certificate pending the issuance of the Certificate. This allows HTTPS-only servers to use ACME HTTP01 challenges when the TLS secret does not exist yet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issue-temp-cert")]
     pub issue_temp_cert: Option<bool>,
-    /// the name of an Issuer. An Issuer is a cert-manager resource which describes the certificate authority capable of signing certificates. The Issuer must be in the same namespace as the VirtualServer resource. Please note that one of issuer and cluster-issuer are required, but they are mutually exclusive - one and only one must be defined.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub issuer: Option<String>,
-    /// The API group of the external issuer controller, for example awspca.cert-manager.io. This is only necessary for out-of-tree issuers. This cannot be defined if cluster-issuer is also defined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuer-group")]
     pub issuer_group: Option<String>,
-    /// The kind of the external issuer resource, for example AWSPCAIssuer. This is only necessary for out-of-tree issuers. This cannot be defined if cluster-issuer is also defined.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuer-kind")]
     pub issuer_kind: Option<String>,
-    /// this annotation allows you to configure spec.renewBefore field for the Certificate to be generated. Must be specified using a Go time.Duration string format, which does not allow the d (days) suffix. You must specify these values using s, m, and h suffixes instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "renew-before")]
     pub renew_before: Option<String>,
-    /// This field allows you to configure spec.usages field for the Certificate to be generated. Pass a string with comma-separated values i.e. key agreement,digital signature, server auth. An exhaustive list of supported key usages can be found in the the cert-manager api documentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usages: Option<String>,
 }
 
-/// The redirect configuration of the TLS for a VirtualServer.
+/// TLSRedirect defines a redirect for a TLS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerTlsRedirect {
-    /// The attribute of a request that NGINX will evaluate to send a redirect. The allowed values are scheme (the scheme of the request) or x-forwarded-proto (the X-Forwarded-Proto header of the request). The default is scheme.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basedOn")]
     pub based_on: Option<String>,
-    /// The status code of a redirect. The allowed values are: 301, 302, 307 or 308. The default is 301.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub code: Option<i64>,
-    /// Enables a TLS redirect for a VirtualServer. The default is False.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }
@@ -833,161 +645,118 @@ pub struct VirtualServerTlsRedirect {
 /// Upstream defines an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreams {
-    /// The name of the backup service of type ExternalName. This will be used when the primary servers are unavailable. Note: The parameter cannot be used along with the random, hash or ip_hash load balancing methods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
-    /// The port of the backup service. The backup port is required if the backup service name is provided. The port must fall into the range 1..65535.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
     pub backup_port: Option<i64>,
-    /// Sets the size of the buffer used for reading the first part of a response received from the upstream server. The default is set in the proxy-buffer-size ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buffer-size")]
     pub buffer_size: Option<String>,
-    /// Enables buffering of responses from the upstream server.  The default is set in the proxy-buffering ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffering: Option<bool>,
-    /// Configures the buffers used for reading a response from the upstream server for a single connection.
+    /// UpstreamBuffers defines Buffer Configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub buffers: Option<VirtualServerUpstreamsBuffers>,
-    /// Sets the maximum allowed size of the client request body. The default is set in the client-max-body-size ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "client-max-body-size")]
     pub client_max_body_size: Option<String>,
-    /// The timeout for establishing a connection with an upstream server. The default is specified in the proxy-connect-timeout ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connect-timeout")]
     pub connect_timeout: Option<String>,
-    /// The time during which the specified number of unsuccessful attempts to communicate with an upstream server should happen to consider the server unavailable. The default is set in the fail-timeout ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fail-timeout")]
     pub fail_timeout: Option<String>,
-    /// The health check configuration for the Upstream. Note: this feature is supported only in NGINX Plus.
+    /// HealthCheck defines the parameters for active Upstream HealthChecks.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<VirtualServerUpstreamsHealthCheck>,
-    /// Configures the cache for connections to upstream servers. The value 0 disables the cache. The default is set in the keepalive ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keepalive: Option<i64>,
-    /// The load balancing method. To use the round-robin method, specify round_robin. The default is specified in the lb-method ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lb-method")]
     pub lb_method: Option<String>,
-    /// The maximum number of simultaneous active connections to an upstream server. By default there is no limit. Note: if keepalive connections are enabled, the total number of active and idle keepalive connections to an upstream server may exceed the max_conns value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-conns")]
     pub max_conns: Option<i64>,
-    /// The number of unsuccessful attempts to communicate with an upstream server that should happen in the duration set by the fail-timeout to consider the server unavailable. The default is set in the max-fails ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-fails")]
     pub max_fails: Option<i64>,
-    /// The name of the upstream. Must be a valid DNS label as defined in RFC 1035. For example, hello and upstream-123 are valid. The name must be unique among all upstreams of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Specifies in which cases a request should be passed to the next upstream server. The default is error timeout.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream")]
     pub next_upstream: Option<String>,
-    /// The time during which a request can be passed to the next upstream server. The 0 value turns off the time limit. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream-timeout")]
     pub next_upstream_timeout: Option<String>,
-    /// The number of possible tries for passing a request to the next upstream server. The 0 value turns off this limit. The default is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "next-upstream-tries")]
     pub next_upstream_tries: Option<i64>,
-    /// Allows proxying requests with NTLM Authentication. In order for NTLM authentication to work, it is necessary to enable keepalive connections to upstream servers using the keepalive field. Note: this feature is supported only in NGINX Plus.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ntlm: Option<bool>,
-    /// The port of the service. If the service doesn’t define that port, NGINX will assume the service has zero endpoints and return a 502 response for requests for this upstream. The port must fall into the range 1..65535.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// Configures a queue for an upstream. A client request will be placed into the queue if an upstream server cannot be selected immediately while processing the request. By default, no queue is configured. Note: this feature is supported only in NGINX Plus.
+    /// UpstreamQueue defines Queue Configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub queue: Option<VirtualServerUpstreamsQueue>,
-    /// The timeout for reading a response from an upstream server. The default is specified in the proxy-read-timeout ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "read-timeout")]
     pub read_timeout: Option<String>,
-    /// The timeout for transmitting a request to an upstream server. The default is specified in the proxy-send-timeout ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "send-timeout")]
     pub send_timeout: Option<String>,
-    /// The name of a service. The service must belong to the same namespace as the resource. If the service doesn’t exist, NGINX will assume the service has zero endpoints and return a 502 response for requests for this upstream. For NGINX Plus only, services of type ExternalName are also supported .
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
-    /// The SessionCookie field configures session persistence which allows requests from the same client to be passed to the same upstream server. The information about the designated upstream server is passed in a session cookie generated by NGINX Plus.
+    /// SessionCookie defines the parameters for session persistence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionCookie")]
     pub session_cookie: Option<VirtualServerUpstreamsSessionCookie>,
-    /// The slow start allows an upstream server to gradually recover its weight from 0 to its nominal value after it has been recovered or became available or when the server becomes available after a period of time it was considered unavailable. By default, the slow start is disabled. Note: The parameter cannot be used along with the random, hash or ip_hash load balancing methods and will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "slow-start")]
     pub slow_start: Option<String>,
-    /// Selects the pods within the service using label keys and values. By default, all pods of the service are selected. Note: the specified labels are expected to be present in the pods when they are created. If the pod labels are updated, NGINX Ingress Controller will not see that change until the number of the pods is changed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subselector: Option<BTreeMap<String, String>>,
-    /// The TLS configuration for the Upstream.
+    /// UpstreamTLS defines a TLS configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<VirtualServerUpstreamsTls>,
-    /// The type of the upstream. Supported values are http and grpc. The default is http. For gRPC, it is necessary to enable HTTP/2 in the ConfigMap and configure TLS termination in the VirtualServer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
-    /// Enables using the Cluster IP and port of the service instead of the default behavior of using the IP and port of the pods. When this field is enabled, the fields that configure NGINX behavior related to multiple upstream servers (like lb-method and next-upstream) will have no effect, as NGINX Ingress Controller will configure NGINX with only one upstream server that will match the service Cluster IP.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-cluster-ip")]
     pub use_cluster_ip: Option<bool>,
 }
 
-/// Configures the buffers used for reading a response from the upstream server for a single connection.
+/// UpstreamBuffers defines Buffer Configuration for an Upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsBuffers {
-    /// Configures the number of buffers. The default is set in the proxy-buffers ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub number: Option<i64>,
-    /// Configures the size of a buffer. The default is set in the proxy-buffers ConfigMap key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }
 
-/// The health check configuration for the Upstream. Note: this feature is supported only in NGINX Plus.
+/// HealthCheck defines the parameters for active Upstream HealthChecks.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsHealthCheck {
-    /// The timeout for establishing a connection with an upstream server. By default, the connect-timeout of the upstream is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connect-timeout")]
     pub connect_timeout: Option<String>,
-    /// Enables a health check for an upstream server. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// The number of consecutive failed health checks of a particular upstream server after which this server will be considered unhealthy. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fails: Option<i64>,
-    /// The gRPC service to be monitored on the upstream server. Only valid on gRPC type upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcService")]
     pub grpc_service: Option<String>,
-    /// The expected gRPC status code of the upstream server response to the Check method. Configure this field only if your gRPC services do not implement the gRPC health checking protocol. For example, configure 12 if the upstream server responds with 12 (UNIMPLEMENTED) status code. Only valid on gRPC type upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grpcStatus")]
     pub grpc_status: Option<i64>,
-    /// The request headers used for health check requests. NGINX Plus always sets the Host, User-Agent and Connection headers for health check requests.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<VirtualServerUpstreamsHealthCheckHeaders>>,
-    /// The interval between two consecutive health checks. The default is 5s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
-    /// The time within which each health check will be randomly delayed. By default, there is no delay.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jitter: Option<String>,
-    /// Enables keepalive connections for health checks and specifies the time during which requests can be processed through one keepalive connection. The default is 60s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepalive-time")]
     pub keepalive_time: Option<String>,
-    /// Require every newly added server to pass all configured health checks before NGINX Plus sends traffic to it. If this is not specified, or is set to false, the server will be initially considered healthy. When combined with slow-start, it gives a new server more time to connect to databases and “warm up” before being asked to handle their full share of traffic.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mandatory: Option<bool>,
-    /// The number of consecutive passed health checks of a particular upstream server after which the server will be considered healthy. The default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub passes: Option<i64>,
-    /// The path used for health check requests. The default is /. This is not configurable for gRPC type upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Set the initial “up” state for a server after reload if the server was considered healthy before reload. Enabling persistent requires that the mandatory parameter is also set to true.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistent: Option<bool>,
-    /// The port used for health check requests. By default, the server port is used. Note: in contrast with the port of the upstream, this port is not a service port, but a port of a pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
-    /// The timeout for reading a response from an upstream server. By default, the read-timeout of the upstream is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "read-timeout")]
     pub read_timeout: Option<String>,
-    /// The timeout for transmitting a request to an upstream server. By default, the send-timeout of the upstream is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "send-timeout")]
     pub send_timeout: Option<String>,
-    /// The expected response status codes of a health check. By default, the response should have status code 2xx or 3xx. Examples: "200", "! 500", "301-303 307". This not supported for gRPC type upstreams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMatch")]
     pub status_match: Option<String>,
-    /// The TLS configuration used for health check requests. By default, the tls field of the upstream is used.
+    /// UpstreamTLS defines a TLS configuration for an Upstream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<VirtualServerUpstreamsHealthCheckTls>,
 }
@@ -995,71 +764,57 @@ pub struct VirtualServerUpstreamsHealthCheck {
 /// Header defines an HTTP Header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsHealthCheckHeaders {
-    /// The name of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The value of the header.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
 
-/// The TLS configuration used for health check requests. By default, the tls field of the upstream is used.
+/// UpstreamTLS defines a TLS configuration for an Upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsHealthCheckTls {
-    /// Enables HTTPS for requests to upstream servers. The default is False , meaning that HTTP will be used. Note: by default, NGINX will not verify the upstream server certificate. To enable the verification, configure an EgressMTLS Policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }
 
-/// Configures a queue for an upstream. A client request will be placed into the queue if an upstream server cannot be selected immediately while processing the request. By default, no queue is configured. Note: this feature is supported only in NGINX Plus.
+/// UpstreamQueue defines Queue Configuration for an Upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsQueue {
-    /// The size of the queue.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<i64>,
-    /// The timeout of the queue. A request cannot be queued for a period longer than the timeout. The default is 60s.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<String>,
 }
 
-/// The SessionCookie field configures session persistence which allows requests from the same client to be passed to the same upstream server. The information about the designated upstream server is passed in a session cookie generated by NGINX Plus.
+/// SessionCookie defines the parameters for session persistence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsSessionCookie {
-    /// The domain for which the cookie is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
-    /// Enables session persistence with a session cookie for an upstream server. The default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// The time for which a browser should keep the cookie. Can be set to the special value max, which will cause the cookie to expire on 31 Dec 2037 23:55:55 GMT.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expires: Option<String>,
-    /// Adds the HttpOnly attribute to the cookie.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// The name of the cookie.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// The path for which the cookie is set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Adds the SameSite attribute to the cookie. The allowed values are: strict, lax, none
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub samesite: Option<String>,
-    /// Adds the Secure attribute to the cookie.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<bool>,
 }
 
-/// The TLS configuration for the Upstream.
+/// UpstreamTLS defines a TLS configuration for an Upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerUpstreamsTls {
-    /// Enables HTTPS for requests to upstream servers. The default is False , meaning that HTTP will be used. Note: by default, NGINX will not verify the upstream server certificate. To enable the verification, configure an EgressMTLS Policy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }
 
-/// Status contains the current status of the VirtualServer.
+/// VirtualServerStatus defines the status for the VirtualServer resource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEndpoints")]

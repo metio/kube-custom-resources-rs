@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.0"
+    controller-gen.kubebuilder.io/version: "v0.14.0"
   name: "opensearchclusters.opensearch.opster.io"
 spec:
   group: "opensearch.opster.io"
@@ -87,13 +87,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         description: "A list of node selector requirements by node's fields."
                                         items:
@@ -110,13 +108,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   weight:
@@ -128,7 +124,6 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to an update), the system\nmay or may not try to eventually evict the pod from its node."
                               properties:
@@ -153,13 +148,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         description: "A list of node selector requirements by node's fields."
                                         items:
@@ -176,17 +169,14 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   type: "array"
-                                  x-kubernetes-list-type: "atomic"
                               required:
                                 - "nodeSelectorTerms"
                               type: "object"
@@ -204,7 +194,7 @@ spec:
                                     description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
                                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -222,13 +212,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -236,18 +224,6 @@ spec:
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
-                                      matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
-                                      mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
                                         description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                         properties:
@@ -267,13 +243,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -286,7 +260,6 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                         type: "string"
@@ -302,14 +275,13 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                               items:
                                 description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -327,13 +299,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -341,18 +311,6 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
-                                  matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                  mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
                                     description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                     properties:
@@ -372,13 +330,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -391,7 +347,6 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                     type: "string"
@@ -399,7 +354,6 @@ spec:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         podAntiAffinity:
                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
@@ -413,7 +367,7 @@ spec:
                                     description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
                                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -431,13 +385,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -445,18 +397,6 @@ spec:
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
-                                      matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
-                                      mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
                                         description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                         properties:
@@ -476,13 +416,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -495,7 +433,6 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                         type: "string"
@@ -511,14 +448,13 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the anti-affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the anti-affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                               items:
                                 description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -536,13 +472,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -550,18 +484,6 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
-                                  matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                  mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
                                     description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                     properties:
@@ -581,13 +503,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -600,7 +520,6 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                     type: "string"
@@ -608,7 +527,6 @@ spec:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                       type: "object"
                     jvm:
@@ -625,8 +543,7 @@ spec:
                             description: "Secret containing key value pairs"
                             properties:
                               name:
-                                default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
@@ -644,15 +561,12 @@ spec:
                       description: "ResourceRequirements describes the compute resource requirements."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                type: "string"
-                              request:
-                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -750,10 +664,8 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               name:
-                                default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                               optional:
                                 description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -773,8 +685,7 @@ spec:
                                 description: "nodePublishSecretRef is a reference to the secret object containing\nsensitive information to pass to the CSI driver to complete the CSI\nNodePublishVolume and NodeUnpublishVolume calls.\nThis field is optional, and  may be empty if no secret is required. If the\nsecret object contains more than one secret, all secret references are passed."
                                 properties:
                                   name:
-                                    default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -817,61 +728,10 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               sources:
-                                description: "sources is the list of volume projections. Each entry in this list\nhandles one source."
+                                description: "sources is the list of volume projections"
                                 items:
-                                  description: "Projection that may be projected along with other supported volume types.\nExactly one of these fields must be set."
+                                  description: "Projection that may be projected along with other supported volume types"
                                   properties:
-                                    clusterTrustBundle:
-                                      description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
-                                      properties:
-                                        labelSelector:
-                                          description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
-                                          properties:
-                                            matchExpressions:
-                                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                              items:
-                                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                                properties:
-                                                  key:
-                                                    description: "key is the label key that the selector applies to."
-                                                    type: "string"
-                                                  operator:
-                                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                                    type: "string"
-                                                  values:
-                                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                                    items:
-                                                      type: "string"
-                                                    type: "array"
-                                                    x-kubernetes-list-type: "atomic"
-                                                required:
-                                                  - "key"
-                                                  - "operator"
-                                                type: "object"
-                                              type: "array"
-                                              x-kubernetes-list-type: "atomic"
-                                            matchLabels:
-                                              additionalProperties:
-                                                type: "string"
-                                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                              type: "object"
-                                          type: "object"
-                                          x-kubernetes-map-type: "atomic"
-                                        name:
-                                          description: "Select a single ClusterTrustBundle by object name.  Mutually-exclusive\nwith signerName and labelSelector."
-                                          type: "string"
-                                        optional:
-                                          description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s)\naren't available.  If using name, then the named ClusterTrustBundle is\nallowed not to exist.  If using signerName, then the combination of\nsignerName and labelSelector is allowed to match zero\nClusterTrustBundles."
-                                          type: "boolean"
-                                        path:
-                                          description: "Relative path from the volume root to write the bundle."
-                                          type: "string"
-                                        signerName:
-                                          description: "Select all ClusterTrustBundles that match this signer name.\nMutually-exclusive with name.  The contents of all selected\nClusterTrustBundles will be unified and deduplicated."
-                                          type: "string"
-                                      required:
-                                        - "path"
-                                      type: "object"
                                     configMap:
                                       description: "configMap information about the configMap data to project"
                                       properties:
@@ -895,10 +755,8 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                           type: "string"
                                         optional:
                                           description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -914,7 +772,7 @@ spec:
                                             description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                             properties:
                                               fieldRef:
-                                                description: "Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported."
+                                                description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                 properties:
                                                   apiVersion:
                                                     description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
@@ -957,7 +815,6 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     secret:
                                       description: "secret information about the secret data to project"
@@ -982,10 +839,8 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                           type: "string"
                                         optional:
                                           description: "optional field specify whether the Secret or its key must be defined"
@@ -1010,7 +865,6 @@ spec:
                                       type: "object"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           restartPods:
                             description: "Whether to restart the pods on content change"
@@ -1042,7 +896,6 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               optional:
                                 description: "optional field specify whether the Secret or its keys must be defined"
                                 type: "boolean"
@@ -1088,13 +941,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         description: "A list of node selector requirements by node's fields."
                                         items:
@@ -1111,13 +962,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   weight:
@@ -1129,7 +978,6 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to an update), the system\nmay or may not try to eventually evict the pod from its node."
                               properties:
@@ -1154,13 +1002,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchFields:
                                         description: "A list of node selector requirements by node's fields."
                                         items:
@@ -1177,17 +1023,14 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
                                   type: "array"
-                                  x-kubernetes-list-type: "atomic"
                               required:
                                 - "nodeSelectorTerms"
                               type: "object"
@@ -1205,7 +1048,7 @@ spec:
                                     description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
                                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -1223,13 +1066,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -1237,18 +1078,6 @@ spec:
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
-                                      matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
-                                      mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
                                         description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                         properties:
@@ -1268,13 +1097,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -1287,7 +1114,6 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                         type: "string"
@@ -1303,14 +1129,13 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                               items:
                                 description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -1328,13 +1153,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -1342,18 +1165,6 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
-                                  matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                  mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
                                     description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                     properties:
@@ -1373,13 +1184,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -1392,7 +1201,6 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                     type: "string"
@@ -1400,7 +1208,6 @@ spec:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         podAntiAffinity:
                           description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
@@ -1414,7 +1221,7 @@ spec:
                                     description: "Required. A pod affinity term, associated with the corresponding weight."
                                     properties:
                                       labelSelector:
-                                        description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                        description: "A label query over a set of resources, in this case pods."
                                         properties:
                                           matchExpressions:
                                             description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -1432,13 +1239,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -1446,18 +1251,6 @@ spec:
                                             type: "object"
                                         type: "object"
                                         x-kubernetes-map-type: "atomic"
-                                      matchLabelKeys:
-                                        description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
-                                      mismatchLabelKeys:
-                                        description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                        items:
-                                          type: "string"
-                                        type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       namespaceSelector:
                                         description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                         properties:
@@ -1477,13 +1270,11 @@ spec:
                                                   items:
                                                     type: "string"
                                                   type: "array"
-                                                  x-kubernetes-list-type: "atomic"
                                               required:
                                                 - "key"
                                                 - "operator"
                                               type: "object"
                                             type: "array"
-                                            x-kubernetes-list-type: "atomic"
                                           matchLabels:
                                             additionalProperties:
                                               type: "string"
@@ -1496,7 +1287,6 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       topologyKey:
                                         description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                         type: "string"
@@ -1512,14 +1302,13 @@ spec:
                                   - "weight"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             requiredDuringSchedulingIgnoredDuringExecution:
                               description: "If the anti-affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the anti-affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                               items:
                                 description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                 properties:
                                   labelSelector:
-                                    description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                    description: "A label query over a set of resources, in this case pods."
                                     properties:
                                       matchExpressions:
                                         description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -1537,13 +1326,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -1551,18 +1338,6 @@ spec:
                                         type: "object"
                                     type: "object"
                                     x-kubernetes-map-type: "atomic"
-                                  matchLabelKeys:
-                                    description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
-                                  mismatchLabelKeys:
-                                    description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                    items:
-                                      type: "string"
-                                    type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   namespaceSelector:
                                     description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                     properties:
@@ -1582,13 +1357,11 @@ spec:
                                               items:
                                                 type: "string"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                           required:
                                             - "key"
                                             - "operator"
                                           type: "object"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
@@ -1601,7 +1374,6 @@ spec:
                                     items:
                                       type: "string"
                                     type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                   topologyKey:
                                     description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                     type: "string"
@@ -1609,7 +1381,6 @@ spec:
                                   - "topologyKey"
                                 type: "object"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                       type: "object"
                     annotations:
@@ -1641,8 +1412,7 @@ spec:
                                     description: "The key to select."
                                     type: "string"
                                   name:
-                                    default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the ConfigMap or its key must be defined"
@@ -1691,8 +1461,7 @@ spec:
                                     description: "The key of the secret to select from.  Must be a valid secret key."
                                     type: "string"
                                   name:
-                                    default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                   optional:
                                     description: "Specify whether the Secret or its key must be defined"
@@ -1716,8 +1485,7 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                         properties:
                           name:
-                            default: ""
-                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -1734,8 +1502,7 @@ spec:
                       description: "Secret that contains fields username and password for dashboards to use to login to opensearch, must only be supplied if a custom securityconfig is provided"
                       properties:
                         name:
-                          default: ""
-                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                           type: "string"
                       type: "object"
                       x-kubernetes-map-type: "atomic"
@@ -1746,20 +1513,8 @@ spec:
                     podSecurityContext:
                       description: "Set security context for the dashboards pods"
                       properties:
-                        appArmorProfile:
-                          description: "appArmorProfile is the AppArmor options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
-                          properties:
-                            localhostProfile:
-                              description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
-                              type: "string"
-                            type:
-                              description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
-                              type: "string"
-                          required:
-                            - "type"
-                          type: "object"
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
@@ -1776,9 +1531,6 @@ spec:
                           description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
-                        seLinuxChangePolicy:
-                          description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
-                          type: "string"
                         seLinuxOptions:
                           description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
@@ -1799,24 +1551,20 @@ spec:
                           description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in\naddition to the container's primary GID and fsGroup (if specified).  If\nthe SupplementalGroupsPolicy feature is enabled, the\nsupplementalGroupsPolicy field determines whether these are in addition\nto or instead of any group memberships defined in the container image.\nIf unspecified, no additional groups are added, though group memberships\ndefined in the container image may still be used, depending on the\nsupplementalGroupsPolicy field.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
-                          x-kubernetes-list-type: "atomic"
-                        supplementalGroupsPolicy:
-                          description: "Defines how supplemental groups of the first container processes are calculated.\nValid values are \"Merge\" and \"Strict\". If not specified, \"Merge\" is used.\n(Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled\nand the container runtime must implement support for this feature.\nNote that this field cannot be set when spec.os.name is windows."
-                          type: "string"
                         sysctls:
                           description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
@@ -1833,7 +1581,6 @@ spec:
                               - "value"
                             type: "object"
                           type: "array"
-                          x-kubernetes-list-type: "atomic"
                         windowsOptions:
                           description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
@@ -1844,7 +1591,7 @@ spec:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
                               description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -1858,15 +1605,12 @@ spec:
                       description: "ResourceRequirements describes the compute resource requirements."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                type: "string"
-                              request:
-                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1900,18 +1644,6 @@ spec:
                         allowPrivilegeEscalation:
                           description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                           type: "boolean"
-                        appArmorProfile:
-                          description: "appArmorProfile is the AppArmor options to use by this container. If set, this profile\noverrides the pod's appArmorProfile.\nNote that this field cannot be set when spec.os.name is windows."
-                          properties:
-                            localhostProfile:
-                              description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
-                              type: "string"
-                            type:
-                              description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
-                              type: "string"
-                          required:
-                            - "type"
-                          type: "object"
                         capabilities:
                           description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
@@ -1921,20 +1653,18 @@ spec:
                                 description: "Capability represent POSIX capabilities type"
                                 type: "string"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             drop:
                               description: "Removed capabilities"
                               items:
                                 description: "Capability represent POSIX capabilities type"
                                 type: "string"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         privileged:
                           description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "boolean"
                         procMount:
-                          description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         readOnlyRootFilesystem:
                           description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -1970,10 +1700,10 @@ spec:
                           description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
@@ -1988,7 +1718,7 @@ spec:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
                               description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -1997,10 +1727,6 @@ spec:
                       type: "object"
                     service:
                       properties:
-                        labels:
-                          additionalProperties:
-                            type: "string"
-                          type: "object"
                         loadBalancerSourceRanges:
                           items:
                             type: "string"
@@ -2020,8 +1746,7 @@ spec:
                           description: "Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields"
                           properties:
                             name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -2035,8 +1760,7 @@ spec:
                           description: "Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field"
                           properties:
                             name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -2108,10 +1832,8 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               name:
-                                default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                               optional:
                                 description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -2131,8 +1853,7 @@ spec:
                                 description: "nodePublishSecretRef is a reference to the secret object containing\nsensitive information to pass to the CSI driver to complete the CSI\nNodePublishVolume and NodeUnpublishVolume calls.\nThis field is optional, and  may be empty if no secret is required. If the\nsecret object contains more than one secret, all secret references are passed."
                                 properties:
                                   name:
-                                    default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                    description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -2175,61 +1896,10 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               sources:
-                                description: "sources is the list of volume projections. Each entry in this list\nhandles one source."
+                                description: "sources is the list of volume projections"
                                 items:
-                                  description: "Projection that may be projected along with other supported volume types.\nExactly one of these fields must be set."
+                                  description: "Projection that may be projected along with other supported volume types"
                                   properties:
-                                    clusterTrustBundle:
-                                      description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\n\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\n\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\n\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
-                                      properties:
-                                        labelSelector:
-                                          description: "Select all ClusterTrustBundles that match this label selector.  Only has\neffect if signerName is set.  Mutually-exclusive with name.  If unset,\ninterpreted as \"match nothing\".  If set but empty, interpreted as \"match\neverything\"."
-                                          properties:
-                                            matchExpressions:
-                                              description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
-                                              items:
-                                                description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
-                                                properties:
-                                                  key:
-                                                    description: "key is the label key that the selector applies to."
-                                                    type: "string"
-                                                  operator:
-                                                    description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
-                                                    type: "string"
-                                                  values:
-                                                    description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
-                                                    items:
-                                                      type: "string"
-                                                    type: "array"
-                                                    x-kubernetes-list-type: "atomic"
-                                                required:
-                                                  - "key"
-                                                  - "operator"
-                                                type: "object"
-                                              type: "array"
-                                              x-kubernetes-list-type: "atomic"
-                                            matchLabels:
-                                              additionalProperties:
-                                                type: "string"
-                                              description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
-                                              type: "object"
-                                          type: "object"
-                                          x-kubernetes-map-type: "atomic"
-                                        name:
-                                          description: "Select a single ClusterTrustBundle by object name.  Mutually-exclusive\nwith signerName and labelSelector."
-                                          type: "string"
-                                        optional:
-                                          description: "If true, don't block pod startup if the referenced ClusterTrustBundle(s)\naren't available.  If using name, then the named ClusterTrustBundle is\nallowed not to exist.  If using signerName, then the combination of\nsignerName and labelSelector is allowed to match zero\nClusterTrustBundles."
-                                          type: "boolean"
-                                        path:
-                                          description: "Relative path from the volume root to write the bundle."
-                                          type: "string"
-                                        signerName:
-                                          description: "Select all ClusterTrustBundles that match this signer name.\nMutually-exclusive with name.  The contents of all selected\nClusterTrustBundles will be unified and deduplicated."
-                                          type: "string"
-                                      required:
-                                        - "path"
-                                      type: "object"
                                     configMap:
                                       description: "configMap information about the configMap data to project"
                                       properties:
@@ -2253,10 +1923,8 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                           type: "string"
                                         optional:
                                           description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -2272,7 +1940,7 @@ spec:
                                             description: "DownwardAPIVolumeFile represents information to create the file containing the pod field"
                                             properties:
                                               fieldRef:
-                                                description: "Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported."
+                                                description: "Required: Selects a field of the pod: only annotations, labels, name and namespace are supported."
                                                 properties:
                                                   apiVersion:
                                                     description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
@@ -2315,7 +1983,6 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                     secret:
                                       description: "secret information about the secret data to project"
@@ -2340,10 +2007,8 @@ spec:
                                               - "path"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         name:
-                                          default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                          description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                           type: "string"
                                         optional:
                                           description: "optional field specify whether the Secret or its key must be defined"
@@ -2368,7 +2033,6 @@ spec:
                                       type: "object"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           restartPods:
                             description: "Whether to restart the pods on content change"
@@ -2400,7 +2064,6 @@ spec:
                                     - "path"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               optional:
                                 description: "optional field specify whether the Secret or its keys must be defined"
                                 type: "boolean"
@@ -2442,8 +2105,7 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                         properties:
                           name:
-                            default: ""
-                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -2461,8 +2123,7 @@ spec:
                             description: "Secret containing key value pairs"
                             properties:
                               name:
-                                default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                 type: "string"
                             type: "object"
                             x-kubernetes-map-type: "atomic"
@@ -2497,20 +2158,8 @@ spec:
                     podSecurityContext:
                       description: "Set security context for the cluster pods"
                       properties:
-                        appArmorProfile:
-                          description: "appArmorProfile is the AppArmor options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
-                          properties:
-                            localhostProfile:
-                              description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
-                              type: "string"
-                            type:
-                              description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
-                              type: "string"
-                          required:
-                            - "type"
-                          type: "object"
                         fsGroup:
-                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "A special supplemental group that applies to all containers in a pod.\nSome volume types allow the Kubelet to change the ownership of that volume\nto be owned by the pod:\n\n\n1. The owning GID will be the FSGroup\n2. The setgid bit is set (new files created in the volume will be owned by FSGroup)\n3. The permission bits are OR'd with rw-rw----\n\n\nIf unset, the Kubelet will not modify the ownership and permissions of any volume.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
                         fsGroupChangePolicy:
@@ -2527,9 +2176,6 @@ spec:
                           description: "The UID to run the entrypoint of the container process.\nDefaults to user specified in image metadata if unspecified.\nMay also be set in SecurityContext.  If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence\nfor that container.\nNote that this field cannot be set when spec.os.name is windows."
                           format: "int64"
                           type: "integer"
-                        seLinuxChangePolicy:
-                          description: "seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.\nIt has no effect on nodes that do not support SELinux or to volumes does not support SELinux.\nValid values are \"MountOption\" and \"Recursive\".\n\n\"Recursive\" means relabeling of all files on all Pod volumes by the container runtime.\nThis may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.\n\n\"MountOption\" mounts all eligible Pod volumes with `-o context` mount option.\nThis requires all Pods that share the same volume to use the same SELinux label.\nIt is not possible to share the same volume among privileged and unprivileged Pods.\nEligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes\nwhose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their\nCSIDriver instance. Other volumes are always re-labelled recursively.\n\"MountOption\" value is allowed only when SELinuxMount feature gate is enabled.\n\nIf not specified and SELinuxMount feature gate is enabled, \"MountOption\" is used.\nIf not specified and SELinuxMount feature gate is disabled, \"MountOption\" is used for ReadWriteOncePod volumes\nand \"Recursive\" for all other volumes.\n\nThis field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.\n\nAll Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.\nNote that this field cannot be set when spec.os.name is windows."
-                          type: "string"
                         seLinuxOptions:
                           description: "The SELinux context to be applied to all containers.\nIf unspecified, the container runtime will allocate a random SELinux context for each\ncontainer.  May also be set in SecurityContext.  If set in\nboth SecurityContext and PodSecurityContext, the value specified in SecurityContext\ntakes precedence for that container.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
@@ -2550,24 +2196,20 @@ spec:
                           description: "The seccomp options to use by the containers in this pod.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
                           type: "object"
                         supplementalGroups:
-                          description: "A list of groups applied to the first process run in each container, in\naddition to the container's primary GID and fsGroup (if specified).  If\nthe SupplementalGroupsPolicy feature is enabled, the\nsupplementalGroupsPolicy field determines whether these are in addition\nto or instead of any group memberships defined in the container image.\nIf unspecified, no additional groups are added, though group memberships\ndefined in the container image may still be used, depending on the\nsupplementalGroupsPolicy field.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "A list of groups applied to the first process run in each container, in addition\nto the container's primary GID, the fsGroup (if specified), and group memberships\ndefined in the container image for the uid of the container process. If unspecified,\nno additional groups are added to any container. Note that group memberships\ndefined in the container image for the uid of the container process are still effective,\neven if they are not included in this list.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
                             format: "int64"
                             type: "integer"
                           type: "array"
-                          x-kubernetes-list-type: "atomic"
-                        supplementalGroupsPolicy:
-                          description: "Defines how supplemental groups of the first container processes are calculated.\nValid values are \"Merge\" and \"Strict\". If not specified, \"Merge\" is used.\n(Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled\nand the container runtime must implement support for this feature.\nNote that this field cannot be set when spec.os.name is windows."
-                          type: "string"
                         sysctls:
                           description: "Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported\nsysctls (by the container runtime) might fail to launch.\nNote that this field cannot be set when spec.os.name is windows."
                           items:
@@ -2584,7 +2226,6 @@ spec:
                               - "value"
                             type: "object"
                           type: "array"
-                          x-kubernetes-list-type: "atomic"
                         windowsOptions:
                           description: "The Windows specific settings applied to all containers.\nIf unspecified, the options within a container's SecurityContext will be used.\nIf set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.\nNote that this field cannot be set when spec.os.name is linux."
                           properties:
@@ -2595,7 +2236,7 @@ spec:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
                               description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -2608,18 +2249,6 @@ spec:
                         allowPrivilegeEscalation:
                           description: "AllowPrivilegeEscalation controls whether a process can gain more\nprivileges than its parent process. This bool directly controls if\nthe no_new_privs flag will be set on the container process.\nAllowPrivilegeEscalation is true always when the container is:\n1) run as Privileged\n2) has CAP_SYS_ADMIN\nNote that this field cannot be set when spec.os.name is windows."
                           type: "boolean"
-                        appArmorProfile:
-                          description: "appArmorProfile is the AppArmor options to use by this container. If set, this profile\noverrides the pod's appArmorProfile.\nNote that this field cannot be set when spec.os.name is windows."
-                          properties:
-                            localhostProfile:
-                              description: "localhostProfile indicates a profile loaded on the node that should be used.\nThe profile must be preconfigured on the node to work.\nMust match the loaded name of the profile.\nMust be set if and only if type is \"Localhost\"."
-                              type: "string"
-                            type:
-                              description: "type indicates which kind of AppArmor profile will be applied.\nValid options are:\n  Localhost - a profile pre-loaded on the node.\n  RuntimeDefault - the container runtime's default profile.\n  Unconfined - no AppArmor enforcement."
-                              type: "string"
-                          required:
-                            - "type"
-                          type: "object"
                         capabilities:
                           description: "The capabilities to add/drop when running containers.\nDefaults to the default set of capabilities granted by the container runtime.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
@@ -2629,20 +2258,18 @@ spec:
                                 description: "Capability represent POSIX capabilities type"
                                 type: "string"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                             drop:
                               description: "Removed capabilities"
                               items:
                                 description: "Capability represent POSIX capabilities type"
                                 type: "string"
                               type: "array"
-                              x-kubernetes-list-type: "atomic"
                           type: "object"
                         privileged:
                           description: "Run container in privileged mode.\nProcesses in privileged containers are essentially equivalent to root on the host.\nDefaults to false.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "boolean"
                         procMount:
-                          description: "procMount denotes the type of proc mount to use for the containers.\nThe default value is Default which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
+                          description: "procMount denotes the type of proc mount to use for the containers.\nThe default is DefaultProcMount which uses the container runtime defaults for\nreadonly paths and masked paths.\nThis requires the ProcMountType feature flag to be enabled.\nNote that this field cannot be set when spec.os.name is windows."
                           type: "string"
                         readOnlyRootFilesystem:
                           description: "Whether this container has a read-only root filesystem.\nDefault is false.\nNote that this field cannot be set when spec.os.name is windows."
@@ -2678,10 +2305,10 @@ spec:
                           description: "The seccomp options to use by this container. If seccomp options are\nprovided at both the pod & container level, the container options\noverride the pod options.\nNote that this field cannot be set when spec.os.name is windows."
                           properties:
                             localhostProfile:
-                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust be set if type is \"Localhost\". Must NOT be set for any other type."
+                              description: "localhostProfile indicates a profile defined in a file on the node should be used.\nThe profile must be preconfigured on the node to work.\nMust be a descending path, relative to the kubelet's configured seccomp profile location.\nMust only be set if type is \"Localhost\"."
                               type: "string"
                             type:
-                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
+                              description: "type indicates which kind of seccomp profile will be applied.\nValid options are:\n\n\nLocalhost - a profile defined in a file on the node should be used.\nRuntimeDefault - the container runtime default profile should be used.\nUnconfined - no profile should be applied."
                               type: "string"
                           required:
                             - "type"
@@ -2696,7 +2323,7 @@ spec:
                               description: "GMSACredentialSpecName is the name of the GMSA credential spec to use."
                               type: "string"
                             hostProcess:
-                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nAll of a Pod's containers must have the same effective HostProcess value\n(it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).\nIn addition, if HostProcess is true then HostNetwork must also be set to true."
+                              description: "HostProcess determines if a container should be run as a 'Host Process' container.\nThis field is alpha-level and will only be honored by components that enable the\nWindowsHostProcessContainers feature flag. Setting this field without the feature\nflag will result in errors when validating the Pod. All of a Pod's containers must\nhave the same effective HostProcess value (it is not allowed to have a mix of HostProcess\ncontainers and non-HostProcess containers).  In addition, if HostProcess is true\nthen HostNetwork must also be set to true."
                               type: "boolean"
                             runAsUserName:
                               description: "The UserName in Windows to run the entrypoint of the container process.\nDefaults to the user specified in image metadata if unspecified.\nMay also be set in PodSecurityContext. If set in both SecurityContext and\nPodSecurityContext, the value specified in SecurityContext takes precedence."
@@ -2750,8 +2377,7 @@ spec:
                         description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
                         properties:
                           name:
-                            default: ""
-                            description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                             type: "string"
                         type: "object"
                         x-kubernetes-map-type: "atomic"
@@ -2760,15 +2386,12 @@ spec:
                       description: "ResourceRequirements describes the compute resource requirements."
                       properties:
                         claims:
-                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                          description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                           items:
                             description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                type: "string"
-                              request:
-                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -2836,13 +2459,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchFields:
                                           description: "A list of node selector requirements by node's fields."
                                           items:
@@ -2859,13 +2480,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     weight:
@@ -2877,7 +2496,6 @@ spec:
                                     - "weight"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               requiredDuringSchedulingIgnoredDuringExecution:
                                 description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to an update), the system\nmay or may not try to eventually evict the pod from its node."
                                 properties:
@@ -2902,13 +2520,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchFields:
                                           description: "A list of node selector requirements by node's fields."
                                           items:
@@ -2925,17 +2541,14 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
                                     type: "array"
-                                    x-kubernetes-list-type: "atomic"
                                 required:
                                   - "nodeSelectorTerms"
                                 type: "object"
@@ -2953,7 +2566,7 @@ spec:
                                       description: "Required. A pod affinity term, associated with the corresponding weight."
                                       properties:
                                         labelSelector:
-                                          description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                          description: "A label query over a set of resources, in this case pods."
                                           properties:
                                             matchExpressions:
                                               description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -2971,13 +2584,11 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
-                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -2985,18 +2596,6 @@ spec:
                                               type: "object"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
-                                        matchLabelKeys:
-                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                          items:
-                                            type: "string"
-                                          type: "array"
-                                          x-kubernetes-list-type: "atomic"
-                                        mismatchLabelKeys:
-                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                          items:
-                                            type: "string"
-                                          type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         namespaceSelector:
                                           description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                           properties:
@@ -3016,13 +2615,11 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
-                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -3035,7 +2632,6 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                           type: "string"
@@ -3051,14 +2647,13 @@ spec:
                                     - "weight"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               requiredDuringSchedulingIgnoredDuringExecution:
                                 description: "If the affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                                 items:
                                   description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                   properties:
                                     labelSelector:
-                                      description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                      description: "A label query over a set of resources, in this case pods."
                                       properties:
                                         matchExpressions:
                                           description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -3076,13 +2671,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3090,18 +2683,6 @@ spec:
                                           type: "object"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
-                                    matchLabelKeys:
-                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                    mismatchLabelKeys:
-                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
                                     namespaceSelector:
                                       description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                       properties:
@@ -3121,13 +2702,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3140,7 +2719,6 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
-                                      x-kubernetes-list-type: "atomic"
                                     topologyKey:
                                       description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                       type: "string"
@@ -3148,7 +2726,6 @@ spec:
                                     - "topologyKey"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                             type: "object"
                           podAntiAffinity:
                             description: "Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s))."
@@ -3162,7 +2739,7 @@ spec:
                                       description: "Required. A pod affinity term, associated with the corresponding weight."
                                       properties:
                                         labelSelector:
-                                          description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                          description: "A label query over a set of resources, in this case pods."
                                           properties:
                                             matchExpressions:
                                               description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -3180,13 +2757,11 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
-                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -3194,18 +2769,6 @@ spec:
                                               type: "object"
                                           type: "object"
                                           x-kubernetes-map-type: "atomic"
-                                        matchLabelKeys:
-                                          description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                          items:
-                                            type: "string"
-                                          type: "array"
-                                          x-kubernetes-list-type: "atomic"
-                                        mismatchLabelKeys:
-                                          description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                          items:
-                                            type: "string"
-                                          type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         namespaceSelector:
                                           description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                           properties:
@@ -3225,13 +2788,11 @@ spec:
                                                     items:
                                                       type: "string"
                                                     type: "array"
-                                                    x-kubernetes-list-type: "atomic"
                                                 required:
                                                   - "key"
                                                   - "operator"
                                                 type: "object"
                                               type: "array"
-                                              x-kubernetes-list-type: "atomic"
                                             matchLabels:
                                               additionalProperties:
                                                 type: "string"
@@ -3244,7 +2805,6 @@ spec:
                                           items:
                                             type: "string"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         topologyKey:
                                           description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                           type: "string"
@@ -3260,14 +2820,13 @@ spec:
                                     - "weight"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                               requiredDuringSchedulingIgnoredDuringExecution:
                                 description: "If the anti-affinity requirements specified by this field are not met at\nscheduling time, the pod will not be scheduled onto the node.\nIf the anti-affinity requirements specified by this field cease to be met\nat some point during pod execution (e.g. due to a pod label update), the\nsystem may or may not try to eventually evict the pod from its node.\nWhen there are multiple elements, the lists of nodes corresponding to each\npodAffinityTerm are intersected, i.e. all terms must be satisfied."
                                 items:
                                   description: "Defines a set of pods (namely those matching the labelSelector\nrelative to the given namespace(s)) that this pod should be\nco-located (affinity) or not co-located (anti-affinity) with,\nwhere co-located is defined as running on a node whose value of\nthe label with key <topologyKey> matches that of any node on which\na pod of the set of pods is running"
                                   properties:
                                     labelSelector:
-                                      description: "A label query over a set of resources, in this case pods.\nIf it's null, this PodAffinityTerm matches with no Pods."
+                                      description: "A label query over a set of resources, in this case pods."
                                       properties:
                                         matchExpressions:
                                           description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -3285,13 +2844,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3299,18 +2856,6 @@ spec:
                                           type: "object"
                                       type: "object"
                                       x-kubernetes-map-type: "atomic"
-                                    matchLabelKeys:
-                                      description: "MatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both matchLabelKeys and labelSelector.\nAlso, matchLabelKeys cannot be set when labelSelector isn't set."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
-                                    mismatchLabelKeys:
-                                      description: "MismatchLabelKeys is a set of pod label keys to select which pods will\nbe taken into consideration. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are merged with `labelSelector` as `key notin (value)`\nto select the group of existing pods which pods will be taken into consideration\nfor the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming\npod labels will be ignored. The default value is empty.\nThe same key is forbidden to exist in both mismatchLabelKeys and labelSelector.\nAlso, mismatchLabelKeys cannot be set when labelSelector isn't set."
-                                      items:
-                                        type: "string"
-                                      type: "array"
-                                      x-kubernetes-list-type: "atomic"
                                     namespaceSelector:
                                       description: "A label query over the set of namespaces that the term applies to.\nThe term is applied to the union of the namespaces selected by this field\nand the ones listed in the namespaces field.\nnull selector and null or empty namespaces list means \"this pod's namespace\".\nAn empty selector ({}) matches all namespaces."
                                       properties:
@@ -3330,13 +2875,11 @@ spec:
                                                 items:
                                                   type: "string"
                                                 type: "array"
-                                                x-kubernetes-list-type: "atomic"
                                             required:
                                               - "key"
                                               - "operator"
                                             type: "object"
                                           type: "array"
-                                          x-kubernetes-list-type: "atomic"
                                         matchLabels:
                                           additionalProperties:
                                             type: "string"
@@ -3349,7 +2892,6 @@ spec:
                                       items:
                                         type: "string"
                                       type: "array"
-                                      x-kubernetes-list-type: "atomic"
                                     topologyKey:
                                       description: "This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching\nthe labelSelector in the specified namespaces, where co-located is defined as running on a node\nwhose value of the label with key topologyKey matches that of any node on which any of the\nselected pods is running.\nEmpty topologyKey is not allowed."
                                       type: "string"
@@ -3357,7 +2899,6 @@ spec:
                                     - "topologyKey"
                                   type: "object"
                                 type: "array"
-                                x-kubernetes-list-type: "atomic"
                             type: "object"
                         type: "object"
                       annotations:
@@ -3388,8 +2929,7 @@ spec:
                                       description: "The key to select."
                                       type: "string"
                                     name:
-                                      default: ""
-                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the ConfigMap or its key must be defined"
@@ -3438,8 +2978,7 @@ spec:
                                       description: "The key of the secret to select from.  Must be a valid secret key."
                                       type: "string"
                                     name:
-                                      default: ""
-                                      description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                      description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                       type: "string"
                                     optional:
                                       description: "Specify whether the Secret or its key must be defined"
@@ -3580,15 +3119,12 @@ spec:
                         description: "ResourceRequirements describes the compute resource requirements."
                         properties:
                           claims:
-                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                            description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                             items:
                               description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                               properties:
                                 name:
                                   description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                  type: "string"
-                                request:
-                                  description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                   type: "string"
                               required:
                                 - "name"
@@ -3665,13 +3201,11 @@ spec:
                                         items:
                                           type: "string"
                                         type: "array"
-                                        x-kubernetes-list-type: "atomic"
                                     required:
                                       - "key"
                                       - "operator"
                                     type: "object"
                                   type: "array"
-                                  x-kubernetes-list-type: "atomic"
                                 matchLabels:
                                   additionalProperties:
                                     type: "string"
@@ -3680,7 +3214,7 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             matchLabelKeys:
-                              description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
+                              description: "MatchLabelKeys is a set of pod label keys to select the pods over which\nspreading will be calculated. The keys are used to lookup values from the\nincoming pod labels, those key-value labels are ANDed with labelSelector\nto select the group of existing pods over which spreading will be calculated\nfor the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.\nMatchLabelKeys cannot be set when LabelSelector isn't set.\nKeys that don't exist in the incoming pod labels will\nbe ignored. A null or empty list means only match against labelSelector.\n\n\nThis is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default)."
                               items:
                                 type: "string"
                               type: "array"
@@ -3690,14 +3224,14 @@ spec:
                               format: "int32"
                               type: "integer"
                             minDomains:
-                              description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew."
+                              description: "MinDomains indicates a minimum number of eligible domains.\nWhen the number of eligible domains with matching topology keys is less than minDomains,\nPod Topology Spread treats \"global minimum\" as 0, and then the calculation of Skew is performed.\nAnd when the number of eligible domains with matching topology keys equals or greater than minDomains,\nthis value has no effect on scheduling.\nAs a result, when the number of eligible domains is less than minDomains,\nscheduler won't schedule more than maxSkew Pods to those domains.\nIf value is nil, the constraint behaves as if MinDomains is equal to 1.\nValid values are integers greater than 0.\nWhen value is not nil, WhenUnsatisfiable must be DoNotSchedule.\n\n\nFor example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same\nlabelSelector spread as 2/2/2:\n| zone1 | zone2 | zone3 |\n|  P P  |  P P  |  P P  |\nThe number of domains is less than 5(MinDomains), so \"global minimum\" is treated as 0.\nIn this situation, new pod with the same labelSelector cannot be scheduled,\nbecause computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,\nit will violate MaxSkew.\n\n\nThis is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default)."
                               format: "int32"
                               type: "integer"
                             nodeAffinityPolicy:
-                              description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\nIf this value is nil, the behavior is equivalent to the Honor policy."
+                              description: "NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector\nwhen calculating pod topology spread skew. Options are:\n- Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.\n- Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.\n\n\nIf this value is nil, the behavior is equivalent to the Honor policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                               type: "string"
                             nodeTaintsPolicy:
-                              description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\nIf this value is nil, the behavior is equivalent to the Ignore policy."
+                              description: "NodeTaintsPolicy indicates how we will treat node taints when calculating\npod topology spread skew. Options are:\n- Honor: nodes without taints, along with tainted nodes for which the incoming pod\nhas a toleration, are included.\n- Ignore: node taints are ignored. All nodes are included.\n\n\nIf this value is nil, the behavior is equivalent to the Ignore policy.\nThis is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag."
                               type: "string"
                             topologyKey:
                               description: "TopologyKey is the key of node labels. Nodes that have a label with this key\nand identical values are considered to be in the same topology.\nWe consider each <key, value> as a \"bucket\", and try to put balanced number\nof pods into each bucket.\nWe define a domain as a particular instance of a topology.\nAlso, we define an eligible domain as a domain whose nodes meet the requirements of\nnodeAffinityPolicy and nodeTaintsPolicy.\ne.g. If TopologyKey is \"kubernetes.io/hostname\", each Node is a domain of that topology.\nAnd, if TopologyKey is \"topology.kubernetes.io/zone\", each zone is a domain of that topology.\nIt's a required field."
@@ -3726,8 +3260,7 @@ spec:
                           description: "Secret that contains fields username and password to be used by the operator to access the opensearch cluster for node draining. Must be set if custom securityconfig is provided."
                           properties:
                             name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -3735,8 +3268,7 @@ spec:
                           description: "TLS Secret that contains a client certificate (tls.key, tls.crt, ca.crt) with admin rights in the opensearch cluster. Must be set if transport certificates are provided by user and not generated"
                           properties:
                             name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -3744,8 +3276,7 @@ spec:
                           description: "Secret that contains the differnt yml files of the opensearch-security config (config.yml, internal_users.yml, ...)"
                           properties:
                             name:
-                              default: ""
-                              description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
@@ -3756,15 +3287,12 @@ spec:
                               description: "ResourceRequirements describes the compute resource requirements."
                               properties:
                                 claims:
-                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\nThis field is immutable. It can only be set for containers."
+                                  description: "Claims lists the names of resources, defined in spec.resourceClaims,\nthat are used by this container.\n\n\nThis is an alpha field and requires enabling the\nDynamicResourceAllocation feature gate.\n\n\nThis field is immutable. It can only be set for containers."
                                   items:
                                     description: "ResourceClaim references one entry in PodSpec.ResourceClaims."
                                     properties:
                                       name:
                                         description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
-                                        type: "string"
-                                      request:
-                                        description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                         type: "string"
                                     required:
                                       - "name"
@@ -3803,8 +3331,7 @@ spec:
                               description: "Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields"
                               properties:
                                 name:
-                                  default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
@@ -3815,8 +3342,7 @@ spec:
                               description: "Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field"
                               properties:
                                 name:
-                                  default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
@@ -3832,8 +3358,7 @@ spec:
                               description: "Optional, secret that contains the ca certificate as ca.crt. If this and generate=true is set the existing CA cert from that secret is used to generate the node certs. In this case must contain ca.crt and ca.key fields"
                               properties:
                                 name:
-                                  default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                               type: "object"
                               x-kubernetes-map-type: "atomic"
@@ -3852,8 +3377,7 @@ spec:
                               description: "Optional, name of a TLS secret that contains ca.crt, tls.key and tls.crt data. If ca.crt is in a different secret provide it via the caSecret field"
                               properties:
                                 name:
-                                  default: ""
-                                  description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
+                                  description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
                                   type: "string"
                               type: "object"
                               x-kubernetes-map-type: "atomic"

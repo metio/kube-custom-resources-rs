@@ -647,6 +647,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumClusterwideNetworkPolicyEgressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumClusterwideNetworkPolicyEgressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -2134,6 +2135,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumClusterwideNetworkPolicyIngressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumClusterwideNetworkPolicyIngressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -3508,6 +3510,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumClusterwideNetworkPolicysEgressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumClusterwideNetworkPolicysEgressToPortsRulesKafka>>,
     /// Key-value pair rules.
@@ -4995,6 +4998,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<Vec<CiliumClusterwideNetworkPolicysIngressToPortsRulesHttp>>,
     /// Kafka-specific rules.
+    /// Deprecated: This beta feature is deprecated and will be removed in a future release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<Vec<CiliumClusterwideNetworkPolicysIngressToPortsRulesKafka>>,
     /// Key-value pair rules.

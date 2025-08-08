@@ -24,8 +24,8 @@ pub struct PerconaServerMongoDBBackupSpec {
     pub compression_level: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
-    pub starting_deadline_seconds: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "psmdbCluster")]
+    pub psmdb_cluster: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -38,10 +38,6 @@ pub enum PerconaServerMongoDBBackupType {
     Logical,
     #[serde(rename = "physical")]
     Physical,
-    #[serde(rename = "incremental")]
-    Incremental,
-    #[serde(rename = "incremental-base")]
-    IncrementalBase,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -56,12 +52,8 @@ pub struct PerconaServerMongoDBBackupStatus {
     pub error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filesystem: Option<PerconaServerMongoDBBackupStatusFilesystem>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub gcs: Option<PerconaServerMongoDBBackupStatusGcs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastWriteAt")]
-    pub last_write_at: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]
@@ -74,8 +66,6 @@ pub struct PerconaServerMongoDBBackupStatus {
     pub replset_names: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaServerMongoDBBackupStatusS3>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub size: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -104,29 +94,6 @@ pub struct PerconaServerMongoDBBackupStatusFilesystem {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMongoDBBackupStatusGcs {
-    pub bucket: String,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chunkSize")]
-    pub chunk_size: Option<i64>,
-    #[serde(rename = "credentialsSecret")]
-    pub credentials_secret: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub prefix: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub retryer: Option<PerconaServerMongoDBBackupStatusGcsRetryer>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PerconaServerMongoDBBackupStatusGcsRetryer {
-    #[serde(rename = "backoffInitial")]
-    pub backoff_initial: i64,
-    #[serde(rename = "backoffMax")]
-    pub backoff_max: i64,
-    #[serde(rename = "backoffMultiplier")]
-    pub backoff_multiplier: f64,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDBBackupStatusS3 {
     pub bucket: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
@@ -140,7 +107,7 @@ pub struct PerconaServerMongoDBBackupStatusS3 {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUploadParts")]
-    pub max_upload_parts: Option<i32>,
+    pub max_upload_parts: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

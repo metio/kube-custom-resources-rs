@@ -3478,7 +3478,7 @@ spec:
                   description: "Specification for service rigger"
                   properties:
                     databaseServicePortPolicy:
-                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. Note - Regardless whether this flag is set or not, if an REDB/REAADB configured with databaseServicePort that would be the port exposed by the Service. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
+                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
                       enum:
                         - "DatabasePortForward"
                         - "RedisDefaultPort"
@@ -6755,9 +6755,6 @@ spec:
                               description: "The tag of the container image to be deployed."
                               type: "string"
                           type: "object"
-                        proxySecretName:
-                          description: "if needed, add proxy details in secret. the name of the proxy secret in the secret, can send the following keys: proxy-url, proxy-username, proxy-password (the url includes the proxy port)."
-                          type: "string"
                         resources:
                           description: "Compute resource requirements for Call Home Client pod"
                           properties:

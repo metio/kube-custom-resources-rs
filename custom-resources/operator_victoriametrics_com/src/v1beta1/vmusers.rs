@@ -34,7 +34,7 @@ pub struct VMUserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details.
+    /// See [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
     /// DumpRequestOnErrors instructs vmauth to return detailed request params to the client
@@ -56,12 +56,12 @@ pub struct VMUserSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
     /// IPFilters defines per target src ip filters
-    /// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)
+    /// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip_filters: Option<VMUserIpFilters>,
     /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
     /// Supported policies: least_loaded, first_available.
-    /// See [here](https://docs.victoriametrics.com/victoriametrics/vmauth#load-balancing) for more details (default "least_loaded")
+    /// See [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserLoadBalancingPolicy>,
     /// MaxConcurrentRequests defines max concurrent requests per user
@@ -107,7 +107,7 @@ pub struct VMUserSpec {
 }
 
 /// IPFilters defines per target src ip filters
-/// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)
+/// supported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserIpFilters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -156,7 +156,7 @@ pub struct VMUserTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discover_backend_ips: Option<bool>,
     /// DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.
-    /// See [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details.
+    /// See [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub drop_src_path_prefix_parts: Option<i64>,
     /// RequestHeaders represent additional http headers, that vmauth uses
@@ -170,7 +170,7 @@ pub struct VMUserTargetRefs {
     pub hosts: Option<Vec<String>>,
     /// LoadBalancingPolicy defines load balancing policy to use for backend urls.
     /// Supported policies: least_loaded, first_available.
-    /// See [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default "least_loaded")
+    /// See [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default "least_loaded")
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub load_balancing_policy: Option<VMUserTargetRefsLoadBalancingPolicy>,
     /// Paths - matched path to route.
@@ -195,7 +195,7 @@ pub struct VMUserTargetRefs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub src_query_args: Option<Vec<String>>,
     /// Static - user defined url for traffic forward,
-    /// for instance http://vmsingle:8428
+    /// for instance http://vmsingle:8429
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "static")]
     pub r#static: Option<VMUserTargetRefsStatic>,
     /// TargetRefBasicAuth allow an target endpoint to authenticate over basic authentication
@@ -257,7 +257,7 @@ pub enum VMUserTargetRefsLoadBalancingPolicy {
 }
 
 /// Static - user defined url for traffic forward,
-/// for instance http://vmsingle:8428
+/// for instance http://vmsingle:8429
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMUserTargetRefsStatic {
     /// URL http url for given staticRef.

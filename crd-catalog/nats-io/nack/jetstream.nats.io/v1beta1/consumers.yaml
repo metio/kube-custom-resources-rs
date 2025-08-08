@@ -15,11 +15,11 @@ spec:
           jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
           name: "State"
           type: "string"
-        - description: "The name of the JetStream Stream."
+        - description: "The name of the Jetstream Stream."
           jsonPath: ".spec.streamName"
           name: "Stream"
           type: "string"
-        - description: "The name of the JetStream Consumer."
+        - description: "The name of the Jetstream Consumer."
           jsonPath: ".spec.durableName"
           name: "Consumer"
           type: "string"
@@ -91,7 +91,7 @@ spec:
                   description: "Time format must be RFC3339."
                   type: "string"
                 rateLimitBps:
-                  description: "Rate at which messages will be delivered to clients, expressed in bit per second."
+                  description: "rate at which messages will be delivered to clients, expressed in bit per second."
                   type: "integer"
                 replayPolicy:
                   default: "instant"

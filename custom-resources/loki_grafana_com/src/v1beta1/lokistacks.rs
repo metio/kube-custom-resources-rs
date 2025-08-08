@@ -108,7 +108,7 @@ pub struct LokiStackLimitsGlobalQueries {
     /// that can be fetched by a single query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
-    /// MaxEntriesLimitPerQuery defines the maximum number of log entries
+    /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,
@@ -168,7 +168,7 @@ pub struct LokiStackLimitsTenantsQueries {
     /// that can be fetched by a single query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksPerQuery")]
     pub max_chunks_per_query: Option<i32>,
-    /// MaxEntriesLimitPerQuery defines the maximum number of log entries
+    /// MaxEntriesLimitsPerQuery defines the maximum number of log entries
     /// that will be returned for a query.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEntriesLimitPerQuery")]
     pub max_entries_limit_per_query: Option<i32>,

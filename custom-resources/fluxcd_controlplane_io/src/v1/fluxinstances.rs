@@ -81,6 +81,11 @@ pub struct FluxInstanceCluster {
     /// This feature is only available in Flux v2.6.0 and later.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectLevelWorkloadIdentity")]
     pub object_level_workload_identity: Option<bool>,
+    /// Size defines the vertical scaling profile of the Flux controllers.
+    /// The size is used to determine the concurrency and CPU/Memory limits for the Flux controllers.
+    /// Accepted values are: 'small', 'medium' and 'large'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub size: Option<FluxInstanceClusterSize>,
     /// TenantDefaultServiceAccount is the name of the service account
     /// to use as default when the multitenant lockdown is enabled.
     /// Defaults to the 'default' service account from the tenant namespace.
@@ -90,6 +95,17 @@ pub struct FluxInstanceCluster {
     /// Defaults to 'kubernetes'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<FluxInstanceClusterType>,
+}
+
+/// Cluster holds the specification of the Kubernetes cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FluxInstanceClusterSize {
+    #[serde(rename = "small")]
+    Small,
+    #[serde(rename = "medium")]
+    Medium,
+    #[serde(rename = "large")]
+    Large,
 }
 
 /// Cluster holds the specification of the Kubernetes cluster.

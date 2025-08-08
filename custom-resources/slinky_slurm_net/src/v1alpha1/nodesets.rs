@@ -21,16 +21,18 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct NodeSetSpec {
-    /// clusterName is the name of the Slurm cluster to which this NodeSet
-    /// belongs to. This will be matched with the name in Cluster CRD.
-    #[serde(rename = "clusterName")]
-    pub cluster_name: String,
+    /// controllerRef is a reference to the Controller CR to which this has membership.
+    #[serde(rename = "controllerRef")]
+    pub controller_ref: NodeSetControllerRef,
     /// minReadySeconds is the minimum number of seconds for which a newly
     /// created NodeSet Pod should be ready without any of its container crashing,
     /// for it to be considered available.
     /// Defaults to 0 (pod will be considered available as soon as it is ready).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Partition defines the Slurm partition configuration for this NodeSet.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub partition: Option<NodeSetPartition>,
     /// PersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
     /// created from the NodeSet VolumeClaimTemplates. This requires the
     /// NodeSetAutoDeletePVC feature gate to be enabled, which is alpha.
@@ -48,25 +50,11 @@ pub struct NodeSetSpec {
     /// NodeSetSpec version. The default value is 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i32>,
-    /// selector is a label query over pods that should match the replica count.
-    /// It must match the pod template's labels.
-    /// If empty, defaulted to labels on Pod Template.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
-    pub selector: NodeSetSelector,
-    /// serviceName is the name of the service that governs this NodeSet.
-    /// This service must exist before the NodeSet, and is responsible for the
-    /// network identity of the NodeSet. Pods get DNS/hostnames that follow the
-    /// pattern: pod-specific-string.serviceName.default.svc.cluster.local
-    /// where "pod-specific-string" is managed by the NodeSet controller.
-    #[serde(rename = "serviceName")]
-    pub service_name: String,
-    /// template is the object that describes the pod that will be created.
-    /// The NodeSet will create exactly one copy of this pod on every node
-    /// that matches the template's node selector (or on every node if no node
-    /// selector is specified).
-    /// The only allowed template.spec.restartPolicy value is "Always".
+    /// Template is the object that describes the pod that will be created if
+    /// insufficient replicas are detected.
     /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
-    pub template: NodeSetTemplate,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<NodeSetTemplate>,
     /// updateStrategy indicates the NodeSetUpdateStrategy that will be
     /// employed to update Pods in the NodeSet when a revision is made to
     /// Template.
@@ -80,6 +68,30 @@ pub struct NodeSetSpec {
     /// any volumes in the template, with the same name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
     pub volume_claim_templates: Option<serde_json::Value>,
+}
+
+/// controllerRef is a reference to the Controller CR to which this has membership.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeSetControllerRef {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Namespace of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Partition defines the Slurm partition configuration for this NodeSet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeSetPartition {
+    /// Config is added to the NodeSet's partition line.
+    /// Ref: https://slurm.schedmd.com/slurmd.html#OPT_conf-%3Cnode-parameters%3E
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub config: Option<String>,
+    /// Enabled will create a partition for this NodeSet.
+    pub enabled: bool,
 }
 
 /// PersistentVolumeClaimRetentionPolicy describes the policy used for PVCs
@@ -102,145 +114,21 @@ pub struct NodeSetPersistentVolumeClaimRetentionPolicy {
     pub when_scaled: Option<String>,
 }
 
-/// selector is a label query over pods that should match the replica count.
-/// It must match the pod template's labels.
-/// If empty, defaulted to labels on Pod Template.
-/// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
-/// template is the object that describes the pod that will be created.
-/// The NodeSet will create exactly one copy of this pod on every node
-/// that matches the template's node selector (or on every node if no node
-/// selector is specified).
-/// The only allowed template.spec.restartPolicy value is "Always".
+/// Template is the object that describes the pod that will be created if
+/// insufficient replicas are detected.
 /// More info: https://kubernetes.io/docs/concepts/workloads/controllers/replicationcontroller#pod-template
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSetTemplate {
-    /// Standard object's metadata.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<NodeSetTemplateMetadata>,
-    /// Specification of the desired behavior of the pod.
-    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<NodeSetTemplateSpec>,
-}
-
-/// Standard object's metadata.
-/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateMetadata {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub finalizers: Option<Vec<String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub labels: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// Specification of the desired behavior of the pod.
-/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpec {
-    /// Optional duration in seconds the pod may be active on the node relative to
-    /// StartTime before the system will actively try to mark it failed and kill associated containers.
-    /// Value must be a positive integer.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
-    pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity: Option<NodeSetTemplateSpecAffinity>,
-    /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
-    pub automount_service_account_token: Option<bool>,
-    /// List of containers belonging to the pod.
-    /// Containers cannot currently be added or removed.
-    /// There must be at least one container in a Pod.
-    /// Cannot be updated.
-    pub containers: Vec<NodeSetTemplateSpecContainers>,
-    /// Specifies the DNS parameters of a pod.
-    /// Parameters specified here will be merged to the generated DNS
-    /// configuration based on DNSPolicy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
-    pub dns_config: Option<NodeSetTemplateSpecDnsConfig>,
-    /// Set DNS policy for the pod.
-    /// Defaults to "ClusterFirst".
-    /// Valid values are 'ClusterFirstWithHostNet', 'ClusterFirst', 'Default' or 'None'.
-    /// DNS parameters given in DNSConfig will be merged with the policy selected with DNSPolicy.
-    /// To have DNS options set along with hostNetwork, you have to specify DNS policy
-    /// explicitly to 'ClusterFirstWithHostNet'.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
-    pub dns_policy: Option<String>,
-    /// EnableServiceLinks indicates whether information about services should be injected into pod's
-    /// environment variables, matching the syntax of Docker links.
-    /// Optional: Defaults to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
-    pub enable_service_links: Option<bool>,
-    /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing
-    /// pod to perform user-initiated actions such as debugging. This list cannot be specified when
-    /// creating a pod, and it cannot be modified by updating the pod spec. In order to add an
-    /// ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
-    pub ephemeral_containers: Option<Vec<NodeSetTemplateSpecEphemeralContainers>>,
-    /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
-    /// file if specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
-    pub host_aliases: Option<Vec<NodeSetTemplateSpecHostAliases>>,
-    /// Use the host's ipc namespace.
-    /// Optional: Default to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
-    pub host_ipc: Option<bool>,
-    /// Host networking requested for this pod. Use the host's network namespace.
-    /// If this option is set, the ports that will be used must be specified.
-    /// Default to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
-    pub host_network: Option<bool>,
-    /// Use the host's pid namespace.
-    /// Optional: Default to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
-    pub host_pid: Option<bool>,
-    /// Use the host's user namespace.
-    /// Optional: Default to true.
-    /// If set to true or not present, the pod will be run in the host user namespace, useful
-    /// for when the pod needs a feature only available to the host user namespace, such as
-    /// loading a kernel module with CAP_SYS_MODULE.
-    /// When set to false, a new userns is created for the pod. Setting false is useful for
-    /// mitigating container breakout vulnerabilities even allowing users to run their
-    /// containers as root without actually having root privileges on the host.
-    /// This field is alpha-level and is only honored by servers that enable the UserNamespacesSupport feature.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
-    pub host_users: Option<bool>,
+    pub affinity: Option<NodeSetTemplateAffinity>,
+    /// Container defines the main container.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<NodeSetTemplateContainer>,
+    /// ExtraConf is added to the slurmd args as `--conf <extraConf>`.
+    /// Ref: https://slurm.schedmd.com/slurmd.html#OPT_conf-%3Cnode-parameters%3E
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraConf")]
+    pub extra_conf: Option<String>,
     /// Specifies the hostname of the Pod
     /// If not specified, the pod's hostname will be set to a system-defined value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -249,88 +137,19 @@ pub struct NodeSetTemplateSpec {
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
-    pub image_pull_secrets: Option<Vec<NodeSetTemplateSpecImagePullSecrets>>,
-    /// List of initialization containers belonging to the pod.
-    /// Init containers are executed in order prior to containers being started. If any
-    /// init container fails, the pod is considered to have failed and is handled according
-    /// to its restartPolicy. The name for an init container or normal container must be
-    /// unique among all containers.
-    /// Init containers may not have Lifecycle actions, Readiness probes, Liveness probes, or Startup probes.
-    /// The resourceRequirements of an init container are taken into account during scheduling
-    /// by finding the highest request/limit for each resource type, and then using the max of
-    /// that value or the sum of the normal containers. Limits are applied to init containers
-    /// in a similar fashion.
-    /// Init containers cannot currently be added or removed.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
-    pub init_containers: Option<Vec<NodeSetTemplateSpecInitContainers>>,
-    /// NodeName indicates in which node this pod is scheduled.
-    /// If empty, this pod is a candidate for scheduling by the scheduler defined in schedulerName.
-    /// Once this field is set, the kubelet for this node becomes responsible for the lifecycle of this pod.
-    /// This field should not be used to express a desire for the pod to be scheduled on a specific node.
-    /// https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
-    pub node_name: Option<String>,
+    pub image_pull_secrets: Option<Vec<NodeSetTemplateImagePullSecrets>>,
+    /// The logfile sidecar configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub logfile: Option<NodeSetTemplateLogfile>,
+    /// Standard object's metadata.
+    /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<NodeSetTemplateMetadata>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
-    /// Specifies the OS of the containers in the pod.
-    /// Some pod and container fields are restricted if this is set.
-    /// 
-    /// If the OS field is set to linux, the following fields must be unset:
-    /// -securityContext.windowsOptions
-    /// 
-    /// If the OS field is set to windows, following fields must be unset:
-    /// - spec.hostPID
-    /// - spec.hostIPC
-    /// - spec.hostUsers
-    /// - spec.securityContext.appArmorProfile
-    /// - spec.securityContext.seLinuxOptions
-    /// - spec.securityContext.seccompProfile
-    /// - spec.securityContext.fsGroup
-    /// - spec.securityContext.fsGroupChangePolicy
-    /// - spec.securityContext.sysctls
-    /// - spec.shareProcessNamespace
-    /// - spec.securityContext.runAsUser
-    /// - spec.securityContext.runAsGroup
-    /// - spec.securityContext.supplementalGroups
-    /// - spec.securityContext.supplementalGroupsPolicy
-    /// - spec.containers[*].securityContext.appArmorProfile
-    /// - spec.containers[*].securityContext.seLinuxOptions
-    /// - spec.containers[*].securityContext.seccompProfile
-    /// - spec.containers[*].securityContext.capabilities
-    /// - spec.containers[*].securityContext.readOnlyRootFilesystem
-    /// - spec.containers[*].securityContext.privileged
-    /// - spec.containers[*].securityContext.allowPrivilegeEscalation
-    /// - spec.containers[*].securityContext.procMount
-    /// - spec.containers[*].securityContext.runAsUser
-    /// - spec.containers[*].securityContext.runAsGroup
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub os: Option<NodeSetTemplateSpecOs>,
-    /// Overhead represents the resource overhead associated with running a pod for a given RuntimeClass.
-    /// This field will be autopopulated at admission time by the RuntimeClass admission controller. If
-    /// the RuntimeClass admission controller is enabled, overhead must not be set in Pod create requests.
-    /// The RuntimeClass admission controller will reject Pod create requests which have the overhead already
-    /// set. If RuntimeClass is configured and selected in the PodSpec, Overhead will be set to the value
-    /// defined in the corresponding RuntimeClass, otherwise it will remain unset and treated as zero.
-    /// More info: https://git.k8s.io/enhancements/keps/sig-node/688-pod-overhead/README.md
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub overhead: Option<BTreeMap<String, IntOrString>>,
-    /// PreemptionPolicy is the Policy for preempting pods with lower priority.
-    /// One of Never, PreemptLowerPriority.
-    /// Defaults to PreemptLowerPriority if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
-    pub preemption_policy: Option<String>,
-    /// The priority value. Various system components use this field to find the
-    /// priority of the pod. When Priority Admission Controller is enabled, it
-    /// prevents users from setting this field. The admission controller populates
-    /// this field from PriorityClassName.
-    /// The higher the value, the higher the priority.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub priority: Option<i32>,
     /// If specified, indicates the pod's priority. "system-node-critical" and
     /// "system-cluster-critical" are two special keywords which indicate the
     /// highest priorities with the former being the highest priority. Any other
@@ -339,129 +158,33 @@ pub struct NodeSetTemplateSpec {
     /// default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    /// If specified, all readiness gates will be evaluated for pod readiness.
-    /// A pod is ready when all its containers are ready AND
-    /// all conditions specified in the readiness gates have status equal to "True"
-    /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
-    pub readiness_gates: Option<Vec<NodeSetTemplateSpecReadinessGates>>,
-    /// ResourceClaims defines which ResourceClaims must be allocated
-    /// and reserved before the Pod is allowed to start. The resources
-    /// will be made available to those containers which consume them
-    /// by name.
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// This field is immutable.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
-    pub resource_claims: Option<Vec<NodeSetTemplateSpecResourceClaims>>,
-    /// Resources is the total amount of CPU and Memory resources required by all
-    /// containers in the pod. It supports specifying Requests and Limits for
-    /// "cpu" and "memory" resource names only. ResourceClaims are not supported.
-    /// 
-    /// This field enables fine-grained control over resource allocation for the
-    /// entire pod, allowing resource sharing among containers in a pod.
-    /// 
-    /// This is an alpha field and requires enabling the PodLevelResources feature
-    /// gate.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodeSetTemplateSpecResources>,
-    /// Restart policy for all containers within the pod.
-    /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
-    /// Default to Always.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
-    /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
-    /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
-    /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
-    /// empty definition that uses the default runtime handler.
-    /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
-    pub runtime_class_name: Option<String>,
-    /// If specified, the pod will be dispatched by specified scheduler.
-    /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
-    pub scheduler_name: Option<String>,
-    /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
-    /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
-    /// scheduler will not attempt to schedule the pod.
-    /// 
-    /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
-    pub scheduling_gates: Option<Vec<NodeSetTemplateSpecSchedulingGates>>,
-    /// SecurityContext holds pod-level security attributes and common container settings.
-    /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<NodeSetTemplateSpecSecurityContext>,
-    /// DeprecatedServiceAccount is a deprecated alias for ServiceAccountName.
-    /// Deprecated: Use serviceAccountName instead.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
-    pub service_account: Option<String>,
-    /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
-    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
-    pub service_account_name: Option<String>,
-    /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
-    /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
-    /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
-    /// If a pod does not have FQDN, this has no effect.
-    /// Default to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
-    pub set_hostname_as_fqdn: Option<bool>,
-    /// Share a single process namespace between all of the containers in a pod.
-    /// When this is set containers will be able to view and signal processes from other containers
-    /// in the same pod, and the first process in each container will not be assigned PID 1.
-    /// HostPID and ShareProcessNamespace cannot both be set.
-    /// Optional: Default to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
-    pub share_process_namespace: Option<bool>,
-    /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
-    /// If not specified, the pod will not have a domainname at all.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub subdomain: Option<String>,
-    /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// If this value is nil, the default grace period will be used instead.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// Defaults to 30 seconds.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
+    /// More info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<NodeSetTemplateSpecTolerations>>,
-    /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
-    /// domains. Scheduler will schedule pods in a way which abides by the constraints.
-    /// All topologySpreadConstraints are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
-    pub topology_spread_constraints: Option<Vec<NodeSetTemplateSpecTopologySpreadConstraints>>,
+    pub tolerations: Option<Vec<NodeSetTemplateTolerations>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<NodeSetTemplateSpecVolumes>>,
+    pub volumes: Option<Vec<NodeSetTemplateVolumes>>,
 }
 
 /// If specified, the pod's scheduling constraints
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinity {
+pub struct NodeSetTemplateAffinity {
     /// Describes node affinity scheduling rules for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<NodeSetTemplateSpecAffinityNodeAffinity>,
+    pub node_affinity: Option<NodeSetTemplateAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<NodeSetTemplateSpecAffinityPodAffinity>,
+    pub pod_affinity: Option<NodeSetTemplateAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
-    pub pod_anti_affinity: Option<NodeSetTemplateSpecAffinityPodAntiAffinity>,
+    pub pod_anti_affinity: Option<NodeSetTemplateAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinity {
+pub struct NodeSetTemplateAffinityNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -472,41 +195,41 @@ pub struct NodeSetTemplateSpecAffinityNodeAffinity {
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    pub required_during_scheduling_ignored_during_execution: Option<NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
 /// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference: NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
 /// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+pub struct NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+    pub match_fields: Option<Vec<NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+pub struct NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -524,7 +247,7 @@ pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnor
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+pub struct NodeSetTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -545,29 +268,29 @@ pub struct NodeSetTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnor
 /// at some point during pod execution (e.g. due to an update), the system
 /// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+    pub node_selector_terms: Vec<NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
 /// them are ANDed.
 /// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+pub struct NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+    pub match_fields: Option<Vec<NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+pub struct NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -585,7 +308,7 @@ pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnore
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+pub struct NodeSetTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -602,7 +325,7 @@ pub struct NodeSetTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnore
 
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinity {
+pub struct NodeSetTemplateAffinityPodAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -613,7 +336,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinity {
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -622,15 +345,15 @@ pub struct NodeSetTemplateSpecAffinityPodAffinity {
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -638,11 +361,11 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -669,7 +392,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -688,10 +411,10 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -702,7 +425,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -722,10 +445,10 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -736,7 +459,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -757,11 +480,11 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnore
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -788,7 +511,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -807,10 +530,10 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -821,7 +544,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -841,10 +564,10 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -855,7 +578,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -871,7 +594,7 @@ pub struct NodeSetTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnored
 
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinity {
+pub struct NodeSetTemplateAffinityPodAntiAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the anti-affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -882,7 +605,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinity {
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -891,15 +614,15 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinity {
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -907,11 +630,11 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -938,7 +661,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -957,10 +680,10 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -971,7 +694,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -991,10 +714,10 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1005,7 +728,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1026,11 +749,11 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIg
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -1057,7 +780,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -1076,10 +799,10 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1090,7 +813,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1110,10 +833,10 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -1124,7 +847,7 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct NodeSetTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1138,9 +861,9 @@ pub struct NodeSetTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgn
     pub values: Option<Vec<String>>,
 }
 
-/// A single application container that you want to run within a pod.
+/// Container defines the main container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainers {
+pub struct NodeSetTemplateContainer {
     /// Arguments to the entrypoint.
     /// The container image's CMD is used if this is not provided.
     /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
@@ -1151,20 +874,10 @@ pub struct NodeSetTemplateSpecContainers {
     /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell.
-    /// The container image's ENTRYPOINT is used if this is not provided.
-    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
-    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
-    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
-    /// of whether the variable exists or not. Cannot be updated.
-    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
     /// List of environment variables to set in the container.
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<NodeSetTemplateSpecContainersEnv>>,
+    pub env: Option<Vec<NodeSetTemplateContainerEnv>>,
     /// List of sources to populate environment variables in the container.
     /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
     /// will be reported as an event when the container is starting. When a key exists in multiple
@@ -1172,142 +885,38 @@ pub struct NodeSetTemplateSpecContainers {
     /// Values defined by an Env with a duplicate key will take precedence.
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from: Option<Vec<NodeSetTemplateSpecContainersEnvFrom>>,
-    /// Container image name.
+    pub env_from: Option<Vec<NodeSetTemplateContainerEnvFrom>>,
+    /// Image URI.
     /// More info: https://kubernetes.io/docs/concepts/containers/images
-    /// This field is optional to allow higher level config management to default or override
-    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Image pull policy.
     /// One of Always, Never, IfNotPresent.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle: Option<NodeSetTemplateSpecContainersLifecycle>,
-    /// Periodic probe of container liveness.
-    /// Container will be restarted if the probe fails.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
-    pub liveness_probe: Option<NodeSetTemplateSpecContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL.
-    /// Each container in a pod must have a unique name (DNS_LABEL).
-    /// Cannot be updated.
-    pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here
-    /// DOES NOT prevent that port from being exposed. Any port which is
-    /// listening on the default "0.0.0.0" address inside a container will be
-    /// accessible from the network.
-    /// Modifying this array with strategic merge patch may corrupt the data.
-    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports: Option<Vec<NodeSetTemplateSpecContainersPorts>>,
-    /// Periodic probe of container service readiness.
-    /// Container will be removed from service endpoints if the probe fails.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
-    pub readiness_probe: Option<NodeSetTemplateSpecContainersReadinessProbe>,
-    /// Resources resize policy for the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
-    pub resize_policy: Option<Vec<NodeSetTemplateSpecContainersResizePolicy>>,
     /// Compute Resources required by this container.
-    /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodeSetTemplateSpecContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
-    /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
-    /// this init container will be continually restarted on
-    /// exit until all regular containers have terminated. Once all regular
-    /// containers have completed, all init containers with restartPolicy "Always"
-    /// will be shut down. This lifecycle differs from normal init containers and
-    /// is often referred to as a "sidecar" container. Although this init
-    /// container still starts in the init container sequence, it does not wait
-    /// for the container to complete before proceeding to the next init
-    /// container. Instead, the next init container starts immediately after this
-    /// init container is started, or after any startupProbe has successfully
-    /// completed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with.
-    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+    pub resources: Option<NodeSetTemplateContainerResources>,
+    /// SecurityContext holds security configuration that will be applied to a container.
+    /// Some fields are present in both SecurityContext and PodSecurityContext. When both
+    /// are set, the values in SecurityContext take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<NodeSetTemplateSpecContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized.
-    /// If specified, no other probes are executed until this completes successfully.
-    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
-    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
-    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
-    /// This cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
-    pub startup_probe: Option<NodeSetTemplateSpecContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
-    /// is not set, reads from stdin in the container will always result in EOF.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by
-    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
-    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
-    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
-    /// at which time stdin is closed and remains closed until the container is restarted. If this
-    /// flag is false, a container processes that reads from stdin will never receive an EOF.
-    /// Default is false
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
-    pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message
-    /// will be written is mounted into the container's filesystem.
-    /// Message written is intended to be brief final status, such as an assertion failure message.
-    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
-    /// all containers will be limited to 12kb.
-    /// Defaults to /dev/termination-log.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
-    pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of
-    /// terminationMessagePath to populate the container status message on both success and failure.
-    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
-    /// message file is empty and the container exited with an error.
-    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
-    /// Defaults to File.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
-    pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tty: Option<bool>,
+    pub security_context: Option<NodeSetTemplateContainerSecurityContext>,
     /// volumeDevices is the list of block devices to be used by the container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
-    pub volume_devices: Option<Vec<NodeSetTemplateSpecContainersVolumeDevices>>,
+    pub volume_devices: Option<Vec<NodeSetTemplateContainerVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<NodeSetTemplateSpecContainersVolumeMounts>>,
-    /// Container's working directory.
-    /// If not specified, the container runtime's default will be used, which
-    /// might be configured in the container image.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
-    pub working_dir: Option<String>,
+    pub volume_mounts: Option<Vec<NodeSetTemplateContainerVolumeMounts>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnv {
+pub struct NodeSetTemplateContainerEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -1323,31 +932,31 @@ pub struct NodeSetTemplateSpecContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<NodeSetTemplateSpecContainersEnvValueFrom>,
+    pub value_from: Option<NodeSetTemplateContainerEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvValueFrom {
+pub struct NodeSetTemplateContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<NodeSetTemplateSpecContainersEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<NodeSetTemplateContainerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<NodeSetTemplateSpecContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<NodeSetTemplateContainerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<NodeSetTemplateSpecContainersEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<NodeSetTemplateContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<NodeSetTemplateSpecContainersEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<NodeSetTemplateContainerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvValueFromConfigMapKeyRef {
+pub struct NodeSetTemplateContainerEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -1365,7 +974,7 @@ pub struct NodeSetTemplateSpecContainersEnvValueFromConfigMapKeyRef {
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvValueFromFieldRef {
+pub struct NodeSetTemplateContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -1377,7 +986,7 @@ pub struct NodeSetTemplateSpecContainersEnvValueFromFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvValueFromResourceFieldRef {
+pub struct NodeSetTemplateContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -1390,7 +999,7 @@ pub struct NodeSetTemplateSpecContainersEnvValueFromResourceFieldRef {
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvValueFromSecretKeyRef {
+pub struct NodeSetTemplateContainerEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -1407,21 +1016,21 @@ pub struct NodeSetTemplateSpecContainersEnvValueFromSecretKeyRef {
 
 /// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvFrom {
+pub struct NodeSetTemplateContainerEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
-    pub config_map_ref: Option<NodeSetTemplateSpecContainersEnvFromConfigMapRef>,
+    pub config_map_ref: Option<NodeSetTemplateContainerEnvFromConfigMapRef>,
     /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecContainersEnvFromSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateContainerEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvFromConfigMapRef {
+pub struct NodeSetTemplateContainerEnvFromConfigMapRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -1436,7 +1045,7 @@ pub struct NodeSetTemplateSpecContainersEnvFromConfigMapRef {
 
 /// The Secret to select from
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersEnvFromSecretRef {
+pub struct NodeSetTemplateContainerEnvFromSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -1447,508 +1056,12 @@ pub struct NodeSetTemplateSpecContainersEnvFromSecretRef {
     /// Specify whether the Secret must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-}
-
-/// Actions that the management system should take in response to container lifecycle events.
-/// Cannot be updated.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails,
-    /// the container is terminated and restarted according to its restart policy.
-    /// Other management of the container blocks until the hook completes.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<NodeSetTemplateSpecContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an
-    /// API request or management event such as liveness/startup probe failure,
-    /// preemption, resource contention, etc. The handler is not called if the
-    /// container crashes or exits. The Pod's termination grace period countdown begins before the
-    /// PreStop hook is executed. Regardless of the outcome of the handler, the
-    /// container will eventually terminate within the Pod's termination grace
-    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-    /// or until the termination grace period is reached.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop: Option<NodeSetTemplateSpecContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
-}
-
-/// PostStart is called immediately after a container is created. If the handler fails,
-/// the container is terminated and restarted according to its restart policy.
-/// Other management of the container blocks until the hook completes.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStart {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecContainersLifecyclePostStartSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecContainersLifecyclePostStartTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStartSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePostStartTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// PreStop is called immediately before a container is terminated due to an
-/// API request or management event such as liveness/startup probe failure,
-/// preemption, resource contention, etc. The handler is not called if the
-/// container crashes or exits. The Pod's termination grace period countdown begins before the
-/// PreStop hook is executed. Regardless of the outcome of the handler, the
-/// container will eventually terminate within the Pod's termination grace
-/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-/// or until the termination grace period is reached.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStop {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecContainersLifecyclePreStopSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecContainersLifecyclePreStopTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStopSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLifecyclePreStopTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// Periodic probe of container liveness.
-/// Container will be restarted if the probe fails.
-/// Cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecContainersLivenessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersLivenessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerPort represents a network port in a single container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersPorts {
-    /// Number of port to expose on the pod's IP address.
-    /// This must be a valid port number, 0 < x < 65536.
-    #[serde(rename = "containerPort")]
-    pub container_port: i32,
-    /// What host IP to bind the external port to.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
-    pub host_ip: Option<String>,
-    /// Number of port to expose on the host.
-    /// If specified, this must be a valid port number, 0 < x < 65536.
-    /// If HostNetwork is specified, this must match ContainerPort.
-    /// Most containers do not need this.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
-    pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
-    /// named port in a pod must have a unique name. Name for the port that can be
-    /// referred to by services.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP.
-    /// Defaults to "TCP".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol: Option<String>,
-}
-
-/// Periodic probe of container service readiness.
-/// Container will be removed from service endpoints if the probe fails.
-/// Cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecContainersReadinessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersReadinessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerResizePolicy represents resource resize policy for the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies.
-    /// Supported values: cpu, memory.
-    #[serde(rename = "resourceName")]
-    pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized.
-    /// If not specified, it defaults to NotRequired.
-    #[serde(rename = "restartPolicy")]
-    pub restart_policy: String,
 }
 
 /// Compute Resources required by this container.
-/// Cannot be updated.
 /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersResources {
+pub struct NodeSetTemplateContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
@@ -1957,7 +1070,7 @@ pub struct NodeSetTemplateSpecContainersResources {
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<NodeSetTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<NodeSetTemplateContainerResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1972,7 +1085,7 @@ pub struct NodeSetTemplateSpecContainersResources {
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersResourcesClaims {
+pub struct NodeSetTemplateContainerResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -1984,11 +1097,11 @@ pub struct NodeSetTemplateSpecContainersResourcesClaims {
     pub request: Option<String>,
 }
 
-/// SecurityContext defines the security options the container should be run with.
-/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// SecurityContext holds security configuration that will be applied to a container.
+/// Some fields are present in both SecurityContext and PodSecurityContext. When both
+/// are set, the values in SecurityContext take precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContext {
+pub struct NodeSetTemplateContainerSecurityContext {
     /// AllowPrivilegeEscalation controls whether a process can gain more
     /// privileges than its parent process. This bool directly controls if
     /// the no_new_privs flag will be set on the container process.
@@ -2002,12 +1115,12 @@ pub struct NodeSetTemplateSpecContainersSecurityContext {
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
-    pub app_armor_profile: Option<NodeSetTemplateSpecContainersSecurityContextAppArmorProfile>,
+    pub app_armor_profile: Option<NodeSetTemplateContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<NodeSetTemplateSpecContainersSecurityContextCapabilities>,
+    pub capabilities: Option<NodeSetTemplateContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -2054,26 +1167,26 @@ pub struct NodeSetTemplateSpecContainersSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<NodeSetTemplateSpecContainersSecurityContextSeLinuxOptions>,
+    pub se_linux_options: Option<NodeSetTemplateContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<NodeSetTemplateSpecContainersSecurityContextSeccompProfile>,
+    pub seccomp_profile: Option<NodeSetTemplateContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<NodeSetTemplateSpecContainersSecurityContextWindowsOptions>,
+    pub windows_options: Option<NodeSetTemplateContainerSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
 /// overrides the pod's appArmorProfile.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContextAppArmorProfile {
+pub struct NodeSetTemplateContainerSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
@@ -2093,7 +1206,7 @@ pub struct NodeSetTemplateSpecContainersSecurityContextAppArmorProfile {
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContextCapabilities {
+pub struct NodeSetTemplateContainerSecurityContextCapabilities {
     /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
@@ -2108,7 +1221,7 @@ pub struct NodeSetTemplateSpecContainersSecurityContextCapabilities {
 /// PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContextSeLinuxOptions {
+pub struct NodeSetTemplateContainerSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -2128,7 +1241,7 @@ pub struct NodeSetTemplateSpecContainersSecurityContextSeLinuxOptions {
 /// override the pod options.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContextSeccompProfile {
+pub struct NodeSetTemplateContainerSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
@@ -2150,7 +1263,7 @@ pub struct NodeSetTemplateSpecContainersSecurityContextSeccompProfile {
 /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersSecurityContextWindowsOptions {
+pub struct NodeSetTemplateContainerSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
@@ -2173,135 +1286,9 @@ pub struct NodeSetTemplateSpecContainersSecurityContextWindowsOptions {
     pub run_as_user_name: Option<String>,
 }
 
-/// StartupProbe indicates that the Pod has successfully initialized.
-/// If specified, no other probes are executed until this completes successfully.
-/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
-/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
-/// when it might take a long time to load data or warm a cache, than during steady-state operation.
-/// This cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecContainersStartupProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecContainersStartupProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersStartupProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
 /// volumeDevice describes a mapping of a raw block device within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersVolumeDevices {
+pub struct NodeSetTemplateContainerVolumeDevices {
     /// devicePath is the path inside of the container that the device will be mapped to.
     #[serde(rename = "devicePath")]
     pub device_path: String,
@@ -2311,7 +1298,7 @@ pub struct NodeSetTemplateSpecContainersVolumeDevices {
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecContainersVolumeMounts {
+pub struct NodeSetTemplateContainerVolumeMounts {
     /// Path within the container at which the volume should be mounted.  Must
     /// not contain ':'.
     #[serde(rename = "mountPath")]
@@ -2358,1245 +1345,12 @@ pub struct NodeSetTemplateSpecContainersVolumeMounts {
     /// SubPathExpr and SubPath are mutually exclusive.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
-}
-
-/// Specifies the DNS parameters of a pod.
-/// Parameters specified here will be merged to the generated DNS
-/// configuration based on DNSPolicy.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecDnsConfig {
-    /// A list of DNS name server IP addresses.
-    /// This will be appended to the base nameservers generated from DNSPolicy.
-    /// Duplicated nameservers will be removed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nameservers: Option<Vec<String>>,
-    /// A list of DNS resolver options.
-    /// This will be merged with the base options generated from DNSPolicy.
-    /// Duplicated entries will be removed. Resolution options given in Options
-    /// will override those that appear in the base DNSPolicy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub options: Option<Vec<NodeSetTemplateSpecDnsConfigOptions>>,
-    /// A list of DNS search domains for host-name lookup.
-    /// This will be appended to the base search paths generated from DNSPolicy.
-    /// Duplicated search paths will be removed.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub searches: Option<Vec<String>>,
-}
-
-/// PodDNSConfigOption defines DNS resolver options of a pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecDnsConfigOptions {
-    /// Name is this DNS resolver option's name.
-    /// Required.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Value is this DNS resolver option's value.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-/// An EphemeralContainer is a temporary container that you may add to an existing Pod for
-/// user-initiated activities such as debugging. Ephemeral containers have no resource or
-/// scheduling guarantees, and they will not be restarted when they exit or when a Pod is
-/// removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the
-/// Pod to exceed its resource allocation.
-/// 
-/// To add an ephemeral container, use the ephemeralcontainers subresource of an existing
-/// Pod. Ephemeral containers may not be removed or restarted.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainers {
-    /// Arguments to the entrypoint.
-    /// The image's CMD is used if this is not provided.
-    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
-    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
-    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
-    /// of whether the variable exists or not. Cannot be updated.
-    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell.
-    /// The image's ENTRYPOINT is used if this is not provided.
-    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
-    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
-    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
-    /// of whether the variable exists or not. Cannot be updated.
-    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<NodeSetTemplateSpecEphemeralContainersEnv>>,
-    /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
-    /// sources, the value associated with the last source will take precedence.
-    /// Values defined by an Env with a duplicate key will take precedence.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from: Option<Vec<NodeSetTemplateSpecEphemeralContainersEnvFrom>>,
-    /// Container image name.
-    /// More info: https://kubernetes.io/docs/concepts/containers/images
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<String>,
-    /// Image pull policy.
-    /// One of Always, Never, IfNotPresent.
-    /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
-    pub image_pull_policy: Option<String>,
-    /// Lifecycle is not allowed for ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle: Option<NodeSetTemplateSpecEphemeralContainersLifecycle>,
-    /// Probes are not allowed for ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
-    pub liveness_probe: Option<NodeSetTemplateSpecEphemeralContainersLivenessProbe>,
-    /// Name of the ephemeral container specified as a DNS_LABEL.
-    /// This name must be unique among all containers, init containers and ephemeral containers.
-    pub name: String,
-    /// Ports are not allowed for ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports: Option<Vec<NodeSetTemplateSpecEphemeralContainersPorts>>,
-    /// Probes are not allowed for ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
-    pub readiness_probe: Option<NodeSetTemplateSpecEphemeralContainersReadinessProbe>,
-    /// Resources resize policy for the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
-    pub resize_policy: Option<Vec<NodeSetTemplateSpecEphemeralContainersResizePolicy>>,
-    /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
-    /// already allocated to the pod.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodeSetTemplateSpecEphemeralContainersResources>,
-    /// Restart policy for the container to manage the restart behavior of each
-    /// container within a pod.
-    /// This may only be set for init containers. You cannot set this field on
-    /// ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
-    /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
-    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<NodeSetTemplateSpecEphemeralContainersSecurityContext>,
-    /// Probes are not allowed for ephemeral containers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
-    pub startup_probe: Option<NodeSetTemplateSpecEphemeralContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
-    /// is not set, reads from stdin in the container will always result in EOF.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by
-    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
-    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
-    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
-    /// at which time stdin is closed and remains closed until the container is restarted. If this
-    /// flag is false, a container processes that reads from stdin will never receive an EOF.
-    /// Default is false
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
-    pub stdin_once: Option<bool>,
-    /// If set, the name of the container from PodSpec that this ephemeral container targets.
-    /// The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.
-    /// If not set then the ephemeral container uses the namespaces configured in the Pod spec.
-    /// 
-    /// The container runtime must implement support for this feature. If the runtime does not
-    /// support namespace targeting then the result of setting this field is undefined.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
-    pub target_container_name: Option<String>,
-    /// Optional: Path at which the file to which the container's termination message
-    /// will be written is mounted into the container's filesystem.
-    /// Message written is intended to be brief final status, such as an assertion failure message.
-    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
-    /// all containers will be limited to 12kb.
-    /// Defaults to /dev/termination-log.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
-    pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of
-    /// terminationMessagePath to populate the container status message on both success and failure.
-    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
-    /// message file is empty and the container exited with an error.
-    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
-    /// Defaults to File.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
-    pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tty: Option<bool>,
-    /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
-    pub volume_devices: Option<Vec<NodeSetTemplateSpecEphemeralContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<NodeSetTemplateSpecEphemeralContainersVolumeMounts>>,
-    /// Container's working directory.
-    /// If not specified, the container runtime's default will be used, which
-    /// might be configured in the container image.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
-    pub working_dir: Option<String>,
-}
-
-/// EnvVar represents an environment variable present in a Container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
-    pub name: String,
-    /// Variable references $(VAR_NAME) are expanded
-    /// using the previously defined environment variables in the container and
-    /// any service environment variables. If a variable cannot be resolved,
-    /// the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
-    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
-    /// Escaped references will never be expanded, regardless of whether the variable
-    /// exists or not.
-    /// Defaults to "".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<NodeSetTemplateSpecEphemeralContainersEnvValueFrom>,
-}
-
-/// Source for the environment variable's value. Cannot be used if value is not empty.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvValueFrom {
-    /// Selects a key of a ConfigMap.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef>,
-    /// Selects a key of a secret in the pod's namespace
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef>,
-}
-
-/// Selects a key of a ConfigMap.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvValueFromConfigMapKeyRef {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvValueFromFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvValueFromResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// Selects a key of a secret in the pod's namespace
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvFrom {
-    /// The ConfigMap to select from
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
-    pub config_map_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub prefix: Option<String>,
-    /// The Secret to select from
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecEphemeralContainersEnvFromSecretRef>,
-}
-
-/// The ConfigMap to select from
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvFromConfigMapRef {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The Secret to select from
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersEnvFromSecretRef {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Lifecycle is not allowed for ephemeral containers.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails,
-    /// the container is terminated and restarted according to its restart policy.
-    /// Other management of the container blocks until the hook completes.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an
-    /// API request or management event such as liveness/startup probe failure,
-    /// preemption, resource contention, etc. The handler is not called if the
-    /// container crashes or exits. The Pod's termination grace period countdown begins before the
-    /// PreStop hook is executed. Regardless of the outcome of the handler, the
-    /// container will eventually terminate within the Pod's termination grace
-    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-    /// or until the termination grace period is reached.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
-}
-
-/// PostStart is called immediately after a container is created. If the handler fails,
-/// the container is terminated and restarted according to its restart policy.
-/// Other management of the container blocks until the hook completes.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStart {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePostStartSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStartSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePostStartTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// PreStop is called immediately before a container is terminated due to an
-/// API request or management event such as liveness/startup probe failure,
-/// preemption, resource contention, etc. The handler is not called if the
-/// container crashes or exits. The Pod's termination grace period countdown begins before the
-/// PreStop hook is executed. Regardless of the outcome of the handler, the
-/// container will eventually terminate within the Pod's termination grace
-/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-/// or until the termination grace period is reached.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStop {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePreStopSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStopSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLifecyclePreStopTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// Probes are not allowed for ephemeral containers.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecEphemeralContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecEphemeralContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecEphemeralContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecEphemeralContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersLivenessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerPort represents a network port in a single container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersPorts {
-    /// Number of port to expose on the pod's IP address.
-    /// This must be a valid port number, 0 < x < 65536.
-    #[serde(rename = "containerPort")]
-    pub container_port: i32,
-    /// What host IP to bind the external port to.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
-    pub host_ip: Option<String>,
-    /// Number of port to expose on the host.
-    /// If specified, this must be a valid port number, 0 < x < 65536.
-    /// If HostNetwork is specified, this must match ContainerPort.
-    /// Most containers do not need this.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
-    pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
-    /// named port in a pod must have a unique name. Name for the port that can be
-    /// referred to by services.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP.
-    /// Defaults to "TCP".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol: Option<String>,
-}
-
-/// Probes are not allowed for ephemeral containers.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecEphemeralContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecEphemeralContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecEphemeralContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecEphemeralContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersReadinessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerResizePolicy represents resource resize policy for the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies.
-    /// Supported values: cpu, memory.
-    #[serde(rename = "resourceName")]
-    pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized.
-    /// If not specified, it defaults to NotRequired.
-    #[serde(rename = "restartPolicy")]
-    pub restart_policy: String,
-}
-
-/// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
-/// already allocated to the pod.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<NodeSetTemplateSpecEphemeralContainersResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
-    /// Request is the name chosen for a request in the referenced claim.
-    /// If empty, everything from the claim is made available, otherwise
-    /// only the result of this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub request: Option<String>,
-}
-
-/// Optional: SecurityContext defines the security options the ephemeral container should be run with.
-/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more
-    /// privileges than its parent process. This bool directly controls if
-    /// the no_new_privs flag will be set on the container process.
-    /// AllowPrivilegeEscalation is true always when the container is:
-    /// 1) run as Privileged
-    /// 2) has CAP_SYS_ADMIN
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
-    pub allow_privilege_escalation: Option<bool>,
-    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-    /// overrides the pod's appArmorProfile.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
-    pub app_armor_profile: Option<NodeSetTemplateSpecEphemeralContainersSecurityContextAppArmorProfile>,
-    /// The capabilities to add/drop when running containers.
-    /// Defaults to the default set of capabilities granted by the container runtime.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<NodeSetTemplateSpecEphemeralContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode.
-    /// Processes in privileged containers are essentially equivalent to root on the host.
-    /// Defaults to false.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers.
-    /// The default value is Default which uses the container runtime defaults for
-    /// readonly paths and masked paths.
-    /// This requires the ProcMountType feature flag to be enabled.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
-    pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem.
-    /// Default is false.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
-    pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
-    pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
-    pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
-    pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<NodeSetTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are
-    /// provided at both the pod & container level, the container options
-    /// override the pod options.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<NodeSetTemplateSpecEphemeralContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options from the PodSecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<NodeSetTemplateSpecEphemeralContainersSecurityContextWindowsOptions>,
-}
-
-/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-/// overrides the pod's appArmorProfile.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContextAppArmorProfile {
-    /// localhostProfile indicates a profile loaded on the node that should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must match the loaded name of the profile.
-    /// Must be set if and only if type is "Localhost".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of AppArmor profile will be applied.
-    /// Valid options are:
-    ///   Localhost - a profile pre-loaded on the node.
-    ///   RuntimeDefault - the container runtime's default profile.
-    ///   Unconfined - no AppArmor enforcement.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The capabilities to add/drop when running containers.
-/// Defaults to the default set of capabilities granted by the container runtime.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContextCapabilities {
-    /// Added capabilities
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub add: Option<Vec<String>>,
-    /// Removed capabilities
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub drop: Option<Vec<String>>,
-}
-
-/// The SELinux context to be applied to the container.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-/// PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// The seccomp options to use by this container. If seccomp options are
-/// provided at both the pod & container level, the container options
-/// override the pod options.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
-    /// RuntimeDefault - the container runtime default profile should be used.
-    /// Unconfined - no profile should be applied.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options from the PodSecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
-/// Probes are not allowed for ephemeral containers.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecEphemeralContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecEphemeralContainersStartupProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecEphemeralContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecEphemeralContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecEphemeralContainersStartupProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersStartupProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// volumeDevice describes a mapping of a raw block device within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersVolumeDevices {
-    /// devicePath is the path inside of the container that the device will be mapped to.
-    #[serde(rename = "devicePath")]
-    pub device_path: String,
-    /// name must match the name of a persistentVolumeClaim in the pod
-    pub name: String,
-}
-
-/// VolumeMount describes a mounting of a Volume within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecEphemeralContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must
-    /// not contain ':'.
-    #[serde(rename = "mountPath")]
-    pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host
-    /// to container and the other way around.
-    /// When not set, MountPropagationNone is used.
-    /// This field is beta in 1.10.
-    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
-    /// (which defaults to None).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
-    pub mount_propagation: Option<String>,
-    /// This must match the Name of a Volume.
-    pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified).
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// RecursiveReadOnly specifies whether read-only mounts should be handled
-    /// recursively.
-    /// 
-    /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
-    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
-    /// recursively read-only.  If this field is set to IfPossible, the mount is made
-    /// recursively read-only, if it is supported by the container runtime.  If this
-    /// field is set to Enabled, the mount is made recursively read-only if it is
-    /// supported by the container runtime, otherwise the pod will not be started and
-    /// an error will be generated to indicate the reason.
-    /// 
-    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
-    /// None (or be unspecified, which defaults to None).
-    /// 
-    /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
-    pub recursive_read_only: Option<String>,
-    /// Path within the volume from which the container's volume should be mounted.
-    /// Defaults to "" (volume's root).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
-    pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted.
-    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
-    /// Defaults to "" (volume's root).
-    /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
-    pub sub_path_expr: Option<String>,
-}
-
-/// HostAlias holds the mapping between IP and hostnames that will be injected as an entry in the
-/// pod's hosts file.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecHostAliases {
-    /// Hostnames for the above IP address.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub hostnames: Option<Vec<String>>,
-    /// IP address of the host file entry.
-    pub ip: String,
 }
 
 /// LocalObjectReference contains enough information to let you locate the
 /// referenced object inside the same namespace.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecImagePullSecrets {
+pub struct NodeSetTemplateImagePullSecrets {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -3606,817 +1360,29 @@ pub struct NodeSetTemplateSpecImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// A single application container that you want to run within a pod.
+/// The logfile sidecar configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainers {
-    /// Arguments to the entrypoint.
-    /// The container image's CMD is used if this is not provided.
-    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
-    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
-    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
-    /// of whether the variable exists or not. Cannot be updated.
-    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub args: Option<Vec<String>>,
-    /// Entrypoint array. Not executed within a shell.
-    /// The container image's ENTRYPOINT is used if this is not provided.
-    /// Variable references $(VAR_NAME) are expanded using the container's environment. If a variable
-    /// cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will
-    /// produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless
-    /// of whether the variable exists or not. Cannot be updated.
-    /// More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-    /// List of environment variables to set in the container.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<NodeSetTemplateSpecInitContainersEnv>>,
-    /// List of sources to populate environment variables in the container.
-    /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
-    /// will be reported as an event when the container is starting. When a key exists in multiple
-    /// sources, the value associated with the last source will take precedence.
-    /// Values defined by an Env with a duplicate key will take precedence.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from: Option<Vec<NodeSetTemplateSpecInitContainersEnvFrom>>,
-    /// Container image name.
+pub struct NodeSetTemplateLogfile {
+    /// Image URI.
     /// More info: https://kubernetes.io/docs/concepts/containers/images
-    /// This field is optional to allow higher level config management to default or override
-    /// container images in workload controllers like Deployments and StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Image pull policy.
     /// One of Always, Never, IfNotPresent.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
-    /// Actions that the management system should take in response to container lifecycle events.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle: Option<NodeSetTemplateSpecInitContainersLifecycle>,
-    /// Periodic probe of container liveness.
-    /// Container will be restarted if the probe fails.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
-    pub liveness_probe: Option<NodeSetTemplateSpecInitContainersLivenessProbe>,
-    /// Name of the container specified as a DNS_LABEL.
-    /// Each container in a pod must have a unique name (DNS_LABEL).
-    /// Cannot be updated.
-    pub name: String,
-    /// List of ports to expose from the container. Not specifying a port here
-    /// DOES NOT prevent that port from being exposed. Any port which is
-    /// listening on the default "0.0.0.0" address inside a container will be
-    /// accessible from the network.
-    /// Modifying this array with strategic merge patch may corrupt the data.
-    /// For more information See https://github.com/kubernetes/kubernetes/issues/108255.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports: Option<Vec<NodeSetTemplateSpecInitContainersPorts>>,
-    /// Periodic probe of container service readiness.
-    /// Container will be removed from service endpoints if the probe fails.
-    /// Cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
-    pub readiness_probe: Option<NodeSetTemplateSpecInitContainersReadinessProbe>,
-    /// Resources resize policy for the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
-    pub resize_policy: Option<Vec<NodeSetTemplateSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
-    /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodeSetTemplateSpecInitContainersResources>,
-    /// RestartPolicy defines the restart behavior of individual containers in a pod.
-    /// This field may only be set for init containers, and the only allowed value is "Always".
-    /// For non-init containers or when this field is not specified,
-    /// the restart behavior is defined by the Pod's restart policy and the container type.
-    /// Setting the RestartPolicy as "Always" for the init container will have the following effect:
-    /// this init container will be continually restarted on
-    /// exit until all regular containers have terminated. Once all regular
-    /// containers have completed, all init containers with restartPolicy "Always"
-    /// will be shut down. This lifecycle differs from normal init containers and
-    /// is often referred to as a "sidecar" container. Although this init
-    /// container still starts in the init container sequence, it does not wait
-    /// for the container to complete before proceeding to the next init
-    /// container. Instead, the next init container starts immediately after this
-    /// init container is started, or after any startupProbe has successfully
-    /// completed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
-    pub restart_policy: Option<String>,
-    /// SecurityContext defines the security options the container should be run with.
-    /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
-    pub security_context: Option<NodeSetTemplateSpecInitContainersSecurityContext>,
-    /// StartupProbe indicates that the Pod has successfully initialized.
-    /// If specified, no other probes are executed until this completes successfully.
-    /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
-    /// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
-    /// when it might take a long time to load data or warm a cache, than during steady-state operation.
-    /// This cannot be updated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
-    pub startup_probe: Option<NodeSetTemplateSpecInitContainersStartupProbe>,
-    /// Whether this container should allocate a buffer for stdin in the container runtime. If this
-    /// is not set, reads from stdin in the container will always result in EOF.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stdin: Option<bool>,
-    /// Whether the container runtime should close the stdin channel after it has been opened by
-    /// a single attach. When stdin is true the stdin stream will remain open across multiple attach
-    /// sessions. If stdinOnce is set to true, stdin is opened on container start, is empty until the
-    /// first client attaches to stdin, and then remains open and accepts data until the client disconnects,
-    /// at which time stdin is closed and remains closed until the container is restarted. If this
-    /// flag is false, a container processes that reads from stdin will never receive an EOF.
-    /// Default is false
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
-    pub stdin_once: Option<bool>,
-    /// Optional: Path at which the file to which the container's termination message
-    /// will be written is mounted into the container's filesystem.
-    /// Message written is intended to be brief final status, such as an assertion failure message.
-    /// Will be truncated by the node if greater than 4096 bytes. The total message length across
-    /// all containers will be limited to 12kb.
-    /// Defaults to /dev/termination-log.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
-    pub termination_message_path: Option<String>,
-    /// Indicate how the termination message should be populated. File will use the contents of
-    /// terminationMessagePath to populate the container status message on both success and failure.
-    /// FallbackToLogsOnError will use the last chunk of container log output if the termination
-    /// message file is empty and the container exited with an error.
-    /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
-    /// Defaults to File.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
-    pub termination_message_policy: Option<String>,
-    /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
-    /// Default is false.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tty: Option<bool>,
-    /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
-    pub volume_devices: Option<Vec<NodeSetTemplateSpecInitContainersVolumeDevices>>,
-    /// Pod volumes to mount into the container's filesystem.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<NodeSetTemplateSpecInitContainersVolumeMounts>>,
-    /// Container's working directory.
-    /// If not specified, the container runtime's default will be used, which
-    /// might be configured in the container image.
-    /// Cannot be updated.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
-    pub working_dir: Option<String>,
-}
-
-/// EnvVar represents an environment variable present in a Container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnv {
-    /// Name of the environment variable. Must be a C_IDENTIFIER.
-    pub name: String,
-    /// Variable references $(VAR_NAME) are expanded
-    /// using the previously defined environment variables in the container and
-    /// any service environment variables. If a variable cannot be resolved,
-    /// the reference in the input string will be unchanged. Double $$ are reduced
-    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
-    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
-    /// Escaped references will never be expanded, regardless of whether the variable
-    /// exists or not.
-    /// Defaults to "".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-    /// Source for the environment variable's value. Cannot be used if value is not empty.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<NodeSetTemplateSpecInitContainersEnvValueFrom>,
-}
-
-/// Source for the environment variable's value. Cannot be used if value is not empty.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvValueFrom {
-    /// Selects a key of a ConfigMap.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<NodeSetTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
-    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<NodeSetTemplateSpecInitContainersEnvValueFromFieldRef>,
-    /// Selects a resource of the container: only resources limits and requests
-    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<NodeSetTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
-    /// Selects a key of a secret in the pod's namespace
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<NodeSetTemplateSpecInitContainersEnvValueFromSecretKeyRef>,
-}
-
-/// Selects a key of a ConfigMap.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvValueFromConfigMapKeyRef {
-    /// The key to select.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
-/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvValueFromFieldRef {
-    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
-    /// Path of the field to select in the specified API version.
-    #[serde(rename = "fieldPath")]
-    pub field_path: String,
-}
-
-/// Selects a resource of the container: only resources limits and requests
-/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvValueFromResourceFieldRef {
-    /// Container name: required for volumes, optional for env vars
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
-    pub container_name: Option<String>,
-    /// Specifies the output format of the exposed resources, defaults to "1"
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub divisor: Option<IntOrString>,
-    /// Required: resource to select
-    pub resource: String,
-}
-
-/// Selects a key of a secret in the pod's namespace
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvValueFromSecretKeyRef {
-    /// The key of the secret to select from.  Must be a valid secret key.
-    pub key: String,
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret or its key must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvFrom {
-    /// The ConfigMap to select from
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
-    pub config_map_ref: Option<NodeSetTemplateSpecInitContainersEnvFromConfigMapRef>,
-    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub prefix: Option<String>,
-    /// The Secret to select from
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecInitContainersEnvFromSecretRef>,
-}
-
-/// The ConfigMap to select from
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvFromConfigMapRef {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the ConfigMap must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// The Secret to select from
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersEnvFromSecretRef {
-    /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Specify whether the Secret must be defined
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub optional: Option<bool>,
-}
-
-/// Actions that the management system should take in response to container lifecycle events.
-/// Cannot be updated.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecycle {
-    /// PostStart is called immediately after a container is created. If the handler fails,
-    /// the container is terminated and restarted according to its restart policy.
-    /// Other management of the container blocks until the hook completes.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<NodeSetTemplateSpecInitContainersLifecyclePostStart>,
-    /// PreStop is called immediately before a container is terminated due to an
-    /// API request or management event such as liveness/startup probe failure,
-    /// preemption, resource contention, etc. The handler is not called if the
-    /// container crashes or exits. The Pod's termination grace period countdown begins before the
-    /// PreStop hook is executed. Regardless of the outcome of the handler, the
-    /// container will eventually terminate within the Pod's termination grace
-    /// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-    /// or until the termination grace period is reached.
-    /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop: Option<NodeSetTemplateSpecInitContainersLifecyclePreStop>,
-    /// StopSignal defines which signal will be sent to a container when it is being stopped.
-    /// If not specified, the default is defined by the container runtime in use.
-    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
-    pub stop_signal: Option<String>,
-}
-
-/// PostStart is called immediately after a container is created. If the handler fails,
-/// the container is terminated and restarted according to its restart policy.
-/// Other management of the container blocks until the hook completes.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStart {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecInitContainersLifecyclePostStartExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecInitContainersLifecyclePostStartHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecInitContainersLifecyclePostStartSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecInitContainersLifecyclePostStartTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStartExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStartHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStartSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePostStartTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// PreStop is called immediately before a container is terminated due to an
-/// API request or management event such as liveness/startup probe failure,
-/// preemption, resource contention, etc. The handler is not called if the
-/// container crashes or exits. The Pod's termination grace period countdown begins before the
-/// PreStop hook is executed. Regardless of the outcome of the handler, the
-/// container will eventually terminate within the Pod's termination grace
-/// period (unless delayed by finalizers). Other management of the container blocks until the hook completes
-/// or until the termination grace period is reached.
-/// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStop {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecInitContainersLifecyclePreStopExec>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecInitContainersLifecyclePreStopHttpGet>,
-    /// Sleep represents a duration that the container should sleep.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<NodeSetTemplateSpecInitContainersLifecyclePreStopSleep>,
-    /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-    /// for backward compatibility. There is no validation of this field and
-    /// lifecycle hooks will fail at runtime when it is specified.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecInitContainersLifecyclePreStopTcpSocket>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStopExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStopHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// Sleep represents a duration that the container should sleep.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStopSleep {
-    /// Seconds is the number of seconds to sleep.
-    pub seconds: i64,
-}
-
-/// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
-/// for backward compatibility. There is no validation of this field and
-/// lifecycle hooks will fail at runtime when it is specified.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLifecyclePreStopTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// Periodic probe of container liveness.
-/// Container will be restarted if the probe fails.
-/// Cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecInitContainersLivenessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecInitContainersLivenessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecInitContainersLivenessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecInitContainersLivenessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersLivenessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerPort represents a network port in a single container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersPorts {
-    /// Number of port to expose on the pod's IP address.
-    /// This must be a valid port number, 0 < x < 65536.
-    #[serde(rename = "containerPort")]
-    pub container_port: i32,
-    /// What host IP to bind the external port to.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIP")]
-    pub host_ip: Option<String>,
-    /// Number of port to expose on the host.
-    /// If specified, this must be a valid port number, 0 < x < 65536.
-    /// If HostNetwork is specified, this must match ContainerPort.
-    /// Most containers do not need this.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPort")]
-    pub host_port: Option<i32>,
-    /// If specified, this must be an IANA_SVC_NAME and unique within the pod. Each
-    /// named port in a pod must have a unique name. Name for the port that can be
-    /// referred to by services.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
-    /// Protocol for port. Must be UDP, TCP, or SCTP.
-    /// Defaults to "TCP".
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub protocol: Option<String>,
-}
-
-/// Periodic probe of container service readiness.
-/// Container will be removed from service endpoints if the probe fails.
-/// Cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecInitContainersReadinessProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecInitContainersReadinessProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecInitContainersReadinessProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecInitContainersReadinessProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersReadinessProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// ContainerResizePolicy represents resource resize policy for the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersResizePolicy {
-    /// Name of the resource to which this resource resize policy applies.
-    /// Supported values: cpu, memory.
-    #[serde(rename = "resourceName")]
-    pub resource_name: String,
-    /// Restart policy to apply when specified resource is resized.
-    /// If not specified, it defaults to NotRequired.
-    #[serde(rename = "restartPolicy")]
-    pub restart_policy: String,
+    pub resources: Option<NodeSetTemplateLogfileResources>,
 }
 
 /// Compute Resources required by this container.
-/// Cannot be updated.
 /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersResources {
+pub struct NodeSetTemplateLogfileResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
@@ -4425,7 +1391,7 @@ pub struct NodeSetTemplateSpecInitContainersResources {
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<NodeSetTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<NodeSetTemplateLogfileResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4440,7 +1406,7 @@ pub struct NodeSetTemplateSpecInitContainersResources {
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersResourcesClaims {
+pub struct NodeSetTemplateLogfileResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -4452,744 +1418,28 @@ pub struct NodeSetTemplateSpecInitContainersResourcesClaims {
     pub request: Option<String>,
 }
 
-/// SecurityContext defines the security options the container should be run with.
-/// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-/// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+/// Standard object's metadata.
+/// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContext {
-    /// AllowPrivilegeEscalation controls whether a process can gain more
-    /// privileges than its parent process. This bool directly controls if
-    /// the no_new_privs flag will be set on the container process.
-    /// AllowPrivilegeEscalation is true always when the container is:
-    /// 1) run as Privileged
-    /// 2) has CAP_SYS_ADMIN
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
-    pub allow_privilege_escalation: Option<bool>,
-    /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-    /// overrides the pod's appArmorProfile.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
-    pub app_armor_profile: Option<NodeSetTemplateSpecInitContainersSecurityContextAppArmorProfile>,
-    /// The capabilities to add/drop when running containers.
-    /// Defaults to the default set of capabilities granted by the container runtime.
-    /// Note that this field cannot be set when spec.os.name is windows.
+pub struct NodeSetTemplateMetadata {
+    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// set by external tools to store and retrieve arbitrary metadata. They are not
+    /// queryable and should be preserved when modifying objects.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<NodeSetTemplateSpecInitContainersSecurityContextCapabilities>,
-    /// Run container in privileged mode.
-    /// Processes in privileged containers are essentially equivalent to root on the host.
-    /// Defaults to false.
-    /// Note that this field cannot be set when spec.os.name is windows.
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Map of string keys and values that can be used to organize and categorize
+    /// (scope and select) objects. May match selectors of replication controllers
+    /// and services.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub privileged: Option<bool>,
-    /// procMount denotes the type of proc mount to use for the containers.
-    /// The default value is Default which uses the container runtime defaults for
-    /// readonly paths and masked paths.
-    /// This requires the ProcMountType feature flag to be enabled.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
-    pub proc_mount: Option<String>,
-    /// Whether this container has a read-only root filesystem.
-    /// Default is false.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
-    pub read_only_root_filesystem: Option<bool>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
-    pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
-    pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
-    pub run_as_user: Option<i64>,
-    /// The SELinux context to be applied to the container.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<NodeSetTemplateSpecInitContainersSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by this container. If seccomp options are
-    /// provided at both the pod & container level, the container options
-    /// override the pod options.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<NodeSetTemplateSpecInitContainersSecurityContextSeccompProfile>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options from the PodSecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<NodeSetTemplateSpecInitContainersSecurityContextWindowsOptions>,
-}
-
-/// appArmorProfile is the AppArmor options to use by this container. If set, this profile
-/// overrides the pod's appArmorProfile.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContextAppArmorProfile {
-    /// localhostProfile indicates a profile loaded on the node that should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must match the loaded name of the profile.
-    /// Must be set if and only if type is "Localhost".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of AppArmor profile will be applied.
-    /// Valid options are:
-    ///   Localhost - a profile pre-loaded on the node.
-    ///   RuntimeDefault - the container runtime's default profile.
-    ///   Unconfined - no AppArmor enforcement.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The capabilities to add/drop when running containers.
-/// Defaults to the default set of capabilities granted by the container runtime.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContextCapabilities {
-    /// Added capabilities
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub add: Option<Vec<String>>,
-    /// Removed capabilities
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub drop: Option<Vec<String>>,
-}
-
-/// The SELinux context to be applied to the container.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
-/// PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// The seccomp options to use by this container. If seccomp options are
-/// provided at both the pod & container level, the container options
-/// override the pod options.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
-    /// RuntimeDefault - the container runtime default profile should be used.
-    /// Unconfined - no profile should be applied.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options from the PodSecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
-}
-
-/// StartupProbe indicates that the Pod has successfully initialized.
-/// If specified, no other probes are executed until this completes successfully.
-/// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
-/// This can be used to provide different probe parameters at the beginning of a Pod's lifecycle,
-/// when it might take a long time to load data or warm a cache, than during steady-state operation.
-/// This cannot be updated.
-/// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbe {
-    /// Exec specifies a command to execute in the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<NodeSetTemplateSpecInitContainersStartupProbeExec>,
-    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
-    /// Defaults to 3. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
-    pub failure_threshold: Option<i32>,
-    /// GRPC specifies a GRPC HealthCheckRequest.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<NodeSetTemplateSpecInitContainersStartupProbeGrpc>,
-    /// HTTPGet specifies an HTTP GET request to perform.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<NodeSetTemplateSpecInitContainersStartupProbeHttpGet>,
-    /// Number of seconds after the container has started before liveness probes are initiated.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
-    pub initial_delay_seconds: Option<i32>,
-    /// How often (in seconds) to perform the probe.
-    /// Default to 10 seconds. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
-    pub period_seconds: Option<i32>,
-    /// Minimum consecutive successes for the probe to be considered successful after having failed.
-    /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
-    pub success_threshold: Option<i32>,
-    /// TCPSocket specifies a connection to a TCP port.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<NodeSetTemplateSpecInitContainersStartupProbeTcpSocket>,
-    /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
-    /// The grace period is the duration in seconds after the processes running in the pod are sent
-    /// a termination signal and the time when the processes are forcibly halted with a kill signal.
-    /// Set this value longer than the expected cleanup time for your process.
-    /// If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this
-    /// value overrides the value provided by the pod spec.
-    /// Value must be non-negative integer. The value zero indicates stop immediately via
-    /// the kill signal (no opportunity to shut down).
-    /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
-    /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
-    pub termination_grace_period_seconds: Option<i64>,
-    /// Number of seconds after which the probe times out.
-    /// Defaults to 1 second. Minimum value is 1.
-    /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
-    pub timeout_seconds: Option<i32>,
-}
-
-/// Exec specifies a command to execute in the container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbeExec {
-    /// Command is the command line to execute inside the container, the working directory for the
-    /// command  is root ('/') in the container's filesystem. The command is simply exec'd, it is
-    /// not run inside a shell, so traditional shell instructions ('|', etc) won't work. To use
-    /// a shell, you need to explicitly call out to that shell.
-    /// Exit status of 0 is treated as live/healthy and non-zero is unhealthy.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub command: Option<Vec<String>>,
-}
-
-/// GRPC specifies a GRPC HealthCheckRequest.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbeGrpc {
-    /// Port number of the gRPC service. Number must be in the range 1 to 65535.
-    pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest
-    /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    /// 
-    /// If this is not specified, the default behavior is defined by gRPC.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<String>,
-}
-
-/// HTTPGet specifies an HTTP GET request to perform.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbeHttpGet {
-    /// Host name to connect to, defaults to the pod IP. You probably want to set
-    /// "Host" in httpHeaders instead.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
-    pub http_headers: Option<Vec<NodeSetTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
-    /// Path to access on the HTTP server.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub path: Option<String>,
-    /// Name or number of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-    /// Scheme to use for connecting to the host.
-    /// Defaults to HTTP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub scheme: Option<String>,
-}
-
-/// HTTPHeader describes a custom header to be used in HTTP probes
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders {
-    /// The header field name.
-    /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
-    pub name: String,
-    /// The header field value
-    pub value: String,
-}
-
-/// TCPSocket specifies a connection to a TCP port.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersStartupProbeTcpSocket {
-    /// Optional: Host name to connect to, defaults to the pod IP.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub host: Option<String>,
-    /// Number or name of the port to access on the container.
-    /// Number must be in the range 1 to 65535.
-    /// Name must be an IANA_SVC_NAME.
-    pub port: IntOrString,
-}
-
-/// volumeDevice describes a mapping of a raw block device within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersVolumeDevices {
-    /// devicePath is the path inside of the container that the device will be mapped to.
-    #[serde(rename = "devicePath")]
-    pub device_path: String,
-    /// name must match the name of a persistentVolumeClaim in the pod
-    pub name: String,
-}
-
-/// VolumeMount describes a mounting of a Volume within a container.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecInitContainersVolumeMounts {
-    /// Path within the container at which the volume should be mounted.  Must
-    /// not contain ':'.
-    #[serde(rename = "mountPath")]
-    pub mount_path: String,
-    /// mountPropagation determines how mounts are propagated from the host
-    /// to container and the other way around.
-    /// When not set, MountPropagationNone is used.
-    /// This field is beta in 1.10.
-    /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
-    /// (which defaults to None).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
-    pub mount_propagation: Option<String>,
-    /// This must match the Name of a Volume.
-    pub name: String,
-    /// Mounted read-only if true, read-write otherwise (false or unspecified).
-    /// Defaults to false.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
-    pub read_only: Option<bool>,
-    /// RecursiveReadOnly specifies whether read-only mounts should be handled
-    /// recursively.
-    /// 
-    /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    /// 
-    /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
-    /// recursively read-only.  If this field is set to IfPossible, the mount is made
-    /// recursively read-only, if it is supported by the container runtime.  If this
-    /// field is set to Enabled, the mount is made recursively read-only if it is
-    /// supported by the container runtime, otherwise the pod will not be started and
-    /// an error will be generated to indicate the reason.
-    /// 
-    /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
-    /// None (or be unspecified, which defaults to None).
-    /// 
-    /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
-    pub recursive_read_only: Option<String>,
-    /// Path within the volume from which the container's volume should be mounted.
-    /// Defaults to "" (volume's root).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
-    pub sub_path: Option<String>,
-    /// Expanded path within the volume from which the container's volume should be mounted.
-    /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
-    /// Defaults to "" (volume's root).
-    /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
-    pub sub_path_expr: Option<String>,
-}
-
-/// Specifies the OS of the containers in the pod.
-/// Some pod and container fields are restricted if this is set.
-/// 
-/// If the OS field is set to linux, the following fields must be unset:
-/// -securityContext.windowsOptions
-/// 
-/// If the OS field is set to windows, following fields must be unset:
-/// - spec.hostPID
-/// - spec.hostIPC
-/// - spec.hostUsers
-/// - spec.securityContext.appArmorProfile
-/// - spec.securityContext.seLinuxOptions
-/// - spec.securityContext.seccompProfile
-/// - spec.securityContext.fsGroup
-/// - spec.securityContext.fsGroupChangePolicy
-/// - spec.securityContext.sysctls
-/// - spec.shareProcessNamespace
-/// - spec.securityContext.runAsUser
-/// - spec.securityContext.runAsGroup
-/// - spec.securityContext.supplementalGroups
-/// - spec.securityContext.supplementalGroupsPolicy
-/// - spec.containers[*].securityContext.appArmorProfile
-/// - spec.containers[*].securityContext.seLinuxOptions
-/// - spec.containers[*].securityContext.seccompProfile
-/// - spec.containers[*].securityContext.capabilities
-/// - spec.containers[*].securityContext.readOnlyRootFilesystem
-/// - spec.containers[*].securityContext.privileged
-/// - spec.containers[*].securityContext.allowPrivilegeEscalation
-/// - spec.containers[*].securityContext.procMount
-/// - spec.containers[*].securityContext.runAsUser
-/// - spec.containers[*].securityContext.runAsGroup
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecOs {
-    /// Name is the name of the operating system. The currently supported values are linux and windows.
-    /// Additional value may be defined in future and can be one of:
-    /// https://github.com/opencontainers/runtime-spec/blob/master/config.md#platform-specific-configuration
-    /// Clients should expect to handle additional values and treat unrecognized values in this field as os: null
-    pub name: String,
-}
-
-/// PodReadinessGate contains the reference to a pod condition
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecReadinessGates {
-    /// ConditionType refers to a condition in the pod's condition list with matching type.
-    #[serde(rename = "conditionType")]
-    pub condition_type: String,
-}
-
-/// PodResourceClaim references exactly one ResourceClaim, either directly
-/// or by naming a ResourceClaimTemplate which is then turned into a ResourceClaim
-/// for the pod.
-/// 
-/// It adds a name to it that uniquely identifies the ResourceClaim inside the Pod.
-/// Containers that need access to the ResourceClaim reference it with this name.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecResourceClaims {
-    /// Name uniquely identifies this resource claim inside the pod.
-    /// This must be a DNS_LABEL.
-    pub name: String,
-    /// ResourceClaimName is the name of a ResourceClaim object in the same
-    /// namespace as this pod.
-    /// 
-    /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
-    /// be set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
-    pub resource_claim_name: Option<String>,
-    /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
-    /// object in the same namespace as this pod.
-    /// 
-    /// The template will be used to create a new ResourceClaim, which will
-    /// be bound to this pod. When this pod is deleted, the ResourceClaim
-    /// will also be deleted. The pod name and resource name, along with a
-    /// generated component, will be used to form a unique name for the
-    /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    /// 
-    /// This field is immutable and no changes will be made to the
-    /// corresponding ResourceClaim by the control plane after creating the
-    /// ResourceClaim.
-    /// 
-    /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
-    /// be set.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
-    pub resource_claim_template_name: Option<String>,
-}
-
-/// Resources is the total amount of CPU and Memory resources required by all
-/// containers in the pod. It supports specifying Requests and Limits for
-/// "cpu" and "memory" resource names only. ResourceClaims are not supported.
-/// 
-/// This field enables fine-grained control over resource allocation for the
-/// entire pod, allowing resource sharing among containers in a pod.
-/// 
-/// This is an alpha field and requires enabling the PodLevelResources feature
-/// gate.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims,
-    /// that are used by this container.
-    /// 
-    /// This is an alpha field and requires enabling the
-    /// DynamicResourceAllocation feature gate.
-    /// 
-    /// This field is immutable. It can only be set for containers.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<NodeSetTemplateSpecResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required.
-    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
-    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
-    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub requests: Option<BTreeMap<String, IntOrString>>,
-}
-
-/// ResourceClaim references one entry in PodSpec.ResourceClaims.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of
-    /// the Pod where this field is used. It makes that resource available
-    /// inside a container.
-    pub name: String,
-    /// Request is the name chosen for a request in the referenced claim.
-    /// If empty, everything from the claim is made available, otherwise
-    /// only the result of this request.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub request: Option<String>,
-}
-
-/// PodSchedulingGate is associated to a Pod to guard its scheduling.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSchedulingGates {
-    /// Name of the scheduling gate.
-    /// Each scheduling gate must have a unique name field.
-    pub name: String,
-}
-
-/// SecurityContext holds pod-level security attributes and common container settings.
-/// Optional: Defaults to empty.  See type description for default values of each field.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContext {
-    /// appArmorProfile is the AppArmor options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
-    pub app_armor_profile: Option<NodeSetTemplateSpecSecurityContextAppArmorProfile>,
-    /// A special supplemental group that applies to all containers in a pod.
-    /// Some volume types allow the Kubelet to change the ownership of that volume
-    /// to be owned by the pod:
-    /// 
-    /// 1. The owning GID will be the FSGroup
-    /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
-    /// 3. The permission bits are OR'd with rw-rw----
-    /// 
-    /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
-    pub fs_group: Option<i64>,
-    /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume
-    /// before being exposed inside Pod. This field will only apply to
-    /// volume types which support fsGroup based ownership(and permissions).
-    /// It will have no effect on ephemeral volume types such as: secret, configmaps
-    /// and emptydir.
-    /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
-    pub fs_group_change_policy: Option<String>,
-    /// The GID to run the entrypoint of the container process.
-    /// Uses runtime default if unset.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
-    pub run_as_group: Option<i64>,
-    /// Indicates that the container must run as a non-root user.
-    /// If true, the Kubelet will validate the image at runtime to ensure that it
-    /// does not run as UID 0 (root) and fail to start the container if it does.
-    /// If unset or false, no such validation will be performed.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
-    pub run_as_non_root: Option<bool>,
-    /// The UID to run the entrypoint of the container process.
-    /// Defaults to user specified in image metadata if unspecified.
-    /// May also be set in SecurityContext.  If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence
-    /// for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
-    pub run_as_user: Option<i64>,
-    /// seLinuxChangePolicy defines how the container's SELinux label is applied to all volumes used by the Pod.
-    /// It has no effect on nodes that do not support SELinux or to volumes does not support SELinux.
-    /// Valid values are "MountOption" and "Recursive".
-    /// 
-    /// "Recursive" means relabeling of all files on all Pod volumes by the container runtime.
-    /// This may be slow for large volumes, but allows mixing privileged and unprivileged Pods sharing the same volume on the same node.
-    /// 
-    /// "MountOption" mounts all eligible Pod volumes with `-o context` mount option.
-    /// This requires all Pods that share the same volume to use the same SELinux label.
-    /// It is not possible to share the same volume among privileged and unprivileged Pods.
-    /// Eligible volumes are in-tree FibreChannel and iSCSI volumes, and all CSI volumes
-    /// whose CSI driver announces SELinux support by setting spec.seLinuxMount: true in their
-    /// CSIDriver instance. Other volumes are always re-labelled recursively.
-    /// "MountOption" value is allowed only when SELinuxMount feature gate is enabled.
-    /// 
-    /// If not specified and SELinuxMount feature gate is enabled, "MountOption" is used.
-    /// If not specified and SELinuxMount feature gate is disabled, "MountOption" is used for ReadWriteOncePod volumes
-    /// and "Recursive" for all other volumes.
-    /// 
-    /// This field affects only Pods that have SELinux label set, either in PodSecurityContext or in SecurityContext of all containers.
-    /// 
-    /// All Pods that use the same volume should use the same seLinuxChangePolicy, otherwise some pods can get stuck in ContainerCreating state.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
-    pub se_linux_change_policy: Option<String>,
-    /// The SELinux context to be applied to all containers.
-    /// If unspecified, the container runtime will allocate a random SELinux context for each
-    /// container.  May also be set in SecurityContext.  If set in
-    /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-    /// takes precedence for that container.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
-    pub se_linux_options: Option<NodeSetTemplateSpecSecurityContextSeLinuxOptions>,
-    /// The seccomp options to use by the containers in this pod.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
-    pub seccomp_profile: Option<NodeSetTemplateSpecSecurityContextSeccompProfile>,
-    /// A list of groups applied to the first process run in each container, in
-    /// addition to the container's primary GID and fsGroup (if specified).  If
-    /// the SupplementalGroupsPolicy feature is enabled, the
-    /// supplementalGroupsPolicy field determines whether these are in addition
-    /// to or instead of any group memberships defined in the container image.
-    /// If unspecified, no additional groups are added, though group memberships
-    /// defined in the container image may still be used, depending on the
-    /// supplementalGroupsPolicy field.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
-    pub supplemental_groups: Option<Vec<i64>>,
-    /// Defines how supplemental groups of the first container processes are calculated.
-    /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
-    /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
-    /// and the container runtime must implement support for this feature.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
-    pub supplemental_groups_policy: Option<String>,
-    /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
-    /// sysctls (by the container runtime) might fail to launch.
-    /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls: Option<Vec<NodeSetTemplateSpecSecurityContextSysctls>>,
-    /// The Windows specific settings applied to all containers.
-    /// If unspecified, the options within a container's SecurityContext will be used.
-    /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
-    pub windows_options: Option<NodeSetTemplateSpecSecurityContextWindowsOptions>,
-}
-
-/// appArmorProfile is the AppArmor options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContextAppArmorProfile {
-    /// localhostProfile indicates a profile loaded on the node that should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must match the loaded name of the profile.
-    /// Must be set if and only if type is "Localhost".
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of AppArmor profile will be applied.
-    /// Valid options are:
-    ///   Localhost - a profile pre-loaded on the node.
-    ///   RuntimeDefault - the container runtime's default profile.
-    ///   Unconfined - no AppArmor enforcement.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// The SELinux context to be applied to all containers.
-/// If unspecified, the container runtime will allocate a random SELinux context for each
-/// container.  May also be set in SecurityContext.  If set in
-/// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
-/// takes precedence for that container.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContextSeLinuxOptions {
-    /// Level is SELinux level label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub level: Option<String>,
-    /// Role is a SELinux role label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub role: Option<String>,
-    /// Type is a SELinux type label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
-    pub r#type: Option<String>,
-    /// User is a SELinux user label that applies to the container.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub user: Option<String>,
-}
-
-/// The seccomp options to use by the containers in this pod.
-/// Note that this field cannot be set when spec.os.name is windows.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContextSeccompProfile {
-    /// localhostProfile indicates a profile defined in a file on the node should be used.
-    /// The profile must be preconfigured on the node to work.
-    /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
-    /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
-    pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied.
-    /// Valid options are:
-    /// 
-    /// Localhost - a profile defined in a file on the node should be used.
-    /// RuntimeDefault - the container runtime default profile should be used.
-    /// Unconfined - no profile should be applied.
-    #[serde(rename = "type")]
-    pub r#type: String,
-}
-
-/// Sysctl defines a kernel parameter to be set
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContextSysctls {
-    /// Name of a property to set
-    pub name: String,
-    /// Value of a property to set
-    pub value: String,
-}
-
-/// The Windows specific settings applied to all containers.
-/// If unspecified, the options within a container's SecurityContext will be used.
-/// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-/// Note that this field cannot be set when spec.os.name is linux.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecSecurityContextWindowsOptions {
-    /// GMSACredentialSpec is where the GMSA admission webhook
-    /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
-    /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
-    pub gmsa_credential_spec: Option<String>,
-    /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
-    pub gmsa_credential_spec_name: Option<String>,
-    /// HostProcess determines if a container should be run as a 'Host Process' container.
-    /// All of a Pod's containers must have the same effective HostProcess value
-    /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
-    /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
-    pub host_process: Option<bool>,
-    /// The UserName in Windows to run the entrypoint of the container process.
-    /// Defaults to the user specified in image metadata if unspecified.
-    /// May also be set in PodSecurityContext. If set in both SecurityContext and
-    /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
-    pub run_as_user_name: Option<String>,
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches
 /// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecTolerations {
+pub struct NodeSetTemplateTolerations {
     /// Effect indicates the taint effect to match. Empty means match all taint effects.
     /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5216,192 +1466,49 @@ pub struct NodeSetTemplateSpecTolerations {
     pub value: Option<String>,
 }
 
-/// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecTopologySpreadConstraints {
-    /// LabelSelector is used to find matching pods.
-    /// Pods that match this label selector are counted to determine the number of pods
-    /// in their corresponding topology domain.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecTopologySpreadConstraintsLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select the pods over which
-    /// spreading will be calculated. The keys are used to lookup values from the
-    /// incoming pod labels, those key-value labels are ANDed with labelSelector
-    /// to select the group of existing pods over which spreading will be calculated
-    /// for the incoming pod. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
-    /// MatchLabelKeys cannot be set when LabelSelector isn't set.
-    /// Keys that don't exist in the incoming pod labels will
-    /// be ignored. A null or empty list means only match against labelSelector.
-    /// 
-    /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
-    pub match_label_keys: Option<Vec<String>>,
-    /// MaxSkew describes the degree to which pods may be unevenly distributed.
-    /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
-    /// between the number of matching pods in the target topology and the global minimum.
-    /// The global minimum is the minimum number of matching pods in an eligible domain
-    /// or zero if the number of eligible domains is less than MinDomains.
-    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
-    /// labelSelector spread as 2/2/1:
-    /// In this case, the global minimum is 1.
-    /// | zone1 | zone2 | zone3 |
-    /// |  P P  |  P P  |   P   |
-    /// - if MaxSkew is 1, incoming pod can only be scheduled to zone3 to become 2/2/2;
-    /// scheduling it onto zone1(zone2) would make the ActualSkew(3-1) on zone1(zone2)
-    /// violate MaxSkew(1).
-    /// - if MaxSkew is 2, incoming pod can be scheduled onto any zone.
-    /// When `whenUnsatisfiable=ScheduleAnyway`, it is used to give higher precedence
-    /// to topologies that satisfy it.
-    /// It's a required field. Default value is 1 and 0 is not allowed.
-    #[serde(rename = "maxSkew")]
-    pub max_skew: i32,
-    /// MinDomains indicates a minimum number of eligible domains.
-    /// When the number of eligible domains with matching topology keys is less than minDomains,
-    /// Pod Topology Spread treats "global minimum" as 0, and then the calculation of Skew is performed.
-    /// And when the number of eligible domains with matching topology keys equals or greater than minDomains,
-    /// this value has no effect on scheduling.
-    /// As a result, when the number of eligible domains is less than minDomains,
-    /// scheduler won't schedule more than maxSkew Pods to those domains.
-    /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
-    /// Valid values are integers greater than 0.
-    /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    /// 
-    /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
-    /// labelSelector spread as 2/2/2:
-    /// | zone1 | zone2 | zone3 |
-    /// |  P P  |  P P  |  P P  |
-    /// The number of domains is less than 5(MinDomains), so "global minimum" is treated as 0.
-    /// In this situation, new pod with the same labelSelector cannot be scheduled,
-    /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
-    /// it will violate MaxSkew.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
-    pub min_domains: Option<i32>,
-    /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
-    /// when calculating pod topology spread skew. Options are:
-    /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
-    /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    /// 
-    /// If this value is nil, the behavior is equivalent to the Honor policy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
-    pub node_affinity_policy: Option<String>,
-    /// NodeTaintsPolicy indicates how we will treat node taints when calculating
-    /// pod topology spread skew. Options are:
-    /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
-    /// has a toleration, are included.
-    /// - Ignore: node taints are ignored. All nodes are included.
-    /// 
-    /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
-    pub node_taints_policy: Option<String>,
-    /// TopologyKey is the key of node labels. Nodes that have a label with this key
-    /// and identical values are considered to be in the same topology.
-    /// We consider each <key, value> as a "bucket", and try to put balanced number
-    /// of pods into each bucket.
-    /// We define a domain as a particular instance of a topology.
-    /// Also, we define an eligible domain as a domain whose nodes meet the requirements of
-    /// nodeAffinityPolicy and nodeTaintsPolicy.
-    /// e.g. If TopologyKey is "kubernetes.io/hostname", each Node is a domain of that topology.
-    /// And, if TopologyKey is "topology.kubernetes.io/zone", each zone is a domain of that topology.
-    /// It's a required field.
-    #[serde(rename = "topologyKey")]
-    pub topology_key: String,
-    /// WhenUnsatisfiable indicates how to deal with a pod if it doesn't satisfy
-    /// the spread constraint.
-    /// - DoNotSchedule (default) tells the scheduler not to schedule it.
-    /// - ScheduleAnyway tells the scheduler to schedule the pod in any location,
-    ///   but giving higher precedence to topologies that would help reduce the
-    ///   skew.
-    /// A constraint is considered "Unsatisfiable" for an incoming pod
-    /// if and only if every possible node assignment for that pod would violate
-    /// "MaxSkew" on some topology.
-    /// For example, in a 3-zone cluster, MaxSkew is set to 1, and pods with the same
-    /// labelSelector spread as 3/1/1:
-    /// | zone1 | zone2 | zone3 |
-    /// | P P P |   P   |   P   |
-    /// If WhenUnsatisfiable is set to DoNotSchedule, incoming pod can only be scheduled
-    /// to zone2(zone3) to become 3/2/1(3/1/2) as ActualSkew(2-1) on zone2(zone3) satisfies
-    /// MaxSkew(1). In other words, the cluster can still be imbalanced, but scheduler
-    /// won't make it *more* imbalanced.
-    /// It's a required field.
-    #[serde(rename = "whenUnsatisfiable")]
-    pub when_unsatisfiable: String,
-}
-
-/// LabelSelector is used to find matching pods.
-/// Pods that match this label selector are counted to determine the number of pods
-/// in their corresponding topology domain.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecTopologySpreadConstraintsLabelSelector {
-    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
-    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
-    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
-    pub match_labels: Option<BTreeMap<String, String>>,
-}
-
-/// A label selector requirement is a selector that contains values, a key, and an operator that
-/// relates the key and values.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
-    /// key is the label key that the selector applies to.
-    pub key: String,
-    /// operator represents a key's relationship to a set of values.
-    /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn,
-    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
-    /// the values array must be empty. This array is replaced during a strategic
-    /// merge patch.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub values: Option<Vec<String>>,
-}
-
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumes {
+pub struct NodeSetTemplateVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// Deprecated: AWSElasticBlockStore is deprecated. All operations for the in-tree
     /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<NodeSetTemplateSpecVolumesAwsElasticBlockStore>,
+    pub aws_elastic_block_store: Option<NodeSetTemplateVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
     /// are redirected to the disk.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<NodeSetTemplateSpecVolumesAzureDisk>,
+    pub azure_disk: Option<NodeSetTemplateVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
     /// are redirected to the file.csi.azure.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<NodeSetTemplateSpecVolumesAzureFile>,
+    pub azure_file: Option<NodeSetTemplateVolumesAzureFile>,
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
     /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<NodeSetTemplateSpecVolumesCephfs>,
+    pub cephfs: Option<NodeSetTemplateVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
     /// Deprecated: Cinder is deprecated. All operations for the in-tree cinder type
     /// are redirected to the cinder.csi.openstack.org CSI driver.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<NodeSetTemplateSpecVolumesCinder>,
+    pub cinder: Option<NodeSetTemplateVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<NodeSetTemplateSpecVolumesConfigMap>,
+    pub config_map: Option<NodeSetTemplateVolumesConfigMap>,
     /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<NodeSetTemplateSpecVolumesCsi>,
+    pub csi: Option<NodeSetTemplateVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<NodeSetTemplateSpecVolumesDownwardApi>,
+    pub downward_api: Option<NodeSetTemplateVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<NodeSetTemplateSpecVolumesEmptyDir>,
+    pub empty_dir: Option<NodeSetTemplateVolumesEmptyDir>,
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
@@ -5427,44 +1534,44 @@ pub struct NodeSetTemplateSpecVolumes {
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<NodeSetTemplateSpecVolumesEphemeral>,
+    pub ephemeral: Option<NodeSetTemplateVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<NodeSetTemplateSpecVolumesFc>,
+    pub fc: Option<NodeSetTemplateVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
     /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<NodeSetTemplateSpecVolumesFlexVolume>,
+    pub flex_volume: Option<NodeSetTemplateVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
     /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<NodeSetTemplateSpecVolumesFlocker>,
+    pub flocker: Option<NodeSetTemplateVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// Deprecated: GCEPersistentDisk is deprecated. All operations for the in-tree
     /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<NodeSetTemplateSpecVolumesGcePersistentDisk>,
+    pub gce_persistent_disk: Option<NodeSetTemplateVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// Deprecated: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<NodeSetTemplateSpecVolumesGitRepo>,
+    pub git_repo: Option<NodeSetTemplateVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<NodeSetTemplateSpecVolumesGlusterfs>,
+    pub glusterfs: Option<NodeSetTemplateVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
     /// machine that is directly exposed to the container. This is generally
     /// used for system agents or other privileged things that are allowed
     /// to see the host machine. Most containers will NOT need this.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<NodeSetTemplateSpecVolumesHostPath>,
+    pub host_path: Option<NodeSetTemplateVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
     /// 
@@ -5480,12 +1587,12 @@ pub struct NodeSetTemplateSpecVolumes {
     /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub image: Option<NodeSetTemplateSpecVolumesImage>,
+    pub image: Option<NodeSetTemplateVolumesImage>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<NodeSetTemplateSpecVolumesIscsi>,
+    pub iscsi: Option<NodeSetTemplateVolumesIscsi>,
     /// name of the volume.
     /// Must be a DNS_LABEL and unique within the pod.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -5493,51 +1600,51 @@ pub struct NodeSetTemplateSpecVolumes {
     /// nfs represents an NFS mount on the host that shares a pod's lifetime
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<NodeSetTemplateSpecVolumesNfs>,
+    pub nfs: Option<NodeSetTemplateVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<NodeSetTemplateSpecVolumesPersistentVolumeClaim>,
+    pub persistent_volume_claim: Option<NodeSetTemplateVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
     /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<NodeSetTemplateSpecVolumesPhotonPersistentDisk>,
+    pub photon_persistent_disk: Option<NodeSetTemplateVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine.
     /// Deprecated: PortworxVolume is deprecated. All operations for the in-tree portworxVolume type
     /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
     /// is on.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<NodeSetTemplateSpecVolumesPortworxVolume>,
+    pub portworx_volume: Option<NodeSetTemplateVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<NodeSetTemplateSpecVolumesProjected>,
+    pub projected: Option<NodeSetTemplateVolumesProjected>,
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
     /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<NodeSetTemplateSpecVolumesQuobyte>,
+    pub quobyte: Option<NodeSetTemplateVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<NodeSetTemplateSpecVolumesRbd>,
+    pub rbd: Option<NodeSetTemplateVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<NodeSetTemplateSpecVolumesScaleIo>,
+    pub scale_io: Option<NodeSetTemplateVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<NodeSetTemplateSpecVolumesSecret>,
+    pub secret: Option<NodeSetTemplateVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<NodeSetTemplateSpecVolumesStorageos>,
+    pub storageos: Option<NodeSetTemplateVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine.
     /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
     /// are redirected to the csi.vsphere.vmware.com CSI driver.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<NodeSetTemplateSpecVolumesVsphereVolume>,
+    pub vsphere_volume: Option<NodeSetTemplateVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -5546,7 +1653,7 @@ pub struct NodeSetTemplateSpecVolumes {
 /// awsElasticBlockStore type are redirected to the ebs.csi.aws.com CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesAwsElasticBlockStore {
+pub struct NodeSetTemplateVolumesAwsElasticBlockStore {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -5573,7 +1680,7 @@ pub struct NodeSetTemplateSpecVolumesAwsElasticBlockStore {
 /// Deprecated: AzureDisk is deprecated. All operations for the in-tree azureDisk type
 /// are redirected to the disk.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesAzureDisk {
+pub struct NodeSetTemplateVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
@@ -5601,7 +1708,7 @@ pub struct NodeSetTemplateSpecVolumesAzureDisk {
 /// Deprecated: AzureFile is deprecated. All operations for the in-tree azureFile type
 /// are redirected to the file.csi.azure.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesAzureFile {
+pub struct NodeSetTemplateVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -5617,7 +1724,7 @@ pub struct NodeSetTemplateSpecVolumesAzureFile {
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime.
 /// Deprecated: CephFS is deprecated and the in-tree cephfs type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCephfs {
+pub struct NodeSetTemplateVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
@@ -5636,7 +1743,7 @@ pub struct NodeSetTemplateSpecVolumesCephfs {
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesCephfsSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5646,7 +1753,7 @@ pub struct NodeSetTemplateSpecVolumesCephfs {
 /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
 /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCephfsSecretRef {
+pub struct NodeSetTemplateVolumesCephfsSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -5661,7 +1768,7 @@ pub struct NodeSetTemplateSpecVolumesCephfsSecretRef {
 /// are redirected to the cinder.csi.openstack.org CSI driver.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCinder {
+pub struct NodeSetTemplateVolumesCinder {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -5676,7 +1783,7 @@ pub struct NodeSetTemplateSpecVolumesCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesCinderSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -5686,7 +1793,7 @@ pub struct NodeSetTemplateSpecVolumesCinder {
 /// secretRef is optional: points to a secret object containing parameters used to connect
 /// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCinderSecretRef {
+pub struct NodeSetTemplateVolumesCinderSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -5698,7 +1805,7 @@ pub struct NodeSetTemplateSpecVolumesCinderSecretRef {
 
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesConfigMap {
+pub struct NodeSetTemplateVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -5716,7 +1823,7 @@ pub struct NodeSetTemplateSpecVolumesConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesConfigMapItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesConfigMapItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -5731,7 +1838,7 @@ pub struct NodeSetTemplateSpecVolumesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesConfigMapItems {
+pub struct NodeSetTemplateVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -5751,7 +1858,7 @@ pub struct NodeSetTemplateSpecVolumesConfigMapItems {
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCsi {
+pub struct NodeSetTemplateVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
     /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
@@ -5766,7 +1873,7 @@ pub struct NodeSetTemplateSpecVolumesCsi {
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<NodeSetTemplateSpecVolumesCsiNodePublishSecretRef>,
+    pub node_publish_secret_ref: Option<NodeSetTemplateVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -5783,7 +1890,7 @@ pub struct NodeSetTemplateSpecVolumesCsi {
 /// This field is optional, and  may be empty if no secret is required. If the
 /// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesCsiNodePublishSecretRef {
+pub struct NodeSetTemplateVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -5795,7 +1902,7 @@ pub struct NodeSetTemplateSpecVolumesCsiNodePublishSecretRef {
 
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesDownwardApi {
+pub struct NodeSetTemplateVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a
     /// Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
@@ -5808,15 +1915,15 @@ pub struct NodeSetTemplateSpecVolumesDownwardApi {
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesDownwardApiItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesDownwardApiItems {
+pub struct NodeSetTemplateVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<NodeSetTemplateSpecVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<NodeSetTemplateVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -5830,12 +1937,12 @@ pub struct NodeSetTemplateSpecVolumesDownwardApiItems {
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<NodeSetTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<NodeSetTemplateVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesDownwardApiItemsFieldRef {
+pub struct NodeSetTemplateVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -5847,7 +1954,7 @@ pub struct NodeSetTemplateSpecVolumesDownwardApiItemsFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesDownwardApiItemsResourceFieldRef {
+pub struct NodeSetTemplateVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -5861,7 +1968,7 @@ pub struct NodeSetTemplateSpecVolumesDownwardApiItemsResourceFieldRef {
 /// emptyDir represents a temporary directory that shares a pod's lifetime.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEmptyDir {
+pub struct NodeSetTemplateVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory.
     /// The default is "" which means to use the node's default medium.
     /// Must be an empty string (default) or Memory.
@@ -5903,7 +2010,7 @@ pub struct NodeSetTemplateSpecVolumesEmptyDir {
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeral {
+pub struct NodeSetTemplateVolumesEphemeral {
     /// Will be used to create a stand-alone PVC to provision the volume.
     /// The pod in which this EphemeralVolumeSource is embedded will be the
     /// owner of the PVC, i.e. the PVC will be deleted together with the
@@ -5926,7 +2033,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeral {
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplate>,
+    pub volume_claim_template: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -5951,24 +2058,24 @@ pub struct NodeSetTemplateSpecVolumesEphemeral {
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplate {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplate {
     /// May contain labels and annotations that will be copied into the PVC
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
     /// are also valid here.
-    pub spec: NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5986,7 +2093,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {
 /// template. The same fields as in a PersistentVolumeClaim
 /// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
@@ -6000,7 +2107,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    pub data_source: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -6025,17 +2132,17 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    pub data_source_ref: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -6072,7 +2179,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -6108,7 +2215,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource 
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -6131,7 +2238,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceR
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6146,10 +2253,10 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
 
 /// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -6160,7 +2267,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector {
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+pub struct NodeSetTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6176,7 +2283,7 @@ pub struct NodeSetTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMat
 
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesFc {
+pub struct NodeSetTemplateVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6202,7 +2309,7 @@ pub struct NodeSetTemplateSpecVolumesFc {
 /// provisioned/attached using an exec based plugin.
 /// Deprecated: FlexVolume is deprecated. Consider using a CSIDriver instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesFlexVolume {
+pub struct NodeSetTemplateVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
     /// fsType is the filesystem type to mount.
@@ -6223,7 +2330,7 @@ pub struct NodeSetTemplateSpecVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -6232,7 +2339,7 @@ pub struct NodeSetTemplateSpecVolumesFlexVolume {
 /// contains more than one secret, all secrets are passed to the plugin
 /// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesFlexVolumeSecretRef {
+pub struct NodeSetTemplateVolumesFlexVolumeSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6245,7 +2352,7 @@ pub struct NodeSetTemplateSpecVolumesFlexVolumeSecretRef {
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running.
 /// Deprecated: Flocker is deprecated and the in-tree flocker type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesFlocker {
+pub struct NodeSetTemplateVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
@@ -6261,7 +2368,7 @@ pub struct NodeSetTemplateSpecVolumesFlocker {
 /// gcePersistentDisk type are redirected to the pd.csi.storage.gke.io CSI driver.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesGcePersistentDisk {
+pub struct NodeSetTemplateVolumesGcePersistentDisk {
     /// fsType is filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6291,7 +2398,7 @@ pub struct NodeSetTemplateSpecVolumesGcePersistentDisk {
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesGitRepo {
+pub struct NodeSetTemplateVolumesGitRepo {
     /// directory is the target directory name.
     /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
     /// git repository.  Otherwise, if specified, the volume will contain the git repository in
@@ -6309,7 +2416,7 @@ pub struct NodeSetTemplateSpecVolumesGitRepo {
 /// Deprecated: Glusterfs is deprecated and the in-tree glusterfs type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesGlusterfs {
+pub struct NodeSetTemplateVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
@@ -6329,7 +2436,7 @@ pub struct NodeSetTemplateSpecVolumesGlusterfs {
 /// to see the host machine. Most containers will NOT need this.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesHostPath {
+pub struct NodeSetTemplateVolumesHostPath {
     /// path of the directory on the host.
     /// If the path is a symlink, it will follow the link to the real path.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
@@ -6356,7 +2463,7 @@ pub struct NodeSetTemplateSpecVolumesHostPath {
 /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesImage {
+pub struct NodeSetTemplateVolumesImage {
     /// Policy for pulling OCI objects. Possible values are:
     /// Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
@@ -6378,7 +2485,7 @@ pub struct NodeSetTemplateSpecVolumesImage {
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesIscsi {
+pub struct NodeSetTemplateVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -6414,7 +2521,7 @@ pub struct NodeSetTemplateSpecVolumesIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesIscsiSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
     /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
@@ -6423,7 +2530,7 @@ pub struct NodeSetTemplateSpecVolumesIscsi {
 
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesIscsiSecretRef {
+pub struct NodeSetTemplateVolumesIscsiSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6436,7 +2543,7 @@ pub struct NodeSetTemplateSpecVolumesIscsiSecretRef {
 /// nfs represents an NFS mount on the host that shares a pod's lifetime
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesNfs {
+pub struct NodeSetTemplateVolumesNfs {
     /// path that is exported by the NFS server.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
@@ -6454,7 +2561,7 @@ pub struct NodeSetTemplateSpecVolumesNfs {
 /// PersistentVolumeClaim in the same namespace.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesPersistentVolumeClaim {
+pub struct NodeSetTemplateVolumesPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -6468,7 +2575,7 @@ pub struct NodeSetTemplateSpecVolumesPersistentVolumeClaim {
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine.
 /// Deprecated: PhotonPersistentDisk is deprecated and the in-tree photonPersistentDisk type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesPhotonPersistentDisk {
+pub struct NodeSetTemplateVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6484,7 +2591,7 @@ pub struct NodeSetTemplateSpecVolumesPhotonPersistentDisk {
 /// are redirected to the pxd.portworx.com CSI driver when the CSIMigrationPortworx feature-gate
 /// is on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesPortworxVolume {
+pub struct NodeSetTemplateVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6501,7 +2608,7 @@ pub struct NodeSetTemplateSpecVolumesPortworxVolume {
 
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjected {
+pub struct NodeSetTemplateVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -6513,13 +2620,13 @@ pub struct NodeSetTemplateSpecVolumesProjected {
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<NodeSetTemplateSpecVolumesProjectedSources>>,
+    pub sources: Option<Vec<NodeSetTemplateVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types.
 /// Exactly one of these fields must be set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSources {
+pub struct NodeSetTemplateVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
@@ -6534,19 +2641,19 @@ pub struct NodeSetTemplateSpecVolumesProjectedSources {
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
-    pub cluster_trust_bundle: Option<NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
+    pub cluster_trust_bundle: Option<NodeSetTemplateVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<NodeSetTemplateSpecVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<NodeSetTemplateVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<NodeSetTemplateSpecVolumesProjectedSourcesDownwardApi>,
+    pub downward_api: Option<NodeSetTemplateVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<NodeSetTemplateSpecVolumesProjectedSourcesSecret>,
+    pub secret: Option<NodeSetTemplateVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<NodeSetTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
+    pub service_account_token: Option<NodeSetTemplateVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -6563,13 +2670,13 @@ pub struct NodeSetTemplateSpecVolumesProjectedSources {
 /// The ordering of certificates within the file is arbitrary, and Kubelet
 /// may change the order over time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundle {
+pub struct NodeSetTemplateVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this label selector.  Only has
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    pub label_selector: Option<NodeSetTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6595,10 +2702,10 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundle {
 /// interpreted as "match nothing".  If set but empty, interpreted as "match
 /// everything".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+pub struct NodeSetTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<NodeSetTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -6609,7 +2716,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSele
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+pub struct NodeSetTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6625,7 +2732,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSele
 
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesConfigMap {
+pub struct NodeSetTemplateVolumesProjectedSourcesConfigMap {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -6634,7 +2741,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6649,7 +2756,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesConfigMapItems {
+pub struct NodeSetTemplateVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -6669,18 +2776,18 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesConfigMapItems {
 
 /// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApi {
+pub struct NodeSetTemplateVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItems {
+pub struct NodeSetTemplateVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<NodeSetTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -6694,12 +2801,12 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItems {
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<NodeSetTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
+pub struct NodeSetTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -6711,7 +2818,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+pub struct NodeSetTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -6724,7 +2831,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFie
 
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesSecret {
+pub struct NodeSetTemplateVolumesProjectedSourcesSecret {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -6733,7 +2840,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6748,7 +2855,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesSecretItems {
+pub struct NodeSetTemplateVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -6768,7 +2875,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesSecretItems {
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesProjectedSourcesServiceAccountToken {
+pub struct NodeSetTemplateVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -6791,7 +2898,7 @@ pub struct NodeSetTemplateSpecVolumesProjectedSourcesServiceAccountToken {
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime.
 /// Deprecated: Quobyte is deprecated and the in-tree quobyte type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesQuobyte {
+pub struct NodeSetTemplateVolumesQuobyte {
     /// group to map volume access to
     /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6820,7 +2927,7 @@ pub struct NodeSetTemplateSpecVolumesQuobyte {
 /// Deprecated: RBD is deprecated and the in-tree rbd type is no longer supported.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesRbd {
+pub struct NodeSetTemplateVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6853,7 +2960,7 @@ pub struct NodeSetTemplateSpecVolumesRbd {
     /// Default is nil.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesRbdSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesRbdSecretRef>,
     /// user is the rados user name.
     /// Default is admin.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
@@ -6866,7 +2973,7 @@ pub struct NodeSetTemplateSpecVolumesRbd {
 /// Default is nil.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesRbdSecretRef {
+pub struct NodeSetTemplateVolumesRbdSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6879,7 +2986,7 @@ pub struct NodeSetTemplateSpecVolumesRbdSecretRef {
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 /// Deprecated: ScaleIO is deprecated and the in-tree scaleIO type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesScaleIo {
+pub struct NodeSetTemplateVolumesScaleIo {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs".
@@ -6898,7 +3005,7 @@ pub struct NodeSetTemplateSpecVolumesScaleIo {
     /// secretRef references to the secret for ScaleIO user and other
     /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
-    pub secret_ref: NodeSetTemplateSpecVolumesScaleIoSecretRef,
+    pub secret_ref: NodeSetTemplateVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
@@ -6920,7 +3027,7 @@ pub struct NodeSetTemplateSpecVolumesScaleIo {
 /// secretRef references to the secret for ScaleIO user and other
 /// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesScaleIoSecretRef {
+pub struct NodeSetTemplateVolumesScaleIoSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -6933,7 +3040,7 @@ pub struct NodeSetTemplateSpecVolumesScaleIoSecretRef {
 /// secret represents a secret that should populate this volume.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesSecret {
+pub struct NodeSetTemplateVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values
@@ -6951,7 +3058,7 @@ pub struct NodeSetTemplateSpecVolumesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<NodeSetTemplateSpecVolumesSecretItems>>,
+    pub items: Option<Vec<NodeSetTemplateVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -6963,7 +3070,7 @@ pub struct NodeSetTemplateSpecVolumesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesSecretItems {
+pub struct NodeSetTemplateVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -6984,7 +3091,7 @@ pub struct NodeSetTemplateSpecVolumesSecretItems {
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 /// Deprecated: StorageOS is deprecated and the in-tree storageos type is no longer supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesStorageos {
+pub struct NodeSetTemplateVolumesStorageos {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -6997,7 +3104,7 @@ pub struct NodeSetTemplateSpecVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<NodeSetTemplateSpecVolumesStorageosSecretRef>,
+    pub secret_ref: Option<NodeSetTemplateVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -7015,7 +3122,7 @@ pub struct NodeSetTemplateSpecVolumesStorageos {
 /// secretRef specifies the secret to use for obtaining the StorageOS API
 /// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesStorageosSecretRef {
+pub struct NodeSetTemplateVolumesStorageosSecretRef {
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -7029,7 +3136,7 @@ pub struct NodeSetTemplateSpecVolumesStorageosSecretRef {
 /// Deprecated: VsphereVolume is deprecated. All operations for the in-tree vsphereVolume type
 /// are redirected to the csi.vsphere.vmware.com CSI driver.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSetTemplateSpecVolumesVsphereVolume {
+pub struct NodeSetTemplateVolumesVsphereVolume {
     /// fsType is filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.

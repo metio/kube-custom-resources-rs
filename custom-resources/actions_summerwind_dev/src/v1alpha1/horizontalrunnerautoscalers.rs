@@ -41,7 +41,9 @@ pub struct HorizontalRunnerAutoscalerSpec {
     /// ScaleUpTriggers is an experimental feature to increase the desired replicas by 1
     /// on each webhook requested received by the webhookBasedAutoscaler.
     /// 
+    /// 
     /// This feature requires you to also enable and deploy the webhookBasedAutoscaler onto your cluster.
+    /// 
     /// 
     /// Note that the added runners remain until the next sync period at least,
     /// and they may or may not be used by GitHub Actions depending on the timing.
