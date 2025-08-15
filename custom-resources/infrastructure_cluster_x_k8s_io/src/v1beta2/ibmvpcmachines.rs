@@ -280,6 +280,9 @@ pub struct IBMVPCMachineStatus {
     /// Ready is true when the provider resource is ready.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
+    /// V1beta2 groups all the fields that will be added or modified in IBMVPCMachine's status with the V1Beta2 version.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub v1beta2: Option<IBMVPCMachineStatusV1beta2>,
 }
 
 /// NodeAddress contains information for the node's address.
@@ -327,5 +330,13 @@ pub struct IBMVPCMachineStatusLoadBalancerPoolMembersPool {
     /// name of the resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// V1beta2 groups all the fields that will be added or modified in IBMVPCMachine's status with the V1Beta2 version.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct IBMVPCMachineStatusV1beta2 {
+    /// Conditions represents the observations of a IBMVPCMachine's current state.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

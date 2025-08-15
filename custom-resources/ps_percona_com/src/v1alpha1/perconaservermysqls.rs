@@ -1934,6 +1934,8 @@ pub struct PerconaServerMySQLMysql {
     pub tolerations: Option<Vec<PerconaServerMySQLMysqlTolerations>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
     pub topology_spread_constraints: Option<Vec<PerconaServerMySQLMysqlTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSecretName")]
+    pub vault_secret_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSpec")]
     pub volume_spec: Option<PerconaServerMySQLMysqlVolumeSpec>,
 }
@@ -6296,6 +6298,8 @@ pub struct PerconaServerMySQLProxyRouter {
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<PerconaServerMySQLProxyRouterPodSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ports: Option<Vec<PerconaServerMySQLProxyRouterPorts>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
@@ -6944,6 +6948,21 @@ pub struct PerconaServerMySQLProxyRouterPodSecurityContextWindowsOptions {
     pub host_process: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLProxyRouterPorts {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appProtocol")]
+    pub app_protocol: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
+    pub node_port: Option<i32>,
+    pub port: i32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
+    pub target_port: Option<IntOrString>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

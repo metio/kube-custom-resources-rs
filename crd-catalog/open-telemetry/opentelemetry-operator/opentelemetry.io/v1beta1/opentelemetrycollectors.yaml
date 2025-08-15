@@ -2405,6 +2405,11 @@ spec:
                     - "sidecar"
                     - "statefulset"
                   type: "string"
+                networkPolicy:
+                  properties:
+                    enabled:
+                      type: "boolean"
+                  type: "object"
                 nodeSelector:
                   additionalProperties:
                     type: "string"

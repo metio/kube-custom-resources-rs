@@ -49,6 +49,7 @@ pub struct ProfileRecordingSpec {
 pub enum ProfileRecordingKind {
     SeccompProfile,
     SelinuxProfile,
+    ApparmorProfile,
 }
 
 /// ProfileRecordingSpec defines the desired state of ProfileRecording.

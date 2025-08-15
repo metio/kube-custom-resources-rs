@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.2"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "tinkerbellmachines.infrastructure.cluster.x-k8s.io"
 spec:
   group: "infrastructure.cluster.x-k8s.io"
@@ -56,11 +56,12 @@ spec:
                   description: "BootOptions are options that control the booting of Hardware."
                   properties:
                     bootMode:
-                      description: "BootMode is the type of booting that will be done.\nMust be one of \"none\", \"netboot\", or \"iso\"."
+                      description: "BootMode is the type of booting that will be done.\nMust be one of \"none\", \"netboot\", \"iso\", or \"isoboot\"."
                       enum:
                         - "none"
                         - "netboot"
                         - "iso"
+                        - "isoboot"
                       type: "string"
                     isoURL:
                       description: "ISOURL is the URL of the ISO that will be one-time booted.\nA HardwareRef that contains a spec.BmcRef must be provided.\n\nThe format of the ISOURL must be http://$IP:$Port/iso/hook.iso\nThe name of the ISO file must have the .iso extension, but the name can be anything.\nThe $IP and $Port should generally point to the IP and Port of the Smee server\nas this is where the ISO patching endpoint lives.\nThe controller will append the MAC address of the hardware in the ISO URL\nright before the iso file name in the URL.\nMAC address is then used to retrieve hardware specific information such as\nIPAM info, custom kernel cmd line args and populate the worker ID for the tink worker/agent.\nFor ex. the above format would be replaced to http://$IP:$Port/iso/<macAddress>/hook.iso"

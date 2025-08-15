@@ -1718,6 +1718,9 @@ pub struct InfinispanServiceContainer {
     /// The storage class object for persistent volume claims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
+    /// TerminationGracePeriodSeconds specifies the duration the container is given to shut down gracefully before it is forcefully terminated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
+    pub termination_grace_period_seconds: Option<i64>,
 }
 
 /// Periodic probe of container liveness.

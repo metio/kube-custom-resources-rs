@@ -4,7 +4,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: "keep"
   labels:
-    resource.alpha.banzaicloud.io/revision: "1.15.3"
+    resource.alpha.banzaicloud.io/revision: "1.17.8"
   name: "istiomeshes.servicemesh.cisco.com"
 spec:
   group: "servicemesh.cisco.com"
@@ -322,18 +322,25 @@ spec:
                           type: "string"
                         meshId:
                           type: "string"
-                        parentShutdownDuration:
-                          type: "string"
                         privateKeyProvider:
                           oneOf:
                             - not:
                                 anyOf:
                                   - required:
                                       - "cryptomb"
+                                  - required:
+                                      - "qat"
                             - required:
                                 - "cryptomb"
+                            - required:
+                                - "qat"
                           properties:
                             cryptomb:
+                              properties:
+                                pollDelay:
+                                  type: "string"
+                              type: "object"
+                            qat:
                               properties:
                                 pollDelay:
                                   type: "string"
@@ -700,7 +707,9 @@ spec:
                                     - "envoyExtAuthzGrpc"
                                 - required:
                                     - "zipkin"
-                                - required:
+                                - properties:
+                                    lightstep: {}
+                                  required:
                                     - "lightstep"
                                 - required:
                                     - "datadog"
@@ -711,6 +720,8 @@ spec:
                                 - required:
                                     - "skywalking"
                                 - required:
+                                    - "opentelemetry"
+                                - required:
                                     - "prometheus"
                                 - required:
                                     - "envoyFileAccessLog"
@@ -720,13 +731,16 @@ spec:
                                     - "envoyTcpAls"
                                 - required:
                                     - "envoyOtelAls"
+                                - {}
                           - required:
                               - "envoyExtAuthzHttp"
                           - required:
                               - "envoyExtAuthzGrpc"
                           - required:
                               - "zipkin"
-                          - required:
+                          - properties:
+                              lightstep: {}
+                            required:
                               - "lightstep"
                           - required:
                               - "datadog"
@@ -737,6 +751,8 @@ spec:
                           - required:
                               - "skywalking"
                           - required:
+                              - "opentelemetry"
+                          - required:
                               - "prometheus"
                           - required:
                               - "envoyFileAccessLog"
@@ -746,6 +762,39 @@ spec:
                               - "envoyTcpAls"
                           - required:
                               - "envoyOtelAls"
+                          - not:
+                              anyOf:
+                                - {}
+                                - required:
+                                    - "envoyExtAuthzHttp"
+                                - required:
+                                    - "envoyExtAuthzGrpc"
+                                - required:
+                                    - "zipkin"
+                                - properties:
+                                    lightstep: {}
+                                  required:
+                                    - "lightstep"
+                                - required:
+                                    - "datadog"
+                                - required:
+                                    - "stackdriver"
+                                - required:
+                                    - "opencensus"
+                                - required:
+                                    - "skywalking"
+                                - required:
+                                    - "opentelemetry"
+                                - required:
+                                    - "prometheus"
+                                - required:
+                                    - "envoyFileAccessLog"
+                                - required:
+                                    - "envoyHttpAls"
+                                - required:
+                                    - "envoyTcpAls"
+                                - required:
+                                    - "envoyOtelAls"
                         properties:
                           datadog:
                             properties:
@@ -935,6 +984,15 @@ spec:
                               service:
                                 type: "string"
                             type: "object"
+                          opentelemetry:
+                            properties:
+                              maxTagLength:
+                                type: "integer"
+                              port:
+                                type: "integer"
+                              service:
+                                type: "string"
+                            type: "object"
                           prometheus:
                             type: "object"
                           skywalking:
@@ -1091,13 +1149,6 @@ spec:
                         probes:
                           type: "integer"
                         time:
-                          type: "string"
-                      type: "object"
-                    thriftConfig:
-                      properties:
-                        rateLimitTimeout:
-                          type: "string"
-                        rateLimitUrl:
                           type: "string"
                       type: "object"
                     trustDomain:

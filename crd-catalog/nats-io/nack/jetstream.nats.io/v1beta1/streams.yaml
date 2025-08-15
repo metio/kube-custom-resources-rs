@@ -15,7 +15,7 @@ spec:
           jsonPath: ".status.conditions[?(@.type == 'Ready')].reason"
           name: "State"
           type: "string"
-        - description: "The name of the Jetstream Stream."
+        - description: "The name of the JetStream Stream."
           jsonPath: ".spec.name"
           name: "Stream Name"
           type: "string"
@@ -68,7 +68,7 @@ spec:
                   type: "integer"
                 maxMsgsPerSubject:
                   default: 0
-                  description: "The maximum of messages per subject."
+                  description: "The maximum number of messages per subject."
                   type: "integer"
                 mirror:
                   description: "A stream mirror."

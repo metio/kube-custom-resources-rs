@@ -101,6 +101,9 @@ spec:
                 engineVersion:
                   description: "The version number of the cache engine to be used for the clusters in this\nreplication group. To view the supported cache engine versions, use the DescribeCacheEngineVersions\noperation.\n\nImportant: You can upgrade to a newer engine version (see Selecting a Cache\nEngine and Version (https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html#VersionManagement))\nin the ElastiCache User Guide, but you cannot downgrade to an earlier engine\nversion. If you want to use an earlier engine version, you must delete the\nexisting cluster or replication group and create it anew with the earlier\nengine version."
                   type: "string"
+                ipDiscovery:
+                  description: "The network type you choose when creating a replication group, either ipv4\n| ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis\nOSS engine version 6.2 and above or Memcached engine version 1.6.6 and above\non all instances built on the Nitro system (http://aws.amazon.com/ec2/nitro/)."
+                  type: "string"
                 kmsKeyID:
                   description: "The ID of the KMS key used to encrypt the disk in the cluster."
                   type: "string"
@@ -138,6 +141,12 @@ spec:
                 multiAZEnabled:
                   description: "A flag indicating if you have Multi-AZ enabled to enhance fault tolerance.\nFor more information, see Minimizing Downtime: Multi-AZ (http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html)."
                   type: "boolean"
+                networkType:
+                  description: "Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads\nusing Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached\nengine version 1.6.6 and above on all instances built on the Nitro system\n(http://aws.amazon.com/ec2/nitro/)."
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 nodeGroupConfiguration:
                   description: "A list of node group (shard) configuration options. Each node group (shard)\nconfiguration has the following members: PrimaryAvailabilityZone, ReplicaAvailabilityZones,\nReplicaCount, and Slots.\n\nIf you're creating a Valkey or Redis OSS (cluster mode disabled) or a Valkey\nor Redis OSS (cluster mode enabled) replication group, you can use this parameter\nto individually configure each node group (shard), or you can omit this parameter.\nHowever, it is required when seeding a Valkey or Redis OSS (cluster mode\nenabled) cluster from a S3 rdb file. You must configure each node group (shard)\nusing this parameter because you must specify the slots for each node group."
                   items:

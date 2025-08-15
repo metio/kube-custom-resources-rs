@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "repositories.ecr.services.k8s.aws"
 spec:
   group: "ecr.services.k8s.aws"
@@ -37,7 +37,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "RepositorySpec defines the desired state of Repository.\n\n\nAn object representing a repository."
+              description: "RepositorySpec defines the desired state of Repository.\n\nAn object representing a repository."
               properties:
                 encryptionConfiguration:
                   description: "The encryption configuration for the repository. This determines how the\ncontents of your repository are encrypted at rest."
@@ -60,13 +60,13 @@ spec:
                   description: "The JSON repository policy text to apply to the repository."
                   type: "string"
                 name:
-                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app)."
+                  description: "The name to use for the repository. The repository name may be specified\non its own (such as nginx-web-app) or it can be prepended with a namespace\nto group the repository into a category (such as project-a/nginx-web-app).\n\nThe repository name must start with a letter and can only contain lowercase\nletters, numbers, hyphens, underscores, and forward slashes.\n\nRegex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`"
                   type: "string"
                 policy:
                   description: "The JSON repository policy text to apply to the repository. For more information,\nsee Amazon ECR repository policies (https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-policy-examples.html)\nin the Amazon Elastic Container Registry User Guide."
                   type: "string"
                 registryID:
-                  description: "The Amazon Web Services account ID associated with the registry to create\nthe repository. If you do not specify a registry, the default registry is\nassumed."
+                  description: "The Amazon Web Services account ID associated with the registry to create\nthe repository. If you do not specify a registry, the default registry is\nassumed.\n\nRegex Pattern: `^[0-9]{12}$`"
                   type: "string"
                 tags:
                   description: "The metadata that you apply to the repository to help you categorize and\norganize them. Each tag consists of a key and an optional value, both of\nwhich you define. Tag keys can have a maximum character length of 128 characters,\nand tag values can have a maximum length of 256 characters."
@@ -89,7 +89,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -102,7 +102,7 @@ spec:
                     - "region"
                   type: "object"
                 conditions:
-                  description: "All CRS managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
+                  description: "All CRs managed by ACK have a common `Status.Conditions` member that\ncontains a collection of `ackv1alpha1.Condition` objects that describe\nthe various terminal states of the CR and its backend AWS service API\nresource"
                   items:
                     description: "Condition is the common struct used by all CRDs managed by ACK service\ncontrollers to indicate terminal states  of the CR and its backend AWS\nservice API resource"
                     properties:

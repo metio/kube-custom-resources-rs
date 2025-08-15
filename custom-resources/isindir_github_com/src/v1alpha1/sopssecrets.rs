@@ -114,14 +114,18 @@ pub struct SopsSecretSecretTemplates {
     /// Annotations to apply to Kubernetes secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Data map to use in Kubernetes secret (equivalent to Kubernetes Secret object stringData, please see for more information: https://kubernetes.io/docs/concepts/configuration/secret/#overview-of-secrets)
+    /// Data map to use in Kubernetes secret (equivalent to Kubernetes Secret object stringData, please see for more
+    /// information: https://kubernetes.io/docs/concepts/configuration/secret/#overview-of-secrets)
     pub data: BTreeMap<String, String>,
     /// Labels to apply to Kubernetes secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name of the Kubernetes secret to create
     pub name: String,
-    /// Kubernetes secret type. Default: Opauqe. Possible values: Opauqe, kubernetes.io/service-account-token, kubernetes.io/dockercfg, kubernetes.io/dockerconfigjson, kubernetes.io/basic-auth, kubernetes.io/ssh-auth, kubernetes.io/tls, bootstrap.kubernetes.io/token
+    /// Kubernetes secret type. Default: Opauqe. Possible values: Opauqe,
+    /// kubernetes.io/service-account-token, kubernetes.io/dockercfg,
+    /// kubernetes.io/dockerconfigjson, kubernetes.io/basic-auth,
+    /// kubernetes.io/ssh-auth, kubernetes.io/tls, bootstrap.kubernetes.io/token
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }

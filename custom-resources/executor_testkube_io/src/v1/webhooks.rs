@@ -18,9 +18,6 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct WebhookSpec {
-    /// webhook configuration
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub config: Option<BTreeMap<String, WebhookConfig>>,
     /// Disabled will disable the webhook
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
@@ -34,9 +31,6 @@ pub struct WebhookSpec {
     /// Deprecated: field is not used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onStateChange")]
     pub on_state_change: Option<bool>,
-    /// webhook parameters
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub parameters: Option<Vec<WebhookParameters>>,
     /// will load the generated payload for notification inside the object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadObjectField")]
     pub payload_object_field: Option<String>,
@@ -52,61 +46,6 @@ pub struct WebhookSpec {
     /// Uri is address where webhook should be made (golang template supported)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uri: Option<String>,
-    /// webhook template reference
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webhookTemplateRef")]
-    pub webhook_template_ref: Option<WebhookWebhookTemplateRef>,
-}
-
-/// webhook configuration
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WebhookConfig {
-    /// private value stored in secret to use in webhook template
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<WebhookConfigSecret>,
-    /// public value to use in webhook template
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
-}
-
-/// private value stored in secret to use in webhook template
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WebhookConfigSecret {
-    /// object key
-    pub key: String,
-    /// object name
-    pub name: String,
-    /// object kubernetes namespace
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
-}
-
-/// webhook parameter schema
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WebhookParameters {
-    /// default parameter value
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub default: Option<String>,
-    /// description for the parameter
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// example value for the parameter
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub example: Option<String>,
-    /// unique parameter name
-    pub name: String,
-    /// regular expression to match
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pattern: Option<String>,
-    /// whether parameter is required
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub required: Option<bool>,
-}
-
-/// webhook template reference
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WebhookWebhookTemplateRef {
-    /// webhook template name to include
-    pub name: String,
 }
 
 /// WebhookStatus defines the observed state of Webhook

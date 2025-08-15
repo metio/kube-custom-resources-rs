@@ -829,15 +829,479 @@ pub struct RuntimeComponentAffinityPodAntiAffinityRequiredDuringSchedulingIgnore
 /// Configures the desired resource consumption of pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RuntimeComponentAutoscaling {
+    /// Scaling behavior of the target. If not set, the default HPAScalingRules for scale up and scale down are used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub behavior: Option<RuntimeComponentAutoscalingBehavior>,
     /// Required field for autoscaling. Upper limit for the number of pods that can be set by the autoscaler. Parameter .spec.resources.requests.cpu must also be specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxReplicas")]
     pub max_replicas: Option<i32>,
+    /// Specifications used for replica count calculation
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metrics: Option<Vec<RuntimeComponentAutoscalingMetrics>>,
     /// Lower limit for the number of pods that can be set by the autoscaler.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
     /// Target average CPU utilization, represented as a percentage of requested CPU, over all the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetCPUUtilizationPercentage")]
     pub target_cpu_utilization_percentage: Option<i32>,
+    /// Target average Memory utilization, represented as a percentage of requested memory, over all the pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetMemoryUtilizationPercentage")]
+    pub target_memory_utilization_percentage: Option<i32>,
+}
+
+/// Scaling behavior of the target. If not set, the default HPAScalingRules for scale up and scale down are used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingBehavior {
+    /// scaleDown is scaling policy for scaling Down.
+    /// If not set, the default value is to allow to scale down to minReplicas pods, with a
+    /// 300 second stabilization window (i.e., the highest recommendation for
+    /// the last 300sec is used).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDown")]
+    pub scale_down: Option<RuntimeComponentAutoscalingBehaviorScaleDown>,
+    /// scaleUp is scaling policy for scaling Up.
+    /// If not set, the default value is the higher of:
+    ///   * increase no more than 4 pods per 60 seconds
+    ///   * double the number of pods per 60 seconds
+    /// No stabilization is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUp")]
+    pub scale_up: Option<RuntimeComponentAutoscalingBehaviorScaleUp>,
+}
+
+/// scaleDown is scaling policy for scaling Down.
+/// If not set, the default value is to allow to scale down to minReplicas pods, with a
+/// 300 second stabilization window (i.e., the highest recommendation for
+/// the last 300sec is used).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingBehaviorScaleDown {
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policies: Option<Vec<RuntimeComponentAutoscalingBehaviorScaleDownPolicies>>,
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
+    pub select_policy: Option<String>,
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
+    pub stabilization_window_seconds: Option<i32>,
+}
+
+/// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingBehaviorScaleDownPolicies {
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    #[serde(rename = "periodSeconds")]
+    pub period_seconds: i32,
+    /// type is used to specify the scaling policy.
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
+    pub value: i32,
+}
+
+/// scaleUp is scaling policy for scaling Up.
+/// If not set, the default value is the higher of:
+///   * increase no more than 4 pods per 60 seconds
+///   * double the number of pods per 60 seconds
+/// No stabilization is used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingBehaviorScaleUp {
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policies: Option<Vec<RuntimeComponentAutoscalingBehaviorScaleUpPolicies>>,
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
+    pub select_policy: Option<String>,
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
+    pub stabilization_window_seconds: Option<i32>,
+}
+
+/// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingBehaviorScaleUpPolicies {
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    #[serde(rename = "periodSeconds")]
+    pub period_seconds: i32,
+    /// type is used to specify the scaling policy.
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
+    pub value: i32,
+}
+
+/// MetricSpec specifies how to scale based on a single metric
+/// (only `type` and one other matching field should be set at once).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetrics {
+    /// containerResource refers to a resource metric (such as those specified in
+    /// requests and limits) known to Kubernetes describing a single container in
+    /// each pod of the current scale target (e.g. CPU or memory). Such metrics are
+    /// built in to Kubernetes, and have special scaling options on top of those
+    /// available to normal per-pod metrics using the "pods" source.
+    /// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
+    pub container_resource: Option<RuntimeComponentAutoscalingMetricsContainerResource>,
+    /// external refers to a global metric that is not associated
+    /// with any Kubernetes object. It allows autoscaling based on information
+    /// coming from components running outside of cluster
+    /// (for example length of queue in cloud messaging service, or
+    /// QPS from loadbalancer running outside of cluster).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub external: Option<RuntimeComponentAutoscalingMetricsExternal>,
+    /// object refers to a metric describing a single kubernetes object
+    /// (for example, hits-per-second on an Ingress object).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub object: Option<RuntimeComponentAutoscalingMetricsObject>,
+    /// pods refers to a metric describing each pod in the current scale target
+    /// (for example, transactions-processed-per-second).  The values will be
+    /// averaged together before being compared to the target value.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub pods: Option<RuntimeComponentAutoscalingMetricsPods>,
+    /// resource refers to a resource metric (such as those specified in
+    /// requests and limits) known to Kubernetes describing each pod in the
+    /// current scale target (e.g. CPU or memory). Such metrics are built in to
+    /// Kubernetes, and have special scaling options on top of those available
+    /// to normal per-pod metrics using the "pods" source.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resource: Option<RuntimeComponentAutoscalingMetricsResource>,
+    /// type is the type of metric source.  It should be one of "ContainerResource", "External",
+    /// "Object", "Pods" or "Resource", each mapping to a matching field in the object.
+    /// Note: "ContainerResource" type is available on when the feature-gate
+    /// HPAContainerMetrics is enabled
+    #[serde(rename = "type")]
+    pub r#type: String,
+}
+
+/// containerResource refers to a resource metric (such as those specified in
+/// requests and limits) known to Kubernetes describing a single container in
+/// each pod of the current scale target (e.g. CPU or memory). Such metrics are
+/// built in to Kubernetes, and have special scaling options on top of those
+/// available to normal per-pod metrics using the "pods" source.
+/// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsContainerResource {
+    /// container is the name of the container in the pods of the scaling target
+    pub container: String,
+    /// name is the name of the resource in question.
+    pub name: String,
+    /// target specifies the target value for the given metric
+    pub target: RuntimeComponentAutoscalingMetricsContainerResourceTarget,
+}
+
+/// target specifies the target value for the given metric
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsContainerResourceTarget {
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
+    pub average_utilization: Option<i32>,
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
+    pub average_value: Option<IntOrString>,
+    /// type represents whether the metric type is Utilization, Value, or AverageValue
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value is the target value of the metric (as a quantity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<IntOrString>,
+}
+
+/// external refers to a global metric that is not associated
+/// with any Kubernetes object. It allows autoscaling based on information
+/// coming from components running outside of cluster
+/// (for example length of queue in cloud messaging service, or
+/// QPS from loadbalancer running outside of cluster).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsExternal {
+    /// metric identifies the target metric by name and selector
+    pub metric: RuntimeComponentAutoscalingMetricsExternalMetric,
+    /// target specifies the target value for the given metric
+    pub target: RuntimeComponentAutoscalingMetricsExternalTarget,
+}
+
+/// metric identifies the target metric by name and selector
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsExternalMetric {
+    /// name is the name of the given metric
+    pub name: String,
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<RuntimeComponentAutoscalingMetricsExternalMetricSelector>,
+}
+
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsExternalMetricSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RuntimeComponentAutoscalingMetricsExternalMetricSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsExternalMetricSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// target specifies the target value for the given metric
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsExternalTarget {
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
+    pub average_utilization: Option<i32>,
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
+    pub average_value: Option<IntOrString>,
+    /// type represents whether the metric type is Utilization, Value, or AverageValue
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value is the target value of the metric (as a quantity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<IntOrString>,
+}
+
+/// object refers to a metric describing a single kubernetes object
+/// (for example, hits-per-second on an Ingress object).
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObject {
+    /// describedObject specifies the descriptions of a object,such as kind,name apiVersion
+    #[serde(rename = "describedObject")]
+    pub described_object: RuntimeComponentAutoscalingMetricsObjectDescribedObject,
+    /// metric identifies the target metric by name and selector
+    pub metric: RuntimeComponentAutoscalingMetricsObjectMetric,
+    /// target specifies the target value for the given metric
+    pub target: RuntimeComponentAutoscalingMetricsObjectTarget,
+}
+
+/// describedObject specifies the descriptions of a object,such as kind,name apiVersion
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObjectDescribedObject {
+    /// apiVersion is the API version of the referent
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// kind is the kind of the referent; More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+    pub kind: String,
+    /// name is the name of the referent; More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    pub name: String,
+}
+
+/// metric identifies the target metric by name and selector
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObjectMetric {
+    /// name is the name of the given metric
+    pub name: String,
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<RuntimeComponentAutoscalingMetricsObjectMetricSelector>,
+}
+
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObjectMetricSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RuntimeComponentAutoscalingMetricsObjectMetricSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObjectMetricSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// target specifies the target value for the given metric
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsObjectTarget {
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
+    pub average_utilization: Option<i32>,
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
+    pub average_value: Option<IntOrString>,
+    /// type represents whether the metric type is Utilization, Value, or AverageValue
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value is the target value of the metric (as a quantity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<IntOrString>,
+}
+
+/// pods refers to a metric describing each pod in the current scale target
+/// (for example, transactions-processed-per-second).  The values will be
+/// averaged together before being compared to the target value.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsPods {
+    /// metric identifies the target metric by name and selector
+    pub metric: RuntimeComponentAutoscalingMetricsPodsMetric,
+    /// target specifies the target value for the given metric
+    pub target: RuntimeComponentAutoscalingMetricsPodsTarget,
+}
+
+/// metric identifies the target metric by name and selector
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsPodsMetric {
+    /// name is the name of the given metric
+    pub name: String,
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<RuntimeComponentAutoscalingMetricsPodsMetricSelector>,
+}
+
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsPodsMetricSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<RuntimeComponentAutoscalingMetricsPodsMetricSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsPodsMetricSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// target specifies the target value for the given metric
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsPodsTarget {
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
+    pub average_utilization: Option<i32>,
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
+    pub average_value: Option<IntOrString>,
+    /// type represents whether the metric type is Utilization, Value, or AverageValue
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value is the target value of the metric (as a quantity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<IntOrString>,
+}
+
+/// resource refers to a resource metric (such as those specified in
+/// requests and limits) known to Kubernetes describing each pod in the
+/// current scale target (e.g. CPU or memory). Such metrics are built in to
+/// Kubernetes, and have special scaling options on top of those available
+/// to normal per-pod metrics using the "pods" source.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsResource {
+    /// name is the name of the resource in question.
+    pub name: String,
+    /// target specifies the target value for the given metric
+    pub target: RuntimeComponentAutoscalingMetricsResourceTarget,
+}
+
+/// target specifies the target value for the given metric
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RuntimeComponentAutoscalingMetricsResourceTarget {
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
+    pub average_utilization: Option<i32>,
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
+    pub average_value: Option<IntOrString>,
+    /// type represents whether the metric type is Utilization, Value, or AverageValue
+    #[serde(rename = "type")]
+    pub r#type: String,
+    /// value is the target value of the metric (as a quantity).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<IntOrString>,
 }
 
 /// Defines the desired state and cycle of applications.

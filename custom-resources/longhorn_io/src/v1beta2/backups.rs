@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BackupSpec {
+    /// The backup block size. 0 means the legacy default size 2MiB, and -1 indicate the block size is invalid.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupBlockSize")]
+    pub backup_block_size: Option<BackupBackupBlockSize>,
     /// The backup mode of this backup.
     /// Can be "full" or "incremental"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupMode")]
@@ -32,6 +35,17 @@ pub struct BackupSpec {
     /// The time to request run sync the remote backup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncRequestedAt")]
     pub sync_requested_at: Option<String>,
+}
+
+/// BackupSpec defines the desired state of the Longhorn backup
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackupBackupBlockSize {
+    #[serde(rename = "-1")]
+    r#_1,
+    #[serde(rename = "2097152")]
+    r#_2097152,
+    #[serde(rename = "16777216")]
+    r#_16777216,
 }
 
 /// BackupSpec defines the desired state of the Longhorn backup

@@ -3347,7 +3347,7 @@ spec:
                 servicesRiggerSpec:
                   properties:
                     databaseServicePortPolicy:
-                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
+                      description: "databaseServicePortPolicy instructs how to determine the service ports for REDB services. Defaults to DatabasePortForward, if not specified otherwise. Note - Regardless whether this flag is set or not, if an REDB/REAADB configured with databaseServicePort that would be the port exposed by the Service. DatabasePortForward - The service port will be the same as the database port. RedisDefaultPort - The service port will be the default Redis port (6379)."
                       enum:
                         - "DatabasePortForward"
                         - "RedisDefaultPort"
@@ -6591,6 +6591,8 @@ spec:
                             versionTag:
                               type: "string"
                           type: "object"
+                        proxySecretName:
+                          type: "string"
                         resources:
                           properties:
                             claims:

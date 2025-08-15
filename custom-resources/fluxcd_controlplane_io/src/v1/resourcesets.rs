@@ -157,6 +157,10 @@ pub struct ResourceSetStatus {
     /// Conditions contains the readiness conditions of the object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// History contains the reconciliation history of the ResourceSet
+    /// as a list of snapshots ordered by the last reconciled time.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub history: Option<Vec<ResourceSetStatusHistory>>,
     /// Inventory contains a list of Kubernetes resource object references
     /// last applied on the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -170,6 +174,32 @@ pub struct ResourceSetStatus {
     /// can be detected.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
+}
+
+/// Snapshot represents a point-in-time record of a group of resources reconciliation,
+/// including timing information, status, and a unique digest identifier.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ResourceSetStatusHistory {
+    /// Digest is the checksum in the format `<algo>:<hex>` of the resources in this snapshot.
+    pub digest: String,
+    /// FirstReconciled is the time when this revision was first reconciled to the cluster.
+    #[serde(rename = "firstReconciled")]
+    pub first_reconciled: String,
+    /// LastReconciled is the time when this revision was last reconciled to the cluster.
+    #[serde(rename = "lastReconciled")]
+    pub last_reconciled: String,
+    /// LastReconciledDuration is time it took to reconcile the resources in this revision.
+    #[serde(rename = "lastReconciledDuration")]
+    pub last_reconciled_duration: String,
+    /// LastReconciledStatus is the status of the last reconciliation.
+    #[serde(rename = "lastReconciledStatus")]
+    pub last_reconciled_status: String,
+    /// Metadata contains additional information about the snapshot.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub metadata: Option<BTreeMap<String, String>>,
+    /// TotalReconciliations is the total number of reconciliations that have occurred for this snapshot.
+    #[serde(rename = "totalReconciliations")]
+    pub total_reconciliations: i64,
 }
 
 /// Inventory contains a list of Kubernetes resource object references

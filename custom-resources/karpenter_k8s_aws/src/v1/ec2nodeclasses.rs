@@ -78,11 +78,8 @@ pub struct EC2NodeClassSpec {
     /// required.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataOptions")]
     pub metadata_options: Option<EC2NodeClassMetadataOptions>,
-    /// Role is the AWS identity that nodes use. This field is immutable.
+    /// Role is the AWS identity that nodes use.
     /// This field is mutually exclusive from instanceProfile.
-    /// Marking this field as immutable avoids concerns around terminating managed instance profiles from running instances.
-    /// This field may be made mutable in the future, assuming the correct garbage collection and drift handling is implemented
-    /// for the old instance profiles on an update.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub role: Option<String>,
     /// SecurityGroupSelectorTerms is a list of security group selector terms. The terms are ORed.

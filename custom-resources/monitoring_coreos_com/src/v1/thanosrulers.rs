@@ -101,6 +101,17 @@ pub struct ThanosRulerSpec {
     /// Defines the DNS policy for the pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<ThanosRulerDnsPolicy>,
+    /// Enable access to Thanos Ruler feature flags. By default, no features are enabled.
+    /// 
+    /// Enabling features which are disabled by default is entirely outside the
+    /// scope of what the maintainers will support and by doing so, you accept
+    /// that this behaviour may break at any time without notice.
+    /// 
+    /// For more information see https://thanos.io/tip/components/rule.md/
+    /// 
+    /// It requires Thanos >= 0.39.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
+    pub enable_features: Option<Vec<String>>,
     /// Indicates whether information about services should be injected into pod's environment variables
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
@@ -131,6 +142,14 @@ pub struct ThanosRulerSpec {
     /// Pods' hostAliases configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ThanosRulerHostAliases>>,
+    /// HostUsers supports the user space in Kubernetes.
+    /// 
+    /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/user-namespaces/
+    /// 
+    /// The feature requires at least Kubernetes 1.28 with the `UserNamespacesSupport` feature gate enabled.
+    /// Starting Kubernetes 1.33, the feature is enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostUsers")]
+    pub host_users: Option<bool>,
     /// Thanos container image URL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -170,8 +189,8 @@ pub struct ThanosRulerSpec {
     pub log_level: Option<ThanosRulerLogLevel>,
     /// Minimum number of seconds for which a newly created pod should be ready
     /// without any of its container crashing for it to be considered available.
-    /// Defaults to 0 (pod will be considered available as soon as it is ready)
-    /// This is an alpha field from kubernetes 1.22 until 1.24 which requires enabling the StatefulSetMinReadySeconds feature gate.
+    /// 
+    /// If unset, pods will be considered available as soon as they are ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Define which Nodes the Pods are scheduled on.
@@ -250,6 +269,9 @@ pub struct ThanosRulerSpec {
     /// Number of thanos ruler instances to deploy.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
+    /// Minimum amount of time to wait before resending an alert to Alertmanager.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resendDelay")]
+    pub resend_delay: Option<String>,
     /// Resources defines the resource requirements for single Pods.
     /// If not provided, no requests/limits will be set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -265,10 +287,27 @@ pub struct ThanosRulerSpec {
     /// The route prefix ThanosRuler registers HTTP handlers for. This allows thanos UI to be served on a sub-path.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routePrefix")]
     pub route_prefix: Option<String>,
+    /// How many rules can be evaluated concurrently.
+    /// It requires Thanos >= v0.37.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleConcurrentEval")]
+    pub rule_concurrent_eval: Option<i32>,
+    /// Minimum duration between alert and restored "for" state.
+    /// This is maintained only for alerts with configured "for" time greater than grace period.
+    /// It requires Thanos >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleGracePeriod")]
+    pub rule_grace_period: Option<String>,
     /// Namespaces to be selected for Rules discovery. If unspecified, only
     /// the same namespace as the ThanosRuler object is in is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleNamespaceSelector")]
     pub rule_namespace_selector: Option<ThanosRulerRuleNamespaceSelector>,
+    /// Max time to tolerate prometheus outage for restoring "for" state of alert.
+    /// It requires Thanos >= v0.30.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleOutageTolerance")]
+    pub rule_outage_tolerance: Option<String>,
+    /// The default rule group's query offset duration to use.
+    /// It requires Thanos >= v0.38.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleQueryOffset")]
+    pub rule_query_offset: Option<String>,
     /// PrometheusRule objects to be selected for rule evaluation. An empty
     /// label selector matches all objects. A null label selector matches no
     /// objects.
@@ -562,7 +601,6 @@ pub struct ThanosRulerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -573,7 +611,6 @@ pub struct ThanosRulerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -683,7 +720,6 @@ pub struct ThanosRulerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -694,7 +730,6 @@ pub struct ThanosRulerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -835,7 +870,6 @@ pub struct ThanosRulerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -846,7 +880,6 @@ pub struct ThanosRulerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -956,7 +989,6 @@ pub struct ThanosRulerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
@@ -967,7 +999,6 @@ pub struct ThanosRulerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
     /// pod labels will be ignored. The default value is empty.
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
-    /// This is a beta field and requires enabling MatchLabelKeysInPodAffinity feature gate (enabled by default).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
@@ -1374,13 +1405,13 @@ pub struct ThanosRulerContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ThanosRulerContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -1439,6 +1470,11 @@ pub struct ThanosRulerContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ThanosRulerContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -2883,13 +2919,13 @@ pub struct ThanosRulerInitContainersEnvValueFromSecretKeyRef {
     pub optional: Option<bool>,
 }
 
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// EnvFromSource represents the source of a set of ConfigMaps or Secrets
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerInitContainersEnvFrom {
     /// The ConfigMap to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<ThanosRulerInitContainersEnvFromConfigMapRef>,
-    /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
+    /// Optional text to prepend to the name of each environment variable. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
@@ -2948,6 +2984,11 @@ pub struct ThanosRulerInitContainersLifecycle {
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<ThanosRulerInitContainersLifecyclePreStop>,
+    /// StopSignal defines which signal will be sent to a container when it is being stopped.
+    /// If not specified, the default is defined by the container runtime in use.
+    /// StopSignal can only be set for Pods with a non-empty .spec.os.name
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -3897,13 +3938,13 @@ pub struct ThanosRulerPodMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -3911,7 +3952,7 @@ pub struct ThanosRulerPodMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -5665,13 +5706,13 @@ pub struct ThanosRulerStorageVolumeClaimTemplateMetadata {
     /// Annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
-    /// More info: http://kubernetes.io/docs/user-guide/annotations
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
     /// and services.
-    /// More info: http://kubernetes.io/docs/user-guide/labels
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Name must be unique within a namespace. Is required when creating resources, although
@@ -5679,7 +5720,7 @@ pub struct ThanosRulerStorageVolumeClaimTemplateMetadata {
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
     /// Cannot be updated.
-    /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -6082,7 +6123,6 @@ pub struct ThanosRulerTopologySpreadConstraints {
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
@@ -6092,7 +6132,6 @@ pub struct ThanosRulerTopologySpreadConstraints {
     /// - Ignore: node taints are ignored. All nodes are included.
     /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
-    /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
@@ -6356,7 +6395,7 @@ pub struct ThanosRulerVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<ThanosRulerVolumesImage>,
@@ -7222,7 +7261,7 @@ pub struct ThanosRulerVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ThanosRulerVolumesImage {

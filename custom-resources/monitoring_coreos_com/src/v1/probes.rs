@@ -86,6 +86,11 @@ pub struct ProbeSpec {
     /// OAuth2 for the URL. Only valid in Prometheus versions 2.27.0 and newer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ProbeOauth2>,
+    /// The list of HTTP query parameters for the scrape.
+    /// Please note that the `.spec.module` field takes precedence over the `module` parameter from this list when both are defined.
+    /// The module name must be added using Module under ProbeSpec.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub params: Option<Vec<ProbeParams>>,
     /// Specification for the prober to use for probing targets.
     /// The prober.URL parameter is required. Targets cannot be probed if left empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -98,6 +103,8 @@ pub struct ProbeSpec {
     pub scrape_class: Option<String>,
     /// Whether to scrape a classic histogram that is also exposed as a native histogram.
     /// It requires Prometheus >= v2.45.0.
+    /// 
+    /// Notice: `scrapeClassicHistograms` corresponds to the `always_scrape_classic_histograms` field in the Prometheus configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
@@ -626,15 +633,43 @@ pub enum ProbeOauth2TlsConfigMinVersion {
     Tls13,
 }
 
+/// ProbeParam defines specification of extra parameters for a Probe.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProbeParams {
+    /// The parameter name
+    pub name: String,
+    /// The parameter values
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
 /// Specification for the prober to use for probing targets.
 /// The prober.URL parameter is required. Targets cannot be probed if left empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProbeProber {
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// Path to collect metrics from.
     /// Defaults to `/probe`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Optional ProxyURL.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ProbeProberProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// HTTP scheme to use for scraping.
@@ -644,6 +679,23 @@ pub struct ProbeProber {
     pub scheme: Option<ProbeProberScheme>,
     /// Mandatory URL of the prober.
     pub url: String,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ProbeProberProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Specification for the prober to use for probing targets.

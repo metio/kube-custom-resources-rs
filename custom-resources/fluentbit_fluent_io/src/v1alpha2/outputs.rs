@@ -2338,6 +2338,15 @@ pub struct OutputLoki {
     /// Optional list of keys to remove.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "removeKeys")]
     pub remove_keys: Option<Vec<String>>,
+    /// Stream structured metadata for API request. It can be multiple comma separated key=value pairs.
+    /// This is used for high cardinality data that isn't suited for using labels.
+    /// Only supported in Loki 3.0+ with schema v13 and TSDB storage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadata")]
+    pub structured_metadata: Option<BTreeMap<String, String>>,
+    /// Optional list of record keys that will be placed as structured metadata.
+    /// This allows using record accessor patterns (e.g. $kubernetes['pod_name']) to reference record keys.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadataKeys")]
+    pub structured_metadata_keys: Option<Vec<String>>,
     /// Tenant ID used by default to push logs to Loki.
     /// If omitted or empty it assumes Loki is running in single-tenant mode and no X-Scope-OrgID header is sent.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
@@ -2762,7 +2771,7 @@ pub struct OutputOpensearch {
     /// TCP port of the target OpenSearch instance, default `9200`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
-    /// When enabled, replace field name dots with underscore, required by Elasticsearch 2.0-2.3.
+    /// When enabled, replace field name dots with underscore, required by Opensearch 2.0-2.3.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceDots")]
     pub replace_dots: Option<bool>,
     /// When enabled, mapping types is removed and Type option is ignored. Types are deprecated in APIs in v7.0. This options is for v7.0 or later.
@@ -2787,10 +2796,10 @@ pub struct OutputOpensearch {
     /// Limit the maximum number of Chunks in the filesystem for the current output logical destination.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalLimitSize")]
     pub total_limit_size: Option<String>,
-    /// When enabled print the elasticsearch API calls to stdout when elasticsearch returns an error
+    /// When enabled print the Opensearch API calls to stdout when Opensearch returns an error
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceError")]
     pub trace_error: Option<bool>,
-    /// When enabled print the elasticsearch API calls to stdout (for diag only)
+    /// When enabled print the Opensearch API calls to stdout (for diag only)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "traceOutput")]
     pub trace_output: Option<bool>,
     /// Type name
@@ -3637,6 +3646,9 @@ pub struct OutputS3 {
     /// Use the S3 PutObject API, instead of the multipart upload API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "UsePutObject")]
     pub use_put_object: Option<bool>,
+    /// Specify number of worker threads to use to output to S3
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "Workers")]
+    pub workers: Option<i32>,
     /// Fluent Bit provides integrated support for Transport Layer Security (TLS) and it predecessor Secure Sockets Layer (SSL) respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<OutputS3Tls>,

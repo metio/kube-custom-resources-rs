@@ -562,8 +562,11 @@ pub struct ObjectStoreStatusServerRecoveryWindow {
     /// restored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstRecoverabilityPoint")]
     pub first_recoverability_point: Option<String>,
+    /// The last failed backup time
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailedBackupTime")]
+    pub last_failed_backup_time: Option<String>,
     /// The last successful backup time
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccussfulBackupTime")]
-    pub last_succussful_backup_time: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccessfulBackupTime")]
+    pub last_successful_backup_time: Option<String>,
 }
 

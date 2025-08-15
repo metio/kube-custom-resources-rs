@@ -58,9 +58,9 @@ pub struct TinkerbellClusterSpec {
 /// for more details.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellClusterControlPlaneEndpoint {
-    /// The hostname on which the API server is serving.
+    /// host is the hostname on which the API server is serving.
     pub host: String,
-    /// The port on which the API server is serving.
+    /// port is the port on which the API server is serving.
     pub port: i32,
 }
 

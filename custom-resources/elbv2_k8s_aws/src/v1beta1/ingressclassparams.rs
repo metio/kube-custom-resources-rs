@@ -42,6 +42,9 @@ pub struct IngressClassParamsSpec {
     /// LoadBalancerAttributes define the custom attributes to LoadBalancers for all Ingress that that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerAttributes")]
     pub load_balancer_attributes: Option<Vec<IngressClassParamsLoadBalancerAttributes>>,
+    /// LoadBalancerName defines the name of the load balancer that will be created with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerName")]
+    pub load_balancer_name: Option<String>,
     /// MinimumLoadBalancerCapacity define the capacity reservation for LoadBalancers for all Ingress that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumLoadBalancerCapacity")]
     pub minimum_load_balancer_capacity: Option<IngressClassParamsMinimumLoadBalancerCapacity>,
@@ -67,6 +70,9 @@ pub struct IngressClassParamsSpec {
     /// TargetType defines the target type of target groups for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<IngressClassParamsTargetType>,
+    /// WAFv2ACLArn specifies ARN for the Amazon WAFv2 web ACL.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wafv2AclArn")]
+    pub wafv2_acl_arn: Option<String>,
 }
 
 /// Group defines the IngressGroup for all Ingresses that belong to IngressClass with this IngressClassParams.

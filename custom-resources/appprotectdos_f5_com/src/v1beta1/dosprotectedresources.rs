@@ -17,6 +17,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DosProtectedResourceSpec {
+    /// AllowList is a list of allowed IPs and subnet masks
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowList")]
+    pub allow_list: Option<Vec<DosProtectedResourceAllowList>>,
     /// ApDosMonitor is how NGINX App Protect DoS monitors the stress level of the protected object. The monitor requests are sent from localhost (127.0.0.1). Default value: URI - None, protocol - http1, timeout - NGINX App Protect DoS default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apDosMonitor")]
     pub ap_dos_monitor: Option<DosProtectedResourceApDosMonitor>,
@@ -35,6 +38,13 @@ pub struct DosProtectedResourceSpec {
     /// Name is the name of protected object, max of 63 characters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// AllowListEntry represents an IP address and a subnet mask.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DosProtectedResourceAllowList {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipWithMask")]
+    pub ip_with_mask: Option<String>,
 }
 
 /// ApDosMonitor is how NGINX App Protect DoS monitors the stress level of the protected object. The monitor requests are sent from localhost (127.0.0.1). Default value: URI - None, protocol - http1, timeout - NGINX App Protect DoS default.

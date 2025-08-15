@@ -1849,6 +1849,8 @@ pub struct SecretStoreProviderInfisical {
 /// Auth configures how the Operator authenticates with the Infisical API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuth {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsAuthCredentials")]
+    pub aws_auth_credentials: Option<SecretStoreProviderInfisicalAuthAwsAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAuthCredentials")]
     pub azure_auth_credentials: Option<SecretStoreProviderInfisicalAuthAzureAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpIamAuthCredentials")]
@@ -1857,12 +1859,41 @@ pub struct SecretStoreProviderInfisicalAuth {
     pub gcp_id_token_auth_credentials: Option<SecretStoreProviderInfisicalAuthGcpIdTokenAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtAuthCredentials")]
     pub jwt_auth_credentials: Option<SecretStoreProviderInfisicalAuthJwtAuthCredentials>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthCredentials")]
+    pub kubernetes_auth_credentials: Option<SecretStoreProviderInfisicalAuthKubernetesAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapAuthCredentials")]
     pub ldap_auth_credentials: Option<SecretStoreProviderInfisicalAuthLdapAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociAuthCredentials")]
     pub oci_auth_credentials: Option<SecretStoreProviderInfisicalAuthOciAuthCredentials>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenAuthCredentials")]
+    pub token_auth_credentials: Option<SecretStoreProviderInfisicalAuthTokenAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "universalAuthCredentials")]
     pub universal_auth_credentials: Option<SecretStoreProviderInfisicalAuthUniversalAuthCredentials>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthAwsAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "identityId")]
+    pub identity_id: SecretStoreProviderInfisicalAuthAwsAuthCredentialsIdentityId,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthAwsAuthCredentialsIdentityId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2014,6 +2045,52 @@ pub struct SecretStoreProviderInfisicalAuthJwtAuthCredentialsIdentityId {
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuthJwtAuthCredentialsJwt {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthKubernetesAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "identityId")]
+    pub identity_id: SecretStoreProviderInfisicalAuthKubernetesAuthCredentialsIdentityId,
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountTokenPath")]
+    pub service_account_token_path: Option<SecretStoreProviderInfisicalAuthKubernetesAuthCredentialsServiceAccountTokenPath>,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthKubernetesAuthCredentialsIdentityId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthKubernetesAuthCredentialsServiceAccountTokenPath {
     /// A key in the referenced Secret.
     /// Some instances of this field may be defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2230,6 +2307,31 @@ pub struct SecretStoreProviderInfisicalAuthOciAuthCredentialsTenancyId {
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretStoreProviderInfisicalAuthOciAuthCredentialsUserId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthTokenAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "accessToken")]
+    pub access_token: SecretStoreProviderInfisicalAuthTokenAuthCredentialsAccessToken,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct SecretStoreProviderInfisicalAuthTokenAuthCredentialsAccessToken {
     /// A key in the referenced Secret.
     /// Some instances of this field may be defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]

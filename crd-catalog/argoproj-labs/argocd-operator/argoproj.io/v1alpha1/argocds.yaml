@@ -4825,7 +4825,7 @@ spec:
                       description: "Deprecated field. Support dropped in v1beta1 version.\nImage is the SSO container image."
                       type: "string"
                     keycloak:
-                      description: "Keycloak contains the configuration for Argo CD keycloak authentication\nDeprecated: This field is planned for removal in a future release and will no longer be supported."
+                      description: "Keycloak contains the configuration for Argo CD keycloak authentication\nRemoved: This field is no longer supported and the related functionality has been removed."
                       properties:
                         host:
                           description: "Host is the hostname to use for Ingress/Route resources."

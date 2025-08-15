@@ -32,6 +32,10 @@ pub struct KeycloakSpec {
     /// In this section you can find all properties related to connect to a database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub db: Option<KeycloakDb>,
+    /// Environment variables for the Keycloak server.
+    /// Values can be either direct values or references to secrets. Use additionalOptions for first-class options rather than KC_ values here.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<KeycloakEnv>>,
     /// In this section you can configure Keycloak features, which should be enabled/disabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<KeycloakFeatures>,
@@ -57,9 +61,18 @@ pub struct KeycloakSpec {
     /// Number of Keycloak instances. Default is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<i64>,
+    /// Configuration for liveness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<KeycloakLivenessProbe>,
+    /// Controls the ingress traffic flow into Keycloak pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<KeycloakNetworkPolicy>,
     /// In this section you can configure Keycloak's reverse proxy setting
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub proxy: Option<KeycloakProxy>,
+    /// Configuration for readiness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<KeycloakReadinessProbe>,
     /// Compute Resources required by Keycloak container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<KeycloakResources>,
@@ -69,6 +82,12 @@ pub struct KeycloakSpec {
     /// Set to force the behavior of the --optimized flag for the start command. If left unspecified the operator will assume custom images have already been augmented.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startOptimized")]
     pub start_optimized: Option<bool>,
+    /// Configuration for startup probe, by default it is 1 for periodSeconds and 600 for failureThreshold
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<KeycloakStartupProbe>,
+    /// In this section you can configure OpenTelemetry Tracing for Keycloak.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tracing: Option<KeycloakTracing>,
     /// In this section you can find all properties related to the settings of transaction behavior.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub transaction: Option<KeycloakTransaction>,
@@ -79,6 +98,9 @@ pub struct KeycloakSpec {
     /// Use at your own risk and open an issue with your use-case if you don't find an alternative way.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unsupported: Option<KeycloakUnsupported>,
+    /// Configuration related to Keycloak deployment updates.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub update: Option<KeycloakUpdate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -205,6 +227,26 @@ pub struct KeycloakDbUsernameSecret {
     pub optional: Option<bool>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakEnv {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub secret: Option<KeycloakEnvSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakEnvSecret {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
 /// In this section you can configure Keycloak features, which should be enabled/disabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakFeatures {
@@ -242,6 +284,9 @@ pub struct KeycloakHostname {
 /// In this section you can configure Keycloak features related to HTTP and HTTPS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakHttp {
+    /// Annotations to be appended to the Service object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
     /// Enables the HTTP listener.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpEnabled")]
     pub http_enabled: Option<bool>,
@@ -251,6 +296,9 @@ pub struct KeycloakHttp {
     /// The used HTTPS port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsPort")]
     pub https_port: Option<i64>,
+    /// Labels to be appended to the Service object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// A secret containing the TLS configuration for HTTPS. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<String>,
@@ -281,6 +329,200 @@ pub struct KeycloakIngress {
     pub class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// Additional labels to be appended to the Ingress object
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// A secret containing the TLS configuration for re-encrypt or TLS termination scenarios. Reference: https://kubernetes.io/docs/concepts/configuration/secret/#tls-secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
+    pub tls_secret: Option<String>,
+}
+
+/// Configuration for liveness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakLivenessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
+}
+
+/// Controls the ingress traffic flow into Keycloak pods.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicy {
+    /// Enables or disables the ingress traffic control.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub http: Option<Vec<KeycloakNetworkPolicyHttp>>,
+    /// A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub https: Option<Vec<KeycloakNetworkPolicyHttps>>,
+    /// A list of sources which should be able to access this endpoint. Items in this list are combined using a logical OR operation. If this field is empty or missing, this rule matches all sources (traffic not restricted by source). If this field is present and contains at least one item, this rule allows traffic only if the traffic matches at least one item in the from list.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub management: Option<Vec<KeycloakNetworkPolicyManagement>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttp {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
+    pub ip_block: Option<KeycloakNetworkPolicyHttpIpBlock>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<KeycloakNetworkPolicyHttpNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<KeycloakNetworkPolicyHttpPodSelector>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpIpBlock {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyHttpNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpNamespaceSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpPodSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyHttpPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpPodSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttps {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
+    pub ip_block: Option<KeycloakNetworkPolicyHttpsIpBlock>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<KeycloakNetworkPolicyHttpsNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<KeycloakNetworkPolicyHttpsPodSelector>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpsIpBlock {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpsNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyHttpsNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpsNamespaceSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpsPodSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyHttpsPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyHttpsPodSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagement {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipBlock")]
+    pub ip_block: Option<KeycloakNetworkPolicyManagementIpBlock>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<KeycloakNetworkPolicyManagementNamespaceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
+    pub pod_selector: Option<KeycloakNetworkPolicyManagementPodSelector>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagementIpBlock {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cidr: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub except: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagementNamespaceSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyManagementNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagementNamespaceSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagementPodSelector {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<KeycloakNetworkPolicyManagementPodSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakNetworkPolicyManagementPodSelectorMatchExpressions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// In this section you can configure Keycloak's reverse proxy setting
@@ -289,6 +531,15 @@ pub struct KeycloakProxy {
     /// The proxy headers that should be accepted by the server. Misconfiguration might leave the server exposed to security vulnerabilities.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<String>,
+}
+
+/// Configuration for readiness probe, by default it is 10 for periodSeconds and 3 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakReadinessProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
 }
 
 /// Compute Resources required by Keycloak container
@@ -306,6 +557,8 @@ pub struct KeycloakResources {
 pub struct KeycloakResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 /// In this section you can configure Keycloak's scheduling
@@ -701,6 +954,44 @@ pub struct KeycloakSchedulingTopologySpreadConstraintsLabelSelectorMatchExpressi
     pub values: Option<Vec<String>>,
 }
 
+/// Configuration for startup probe, by default it is 1 for periodSeconds and 600 for failureThreshold
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakStartupProbe {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i64>,
+}
+
+/// In this section you can configure OpenTelemetry Tracing for Keycloak.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakTracing {
+    /// OpenTelemetry compression method used to compress payloads. If unset, compression is disabled. Possible values are: gzip, none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compression: Option<String>,
+    /// Enables the OpenTelemetry tracing.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// OpenTelemetry endpoint to connect to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// OpenTelemetry protocol used for the telemetry data (default 'grpc'). For more information, check the Tracing guide.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protocol: Option<String>,
+    /// OpenTelemetry resource attributes present in the exported trace to characterize the telemetry producer.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<BTreeMap<String, String>>,
+    /// OpenTelemetry sampler ratio. Probability that a span will be sampled. Expected double value in interval [0,1].
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplerRatio")]
+    pub sampler_ratio: Option<f64>,
+    /// OpenTelemetry sampler to use for tracing (default 'traceidratio'). For more information, check the Tracing guide.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "samplerType")]
+    pub sampler_type: Option<String>,
+    /// OpenTelemetry service name. Takes precedence over 'service.name' defined in the 'resourceAttributes' map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
+    pub service_name: Option<String>,
+}
+
 /// In this section you can find all properties related to the settings of transaction behavior.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakTransaction {
@@ -872,6 +1163,8 @@ pub struct KeycloakUnsupportedPodTemplateSpec {
     pub readiness_gates: Option<Vec<KeycloakUnsupportedPodTemplateSpecReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<KeycloakUnsupportedPodTemplateSpecResourceClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<KeycloakUnsupportedPodTemplateSpecResources>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
@@ -1374,6 +1667,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecContainersLifecycle {
     pub post_start: Option<KeycloakUnsupportedPodTemplateSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<KeycloakUnsupportedPodTemplateSpecContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1656,6 +1951,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecContainersResources {
 pub struct KeycloakUnsupportedPodTemplateSpecContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1992,6 +2289,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecEphemeralContainersLifecycle {
     pub post_start: Option<KeycloakUnsupportedPodTemplateSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<KeycloakUnsupportedPodTemplateSpecEphemeralContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2274,6 +2573,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecEphemeralContainersResources {
 pub struct KeycloakUnsupportedPodTemplateSpecEphemeralContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2604,6 +2905,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecInitContainersLifecycle {
     pub post_start: Option<KeycloakUnsupportedPodTemplateSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
     pub pre_stop: Option<KeycloakUnsupportedPodTemplateSpecInitContainersLifecyclePreStop>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stopSignal")]
+    pub stop_signal: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2886,6 +3189,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecInitContainersResources {
 pub struct KeycloakUnsupportedPodTemplateSpecInitContainersResourcesClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3074,16 +3379,28 @@ pub struct KeycloakUnsupportedPodTemplateSpecReadinessGates {
 pub struct KeycloakUnsupportedPodTemplateSpecResourceClaims {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<KeycloakUnsupportedPodTemplateSpecResourceClaimsSource>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KeycloakUnsupportedPodTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakUnsupportedPodTemplateSpecResources {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub claims: Option<Vec<KeycloakUnsupportedPodTemplateSpecResourcesClaims>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakUnsupportedPodTemplateSpecResourcesClaims {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3106,12 +3423,16 @@ pub struct KeycloakUnsupportedPodTemplateSpecSecurityContext {
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxChangePolicy")]
+    pub se_linux_change_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<KeycloakUnsupportedPodTemplateSpecSecurityContextSeLinuxOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<KeycloakUnsupportedPodTemplateSpecSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<KeycloakUnsupportedPodTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -3254,6 +3575,8 @@ pub struct KeycloakUnsupportedPodTemplateSpecVolumes {
     pub glusterfs: Option<KeycloakUnsupportedPodTemplateSpecVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<KeycloakUnsupportedPodTemplateSpecVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<KeycloakUnsupportedPodTemplateSpecVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<KeycloakUnsupportedPodTemplateSpecVolumesIscsi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3687,6 +4010,14 @@ pub struct KeycloakUnsupportedPodTemplateSpecVolumesHostPath {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakUnsupportedPodTemplateSpecVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakUnsupportedPodTemplateSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -4018,6 +4349,25 @@ pub struct KeycloakUnsupportedPodTemplateSpecVolumesVsphereVolume {
     pub storage_policy_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumePath")]
     pub volume_path: Option<String>,
+}
+
+/// Configuration related to Keycloak deployment updates.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakUpdate {
+    /// When use the Explicit strategy, the revision signals if a rolling update can be used or not.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub revision: Option<String>,
+    /// Sets the update strategy to use.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<KeycloakUpdateStrategy>,
+}
+
+/// Configuration related to Keycloak deployment updates.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KeycloakUpdateStrategy {
+    Auto,
+    Explicit,
+    RecreateOnImageChange,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

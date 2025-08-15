@@ -116,7 +116,7 @@ pub struct TLSRouteSpec {
     /// ParentRef of the Route.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentRefs")]
     pub parent_refs: Option<Vec<TLSRouteParentRefs>>,
-    /// Rules are a list of TLS matchers and actions.
+    /// Rules are a list of actions.
     pub rules: Vec<TLSRouteRules>,
 }
 

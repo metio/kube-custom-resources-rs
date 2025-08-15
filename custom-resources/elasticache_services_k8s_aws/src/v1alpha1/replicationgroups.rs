@@ -185,6 +185,12 @@ pub struct ReplicationGroupSpec {
     /// engine version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<String>,
+    /// The network type you choose when creating a replication group, either ipv4
+    /// | ipv6. IPv6 is supported for workloads using Valkey 7.2 and above, Redis
+    /// OSS engine version 6.2 and above or Memcached engine version 1.6.6 and above
+    /// on all instances built on the Nitro system (http://aws.amazon.com/ec2/nitro/).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipDiscovery")]
+    pub ip_discovery: Option<String>,
     /// The ID of the KMS key used to encrypt the disk in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
@@ -195,6 +201,12 @@ pub struct ReplicationGroupSpec {
     /// For more information, see Minimizing Downtime: Multi-AZ (http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/AutoFailover.html).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiAZEnabled")]
     pub multi_az_enabled: Option<bool>,
+    /// Must be either ipv4 | ipv6 | dual_stack. IPv6 is supported for workloads
+    /// using Valkey 7.2 and above, Redis OSS engine version 6.2 and above or Memcached
+    /// engine version 1.6.6 and above on all instances built on the Nitro system
+    /// (http://aws.amazon.com/ec2/nitro/).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkType")]
+    pub network_type: Option<String>,
     /// A list of node group (shard) configuration options. Each node group (shard)
     /// configuration has the following members: PrimaryAvailabilityZone, ReplicaAvailabilityZones,
     /// ReplicaCount, and Slots.

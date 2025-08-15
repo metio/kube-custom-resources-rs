@@ -354,6 +354,106 @@ spec:
                       scaleOut:
                         description: "Specifies the replica changes for scaling out components and instance templates,\nand brings offline instances back online. Can be used in conjunction with the \"scaleIn\" operation.\nNote: Any configuration that deletes instances is considered invalid."
                         properties:
+                          fromBackup:
+                            description: "FromBackup specifies the configuration for creating new instances from an existing backup.\nThis is only effective for non-sharding components.\nWhen specified, new instances will be created using data from the specified backup."
+                            properties:
+                              name:
+                                description: "Specifies the name of the Backup name."
+                                type: "string"
+                              namespace:
+                                description: "Specifies the namespace of the Backup namespace.\nIf not specified, the namespace of the OpsRequest will be used."
+                                type: "string"
+                              restoreEnv:
+                                description: "Defines container environment variables for the restore process.\nmerged with the ones specified in the Backup and ActionSet resources.\n\n\nMerge priority: Restore env > Backup env > ActionSet env.\n\n\nPurpose: Some databases require different configurations when being restored as a standby\ncompared to being restored as a primary.\nFor example, when restoring MySQL as a replica, you need to set `skip_slave_start=\"ON\"` for 5.7\nor `skip_replica_start=\"ON\"` for 8.0.\nAllowing environment variables to be passed in makes it more convenient to control these behavioral differences\nduring the restore process."
+                                items:
+                                  description: "EnvVar represents an environment variable present in a Container."
+                                  properties:
+                                    name:
+                                      description: "Name of the environment variable. Must be a C_IDENTIFIER."
+                                      type: "string"
+                                    value:
+                                      description: "Variable references $(VAR_NAME) are expanded\nusing the previously defined environment variables in the container and\nany service environment variables. If a variable cannot be resolved,\nthe reference in the input string will be unchanged. Double $$ are reduced\nto a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.\n\"$$(VAR_NAME)\" will produce the string literal \"$(VAR_NAME)\".\nEscaped references will never be expanded, regardless of whether the variable\nexists or not.\nDefaults to \"\"."
+                                      type: "string"
+                                    valueFrom:
+                                      description: "Source for the environment variable's value. Cannot be used if value is not empty."
+                                      properties:
+                                        configMapKeyRef:
+                                          description: "Selects a key of a ConfigMap."
+                                          properties:
+                                            key:
+                                              description: "The key to select."
+                                              type: "string"
+                                            name:
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              type: "string"
+                                            optional:
+                                              description: "Specify whether the ConfigMap or its key must be defined"
+                                              type: "boolean"
+                                          required:
+                                            - "key"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                        fieldRef:
+                                          description: "Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,\nspec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs."
+                                          properties:
+                                            apiVersion:
+                                              description: "Version of the schema the FieldPath is written in terms of, defaults to \"v1\"."
+                                              type: "string"
+                                            fieldPath:
+                                              description: "Path of the field to select in the specified API version."
+                                              type: "string"
+                                          required:
+                                            - "fieldPath"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                        resourceFieldRef:
+                                          description: "Selects a resource of the container: only resources limits and requests\n(limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported."
+                                          properties:
+                                            containerName:
+                                              description: "Container name: required for volumes, optional for env vars"
+                                              type: "string"
+                                            divisor:
+                                              anyOf:
+                                                - type: "integer"
+                                                - type: "string"
+                                              description: "Specifies the output format of the exposed resources, defaults to \"1\""
+                                              pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                                              x-kubernetes-int-or-string: true
+                                            resource:
+                                              description: "Required: resource to select"
+                                              type: "string"
+                                          required:
+                                            - "resource"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                        secretKeyRef:
+                                          description: "Selects a key of a secret in the pod's namespace"
+                                          properties:
+                                            key:
+                                              description: "The key of the secret to select from.  Must be a valid secret key."
+                                              type: "string"
+                                            name:
+                                              description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                                              type: "string"
+                                            optional:
+                                              description: "Specify whether the Secret or its key must be defined"
+                                              type: "boolean"
+                                          required:
+                                            - "key"
+                                          type: "object"
+                                          x-kubernetes-map-type: "atomic"
+                                      type: "object"
+                                  required:
+                                    - "name"
+                                  type: "object"
+                                type: "array"
+                                x-kubernetes-preserve-unknown-fields: true
+                              restorePointInTime:
+                                description: "Specifies the point in time to which the restore should be performed.\nSupported time formats:\n\n\n- RFC3339 format, e.g. \"2023-11-25T18:52:53Z\"\n- A human-readable date-time format, e.g. \"Jul 25,2023 18:52:53 UTC+0800\""
+                                type: "string"
+                            required:
+                              - "name"
+                            type: "object"
                           instances:
                             description: "Modifies the desired replicas count for existing InstanceTemplate.\nif the inst"
                             items:

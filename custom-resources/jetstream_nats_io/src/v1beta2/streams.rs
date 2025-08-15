@@ -22,28 +22,36 @@ pub struct StreamSpec {
     /// Name of the account to which the Stream belongs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
-    /// When true, allow higher performance, direct access to get individual messages
+    /// When true, allow higher performance, direct access to get individual messages.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDirect")]
     pub allow_direct: Option<bool>,
+    /// When true, allows header initiated per-message TTLs. If disabled, then the `NATS-TTL` header will be ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMsgTtl")]
+    pub allow_msg_ttl: Option<bool>,
     /// When true, allows the use of the Nats-Rollup header to replace all contents of a stream, or subject in a stream, with a single new message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowRollup")]
     pub allow_rollup: Option<bool>,
     /// Stream specific compression.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub compression: Option<StreamCompression>,
-    /// NATS user credentials for connecting to servers. Please make sure your controller has mounted the cerds on its path.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerLimits")]
+    pub consumer_limits: Option<StreamConsumerLimits>,
+    /// NATS user credentials for connecting to servers. Please make sure your controller has mounted the creds on this path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub creds: Option<String>,
     /// When true, restricts the ability to delete messages from a stream via the API. Cannot be changed once set to true.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyDelete")]
     pub deny_delete: Option<bool>,
+    /// When true, restricts the ability to purge a stream via the API. Cannot be changed once set to true.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "denyPurge")]
+    pub deny_purge: Option<bool>,
     /// The description of the stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// When a Stream reach it's limits either old messages are deleted or new ones are denied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub discard: Option<StreamDiscard>,
-    /// Allows to discard messages on a subject basis.
+    /// Applies discard policy on a per-subject basis. Requires discard policy 'new' and 'maxMsgs' to be set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "discardPerSubject")]
     pub discard_per_subject: Option<bool>,
     /// The duration window to track duplicate messages for.
@@ -52,6 +60,9 @@ pub struct StreamSpec {
     /// Sequence number from which the Stream will start.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSequence")]
     pub first_sequence: Option<f64>,
+    /// The JetStream domain to use for the stream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsDomain")]
+    pub js_domain: Option<String>,
     /// Maximum age of any message in the stream, expressed in Go's time.Duration format. Empty for unlimited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
     pub max_age: Option<String>,
@@ -67,7 +78,7 @@ pub struct StreamSpec {
     /// How many messages may be in a Stream, oldest messages will be removed if the Stream exceeds this size. -1 for unlimited.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxMsgs")]
     pub max_msgs: Option<i64>,
-    /// The maximum of messages per subject.
+    /// The maximum number of messages per subject.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxMsgsPerSubject")]
     pub max_msgs_per_subject: Option<i64>,
     /// Additional Stream metadata.
@@ -76,6 +87,9 @@ pub struct StreamSpec {
     /// A stream mirror.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mirror: Option<StreamMirror>,
+    /// When true, enables direct access to messages from the origin stream.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorDirect")]
+    pub mirror_direct: Option<bool>,
     /// A unique name for the Stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -88,10 +102,10 @@ pub struct StreamSpec {
     /// A stream's placement.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub placement: Option<StreamPlacement>,
-    /// When true, the managed Stream will not be deleted when the resource is deleted
+    /// When true, the managed Stream will not be deleted when the resource is deleted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventDelete")]
     pub prevent_delete: Option<bool>,
-    /// When true, the managed Stream will not be updated when the resource is updated
+    /// When true, the managed Stream will not be updated when the resource is updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preventUpdate")]
     pub prevent_update: Option<bool>,
     /// How many replicas to keep for each message.
@@ -103,7 +117,10 @@ pub struct StreamSpec {
     /// How messages are retained in the Stream, once this is exceeded old messages are removed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<StreamRetention>,
-    /// A list of servers for creating stream
+    /// Seal an existing stream so no new messages may be added.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sealed: Option<bool>,
+    /// A list of servers for creating stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servers: Option<Vec<String>>,
     /// A stream's sources.
@@ -112,7 +129,10 @@ pub struct StreamSpec {
     /// The storage backend to use for the Stream.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<StreamStorage>,
-    /// SubjectTransform is for applying a subject transform (to matching messages) when a new message is received
+    /// Enables and sets a duration for adding server markers for delete, purge and max age limits.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectDeleteMarkerTtl")]
+    pub subject_delete_marker_ttl: Option<String>,
+    /// SubjectTransform is for applying a subject transform (to matching messages) when a new message is received.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectTransform")]
     pub subject_transform: Option<StreamSubjectTransform>,
     /// A list of subjects to consume, supports wildcards.
@@ -121,6 +141,9 @@ pub struct StreamSpec {
     /// A client's TLS certs and keys.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<StreamTls>,
+    /// When true, the KV Store will initiate TLS before server INFO.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsFirst")]
+    pub tls_first: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -131,6 +154,16 @@ pub enum StreamCompression {
     None,
     #[serde(rename = "")]
     KopiumEmpty,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct StreamConsumerLimits {
+    /// The duration of inactivity after which a consumer is considered inactive.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inactiveThreshold")]
+    pub inactive_threshold: Option<String>,
+    /// Maximum number of outstanding unacknowledged messages.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAckPending")]
+    pub max_ack_pending: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -185,10 +218,10 @@ pub struct StreamPlacement {
 /// Republish configuration of the stream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StreamRepublish {
-    /// Messages will be additionally published to that subject.
+    /// Messages will be additionally published to this subject.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<String>,
-    /// Messages will be published from that subject to the destination subject.
+    /// Messages will be published from this subject to the destination subject.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }
@@ -242,13 +275,13 @@ pub enum StreamStorage {
     Memory,
 }
 
-/// SubjectTransform is for applying a subject transform (to matching messages) when a new message is received
+/// SubjectTransform is for applying a subject transform (to matching messages) when a new message is received.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StreamSubjectTransform {
-    /// Destination subject to transform into
+    /// Destination subject to transform into.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dest: Option<String>,
-    /// Source subject
+    /// Source subject.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
 }

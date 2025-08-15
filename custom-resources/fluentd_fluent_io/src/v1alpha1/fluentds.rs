@@ -4732,6 +4732,19 @@ pub struct FluentdService {
     /// Name is the name of the FluentD service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Type is the service type to deploy.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<FluentdServiceType>,
+}
+
+/// Service represents configurations on the fluentd service.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum FluentdServiceType {
+    #[serde(rename = "ClusterIP")]
+    ClusterIp,
+    NodePort,
+    LoadBalancer,
+    ExternalName,
 }
 
 /// The pod this Toleration is attached to tolerates any taint that matches

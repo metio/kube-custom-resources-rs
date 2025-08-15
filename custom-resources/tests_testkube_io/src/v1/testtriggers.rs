@@ -19,9 +19,6 @@ use self::prelude::*;
 pub struct TestTriggerSpec {
     /// Action represents what needs to be executed for selected Execution
     pub action: TestTriggerAction,
-    /// supported action parameters for test triggers
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "actionParameters")]
-    pub action_parameters: Option<TestTriggerActionParameters>,
     /// ConcurrencyPolicy defines concurrency policy for selected Execution
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<TestTriggerConcurrencyPolicy>,
@@ -56,31 +53,6 @@ pub struct TestTriggerSpec {
 pub enum TestTriggerAction {
     #[serde(rename = "run")]
     Run,
-}
-
-/// supported action parameters for test triggers
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestTriggerActionParameters {
-    /// configuration to pass for the workflow
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub config: Option<BTreeMap<String, String>>,
-    /// test workflow execution tags
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tags: Option<BTreeMap<String, String>>,
-    /// Target helps decide on which runner the execution is scheduled.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub target: Option<TestTriggerActionParametersTarget>,
-}
-
-/// Target helps decide on which runner the execution is scheduled.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TestTriggerActionParametersTarget {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
-    pub r#match: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub not: Option<BTreeMap<String, String>>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub replicate: Option<Vec<String>>,
 }
 
 /// TestTriggerSpec defines the desired state of TestTrigger
@@ -149,10 +121,6 @@ pub enum TestTriggerEvent {
     DeploymentEnvUpdate,
     #[serde(rename = "deployment-containers-modified")]
     DeploymentContainersModified,
-    #[serde(rename = "deployment-generation-modified")]
-    DeploymentGenerationModified,
-    #[serde(rename = "deployment-resource-modified")]
-    DeploymentResourceModified,
     #[serde(rename = "event-start-test")]
     EventStartTest,
     #[serde(rename = "event-end-test-success")]
@@ -272,9 +240,6 @@ pub struct TestTriggerResourceSelector {
     /// Namespace of the Kubernetes object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// kubernetes resource namespace regex
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceRegex")]
-    pub namespace_regex: Option<String>,
 }
 
 /// LabelSelector is used to identify a group of Kubernetes Objects based on their metadata labels
@@ -322,9 +287,6 @@ pub struct TestTriggerTestSelector {
     /// Namespace of the Kubernetes object
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    /// kubernetes resource namespace regex
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceRegex")]
-    pub namespace_regex: Option<String>,
 }
 
 /// LabelSelector is used to identify a group of Kubernetes Objects based on their metadata labels

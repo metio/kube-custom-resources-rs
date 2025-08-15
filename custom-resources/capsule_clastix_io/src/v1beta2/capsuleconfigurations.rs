@@ -24,6 +24,10 @@ pub struct CapsuleConfigurationSpec {
     /// separated by a dash. This is useful to avoid Namespace name collision in a public CaaS environment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTenantPrefix")]
     pub force_tenant_prefix: Option<bool>,
+    /// Define groups which when found in the request of a user will be ignored by the Capsule
+    /// this might be useful if you have one group where all the users are in, but you want to separate administrators from normal users with additional groups.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreUserWithGroups")]
+    pub ignore_user_with_groups: Option<Vec<String>>,
     /// Allows to set the forbidden metadata for the worker nodes that could be patched by a Tenant.
     /// This applies only if the Tenant has an active NodeSelector, and the Owner have right to patch their nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMetadata")]

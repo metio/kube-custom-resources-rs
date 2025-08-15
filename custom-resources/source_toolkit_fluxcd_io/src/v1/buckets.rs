@@ -73,6 +73,12 @@ pub struct BucketSpec {
     /// for the Bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<BucketSecretRef>,
+    /// ServiceAccountName is the name of the Kubernetes ServiceAccount used to authenticate
+    /// the bucket. This field is only supported for the 'gcp' and 'aws' providers.
+    /// For more information about workload identity:
+    /// https://fluxcd.io/flux/components/source/buckets/#workload-identity
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
+    pub service_account_name: Option<String>,
     /// STS specifies the required configuration to use a Security Token
     /// Service for fetching temporary credentials to authenticate in a
     /// Bucket provider.

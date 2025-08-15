@@ -4,7 +4,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: "keep"
   labels:
-    resource.alpha.banzaicloud.io/revision: "1.15.3"
+    resource.alpha.banzaicloud.io/revision: "1.17.8"
   name: "istiomeshgateways.servicemesh.cisco.com"
 spec:
   group: "servicemesh.cisco.com"

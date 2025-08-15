@@ -5386,7 +5386,7 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - -c
     /// - |
     ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
-    /// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
+    /// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
     /// ```
     /// 
     /// 
@@ -5425,7 +5425,7 @@ pub struct ComponentDefinitionLifecycleActions {
     /// - -c
     /// - |
     ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
-    /// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
+    /// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
     /// ```
     /// 
     /// 
@@ -5467,12 +5467,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// This action is invoked when the database's volume capacity nears its upper limit and space is about to be exhausted.
     /// 
     /// 
-    /// The container executing this action has access to following environment variables:
-    /// 
-    /// 
-    /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-    /// 
-    /// 
     /// Expected action output:
     /// - On Failure: An error message, if applicable, indicating why the action failed.
     /// 
@@ -5487,12 +5481,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// This action is used to bring back a replica that was previously in a read-only state,
     /// which restricted write operations, to its normal operational state where it can handle
     /// both read and write operations.
-    /// 
-    /// 
-    /// The container executing this action has access to following environment variables:
-    /// 
-    /// 
-    /// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
     /// 
     /// 
     /// Expected action output:
@@ -5525,12 +5513,6 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Defining a RoleProbe Action for a Component is required if roles are defined for the Component.
     /// It ensures replicas are correctly labeled with their respective roles.
     /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
-    /// 
-    /// 
-    /// The container executing this action has access to following variables:
-    /// 
-    /// 
-    /// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
     /// 
     /// 
     /// Expected output of this action:
@@ -6697,7 +6679,7 @@ pub struct ComponentDefinitionLifecycleActionsDataLoadRetryPolicy {
 /// - -c
 /// - |
 ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
-/// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
+/// 	  $CLIENT "ALTER SYSTEM ADD SERVER '$POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
 /// ```
 /// 
 /// 
@@ -6989,7 +6971,7 @@ pub struct ComponentDefinitionLifecycleActionsMemberJoinRetryPolicy {
 /// - -c
 /// - |
 ///    CLIENT="mysql -u $SERVICE_USER -p$SERVICE_PASSWORD -P $SERVICE_PORT -h $SERVICE_HOST -e"
-/// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$KB_POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
+/// 	  $CLIENT "ALTER SYSTEM DELETE SERVER '$POD_FQDN:$SERVICE_PORT' ZONE 'zone1'"
 /// ```
 /// 
 /// 
@@ -7790,12 +7772,6 @@ pub struct ComponentDefinitionLifecycleActionsPreTerminateRetryPolicy {
 /// This action is invoked when the database's volume capacity nears its upper limit and space is about to be exhausted.
 /// 
 /// 
-/// The container executing this action has access to following environment variables:
-/// 
-/// 
-/// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
-/// 
-/// 
 /// Expected action output:
 /// - On Failure: An error message, if applicable, indicating why the action failed.
 /// 
@@ -8063,12 +8039,6 @@ pub struct ComponentDefinitionLifecycleActionsReadonlyRetryPolicy {
 /// This action is used to bring back a replica that was previously in a read-only state,
 /// which restricted write operations, to its normal operational state where it can handle
 /// both read and write operations.
-/// 
-/// 
-/// The container executing this action has access to following environment variables:
-/// 
-/// 
-/// - KB_POD_FQDN: The FQDN of the replica pod whose role is being checked.
 /// 
 /// 
 /// Expected action output:
@@ -8607,12 +8577,6 @@ pub struct ComponentDefinitionLifecycleActionsReconfigureRetryPolicy {
 /// Defining a RoleProbe Action for a Component is required if roles are defined for the Component.
 /// It ensures replicas are correctly labeled with their respective roles.
 /// Without this, services that rely on roleSelectors might improperly direct traffic to wrong replicas.
-/// 
-/// 
-/// The container executing this action has access to following variables:
-/// 
-/// 
-/// - KB_POD_FQDN: The FQDN of the Pod whose role is being assessed.
 /// 
 /// 
 /// Expected output of this action:

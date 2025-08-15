@@ -563,6 +563,16 @@ spec:
                           - "repo"
                         type: "object"
                       type: "array"
+                    databaseInitialization:
+                      default:
+                        enabled: true
+                      description: "Settings related to the database initialization routines (which are always executed by default)."
+                      properties:
+                        enabled:
+                          default: true
+                          description: "Whether to execute the database initialization routines (a combination of database initialization, upgrade and migration depending on the Airflow version). Defaults to true to be backwards-compatible. WARNING: setting this to false is *unsupported* as subsequent updates to the Airflow cluster may result in broken behaviour due to inconsistent metadata! Do not change the default unless you know what you are doing!"
+                          type: "boolean"
+                      type: "object"
                     exposeConfig:
                       default: false
                       description: "for internal use only - not for production use."

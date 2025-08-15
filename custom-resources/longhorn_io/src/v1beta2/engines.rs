@@ -148,6 +148,8 @@ pub struct EngineStatus {
     pub snapshots_error: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub started: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub starting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageIP")]
     pub storage_ip: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ublkID")]
