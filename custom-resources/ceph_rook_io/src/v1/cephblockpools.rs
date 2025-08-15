@@ -246,6 +246,9 @@ pub struct CephBlockPoolStatusCheckMirror {
 /// CephBlockPoolStatus represents the mirroring status of Ceph Storage Pool
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolStatus {
+    /// PeerTokenCephxStatus represents the cephx key rotation status for peer tokens
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephx: Option<CephBlockPoolStatusCephx>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -268,6 +271,34 @@ pub struct CephBlockPoolStatus {
     /// SnapshotScheduleStatusSpec is the status of the snapshot schedule
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephBlockPoolStatusSnapshotScheduleStatus>,
+}
+
+/// PeerTokenCephxStatus represents the cephx key rotation status for peer tokens
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBlockPoolStatusCephx {
+    /// PeerToken shows the rotation status of the peer token associated with the `rbd-mirror-peer` user.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerToken")]
+    pub peer_token: Option<CephBlockPoolStatusCephxPeerToken>,
+}
+
+/// PeerToken shows the rotation status of the peer token associated with the `rbd-mirror-peer` user.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephBlockPoolStatusCephxPeerToken {
+    /// KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+    /// same string format as reported by `CephCluster.status.version.version` to allow them to be
+    /// compared. E.g., `20.2.0-0`.
+    /// For all newly-created resources, this field set to the version of Ceph that created the key.
+    /// The special value "Uninitialized" indicates that keys are being created for the first time.
+    /// An empty string indicates that the version is unknown, as expected in brownfield deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCephVersion")]
+    pub key_ceph_version: Option<String>,
+    /// KeyGeneration represents the CephX key generation for the last successful reconcile.
+    /// For all newly-created resources, this field is set to `1`.
+    /// When keys are rotated due to any rotation policy, the generation is incremented or updated to
+    /// the configured policy generation.
+    /// Generation `0` indicates that keys existed prior to the implementation of key tracking.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<i32>,
 }
 
 /// MirroringInfoSpec is the status of the pool/radosnamespace mirroring

@@ -4277,6 +4277,9 @@ pub struct BuildRunStatus {
     /// Conditions holds the latest available observations of a resource's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// Executor is the name and kind of the resource responsible for executing this BuildRun.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub executor: Option<BuildRunStatusExecutor>,
     /// FailureDetails contains error details that are collected and surfaced from TaskRun
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDetails")]
     pub failure_details: Option<BuildRunStatusFailureDetails>,
@@ -4290,6 +4293,8 @@ pub struct BuildRunStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<String>,
     /// TaskRunName is the name of the TaskRun responsible for executing this BuildRun.
+    /// 
+    /// Deprecated: Use Executor instead to describe the taskrun.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "taskRunName")]
     pub task_run_name: Option<String>,
 }
@@ -6476,6 +6481,15 @@ pub struct BuildRunStatusBuildSpecVolumesVsphereVolume {
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
     pub volume_path: String,
+}
+
+/// Executor is the name and kind of the resource responsible for executing this BuildRun.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct BuildRunStatusExecutor {
+    /// Kind is the kind of the object that was created to execute the BuildRun (e.g., "TaskRun", "PipelineRun")
+    pub kind: String,
+    /// Name is the name of the TaskRun or PipelineRun that was created to execute this BuildRun
+    pub name: String,
 }
 
 /// FailureDetails contains error details that are collected and surfaced from TaskRun

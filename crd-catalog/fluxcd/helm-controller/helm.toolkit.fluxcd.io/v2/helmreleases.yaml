@@ -784,6 +784,9 @@ spec:
                     - "install"
                     - "upgrade"
                   type: "string"
+                lastAttemptedReleaseActionDuration:
+                  description: "LastAttemptedReleaseActionDuration is the duration of the last\nrelease action performed for this HelmRelease."
+                  type: "string"
                 lastAttemptedRevision:
                   description: "LastAttemptedRevision is the Source revision of the last reconciliation\nattempt. For OCIRepository  sources, the 12 first characters of the digest are\nappended to the chart version e.g. \"1.2.3+1234567890ab\"."
                   type: "string"

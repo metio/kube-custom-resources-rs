@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.17.2"
+    controller-gen.kubebuilder.io/version: "v0.18.0"
   name: "vmusers.operator.victoriametrics.com"
 spec:
   group: "operator.victoriametrics.com"
@@ -54,7 +54,7 @@ spec:
                   description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                   type: "boolean"
                 drop_src_path_prefix_parts:
-                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
+                  description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details."
                   type: "integer"
                 dump_request_on_errors:
                   description: "DumpRequestOnErrors instructs vmauth to return detailed request params to the client\nif routing rules don't allow to forward request to the backends.\nUseful for debugging `src_hosts` and `src_headers` based routing rules\n\navailable since v1.107.0 vmauth version"
@@ -68,7 +68,7 @@ spec:
                     type: "string"
                   type: "array"
                 ip_filters:
-                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/vmauth/#ip-filters)"
+                  description: "IPFilters defines per target src ip filters\nsupported only with enterprise version of [vmauth](https://docs.victoriametrics.com/victoriametrics/vmauth/#ip-filters)"
                   properties:
                     allow_list:
                       items:
@@ -80,7 +80,7 @@ spec:
                       type: "array"
                   type: "object"
                 load_balancing_policy:
-                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                  description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth#load-balancing) for more details (default \"least_loaded\")"
                   enum:
                     - "least_loaded"
                     - "first_available"
@@ -162,7 +162,7 @@ spec:
                         description: "DiscoverBackendIPs instructs discovering URLPrefix backend IPs via DNS."
                         type: "boolean"
                       drop_src_path_prefix_parts:
-                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/vmauth#dropping-request-path-prefix) for more details."
+                        description: "DropSrcPathPrefixParts is the number of `/`-delimited request path prefix parts to drop before proxying the request to backend.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#dropping-request-path-prefix) for more details."
                         type: "integer"
                       headers:
                         description: "RequestHeaders represent additional http headers, that vmauth uses\nin form of [\"header_key: header_value\"]\nmultiple values for header key:\n[\"header_key: value1,value2\"]\nit's available since 1.68.0 version of vmauth"
@@ -174,7 +174,7 @@ spec:
                           type: "string"
                         type: "array"
                       load_balancing_policy:
-                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/vmauth#load-balancing) for more details (default \"least_loaded\")"
+                        description: "LoadBalancingPolicy defines load balancing policy to use for backend urls.\nSupported policies: least_loaded, first_available.\nSee [here](https://docs.victoriametrics.com/victoriametrics/vmauth/#load-balancing) for more details (default \"least_loaded\")"
                         enum:
                           - "least_loaded"
                           - "first_available"
@@ -205,7 +205,7 @@ spec:
                           type: "string"
                         type: "array"
                       static:
-                        description: "Static - user defined url for traffic forward,\nfor instance http://vmsingle:8429"
+                        description: "Static - user defined url for traffic forward,\nfor instance http://vmsingle:8428"
                         properties:
                           url:
                             description: "URL http url for given staticRef."

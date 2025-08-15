@@ -103,6 +103,8 @@ pub struct PodMonitorSpec {
     pub scrape_class: Option<String>,
     /// Whether to scrape a classic histogram that is also exposed as a native histogram.
     /// It requires Prometheus >= v2.45.0.
+    /// 
+    /// Notice: `scrapeClassicHistograms` corresponds to the `always_scrape_classic_histograms` field in the Prometheus configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
@@ -226,6 +228,13 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// samples before ingestion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<PodMonitorPodMetricsEndpointsMetricRelabelings>>,
+    /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
+    /// that should be excluded from proxying. IP and domain names can
+    /// contain port numbers.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
+    pub no_proxy: Option<String>,
     /// `oauth2` configures the OAuth2 settings to use when scraping the target.
     /// 
     /// It requires Prometheus >= 2.27.0.
@@ -249,8 +258,18 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// The `Pod` port number which exposes the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
     pub port_number: Option<i32>,
-    /// `proxyURL` configures the HTTP Proxy URL (e.g.
-    /// "http://proxyserver:2195") to go through when scraping the target.
+    /// ProxyConnectHeader optionally specifies headers to send to
+    /// proxies during CONNECT requests.
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, PodMonitorPodMetricsEndpointsProxyConnectHeader>>,
+    /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
+    /// 
+    /// It requires Prometheus >= v2.43.0, Alertmanager >= v0.25.0 or Thanos >= v0.32.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
+    pub proxy_from_environment: Option<bool>,
+    /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// `relabelings` configures the relabeling rules to apply the target's
@@ -793,6 +812,23 @@ pub enum PodMonitorPodMetricsEndpointsOauth2TlsConfigMinVersion {
     Tls12,
     #[serde(rename = "TLS13")]
     Tls13,
+}
+
+/// SecretKeySelector selects a key of a Secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PodMonitorPodMetricsEndpointsProxyConnectHeader {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,

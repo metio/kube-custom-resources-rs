@@ -140,10 +140,36 @@ pub struct DatadogMonitorOptions {
 /// Configuration options for scheduling.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatadogMonitorOptionsSchedulingOptions {
+    /// Configuration options for the custom schedule. If start is omitted, the monitor creation time will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customSchedule")]
+    pub custom_schedule: Option<DatadogMonitorOptionsSchedulingOptionsCustomSchedule>,
     /// Configuration options for the evaluation window. If hour_starts is set, no other fields may be set.
     /// Otherwise, day_starts and month_starts must be set together.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluationWindow")]
     pub evaluation_window: Option<DatadogMonitorOptionsSchedulingOptionsEvaluationWindow>,
+}
+
+/// Configuration options for the custom schedule. If start is omitted, the monitor creation time will be used.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogMonitorOptionsSchedulingOptionsCustomSchedule {
+    /// DatadogMonitorOptionsSchedulingOptionsCustomScheduleRecurrence is a struct of the recurrence definition
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recurrence: Option<DatadogMonitorOptionsSchedulingOptionsCustomScheduleRecurrence>,
+}
+
+/// DatadogMonitorOptionsSchedulingOptionsCustomScheduleRecurrence is a struct of the recurrence definition
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DatadogMonitorOptionsSchedulingOptionsCustomScheduleRecurrence {
+    /// The recurrence rule in iCalendar format. For example, `FREQ=MONTHLY;BYMONTHDAY=28,29,30,31;BYSETPOS=-1`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub rrule: Option<String>,
+    /// The start date of the recurrence rule defined in `YYYY-MM-DDThh:mm:ss` format.
+    /// If omitted, the monitor creation time will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub start: Option<String>,
+    /// The timezone in `tz database` format, in which the recurrence rule is defined. For example, `America/New_York` or `UTC`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timezone: Option<String>,
 }
 
 /// Configuration options for the evaluation window. If hour_starts is set, no other fields may be set.

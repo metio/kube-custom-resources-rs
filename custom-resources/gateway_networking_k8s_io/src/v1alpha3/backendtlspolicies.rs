@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
@@ -19,6 +20,18 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct BackendTLSPolicySpec {
+    /// Options are a list of key/value pairs to enable extended TLS
+    /// configuration for each implementation. For example, configuring the
+    /// minimum TLS version or supported cipher suites.
+    /// 
+    /// A set of common keys MAY be defined by the API in the future. To avoid
+    /// any ambiguity, implementation-specific definitions MUST use
+    /// domain-prefixed names, such as `example.com/my-custom-option`.
+    /// Un-prefixed names are reserved for key names defined by Gateway API.
+    /// 
+    /// Support: Implementation-specific
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub options: Option<BTreeMap<String, String>>,
     /// TargetRefs identifies an API object to apply the policy to.
     /// Only Services have Extended support. Implementations MAY support
     /// additional objects, with Implementation Specific support.
@@ -26,9 +39,15 @@ pub struct BackendTLSPolicySpec {
     /// by default, but this default may change in the future to provide
     /// a more granular application of the policy.
     /// 
+    /// TargetRefs must be _distinct_. This means either that:
+    /// 
+    /// * They select different targets. If this is the case, then targetRef
+    ///   entries are distinct. In terms of fields, this means that the
+    ///   multi-part key defined by `group`, `kind`, and `name` must
+    ///   be unique across all targetRef entries in the BackendTLSPolicy.
+    /// * They select different sectionNames in the same target.
     /// 
     /// Support: Extended for Kubernetes Service
-    /// 
     /// 
     /// Support: Implementation-specific for any other resource
     #[serde(rename = "targetRefs")]
@@ -42,7 +61,6 @@ pub struct BackendTLSPolicySpec {
 /// target single resources. For more information on how this policy attachment
 /// mode works, and a sample Policy resource, refer to the policy attachment
 /// documentation for Gateway API.
-/// 
 /// 
 /// Note: This should only be used for direct policy attachment when references
 /// to SectionName are actually needed. In all other cases,
@@ -59,11 +77,9 @@ pub struct BackendTLSPolicyTargetRefs {
     /// unspecified, this targetRef targets the entire resource. In the following
     /// resources, SectionName is interpreted as the following:
     /// 
-    /// 
     /// * Gateway: Listener name
     /// * HTTPRoute: HTTPRouteRule name
     /// * Service: Port name
-    /// 
     /// 
     /// If a SectionName is specified, but does not exist on the targeted object,
     /// the Policy must fail to attach, and the policy implementation should record
@@ -79,25 +95,20 @@ pub struct BackendTLSPolicyValidation {
     /// contain a PEM-encoded TLS CA certificate bundle, which is used to
     /// validate a TLS handshake between the Gateway and backend Pod.
     /// 
-    /// 
     /// If CACertificateRefs is empty or unspecified, then WellKnownCACertificates must be
     /// specified. Only one of CACertificateRefs or WellKnownCACertificates may be specified,
-    /// not both. If CACertifcateRefs is empty or unspecified, the configuration for
+    /// not both. If CACertificateRefs is empty or unspecified, the configuration for
     /// WellKnownCACertificates MUST be honored instead if supported by the implementation.
-    /// 
     /// 
     /// References to a resource in a different namespace are invalid for the
     /// moment, although we will revisit this in the future.
-    /// 
     /// 
     /// A single CACertificateRef to a Kubernetes ConfigMap kind has "Core" support.
     /// Implementations MAY choose to support attaching multiple certificates to
     /// a backend, but this behavior is implementation-specific.
     /// 
-    /// 
     /// Support: Core - An optional single reference to a Kubernetes ConfigMap,
     /// with the CA certificate in a key named `ca.crt`.
-    /// 
     /// 
     /// Support: Implementation-specific (More than one reference, or other kinds
     /// of resources).
@@ -106,17 +117,20 @@ pub struct BackendTLSPolicyValidation {
     /// Hostname is used for two purposes in the connection between Gateways and
     /// backends:
     /// 
-    /// 
     /// 1. Hostname MUST be used as the SNI to connect to the backend (RFC 6066).
-    /// 2. Hostname MUST be used for authentication and MUST match the certificate
-    ///    served by the matching backend.
-    /// 
+    /// 2. Hostname MUST be used for authentication and MUST match the certificate served by the matching backend, unless SubjectAltNames is specified.
     /// 
     /// Support: Core
     pub hostname: String,
+    /// SubjectAltNames contains one or more Subject Alternative Names.
+    /// When specified the certificate served from the backend MUST
+    /// have at least one Subject Alternate Name matching one of the specified SubjectAltNames.
+    /// 
+    /// Support: Extended
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
+    pub subject_alt_names: Option<Vec<BackendTLSPolicyValidationSubjectAltNames>>,
     /// WellKnownCACertificates specifies whether system CA certificates may be used in
     /// the TLS handshake between the gateway and backend pod.
-    /// 
     /// 
     /// If WellKnownCACertificates is unspecified or empty (""), then CACertificateRefs
     /// must be specified with at least one entry for a valid configuration. Only one of
@@ -124,7 +138,6 @@ pub struct BackendTLSPolicyValidation {
     /// implementation does not support the WellKnownCACertificates field or the value
     /// supplied is not supported, the Status Conditions on the Policy MUST be
     /// updated to include an Accepted: False Condition with Reason: Invalid.
-    /// 
     /// 
     /// Support: Implementation-specific
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "wellKnownCACertificates")]
@@ -135,7 +148,6 @@ pub struct BackendTLSPolicyValidation {
 /// referrer.
 /// The API object must be valid in the cluster; the Group and Kind must
 /// be registered in the cluster for this reference to be valid.
-/// 
 /// 
 /// References to objects with invalid Group and Kind are not valid, and must
 /// be rejected by the implementation, with appropriate Conditions set
@@ -149,6 +161,38 @@ pub struct BackendTLSPolicyValidationCaCertificateRefs {
     pub kind: String,
     /// Name is the name of the referent.
     pub name: String,
+}
+
+/// SubjectAltName represents Subject Alternative Name.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct BackendTLSPolicyValidationSubjectAltNames {
+    /// Hostname contains Subject Alternative Name specified in DNS name format.
+    /// Required when Type is set to Hostname, ignored otherwise.
+    /// 
+    /// Support: Core
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hostname: Option<String>,
+    /// Type determines the format of the Subject Alternative Name. Always required.
+    /// 
+    /// Support: Core
+    #[serde(rename = "type")]
+    pub r#type: BackendTLSPolicyValidationSubjectAltNamesType,
+    /// URI contains Subject Alternative Name specified in a full URI format.
+    /// It MUST include both a scheme (e.g., "http" or "ftp") and a scheme-specific-part.
+    /// Common values include SPIFFE IDs like "spiffe://mycluster.example.com/ns/myns/sa/svc1sa".
+    /// Required when Type is set to URI, ignored otherwise.
+    /// 
+    /// Support: Core
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+}
+
+/// SubjectAltName represents Subject Alternative Name.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum BackendTLSPolicyValidationSubjectAltNamesType {
+    Hostname,
+    #[serde(rename = "URI")]
+    Uri,
 }
 
 /// Validation contains backend TLS validation configuration.
@@ -167,26 +211,21 @@ pub struct BackendTLSPolicyStatus {
     /// the controller first sees the policy and SHOULD update the entry as
     /// appropriate when the relevant ancestor is modified.
     /// 
-    /// 
     /// Note that choosing the relevant ancestor is left to the Policy designers;
     /// an important part of Policy design is designing the right object level at
     /// which to namespace this status.
-    /// 
     /// 
     /// Note also that implementations MUST ONLY populate ancestor status for
     /// the Ancestor resources they are responsible for. Implementations MUST
     /// use the ControllerName field to uniquely identify the entries in this list
     /// that they are responsible for.
     /// 
-    /// 
     /// Note that to achieve this, the list of PolicyAncestorStatus structs
     /// MUST be treated as a map with a composite key, made up of the AncestorRef
     /// and ControllerName fields combined.
     /// 
-    /// 
     /// A maximum of 16 ancestors will be represented in this list. An empty list
     /// means the Policy is not relevant for any ancestors.
-    /// 
     /// 
     /// If this slice is full, implementations MUST NOT add further entries.
     /// Instead they MUST consider the policy unimplementable and signal that
@@ -200,7 +239,6 @@ pub struct BackendTLSPolicyStatus {
 /// PolicyAncestorStatus describes the status of a route with respect to an
 /// associated Ancestor.
 /// 
-/// 
 /// Ancestors refer to objects that are either the Target of a policy or above it
 /// in terms of object hierarchy. For example, if a policy targets a Service, the
 /// Policy's Ancestors are, in order, the Service, the HTTPRoute, the Gateway, and
@@ -209,27 +247,22 @@ pub struct BackendTLSPolicyStatus {
 /// SHOULD use Gateway as the PolicyAncestorStatus object unless the designers
 /// have a _very_ good reason otherwise.
 /// 
-/// 
 /// In the context of policy attachment, the Ancestor is used to distinguish which
 /// resource results in a distinct application of this policy. For example, if a policy
 /// targets a Service, it may have a distinct result per attached Gateway.
-/// 
 /// 
 /// Policies targeting the same resource may have different effects depending on the
 /// ancestors of those resources. For example, different Gateways targeting the same
 /// Service may have different capabilities, especially if they have different underlying
 /// implementations.
 /// 
-/// 
 /// For example, in BackendTLSPolicy, the Policy attaches to a Service that is
 /// used as a backend in a HTTPRoute that is itself attached to a Gateway.
 /// In this case, the relevant object for status is the Gateway, and that is the
 /// ancestor object referred to in this status.
 /// 
-/// 
 /// Note that a parent is also an ancestor, so for objects where the parent is the
 /// relevant object for status, this struct SHOULD still be used.
-/// 
 /// 
 /// This struct is intended to be used in a slice that's effectively a map,
 /// with a composite key made up of the AncestorRef and the ControllerName.
@@ -240,20 +273,16 @@ pub struct BackendTLSPolicyStatusAncestors {
     #[serde(rename = "ancestorRef")]
     pub ancestor_ref: BackendTLSPolicyStatusAncestorsAncestorRef,
     /// Conditions describes the status of the Policy with respect to the given Ancestor.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
+    pub conditions: Vec<Condition>,
     /// ControllerName is a domain/path string that indicates the name of the
     /// controller that wrote this status. This corresponds with the
     /// controllerName field on GatewayClass.
     /// 
-    /// 
     /// Example: "example.net/gateway-controller".
-    /// 
     /// 
     /// The format of this field is DOMAIN "/" PATH, where DOMAIN and PATH are
     /// valid Kubernetes names
     /// (https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names).
-    /// 
     /// 
     /// Controllers MUST populate this field when writing status. Controllers should ensure that
     /// entries to status populated with their ControllerName are cleaned up when they are no
@@ -271,31 +300,25 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// To set the core API group (such as for a "Service" kind referent),
     /// Group must be explicitly set to "" (empty string).
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// Kind is kind of the referent.
     /// 
-    /// 
     /// There are two kinds of parent resources with "Core" support:
-    /// 
     /// 
     /// * Gateway (Gateway conformance profile)
     /// * Service (Mesh conformance profile, ClusterIP Services only)
-    /// 
     /// 
     /// Support for other resources is Implementation-Specific.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     /// Name is the name of the referent.
     /// 
-    /// 
     /// Support: Core
     pub name: String,
     /// Namespace is the namespace of the referent. When unspecified, this refers
     /// to the local namespace of the Route.
-    /// 
     /// 
     /// Note that there are specific rules for ParentRefs which cross namespace
     /// boundaries. Cross-namespace references are only valid if they are explicitly
@@ -304,11 +327,9 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// generic way to enable any other kind of cross-namespace reference.
     /// 
     /// 
-    /// 
     /// ParentRefs from a Route to a Service in the same namespace are "producer"
     /// routes, which apply default routing rules to inbound connections from
     /// any namespace to the Service.
-    /// 
     /// 
     /// ParentRefs from a Route to a Service in a different namespace are
     /// "consumer" routes, and these routing rules are only applied to outbound
@@ -317,13 +338,11 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// ParentRef of the Route.
     /// 
     /// 
-    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Port is the network port this Route targets. It can be interpreted
     /// differently based on the type of parent resource.
-    /// 
     /// 
     /// When the parent resource is a Gateway, this targets all listeners
     /// listening on the specified port that also support this kind of Route(and
@@ -334,17 +353,14 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// must match both specified values.
     /// 
     /// 
-    /// 
     /// When the parent resource is a Service, this targets a specific port in the
     /// Service spec. When both Port (experimental) and SectionName are specified,
     /// the name and port of the selected port must match both specified values.
     /// 
     /// 
-    /// 
     /// Implementations MAY choose to support other parent resources.
     /// Implementations supporting other types of parent resources MUST clearly
     /// document how/if Port is interpreted.
-    /// 
     /// 
     /// For the purpose of status, an attachment is considered successful as
     /// long as the parent resource accepts it partially. For example, Gateway
@@ -354,13 +370,11 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// attached. If no Gateway listeners accept attachment from this Route,
     /// the Route MUST be considered detached from the Gateway.
     /// 
-    /// 
     /// Support: Extended
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// SectionName is the name of a section within the target resource. In the
     /// following resources, SectionName is interpreted as the following:
-    /// 
     /// 
     /// * Gateway: Listener name. When both Port (experimental) and SectionName
     /// are specified, the name and port of the selected listener must match
@@ -369,11 +383,9 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// are specified, the name and port of the selected listener must match
     /// both specified values.
     /// 
-    /// 
     /// Implementations MAY choose to support attaching Routes to other resources.
     /// If that is the case, they MUST clearly document how SectionName is
     /// interpreted.
-    /// 
     /// 
     /// When unspecified (empty string), this will reference the entire resource.
     /// For the purpose of status, an attachment is considered successful if at
@@ -383,7 +395,6 @@ pub struct BackendTLSPolicyStatusAncestorsAncestorRef {
     /// the referencing Route, the Route MUST be considered successfully
     /// attached. If no Gateway listeners accept attachment from this Route, the
     /// Route MUST be considered detached from the Gateway.
-    /// 
     /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]

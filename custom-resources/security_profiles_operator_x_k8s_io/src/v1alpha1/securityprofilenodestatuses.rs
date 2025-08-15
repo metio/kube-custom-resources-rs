@@ -11,7 +11,6 @@ use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha1", kind = "SecurityProfileNodeStatus", plural = "securityprofilenodestatuses")]
-#[kube(namespaced)]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]

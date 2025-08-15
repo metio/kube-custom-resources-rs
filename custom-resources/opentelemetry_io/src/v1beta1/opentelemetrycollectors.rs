@@ -63,6 +63,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub management_state: Option<OpenTelemetryCollectorManagementState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<OpenTelemetryCollectorMode>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicy")]
+    pub network_policy: Option<OpenTelemetryCollectorNetworkPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2010,6 +2012,12 @@ pub enum OpenTelemetryCollectorMode {
     Sidecar,
     #[serde(rename = "statefulset")]
     Statefulset,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorNetworkPolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

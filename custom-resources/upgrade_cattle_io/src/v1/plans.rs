@@ -55,6 +55,9 @@ pub struct PlanSpec {
     /// The prepare init container, if specified, is run before cordon/drain which is run before the upgrade container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prepare: Option<PlanPrepare>,
+    /// Priority Class Name of Job, if specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
+    pub priority_class_name: Option<String>,
     /// Secrets to be mounted into the Job Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<PlanSecrets>>,
@@ -550,6 +553,9 @@ pub struct PlanPrepareVolumes {
 /// SecretSpec describes a Secret to be mounted for prepare/upgrade containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanSecrets {
+    /// Mode to mount the Secret volume with.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
+    pub default_mode: Option<i32>,
     /// If set to true, the Secret contents will not be hashed, and changes to the Secret will not trigger new application of the Plan.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreUpdates")]
     pub ignore_updates: Option<bool>,

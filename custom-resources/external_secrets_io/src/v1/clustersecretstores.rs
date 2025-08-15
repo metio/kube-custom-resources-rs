@@ -1848,6 +1848,8 @@ pub struct ClusterSecretStoreProviderInfisical {
 /// Auth configures how the Operator authenticates with the Infisical API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderInfisicalAuth {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsAuthCredentials")]
+    pub aws_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthAwsAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureAuthCredentials")]
     pub azure_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthAzureAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpIamAuthCredentials")]
@@ -1856,12 +1858,41 @@ pub struct ClusterSecretStoreProviderInfisicalAuth {
     pub gcp_id_token_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthGcpIdTokenAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtAuthCredentials")]
     pub jwt_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthJwtAuthCredentials>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesAuthCredentials")]
+    pub kubernetes_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapAuthCredentials")]
     pub ldap_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthLdapAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociAuthCredentials")]
     pub oci_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthOciAuthCredentials>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenAuthCredentials")]
+    pub token_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthTokenAuthCredentials>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "universalAuthCredentials")]
     pub universal_auth_credentials: Option<ClusterSecretStoreProviderInfisicalAuthUniversalAuthCredentials>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthAwsAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "identityId")]
+    pub identity_id: ClusterSecretStoreProviderInfisicalAuthAwsAuthCredentialsIdentityId,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthAwsAuthCredentialsIdentityId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2013,6 +2044,52 @@ pub struct ClusterSecretStoreProviderInfisicalAuthJwtAuthCredentialsIdentityId {
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderInfisicalAuthJwtAuthCredentialsJwt {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "identityId")]
+    pub identity_id: ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentialsIdentityId,
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountTokenPath")]
+    pub service_account_token_path: Option<ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentialsServiceAccountTokenPath>,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentialsIdentityId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthKubernetesAuthCredentialsServiceAccountTokenPath {
     /// A key in the referenced Secret.
     /// Some instances of this field may be defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2229,6 +2306,31 @@ pub struct ClusterSecretStoreProviderInfisicalAuthOciAuthCredentialsTenancyId {
 /// In some instances, `key` is a required field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterSecretStoreProviderInfisicalAuthOciAuthCredentialsUserId {
+    /// A key in the referenced Secret.
+    /// Some instances of this field may be defaulted, in others it may be required.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The name of the Secret resource being referred to.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// The namespace of the Secret resource being referred to.
+    /// Ignored if referent is not cluster-scoped, otherwise defaults to the namespace of the referent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthTokenAuthCredentials {
+    /// A reference to a specific 'key' within a Secret resource.
+    /// In some instances, `key` is a required field.
+    #[serde(rename = "accessToken")]
+    pub access_token: ClusterSecretStoreProviderInfisicalAuthTokenAuthCredentialsAccessToken,
+}
+
+/// A reference to a specific 'key' within a Secret resource.
+/// In some instances, `key` is a required field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterSecretStoreProviderInfisicalAuthTokenAuthCredentialsAccessToken {
     /// A key in the referenced Secret.
     /// Some instances of this field may be defaulted, in others it may be required.
     #[serde(default, skip_serializing_if = "Option::is_none")]

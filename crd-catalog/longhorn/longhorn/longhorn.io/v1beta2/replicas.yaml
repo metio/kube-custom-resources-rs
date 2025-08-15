@@ -172,6 +172,8 @@ spec:
                   type: "boolean"
                 started:
                   type: "boolean"
+                starting:
+                  type: "boolean"
                 storageIP:
                   type: "string"
                 ublkID:

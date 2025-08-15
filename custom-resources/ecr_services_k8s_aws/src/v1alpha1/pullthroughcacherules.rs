@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// PullThroughCacheRuleSpec defines the desired state of PullThroughCacheRule.
 /// 
-/// 
 /// The details of a pull through cache rule.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "ecr.services.k8s.aws", version = "v1alpha1", kind = "PullThroughCacheRule", plural = "pullthroughcacherules")]
@@ -23,15 +22,32 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct PullThroughCacheRuleSpec {
     /// The repository name prefix to use when caching images from the source registry.
+    /// 
+    /// Regex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`
     #[serde(rename = "ecrRepositoryPrefix")]
     pub ecr_repository_prefix: String,
     /// The Amazon Web Services account ID associated with the registry to create
     /// the pull through cache rule for. If you do not specify a registry, the default
     /// registry is assumed.
+    /// 
+    /// Regex Pattern: `^[0-9]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
     /// The registry URL of the upstream public registry to use as the source for
-    /// the pull through cache rule.
+    /// the pull through cache rule. The following is the syntax to use for each
+    /// supported upstream registry.
+    /// 
+    ///    * Amazon ECR Public (ecr-public) - public.ecr.aws
+    /// 
+    ///    * Docker Hub (docker-hub) - registry-1.docker.io
+    /// 
+    ///    * Quay (quay) - quay.io
+    /// 
+    ///    * Kubernetes (k8s) - registry.k8s.io
+    /// 
+    ///    * GitHub Container Registry (github-container-registry) - ghcr.io
+    /// 
+    ///    * Microsoft Azure Container Registry (azure-container-registry) - .azurecr.io
     #[serde(rename = "upstreamRegistryURL")]
     pub upstream_registry_url: String,
 }
@@ -44,7 +60,7 @@ pub struct PullThroughCacheRuleStatus {
     /// constructed ARN for the resource
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<PullThroughCacheRuleStatusAckResourceMetadata>,
-    /// All CRS managed by ACK have a common `Status.Conditions` member that
+    /// All CRs managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
     /// the various terminal states of the CR and its backend AWS service API
     /// resource
@@ -67,7 +83,6 @@ pub struct PullThroughCacheRuleStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -105,8 +105,6 @@ pub enum TestContentRepositoryAuthType {
     Basic,
     #[serde(rename = "header")]
     Header,
-    #[serde(rename = "github")]
-    Github,
 }
 
 /// SecretRef is the Testkube internal reference for secret storage in Kubernetes secrets
@@ -335,10 +333,8 @@ pub struct TestExecutionRequestEnvConfigMaps {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestExecutionRequestEnvConfigMapsReference {
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -365,10 +361,8 @@ pub struct TestExecutionRequestEnvSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestExecutionRequestEnvSecretsReference {
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -378,10 +372,8 @@ pub struct TestExecutionRequestEnvSecretsReference {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TestExecutionRequestImagePullSecrets {
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
@@ -474,10 +466,8 @@ pub struct TestExecutionRequestVariablesValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the ConfigMap or its key must be defined
@@ -517,10 +507,8 @@ pub struct TestExecutionRequestVariablesValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// This field is effectively required, but due to backwards compatibility is
-    /// allowed to be empty. Instances of this type with an empty value here are
-    /// almost certainly wrong.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined

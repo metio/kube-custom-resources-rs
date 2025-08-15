@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.10.0"
+    controller-gen.kubebuilder.io/version: "v0.13.0"
   name: "appolicies.appprotect.f5.com"
 spec:
   group: "appprotect.f5.com"
@@ -176,6 +176,7 @@ spec:
                                   - "VIOL_ACCESS_INVALID"
                                   - "VIOL_ACCESS_MALFORMED"
                                   - "VIOL_ACCESS_MISSING"
+                                  - "VIOL_ACCESS_UNAUTHORIZED"
                                   - "VIOL_ASM_COOKIE_HIJACKING"
                                   - "VIOL_ASM_COOKIE_MODIFIED"
                                   - "VIOL_BLACKLISTED_IP"
@@ -187,9 +188,9 @@ spec:
                                   - "VIOL_DATA_GUARD"
                                   - "VIOL_ENCODING"
                                   - "VIOL_EVASION"
-                                  - "VIOL_FILETYPE"
                                   - "VIOL_FILE_UPLOAD"
                                   - "VIOL_FILE_UPLOAD_IN_BODY"
+                                  - "VIOL_FILETYPE"
                                   - "VIOL_GRAPHQL_ERROR_RESPONSE"
                                   - "VIOL_GRAPHQL_FORMAT"
                                   - "VIOL_GRAPHQL_INTROSPECTION_QUERY"
@@ -509,6 +510,12 @@ spec:
                       properties:
                         creditCardNumbers:
                           type: "boolean"
+                        customPatterns:
+                          type: "boolean"
+                        customPatternsList:
+                          items:
+                            type: "string"
+                          type: "array"
                         enabled:
                           type: "boolean"
                         enforcementMode:
@@ -520,7 +527,11 @@ spec:
                           items:
                             type: "string"
                           type: "array"
+                        firstCustomCharactersToExpose:
+                          type: "integer"
                         lastCcnDigitsToExpose:
+                          type: "integer"
+                        lastCustomCharactersToExpose:
                           type: "integer"
                         lastSsnDigitsToExpose:
                           type: "integer"
@@ -699,7 +710,7 @@ spec:
                                   type: "string"
                                 type: "array"
                             type: "object"
-                          sensetiveData:
+                          sensitiveData:
                             items:
                               properties:
                                 parameterName:

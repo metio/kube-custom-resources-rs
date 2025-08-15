@@ -962,6 +962,10 @@ pub struct HelmReleaseStatus {
     /// HelmRelease. It is used to determine the active remediation strategy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedReleaseAction")]
     pub last_attempted_release_action: Option<HelmReleaseStatusLastAttemptedReleaseAction>,
+    /// LastAttemptedReleaseActionDuration is the duration of the last
+    /// release action performed for this HelmRelease.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedReleaseActionDuration")]
+    pub last_attempted_release_action_duration: Option<String>,
     /// LastAttemptedRevision is the Source revision of the last reconciliation
     /// attempt. For OCIRepository  sources, the 12 first characters of the digest are
     /// appended to the chart version e.g. "1.2.3+1234567890ab".

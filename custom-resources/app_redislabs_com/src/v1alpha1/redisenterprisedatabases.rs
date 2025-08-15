@@ -34,43 +34,46 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// Internode encryption (INE) setting. An optional boolean setting, overriding a similar cluster-wide policy. If set to False, INE is guaranteed to be turned off for this DB (regardless of cluster-wide policy). If set to True, INE will be turned on, unless the capability is not supported by the DB ( in such a case we will get an error and database creation will fail). If left unspecified, will be disabled if internode encryption is not supported by the DB (regardless of cluster default). Deleting this property after explicitly setting its value shall have no effect.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataInternodeEncryption")]
     pub data_internode_encryption: Option<bool>,
-    /// Database port number. TCP port on which the database is available. Will be generated automatically if omitted. can not be changed after creation
+    /// TCP port assigned to the database within the Redis Enterprise cluster. Must be unique across all databases in the Redis Enterprise cluster. Will be generated automatically if omitted. can not be changed after creation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databasePort")]
     pub database_port: Option<i64>,
-    /// The name of the secret that holds the password to the database (redis databases only). If secret does not exist, it will be created. To define the password, create an opaque secret and set the name in the spec. The password will be taken from the value of the 'password' key. Use an empty string as value within the secret to disable authentication for the database. Notes - For Active-Active databases this secret will not be automatically created, and also, memcached databases must not be set with a value, and a secret/password will not be automatically created for them. Use the memcachedSaslSecretName field to set authentication parameters for memcached databases.
+    /// Name of the secret containing the database password (Redis databases only). The secret is created automatically if it does not exist. The password is stored under the "password" key in the secret. If creating the secret manually, create an opaque secret with the password under the "password" key. To disable authentication, set the value of the "password" key in the secret to an empty string. Note: For Active-Active databases, this secret is not created automatically. For memcached databases, use memcachedSaslSecretName instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSecretName")]
     pub database_secret_name: Option<String>,
-    /// Is connecting with a default user allowed?
+    /// A custom port to be exposed by the database Services. Can be modified/added/removed after REDB creation. If set, it'll replace the default service port (namely, databasePort or defaultRedisPort).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseServicePort")]
+    pub database_service_port: Option<i64>,
+    /// Allows connections with the default user. When disabled, the DatabaseSecret is not created or updated.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultUser")]
     pub default_user: Option<bool>,
-    /// Database eviction policy. see more https://docs.redislabs.com/latest/rs/administering/database-operations/eviction-policy/
+    /// Database eviction policy. See https://redis.io/docs/latest/operate/rs/databases/memory-performance/eviction-policy/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionPolicy")]
     pub eviction_policy: Option<String>,
-    /// Whether it is an RoF database or not. Applicable only for databases of type "REDIS". Assumed to be false if left blank.
+    /// Enables Auto Tiering (formerly Redis on Flash) for Redis databases only. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRof")]
     pub is_rof: Option<bool>,
-    /// Credentials used for binary authentication in memcached databases. The credentials should be saved as an opaque secret and the name of that secret should be configured using this field. For username, use 'username' as the key and the actual username as the value. For password, use 'password' as the key and the actual password as the value. Note that connections are not encrypted.
+    /// Name of the secret containing credentials for memcached database authentication. Store credentials in an opaque secret with "username" and "password" keys. Note: Connections are not encrypted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memcachedSaslSecretName")]
     pub memcached_sasl_secret_name: Option<String>,
-    /// memory size of database. use formats like 100MB, 0.1GB. minimum value in 100MB. When redis on flash (RoF) is enabled, this value refers to RAM+Flash memory, and it must not be below 1GB.
+    /// Memory size for the database using formats like 100MB or 0.1GB. Minimum value is 100MB. For Auto Tiering (formerly Redis on Flash), this value represents RAM+Flash memory and must be at least 1GB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memorySize")]
     pub memory_size: Option<String>,
     /// List of modules associated with the database. The list of valid modules for the specific cluster can be retrieved from the status of the REC object. Use the "name" and "versions" fields for the specific module configuration. If specifying an explicit version for a module, automatic modules versions upgrade must be disabled by setting the '.upgradeSpec.upgradeModulesToLatest' field in the REC to 'false'. Note that the option to specify module versions is deprecated, and will be removed in future releases.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesList")]
     pub modules_list: Option<Vec<RedisEnterpriseDatabaseModulesList>>,
-    /// OSS Cluster mode option. Note that not all client libraries support OSS cluster mode.
+    /// Enables OSS Cluster mode. Note: Not all client libraries support OSS cluster mode.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ossCluster")]
     pub oss_cluster: Option<bool>,
-    /// Database on-disk persistence policy
+    /// Database persistence policy for on-disk storage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<RedisEnterpriseDatabasePersistence>,
-    /// The policy used for proxy binding to the endpoint. Supported proxy policies are: single/all-master-shards/all-nodes When left blank, the default value will be chosen according to the value of ossCluster - single if disabled, all-master-shards when enabled
+    /// Proxy policy for the database. Supported proxy policies are: single/all-master-shards/all-nodes When left blank, the default value will be chosen according to the value of ossCluster - single if disabled, all-master-shards when enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyPolicy")]
     pub proxy_policy: Option<String>,
-    /// Whether database should be rack aware. This improves availability - more information: https://docs.redislabs.com/latest/rs/concepts/high-availability/rack-zone-awareness/
+    /// Enables rack awareness for improved availability. See https://redis.io/docs/latest/operate/rs/clusters/configure/rack-zone-awareness/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackAware")]
     pub rack_aware: Option<bool>,
-    /// Connection to Redis Enterprise Cluster
+    /// Connection to the Redis Enterprise Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redisEnterpriseCluster")]
     pub redis_enterprise_cluster: Option<RedisEnterpriseDatabaseRedisEnterpriseCluster>,
     /// Redis OSS version. Version can be specified via <major.minor> prefix, or via channels - for existing databases - Upgrade Redis OSS version. For new databases - the version which the database will be created with. If set to 'major' - will always upgrade to the most recent major Redis version. If set to 'latest' - will always upgrade to the most recent Redis version. Depends on 'redisUpgradePolicy' - if you want to set the value to 'latest' for some databases, you must set redisUpgradePolicy on the cluster before. Possible values are 'major' or 'latest' When using upgrade - make sure to backup the database before. This value is used only for database type 'redis'
@@ -79,31 +82,31 @@ pub struct RedisEnterpriseDatabaseSpec {
     /// What databases to replicate from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaSources")]
     pub replica_sources: Option<Vec<RedisEnterpriseDatabaseReplicaSources>>,
-    /// In-memory database replication. When enabled, database will have replica shard for every master - leading to higher availability. Defaults to false.
+    /// Enables in-memory database replication for higher availability. Creates a replica shard for every master shard. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<bool>,
     /// Whether this database supports RESP3 protocol. Note - Deleting this property after explicitly setting its value shall have no effect. Please view the corresponding field in RS doc for more info.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resp3: Option<bool>,
-    /// The size of the RAM portion of an RoF database. Similarly to "memorySize" use formats like 100MB, 0.1GB. It must be at least 10% of combined memory size (RAM and Flash), as specified by "memorySize".
+    /// The size of the RAM portion of an Auto Tiering (formerly Redis on Flash) database. Similarly to "memorySize" use formats like 100MB, 0.1GB. It must be at least 10% of combined memory size (RAM and Flash), as specified by "memorySize".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rofRamSize")]
     pub rof_ram_size: Option<String>,
     /// List of Redis Enteprise ACL and Role bindings to apply
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolesPermissions")]
     pub roles_permissions: Option<Vec<RedisEnterpriseDatabaseRolesPermissions>>,
-    /// Number of database server-side shards
+    /// Number of database server-side shards.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardCount")]
     pub shard_count: Option<i64>,
     /// Toggles database sharding for REAADBs (Active Active databases) and enabled by default. This field is blocked for REDB (non-Active Active databases) and sharding is toggled via the shardCount field - when shardCount is 1 this is disabled otherwise enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingEnabled")]
     pub sharding_enabled: Option<bool>,
-    /// Control the density of shards - should they reside on as few or as many nodes as possible. Available options are "dense" or "sparse". If left unset, defaults to "dense".
+    /// Shard placement strategy: "dense" or "sparse". dense: Shards reside on as few nodes as possible. sparse: Shards are distributed across as many nodes as possible.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardsPlacement")]
     pub shards_placement: Option<RedisEnterpriseDatabaseShardsPlacement>,
-    /// Require SSL authenticated and encrypted connections to the database. enabled - all incoming connections to the Database must use SSL. disabled - no incoming connection to the Database should use SSL. replica_ssl - databases that replicate from this one need to use SSL.
+    /// Require TLS authenticated and encrypted connections to the database. enabled - all client and replication connections to the Database must use TLS. disabled - no incoming connection to the Database should use TLS. replica_ssl - databases that replicate from this one need to use TLS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsMode")]
     pub tls_mode: Option<RedisEnterpriseDatabaseTlsMode>,
-    /// The type of the database (redis or memcached). Defaults to "redis".
+    /// Database type: redis or memcached.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<RedisEnterpriseDatabaseType>,
     /// Specifications for DB upgrade.
@@ -409,7 +412,7 @@ pub enum RedisEnterpriseDatabasePersistence {
     SnapshotEvery12Hour,
 }
 
-/// Connection to Redis Enterprise Cluster
+/// Connection to the Redis Enterprise Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RedisEnterpriseDatabaseRedisEnterpriseCluster {
     /// The name of the Redis Enterprise Cluster where the database should be stored.

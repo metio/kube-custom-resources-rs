@@ -57,7 +57,7 @@ pub struct ConsumerSpec {
     /// Time format must be RFC3339.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "optStartTime")]
     pub opt_start_time: Option<String>,
-    /// rate at which messages will be delivered to clients, expressed in bit per second.
+    /// Rate at which messages will be delivered to clients, expressed in bit per second.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitBps")]
     pub rate_limit_bps: Option<i64>,
     /// How messages are sent.

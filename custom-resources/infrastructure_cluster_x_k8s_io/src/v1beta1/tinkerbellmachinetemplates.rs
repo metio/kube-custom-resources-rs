@@ -80,7 +80,7 @@ pub struct TinkerbellMachineTemplateTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellMachineTemplateTemplateSpecBootOptions {
     /// BootMode is the type of booting that will be done.
-    /// Must be one of "none", "netboot", or "iso".
+    /// Must be one of "none", "netboot", "iso", or "isoboot".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootMode")]
     pub boot_mode: Option<TinkerbellMachineTemplateTemplateSpecBootOptionsBootMode>,
     /// ISOURL is the URL of the ISO that will be one-time booted.
@@ -108,6 +108,8 @@ pub enum TinkerbellMachineTemplateTemplateSpecBootOptionsBootMode {
     Netboot,
     #[serde(rename = "iso")]
     Iso,
+    #[serde(rename = "isoboot")]
+    Isoboot,
 }
 
 /// HardwareAffinity allows filtering for hardware.

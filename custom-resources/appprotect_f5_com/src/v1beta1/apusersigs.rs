@@ -21,6 +21,8 @@ pub struct APUserSigSpec {
     pub properties: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signatures: Option<Vec<APUserSigSignatures>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "softwareVersion")]
+    pub software_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
 }

@@ -13,7 +13,6 @@ use self::prelude::*;
 /// RawSelinuxProfileSpec defines the desired state of RawSelinuxProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "security-profiles-operator.x-k8s.io", version = "v1alpha2", kind = "RawSelinuxProfile", plural = "rawselinuxprofiles")]
-#[kube(namespaced)]
 #[kube(status = "RawSelinuxProfileStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]

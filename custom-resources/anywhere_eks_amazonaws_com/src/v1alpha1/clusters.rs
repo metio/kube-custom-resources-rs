@@ -195,6 +195,10 @@ pub struct ClusterControlPlaneConfiguration {
     /// APIServerExtraArgs defines the flags to configure for the API server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerExtraArgs")]
     pub api_server_extra_args: Option<BTreeMap<String, String>>,
+    /// AuditPolicyContent defines the audit policy configuration as a string.
+    /// If not specified, the default audit policy will be used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "auditPolicyContent")]
+    pub audit_policy_content: Option<String>,
     /// CertSANs is a slice of domain names or IPs to be added as Subject Name Alternatives of the
     /// Kube API Servers Certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSans")]

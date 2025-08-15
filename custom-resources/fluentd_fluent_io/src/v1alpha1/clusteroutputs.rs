@@ -65,6 +65,9 @@ pub struct ClusterOutputOutputs {
     /// out_loki plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loki: Option<ClusterOutputOutputsLoki>,
+    /// null plugin
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nullPlugin")]
+    pub null_plugin: Option<ClusterOutputOutputsNullPlugin>,
     /// out_opensearch plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opensearch: Option<ClusterOutputOutputsOpensearch>,
@@ -1722,6 +1725,9 @@ pub struct ClusterOutputOutputsHttp {
     /// Auth section for this plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<ClusterOutputOutputsHttpAuth>,
+    /// Compress enables the given compression method for HTTP requests.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub compress: Option<ClusterOutputOutputsHttpCompress>,
     /// ContentType defines Content-Type for HTTP request. out_http automatically set Content-Type for built-in formatters when this parameter is not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
@@ -1863,6 +1869,15 @@ pub struct ClusterOutputOutputsHttpAuthUsernameValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// out_http plugin
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterOutputOutputsHttpCompress {
+    #[serde(rename = "text")]
+    Text,
+    #[serde(rename = "gzip")]
+    Gzip,
 }
 
 /// out_http plugin
@@ -2157,6 +2172,14 @@ pub struct ClusterOutputOutputsLokiTenantIdValueFromSecretKeyRef {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// null plugin
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterOutputOutputsNullPlugin {
+    /// NeverFlush for testing to simulate the output plugin that never succeeds to flush.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "neverFlush")]
+    pub never_flush: Option<bool>,
 }
 
 /// out_opensearch plugin

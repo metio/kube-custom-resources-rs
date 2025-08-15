@@ -70,6 +70,9 @@ pub struct TeleportOIDCConnectorSpec {
     /// RedirectURLs is a list of callback URLs which the identity provider can use to redirect the client back to the Teleport Proxy to complete authentication. This list should match the URLs on the provider's side. The URL used for a given auth request will be chosen to match the requesting Proxy's public address. If there is no match, the first url in the list will be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redirect_url: Option<Vec<String>>,
+    /// RequestObjectMode determines how JWT-Secured Authorization Requests will be used for authorization requests. JARs, or request objects, can provide integrity protection, source authentication, and confidentiality for authorization request parameters.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_object_mode: Option<String>,
     /// Scope specifies additional scopes set by provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scope: Option<Vec<String>>,

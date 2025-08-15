@@ -1977,6 +1977,20 @@ spec:
                     disableContainerBuildCapabilities:
                       description: "Disables the container build capabilities.\nWhen set to `false` (the default value), the devEnvironments.security.containerSecurityContext\nfield is ignored, and the following container SecurityContext is applied:\n\n containerSecurityContext:\n   allowPrivilegeEscalation: true\n   capabilities:\n     add:\n     - SETGID\n     - SETUID"
                       type: "boolean"
+                    editorsDownloadUrls:
+                      description: "EditorsDownloadUrls provides a list of custom download URLs for JetBrains editors\nin a local-to-remote flow.\nIt is particularly useful in disconnected or air-gapped environments,\nwhere editors cannot be downloaded from the public internet.\nEach entry contains an editor identifier in the `publisher/name/version` format\nand the corresponding download URL.\nCurrently, this field is intended only for JetBrains editors and should not be used for other editor types."
+                      items:
+                        properties:
+                          editor:
+                            description: "The editor ID must have `publisher/name/version` format."
+                            type: "string"
+                          url:
+                            type: "string"
+                        required:
+                          - "editor"
+                          - "url"
+                        type: "object"
+                      type: "array"
                     gatewayContainer:
                       description: "GatewayContainer configuration."
                       properties:

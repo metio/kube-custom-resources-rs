@@ -64,6 +64,15 @@ pub struct ParserJson {
 /// Logfmt defines logfmt parser configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ParserLogfmt {
+    /// Time_Format, eg. %Y-%m-%dT%H:%M:%S %z
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeFormat")]
+    pub time_format: Option<String>,
+    /// Time_Keep
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKeep")]
+    pub time_keep: Option<bool>,
+    /// Time_Key
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeKey")]
+    pub time_key: Option<String>,
 }
 
 /// LTSV defines ltsv parser configuration.

@@ -4373,6 +4373,19 @@ spec:
                       - "type"
                     type: "object"
                   type: "array"
+                executor:
+                  description: "Executor is the name and kind of the resource responsible for executing this BuildRun."
+                  properties:
+                    kind:
+                      description: "Kind is the kind of the object that was created to execute the BuildRun (e.g., \"TaskRun\", \"PipelineRun\")"
+                      type: "string"
+                    name:
+                      description: "Name is the name of the TaskRun or PipelineRun that was created to execute this BuildRun"
+                      type: "string"
+                  required:
+                    - "kind"
+                    - "name"
+                  type: "object"
                 failureDetails:
                   description: "FailureDetails contains error details that are collected and surfaced from TaskRun"
                   properties:
@@ -4445,7 +4458,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 taskRunName:
-                  description: "TaskRunName is the name of the TaskRun responsible for executing this BuildRun."
+                  description: "TaskRunName is the name of the TaskRun responsible for executing this BuildRun.\n\nDeprecated: Use Executor instead to describe the taskrun."
                   type: "string"
               type: "object"
           required:

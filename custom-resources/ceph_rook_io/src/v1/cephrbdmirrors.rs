@@ -442,9 +442,11 @@ pub struct CephRBDMirrorResourcesClaims {
     pub request: Option<String>,
 }
 
-/// Status represents the status of an object
+/// RBDMirrorStatus represents the status of the RBD mirror resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephRBDMirrorStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cephx: Option<CephRBDMirrorStatusCephx>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the latest generation observed by the controller.
@@ -452,5 +454,32 @@ pub struct CephRBDMirrorStatus {
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephRBDMirrorStatusCephx {
+    /// Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub daemon: Option<CephRBDMirrorStatusCephxDaemon>,
+}
+
+/// Daemon shows the CephX key status for local Ceph daemons associated with this resources.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CephRBDMirrorStatusCephxDaemon {
+    /// KeyCephVersion reports the Ceph version that created the current generation's keys. This is
+    /// same string format as reported by `CephCluster.status.version.version` to allow them to be
+    /// compared. E.g., `20.2.0-0`.
+    /// For all newly-created resources, this field set to the version of Ceph that created the key.
+    /// The special value "Uninitialized" indicates that keys are being created for the first time.
+    /// An empty string indicates that the version is unknown, as expected in brownfield deployments.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyCephVersion")]
+    pub key_ceph_version: Option<String>,
+    /// KeyGeneration represents the CephX key generation for the last successful reconcile.
+    /// For all newly-created resources, this field is set to `1`.
+    /// When keys are rotated due to any rotation policy, the generation is incremented or updated to
+    /// the configured policy generation.
+    /// Generation `0` indicates that keys existed prior to the implementation of key tracking.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyGeneration")]
+    pub key_generation: Option<i32>,
 }
 

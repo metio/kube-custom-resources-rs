@@ -217,6 +217,9 @@ pub struct ClusterFluentBitConfigService {
     pub emitter_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
     pub emitter_storage_type: Option<String>,
+    /// Enable input/output tracing on debug images, controlled more granualry via the http API
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableChunkTrace")]
+    pub enable_chunk_trace: Option<bool>,
     /// Interval to flush output
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushSeconds")]
     pub flush_seconds: Option<f64>,

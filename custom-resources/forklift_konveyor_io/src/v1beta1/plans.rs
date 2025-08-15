@@ -141,7 +141,7 @@ pub struct PlanSpec {
     /// The network attachment definition that should be used for disk transfer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "transferNetwork")]
     pub transfer_network: Option<ObjectReference>,
-    /// Migration type. e.g. "cold", "warm", "live". Supersedes the `warm` boolean if set.
+    /// Migration type. e.g. "cold", "warm", "live", "conversion". Supersedes the `warm` boolean if set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<PlanType>,
     /// useCompatibilityMode controls whether to use VirtIO devices when skipGuestConversion is true (Raw Copy mode).
@@ -1098,6 +1098,8 @@ pub enum PlanType {
     Warm,
     #[serde(rename = "live")]
     Live,
+    #[serde(rename = "conversion")]
+    Conversion,
 }
 
 /// A VM listed on the plan.

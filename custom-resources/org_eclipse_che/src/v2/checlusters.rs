@@ -1270,6 +1270,15 @@ pub struct CheClusterDevEnvironments {
     ///      - SETUID
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableContainerBuildCapabilities")]
     pub disable_container_build_capabilities: Option<bool>,
+    /// EditorsDownloadUrls provides a list of custom download URLs for JetBrains editors
+    /// in a local-to-remote flow.
+    /// It is particularly useful in disconnected or air-gapped environments,
+    /// where editors cannot be downloaded from the public internet.
+    /// Each entry contains an editor identifier in the `publisher/name/version` format
+    /// and the corresponding download URL.
+    /// Currently, this field is intended only for JetBrains editors and should not be used for other editor types.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "editorsDownloadUrls")]
+    pub editors_download_urls: Option<Vec<CheClusterDevEnvironmentsEditorsDownloadUrls>>,
     /// GatewayContainer configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayContainer")]
     pub gateway_container: Option<CheClusterDevEnvironmentsGatewayContainer>,
@@ -2864,6 +2873,13 @@ pub struct CheClusterDevEnvironmentsDefaultPlugins {
 pub enum CheClusterDevEnvironmentsDeploymentStrategy {
     Recreate,
     RollingUpdate,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsEditorsDownloadUrls {
+    /// The editor ID must have `publisher/name/version` format.
+    pub editor: String,
+    pub url: String,
 }
 
 /// GatewayContainer configuration.

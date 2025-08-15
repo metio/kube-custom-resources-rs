@@ -12761,7 +12761,7 @@ spec:
                           type: "array"
                       type: "object"
                     keycloak:
-                      description: "Keycloak contains the configuration for Argo CD keycloak authentication"
+                      description: "Keycloak contains the configuration for Argo CD keycloak authentication\nRemoved: This field is no longer supported and the related functionality has been removed."
                       properties:
                         host:
                           description: "Host is the hostname to use for Ingress/Route resources."

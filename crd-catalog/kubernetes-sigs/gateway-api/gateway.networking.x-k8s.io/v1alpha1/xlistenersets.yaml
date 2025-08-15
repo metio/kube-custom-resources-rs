@@ -77,6 +77,7 @@ spec:
                               type: "object"
                             maxItems: 8
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           namespaces:
                             default:
                               from: "Same"
@@ -138,10 +139,11 @@ spec:
                         pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                         type: "string"
                       port:
-                        description: "Port is the network port. Multiple listeners may use the\nsame port, subject to the Listener compatibility rules."
+                        default: 0
+                        description: "Port is the network port. Multiple listeners may use the\nsame port, subject to the Listener compatibility rules.\n\nIf the port is not set or specified as zero, the implementation will assign\na unique port. If the implementation does not support dynamic port\nassignment, it MUST set `Accepted` condition to `False` with the\n`UnsupportedPort` reason."
                         format: "int32"
                         maximum: 65535.0
-                        minimum: 1.0
+                        minimum: 0.0
                         type: "integer"
                       protocol:
                         description: "Protocol specifies the network protocol this listener expects to receive."
@@ -186,6 +188,7 @@ spec:
                               type: "object"
                             maxItems: 64
                             type: "array"
+                            x-kubernetes-list-type: "atomic"
                           frontendValidation:
                             description: "FrontendValidation holds configuration information for validating the frontend (client).\nSetting this field will require clients to send a client certificate\nrequired for validation during the TLS handshake. In browsers this may result in a dialog appearing\nthat requests a user to specify the client certificate.\nThe maximum depth of a certificate chain accepted in verification is Implementation specific.\n\nSupport: Extended"
                             properties:
@@ -224,6 +227,7 @@ spec:
                                 maxItems: 8
                                 minItems: 1
                                 type: "array"
+                                x-kubernetes-list-type: "atomic"
                             required:
                               - "caCertificateRefs"
                             type: "object"
@@ -249,7 +253,6 @@ spec:
                             rule: "self.mode == 'Terminate' ? size(self.certificateRefs) > 0 || size(self.options) > 0 : true"
                     required:
                       - "name"
-                      - "port"
                       - "protocol"
                     type: "object"
                   maxItems: 64
@@ -468,6 +471,7 @@ spec:
                           type: "object"
                         maxItems: 8
                         type: "array"
+                        x-kubernetes-list-type: "atomic"
                     required:
                       - "attachedRoutes"
                       - "conditions"

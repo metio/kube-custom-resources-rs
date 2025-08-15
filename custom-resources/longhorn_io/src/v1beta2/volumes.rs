@@ -25,6 +25,9 @@ pub struct VolumeSpec {
     pub access_mode: Option<VolumeAccessMode>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backingImage")]
     pub backing_image: Option<String>,
+    /// BackupBlockSize indicate the block size to create backups. The block size is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupBlockSize")]
+    pub backup_block_size: Option<VolumeBackupBlockSize>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupCompressionMethod")]
     pub backup_compression_method: Option<VolumeBackupCompressionMethod>,
     /// The backup target name that the volume will be backed up to or is synced.
@@ -74,7 +77,7 @@ pub struct VolumeSpec {
     /// Replica disk soft anti affinity of the volume. Set enabled to allow replicas to be scheduled in the same disk.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaDiskSoftAntiAffinity")]
     pub replica_disk_soft_anti_affinity: Option<VolumeReplicaDiskSoftAntiAffinity>,
-    /// ReplicaRebuildingBandwidthLimit limits the write bandwidth (in megabytes per second) on the destination replica during rebuilding. Set to 0 to disable bandwidth limiting.
+    /// ReplicaRebuildingBandwidthLimit controls the maximum write bandwidth (in megabytes per second) allowed on the destination replica during the rebuilding process. Set this value to 0 to disable bandwidth limiting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaRebuildingBandwidthLimit")]
     pub replica_rebuilding_bandwidth_limit: Option<i64>,
     /// Replica soft anti affinity of the volume. Set enabled to allow replicas to be scheduled on the same node.
@@ -108,6 +111,15 @@ pub enum VolumeAccessMode {
     Rwo,
     #[serde(rename = "rwx")]
     Rwx,
+}
+
+/// VolumeSpec defines the desired state of the Longhorn volume
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum VolumeBackupBlockSize {
+    #[serde(rename = "2097152")]
+    r#_2097152,
+    #[serde(rename = "16777216")]
+    r#_16777216,
 }
 
 /// VolumeSpec defines the desired state of the Longhorn volume
