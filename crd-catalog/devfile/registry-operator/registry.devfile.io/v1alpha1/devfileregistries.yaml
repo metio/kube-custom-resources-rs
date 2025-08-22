@@ -24,13 +24,13 @@ spec:
       name: "v1alpha1"
       schema:
         openAPIV3Schema:
-          description: "DevfileRegistry is a custom resource allows you to create and manage your own index server and registry viewer. In order to be added, the Devfile Registry must be reachable, supports the Devfile v2.0 spec and above, and is not using the default namespace."
+          description: "DevfileRegistry is a custom resource allows you to create and manage your own index server and registry viewer.\nIn order to be added, the Devfile Registry must be reachable, supports the Devfile v2.0 spec and above, and is\nnot using the default namespace."
           properties:
             apiVersion:
-              description: "APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: "string"
             kind:
-              description: "Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: "Kind is a string value representing the REST resource this object represents.\nServers may infer this from the endpoint the client submits requests to.\nCannot be updated.\nIn CamelCase.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: "string"
             metadata:
               type: "object"
@@ -89,7 +89,7 @@ spec:
                       type: "string"
                   type: "object"
                 ociRegistryImage:
-                  description: "Overrides the container image used for the OCI registry. Recommended to leave blank and default to the image specified by the operator."
+                  description: "Overrides the container image used for the OCI registry.\nRecommended to leave blank and default to the image specified by the operator."
                   type: "string"
                 registryViewer:
                   description: "Sets the registry viewer container spec to be deployed on the Devfile Registry"
@@ -111,30 +111,30 @@ spec:
                   description: "DevfileRegistrySpecStorage defines the desired state of the storage for the DevfileRegistry"
                   properties:
                     enabled:
-                      description: "Instructs the operator to deploy the DevfileRegistry with persistent storage Disabled by default."
+                      description: "Instructs the operator to deploy the DevfileRegistry with persistent storage\nDisabled by default."
                       type: "boolean"
                     registryVolumeSize:
-                      description: "Configures the size of the devfile registry's persistent volume, if enabled. Defaults to 1Gi."
+                      description: "Configures the size of the devfile registry's persistent volume, if enabled.\nDefaults to 1Gi."
                       type: "string"
                   type: "object"
                 telemetry:
                   description: "Telemetry defines the desired state for telemetry in the DevfileRegistry"
                   properties:
                     key:
-                      description: "Specify a telemetry key to allow devfile specific data to be sent to a client's own Segment analytics source. If the write key is specified then telemetry will be enabled"
+                      description: "Specify a telemetry key to allow devfile specific data to be sent to a client's own Segment analytics source.\nIf the write key is specified then telemetry will be enabled"
                       type: "string"
                     registryName:
                       description: "The registry name (can be any string) that is used as identifier for devfile telemetry."
                       type: "string"
                     registryViewerWriteKey:
-                      description: "Specify a telemetry write key for the registry viewer component to allow data to be sent to a client's own Segment analytics source. If the write key is specified then telemetry for the registry viewer component will be enabled"
+                      description: "Specify a telemetry write key for the registry viewer component to allow data to be sent to a client's own Segment analytics source.\nIf the write key is specified then telemetry for the registry viewer component will be enabled"
                       type: "string"
                   type: "object"
                 tls:
                   description: "DevfileRegistrySpecTLS defines the desired state for TLS in the DevfileRegistry"
                   properties:
                     enabled:
-                      description: "Instructs the operator to deploy the DevfileRegistry with TLS enabled. Enabled by default. Disabling is only recommended for development or test."
+                      description: "Instructs the operator to deploy the DevfileRegistry with TLS enabled.\nEnabled by default. Disabling is only recommended for development or test."
                       type: "boolean"
                     secretName:
                       description: "Name of an optional, pre-existing TLS secret to use for TLS termination on ingress/route resources."
@@ -147,23 +147,23 @@ spec:
                 conditions:
                   description: "Conditions shows the state devfile registries."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource. --- This struct is intended for direct use as an array at the field path .status.conditions.  For example, \n type FooStatus struct{ // Represents the observations of a foo's current state. // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\" // +patchMergeKey=type // +patchStrategy=merge // +listType=map // +listMapKey=type Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"` \n // other fields }"
+                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
                     properties:
                       lastTransitionTime:
-                        description: "lastTransitionTime is the last time the condition transitioned from one status to another. This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
+                        description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
                         format: "date-time"
                         type: "string"
                       message:
-                        description: "message is a human readable message indicating details about the transition. This may be an empty string."
+                        description: "message is a human readable message indicating details about the transition.\nThis may be an empty string."
                         maxLength: 32768
                         type: "string"
                       observedGeneration:
-                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon. For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date with respect to the current state of the instance."
+                        description: "observedGeneration represents the .metadata.generation that the condition was set based upon.\nFor instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date\nwith respect to the current state of the instance."
                         format: "int64"
                         minimum: 0.0
                         type: "integer"
                       reason:
-                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition. Producers of specific condition types may define expected values and meanings for this field, and whether the values are considered a guaranteed API. The value should be a CamelCase string. This field may not be empty."
+                        description: "reason contains a programmatic identifier indicating the reason for the condition's last transition.\nProducers of specific condition types may define expected values and meanings for this field,\nand whether the values are considered a guaranteed API.\nThe value should be a CamelCase string.\nThis field may not be empty."
                         maxLength: 1024
                         minLength: 1
                         pattern: "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$"
@@ -176,7 +176,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase. --- Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important. The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

@@ -41,7 +41,7 @@ spec:
             spec:
               properties:
                 disableOptimizations:
-                  description: "disableOptimizations controls if nodes matching placement requirements\nare going to be optimized. Turning off optimizations on already optimized\nNodes does not revert changes."
+                  description: "disableOptimizations controls if nodes matching placement requirements are going to be optimized for performance.\nTurning off optimizations on already optimized Nodes does not revert changes.\nSee https://operator.docs.scylladb.com/stable/architecture/tuning.html for details."
                   type: "boolean"
                 localDiskSetup:
                   description: "localDiskSetup contains options of automatic local disk setup."

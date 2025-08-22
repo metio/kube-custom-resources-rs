@@ -83,12 +83,14 @@ spec:
                           format: "int32"
                           type: "integer"
                         purgeMode:
-                          default: "Graciously"
-                          description: "PurgeMode represents how to deal with the legacy applications on the\ncluster from which the application is migrated.\nValid options are \"Immediately\", \"Graciously\" and \"Never\".\nDefaults to \"Graciously\"."
+                          default: "Gracefully"
+                          description: "PurgeMode represents how to deal with the legacy applications on the\ncluster from which the application is migrated.\nValid options are \"Directly\", \"Gracefully\", \"Never\", \"Immediately\"(deprecated),\nand \"Graciously\"(deprecated).\nDefaults to \"Gracefully\"."
                           enum:
+                            - "Directly"
+                            - "Gracefully"
+                            - "Never"
                             - "Immediately"
                             - "Graciously"
-                            - "Never"
                           type: "string"
                         statePreservation:
                           description: "StatePreservation defines the policy for preserving and restoring state data\nduring failover events for stateful applications.\n\nWhen an application fails over from one cluster to another, this policy enables\nthe extraction of critical data from the original resource configuration.\nUpon successful migration, the extracted data is then re-injected into the new\nresource, ensuring that the application can resume operation with its previous\nstate intact.\nThis is particularly useful for stateful applications where maintaining data\nconsistency across failover events is crucial.\nIf not specified, means no state data will be preserved.\n\nNote: This requires the StatefulFailoverInjection feature gate to be enabled,\nwhich is alpha."
@@ -114,6 +116,39 @@ spec:
                           type: "object"
                       required:
                         - "decisionConditions"
+                      type: "object"
+                    cluster:
+                      description: "Cluster indicates failover behaviors in case of cluster failure.\nIf this value is nil, the failover behavior in case of cluster failure\nwill be controlled by the controller's no-execute-taint-eviction-purge-mode\nparameter.\nIf set, the failover behavior in case of cluster failure will be defined\nby this value."
+                      properties:
+                        purgeMode:
+                          default: "Gracefully"
+                          description: "PurgeMode represents how to deal with the legacy applications on the\ncluster from which the application is migrated.\nValid options are \"Directly\", \"Gracefully\".\nDefaults to \"Gracefully\"."
+                          enum:
+                            - "Directly"
+                            - "Gracefully"
+                          type: "string"
+                        statePreservation:
+                          description: "StatePreservation defines the policy for preserving and restoring state data\nduring failover events for stateful applications.\n\nWhen an application fails over from one cluster to another, this policy enables\nthe extraction of critical data from the original resource configuration.\nUpon successful migration, the extracted data is then re-injected into the new\nresource, ensuring that the application can resume operation with its previous\nstate intact.\nThis is particularly useful for stateful applications where maintaining data\nconsistency across failover events is crucial.\nIf not specified, means no state data will be preserved.\n\nNote: This requires the StatefulFailoverInjection feature gate to be enabled,\nwhich is alpha."
+                          properties:
+                            rules:
+                              description: "Rules contains a list of StatePreservationRule configurations.\nEach rule specifies a JSONPath expression targeting specific pieces of\nstate data to be preserved during failover events. An AliasLabelName is associated\nwith each rule, serving as a label key when the preserved data is passed\nto the new cluster."
+                              items:
+                                description: "StatePreservationRule defines a single rule for state preservation.\nIt includes a JSONPath expression and an alias name that will be used\nas a label key when passing state information to the new cluster."
+                                properties:
+                                  aliasLabelName:
+                                    description: "AliasLabelName is the name that will be used as a label key when the preserved\ndata is passed to the new cluster. This facilitates the injection of the\npreserved state back into the application resources during recovery."
+                                    type: "string"
+                                  jsonPath:
+                                    description: "JSONPath is the JSONPath template used to identify the state data\nto be preserved from the original resource configuration.\nThe JSONPath syntax follows the Kubernetes specification:\nhttps://kubernetes.io/docs/reference/kubectl/jsonpath/\n\nNote: The JSONPath expression will start searching from the \"status\" field of\nthe API resource object by default. For example, to extract the \"availableReplicas\"\nfrom a Deployment, the JSONPath expression should be \"{.availableReplicas}\", not\n\"{.status.availableReplicas}\"."
+                                    type: "string"
+                                required:
+                                  - "aliasLabelName"
+                                  - "jsonPath"
+                                type: "object"
+                              type: "array"
+                          required:
+                            - "rules"
+                          type: "object"
                       type: "object"
                   type: "object"
                 placement:

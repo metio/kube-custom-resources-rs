@@ -11141,6 +11141,10 @@ spec:
                                     required:
                                       - "name"
                                     type: "object"
+                                  labels:
+                                    additionalProperties:
+                                      type: "string"
+                                    type: "object"
                                   volumes:
                                     description: "Volumes is a list of volumes that can be mounted by containers in a template."
                                     items:
@@ -13420,6 +13424,10 @@ spec:
                           type: "string"
                       required:
                         - "name"
+                      type: "object"
+                    labels:
+                      additionalProperties:
+                        type: "string"
                       type: "object"
                     volumes:
                       description: "Volumes is a list of volumes that can be mounted by containers in a template."

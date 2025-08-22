@@ -1707,7 +1707,7 @@ spec:
                       description: "MoverServiceAccount allows specifying the name of the service account\nthat will be used by the data mover. This should only be used by advanced\nusers who want to override the service account normally used by the mover.\nThe service account needs to exist in the same namespace as the ReplicationSource."
                       type: "string"
                     path:
-                      description: "path is the remote path to rsync to. Defaults to \"/\""
+                      description: "This field is not used and will be ignored"
                       type: "string"
                     port:
                       description: "port is the SSH port to connect to for replication. Defaults to 22."

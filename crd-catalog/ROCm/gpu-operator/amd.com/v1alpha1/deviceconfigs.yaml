@@ -260,6 +260,14 @@ spec:
                     blacklist:
                       description: "blacklist amdgpu drivers on the host. Node reboot is required to apply the baclklist on the worker nodes.\nNot working for OpenShift cluster. OpenShift users please use the Machine Config Operator (MCO) resource to configure amdgpu blacklist.\nExample MCO resource is available at https://instinct.docs.amd.com/projects/gpu-operator/en/latest/installation/openshift-olm.html#create-blacklist-for-installing-out-of-tree-kernel-module"
                       type: "boolean"
+                    driverType:
+                      default: "container"
+                      description: "specify the type of driver (container/vf-passthrough/pf-passthrough) to install on the worker node. default value is container.\ncontainer: normal amdgpu-dkms driver for Bare Metal GPU nodes or guest VM.\nvf-passthrough: MxGPU GIM driver on the host machine to generate VF, then mount VF to vfio-pci\npf-passthrough: directly mount PF device to vfio-pci"
+                      enum:
+                        - "container"
+                        - "vf-passthrough"
+                        - "pf-passthrough"
+                      type: "string"
                     enable:
                       default: true
                       description: "enable driver install. default value is true.\ndisable is for skipping driver install/uninstall for dryrun or using in-tree amdgpu kernel module"
@@ -326,6 +334,25 @@ spec:
                               type: "string"
                           type: "object"
                           x-kubernetes-map-type: "atomic"
+                      type: "object"
+                    kernelModuleConfig:
+                      description: "advanced arguments, parameters and more configs to manage tne driver"
+                      properties:
+                        loadArgs:
+                          description: "LoadArg are the arguments when modprobe is executed to load the kernel module. The command will be `modprobe ${Args} module_name`."
+                          items:
+                            type: "string"
+                          type: "array"
+                        parameters:
+                          description: "Parameters is being used for modprobe commands. The command will be `modprobe ${Args} module_name ${Parameters}`."
+                          items:
+                            type: "string"
+                          type: "array"
+                        unloadArgs:
+                          description: "UnloadArg are the arguments when modprobe is executed to unload the kernel module. The command will be `modprobe -r ${Args} module_name`."
+                          items:
+                            type: "string"
+                          type: "array"
                       type: "object"
                     tolerations:
                       description: "tolerations for kmm module object"
@@ -410,6 +437,15 @@ spec:
                     version:
                       description: "version of the drivers source code, can be used as part of image of dockerfile source image\ndefault value for different OS is: ubuntu: 6.1.3, coreOS: 6.2.2"
                       type: "string"
+                    vfioConfig:
+                      description: "vfio config\nspecify the specific configs for binding PCI devices to vfio-pci kernel module, applies for driver type vf-passthrough and pf-passthrough"
+                      properties:
+                        deviceIDs:
+                          description: "list of PCI device IDs to load into vfio-pci driver. default is the list of AMD GPU PF/VF PCI device IDs based on driver type vf-passthrough/pf-passthrough."
+                          items:
+                            type: "string"
+                          type: "array"
+                      type: "object"
                   type: "object"
                 metricsExporter:
                   description: "metrics exporter"
@@ -450,6 +486,11 @@ spec:
                       maximum: 32767.0
                       minimum: 30000.0
                       type: "integer"
+                    podResourceAPISocketPath:
+                      default: "/var/lib/kubelet/pod-resources"
+                      description: "Set the host path for pod-resource kubelet.socket,\nvanila kubernetes path is /var/lib/kubelet/pod-resources\nmicrok8s path is /var/snap/microk8s/common/var/lib/kubelet/pod-resources/\npath is an absolute unix path that allows a trailing slash"
+                      pattern: "^(/[^/\\0]+)*(/)?$"
+                      type: "string"
                     port:
                       default: 5000
                       description: "Port is the internal port used for in-cluster and node access to pull metrics from the metrics-exporter (default 5000)."
