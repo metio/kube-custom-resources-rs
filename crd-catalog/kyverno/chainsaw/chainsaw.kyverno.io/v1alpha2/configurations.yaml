@@ -581,7 +581,7 @@ spec:
                                 description: "Clusters holds a registry to clusters to support multi-cluster tests."
                                 type: "object"
                               content:
-                                description: "Content defines a shell script (run with \"sh -c ...\")."
+                                description: "Content defines a shell script (run with \"$shell $shellArgs ...\")."
                                 type: "string"
                               env:
                                 description: "Env defines additional environment variables."
@@ -631,6 +631,14 @@ spec:
                                     - "name"
                                     - "value"
                                   type: "object"
+                                type: "array"
+                              shell:
+                                description: "Shell defines the host shell (run with \"... $shellArgs $content\")."
+                                type: "string"
+                              shellArgs:
+                                description: "ShellArgs defines arguments for the host shell (run with \"$shell ... $content\")."
+                                items:
+                                  type: "string"
                                 type: "array"
                               skipCommandOutput:
                                 description: "SkipCommandOutput removes the command from the output logs."

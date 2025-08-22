@@ -1710,6 +1710,7 @@ spec:
                         type: "string"
                       hostNetworkingHost:
                         description: "The host to use if the container is in host networking mode."
+                        minLength: 1
                         type: "string"
                       matchFirstNetwork:
                         description: "Configure whether to match the first network if the container has multiple networks defined.\nIf unset, Prometheus uses true by default.\nIt requires Prometheus >= v2.54.1."
@@ -1948,6 +1949,9 @@ spec:
                         type: "object"
                       port:
                         description: "The port to scrape metrics from."
+                        format: "int32"
+                        maximum: 65535.0
+                        minimum: 0.0
                         type: "integer"
                       proxyConnectHeader:
                         additionalProperties:
