@@ -39,9 +39,12 @@ pub struct CapsuleConfigurationSpec {
     /// Disallow creation of namespaces, whose name matches this regexp
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectedNamespaceRegex")]
     pub protected_namespace_regex: Option<String>,
-    /// Names of the groups for Capsule users.
+    /// Names of the groups considered as Capsule users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroups")]
     pub user_groups: Option<Vec<String>>,
+    /// Names of the users considered as Capsule users.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userNames")]
+    pub user_names: Option<Vec<String>>,
 }
 
 /// Allows to set the forbidden metadata for the worker nodes that could be patched by a Tenant.

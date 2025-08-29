@@ -105,6 +105,9 @@ pub struct MiniClusterContainers {
     /// Container image must contain flux and flux-sched install
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Allow the user to dictate pulling directly
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
     /// Allow the user to pull authenticated images
     /// By default no secret is selected. Setting
     /// this with the name of an already existing
@@ -288,7 +291,16 @@ pub struct MiniClusterFlux {
     /// Single user executable to provide to flux start
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    /// Container base for flux
+    /// Container base for flux. Options include only:
+    /// ghcr.io/converged-computing/flux-view-rocky:arm-9
+    /// ghcr.io/converged-computing/flux-view-rocky:arn-8
+    /// ghcr.io/converged-computing/flux-view-rocky:tag-9
+    /// ghcr.io/converged-computing/flux-view-rocky:tag-8
+    /// ghcr.io/converged-computing/flux-view-ubuntu:tag-noble
+    /// ghcr.io/converged-computing/flux-view-ubuntu:tag-jammy
+    /// ghcr.io/converged-computing/flux-view-ubuntu:tag-focal
+    /// ghcr.io/converged-computing/flux-view-ubuntu:arm-jammy
+    /// ghcr.io/converged-computing/flux-view-ubuntu:arm-focal
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub container: Option<MiniClusterFluxContainer>,
     /// Optionally provide an already existing curve certificate
@@ -390,7 +402,16 @@ pub struct MiniClusterFluxBurstingLeadBroker {
     pub size: i32,
 }
 
-/// Container base for flux
+/// Container base for flux. Options include only:
+/// ghcr.io/converged-computing/flux-view-rocky:arm-9
+/// ghcr.io/converged-computing/flux-view-rocky:arn-8
+/// ghcr.io/converged-computing/flux-view-rocky:tag-9
+/// ghcr.io/converged-computing/flux-view-rocky:tag-8
+/// ghcr.io/converged-computing/flux-view-ubuntu:tag-noble
+/// ghcr.io/converged-computing/flux-view-ubuntu:tag-jammy
+/// ghcr.io/converged-computing/flux-view-ubuntu:tag-focal
+/// ghcr.io/converged-computing/flux-view-ubuntu:arm-jammy
+/// ghcr.io/converged-computing/flux-view-ubuntu:arm-focal
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterFluxContainer {
     /// Disable the sidecar container, assuming that the main application container has flux
@@ -521,6 +542,25 @@ pub struct MiniClusterPod {
     /// Service account name for the pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
+    /// Tolerations for a pod
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tolerations: Option<Vec<MiniClusterPodTolerations>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MiniClusterPodTolerations {
+    /// The effect to have
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub effect: Option<String>,
+    /// The label key to tolerate
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    /// The operator to use (e.g., Equal)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub operator: Option<String>,
+    /// E.g., NoSchedule
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -543,6 +583,9 @@ pub struct MiniClusterServices {
     /// Container image must contain flux and flux-sched install
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// Allow the user to dictate pulling directly
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
+    pub image_pull_policy: Option<String>,
     /// Allow the user to pull authenticated images
     /// By default no secret is selected. Setting
     /// this with the name of an already existing

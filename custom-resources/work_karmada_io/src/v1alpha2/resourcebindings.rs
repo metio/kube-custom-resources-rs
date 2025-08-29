@@ -119,7 +119,7 @@ pub struct ResourceBindingClusters {
     pub replicas: Option<i32>,
 }
 
-/// ComponentRequirements represents the requirements for a specific component.
+/// Component represents the requirements for a specific component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingComponents {
     /// Name of this component.
@@ -137,9 +137,6 @@ pub struct ResourceBindingComponents {
 /// ReplicaRequirements represents the requirements required by each replica for this component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceBindingComponentsReplicaRequirements {
-    /// Namespace represents the resources namespaces
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub namespace: Option<String>,
     /// NodeClaim represents the node claim HardNodeAffinity, NodeSelector and Tolerations required by each replica.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeClaim")]
     pub node_claim: Option<ResourceBindingComponentsReplicaRequirementsNodeClaim>,

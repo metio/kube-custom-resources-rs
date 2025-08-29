@@ -17,6 +17,14 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PolicyExceptionSpec {
+    /// AllowedValues specifies values that can be used in CEL expressions to bypass policy checks.
+    /// These values can be referenced in CEL expressions via `exceptions.allowedValues`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedValues")]
+    pub allowed_values: Option<Vec<String>>,
+    /// Images specifies container images to be excluded from policy evaluation.
+    /// These excluded images can be referenced in CEL expressions via `exceptions.allowedImages`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub images: Option<Vec<String>>,
     /// MatchConditions is a list of CEL expressions that must be met for a resource to be excluded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchConditions")]
     pub match_conditions: Option<Vec<PolicyExceptionMatchConditions>>,

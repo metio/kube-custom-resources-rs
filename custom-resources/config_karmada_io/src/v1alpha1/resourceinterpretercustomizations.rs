@@ -108,13 +108,13 @@ pub struct ResourceInterpreterCustomizationCustomizationsComponentResource {
     ///           local components = {}
     /// 
     ///           local jobManagerComponent = {
-    ///               name = "jobmanager"
+    ///               name = "jobmanager",
     ///               replicas = desiredObj.spec.jobManager.replicas
     ///           }
     ///           table.insert(components, jobManagerComponent)
     /// 
     ///           local taskManagerComponent = {
-    ///               name = "taskmanager"
+    ///               name = "taskmanager",
     ///               replicas = desiredObj.spec.taskManager.replicas
     ///           }
     ///           table.insert(components, taskManagerComponent)

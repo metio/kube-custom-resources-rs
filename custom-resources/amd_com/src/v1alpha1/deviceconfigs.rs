@@ -36,6 +36,9 @@ pub struct DeviceConfigSpec {
     /// metrics exporter
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsExporter")]
     pub metrics_exporter: Option<DeviceConfigMetricsExporter>,
+    /// remediation workflow
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationWorkflow")]
+    pub remediation_workflow: Option<DeviceConfigRemediationWorkflow>,
     /// Selector describes on which nodes the GPU Operator should enable the GPU device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<BTreeMap<String, String>>,
@@ -47,7 +50,7 @@ pub struct DeviceConfigSpec {
 /// common config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DeviceConfigCommonConfig {
-    /// InitContainerImage is being used for the operands pods, i.e. metrics exporter, test runner, device plugin and node labeller
+    /// InitContainerImage is being used for the operands pods, i.e. metrics exporter, test runner, device plugin, device config manager and node labeller
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainerImage")]
     pub init_container_image: Option<String>,
     /// UtilsContainer contains parameters to configure operator's utils container
@@ -1251,6 +1254,33 @@ pub struct DeviceConfigMetricsExporterUpgradePolicy {
 pub enum DeviceConfigMetricsExporterUpgradePolicyUpgradeStrategy {
     RollingUpdate,
     OnDelete,
+}
+
+/// remediation workflow
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigRemediationWorkflow {
+    /// Name of the ConfigMap that holds condition-to-workflow mappings.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conditionalWorkflows")]
+    pub conditional_workflows: Option<DeviceConfigRemediationWorkflowConditionalWorkflows>,
+    /// enable remediation workflows. disabled by default
+    /// enable if operator should automatically handle remediation of node incase of gpu issues
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enable: Option<bool>,
+    /// Time to live for argo workflow object and its pods for a failed workflow in hours. By default, it is set to 24 hours
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlForFailedWorkflows")]
+    pub ttl_for_failed_workflows: Option<i64>,
+}
+
+/// Name of the ConfigMap that holds condition-to-workflow mappings.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceConfigRemediationWorkflowConditionalWorkflows {
+    /// Name of the referent.
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
+    /// More info: <https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names>
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// test runner

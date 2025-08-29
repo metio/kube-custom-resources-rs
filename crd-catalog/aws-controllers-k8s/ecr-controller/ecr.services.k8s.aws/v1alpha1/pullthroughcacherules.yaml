@@ -29,8 +29,38 @@ spec:
             spec:
               description: "PullThroughCacheRuleSpec defines the desired state of PullThroughCacheRule.\n\nThe details of a pull through cache rule."
               properties:
+                credentialARN:
+                  description: "The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager\nsecret that identifies the credentials to authenticate to the upstream registry.\n\nRegex Pattern: `^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\\-pullthroughcache\\/[a-zA-Z0-9\\/_+=.@-]+$`"
+                  type: "string"
+                credentialRef:
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
+                  properties:
+                    from:
+                      description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                      properties:
+                        name:
+                          type: "string"
+                        namespace:
+                          type: "string"
+                      type: "object"
+                  type: "object"
+                customRoleARN:
+                  description: "Amazon Resource Name (ARN) of the IAM role to be assumed by Amazon ECR to\nauthenticate to the ECR upstream registry. This role must be in the same\naccount as the registry that you are configuring."
+                  type: "string"
+                customRoleRef:
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
+                  properties:
+                    from:
+                      description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
+                      properties:
+                        name:
+                          type: "string"
+                        namespace:
+                          type: "string"
+                      type: "object"
+                  type: "object"
                 ecrRepositoryPrefix:
-                  description: "The repository name prefix to use when caching images from the source registry.\n\nRegex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`"
+                  description: "The repository name prefix to use when caching images from the source registry.\n\nThere is always an assumed / applied to the end of the prefix. If you specify\necr-public as the prefix, Amazon ECR treats that as ecr-public/.\n\nRegex Pattern: `^((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*/?|ROOT)$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
@@ -41,8 +71,20 @@ spec:
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"
                       rule: "self == oldSelf"
+                upstreamRegistry:
+                  description: "The name of the upstream registry."
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
                 upstreamRegistryURL:
-                  description: "The registry URL of the upstream public registry to use as the source for\nthe pull through cache rule. The following is the syntax to use for each\nsupported upstream registry.\n\n   * Amazon ECR Public (ecr-public) - public.ecr.aws\n\n   * Docker Hub (docker-hub) - registry-1.docker.io\n\n   * Quay (quay) - quay.io\n\n   * Kubernetes (k8s) - registry.k8s.io\n\n   * GitHub Container Registry (github-container-registry) - ghcr.io\n\n   * Microsoft Azure Container Registry (azure-container-registry) - .azurecr.io"
+                  description: "The registry URL of the upstream public registry to use as the source for\nthe pull through cache rule. The following is the syntax to use for each\nsupported upstream registry.\n\n   * Amazon ECR (ecr) – .dkr.ecr..amazonaws.com\n\n   * Amazon ECR Public (ecr-public) – public.ecr.aws\n\n   * Docker Hub (docker-hub) – registry-1.docker.io\n\n   * GitHub Container Registry (github-container-registry) – ghcr.io\n\n   * GitLab Container Registry (gitlab-container-registry) – registry.gitlab.com\n\n   * Kubernetes (k8s) – registry.k8s.io\n\n   * Microsoft Azure Container Registry (azure-container-registry) – .azurecr.io\n\n   * Quay (quay) – quay.io"
+                  type: "string"
+                  x-kubernetes-validations:
+                    - message: "Value is immutable once set"
+                      rule: "self == oldSelf"
+                upstreamRepositoryPrefix:
+                  description: "The repository name prefix of the upstream registry to match with the upstream\nrepository name. When this field isn't specified, Amazon ECR will use the\nROOT.\n\nRegex Pattern: `^((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*/?|ROOT)$`"
                   type: "string"
                   x-kubernetes-validations:
                     - message: "Value is immutable once set"

@@ -340,28 +340,52 @@ spec:
                       description: "NetworkPolicy configuration for the Cryostat application service."
                       properties:
                         disabled:
-                          description: "Disable the NetworkPolicy for a given service."
+                          description: "Disable the NetworkPolicies (Ingress and Egress) for a given service.\nDeprecated: use IngressDisabled and EgressEnabled instead."
+                          type: "boolean"
+                        egressEnabled:
+                          description: "Enable the NetworkPolicy for egress from a given pod. Disabled by default."
+                          type: "boolean"
+                        ingressDisabled:
+                          description: "Disable the NetworkPolicy for ingress to a given pod. Enabled by default."
                           type: "boolean"
                       type: "object"
                     databaseConfig:
                       description: "NetworkPolicy configuration for the database service."
                       properties:
                         disabled:
-                          description: "Disable the NetworkPolicy for a given service."
+                          description: "Disable the NetworkPolicies (Ingress and Egress) for a given service.\nDeprecated: use IngressDisabled and EgressEnabled instead."
+                          type: "boolean"
+                        egressEnabled:
+                          description: "Enable the NetworkPolicy for egress from a given pod. Disabled by default."
+                          type: "boolean"
+                        ingressDisabled:
+                          description: "Disable the NetworkPolicy for ingress to a given pod. Enabled by default."
                           type: "boolean"
                       type: "object"
                     reportsConfig:
                       description: "NetworkPolicy configuration for the cryostat-reports service."
                       properties:
                         disabled:
-                          description: "Disable the NetworkPolicy for a given service."
+                          description: "Disable the NetworkPolicies (Ingress and Egress) for a given service.\nDeprecated: use IngressDisabled and EgressEnabled instead."
+                          type: "boolean"
+                        egressEnabled:
+                          description: "Enable the NetworkPolicy for egress from a given pod. Disabled by default."
+                          type: "boolean"
+                        ingressDisabled:
+                          description: "Disable the NetworkPolicy for ingress to a given pod. Enabled by default."
                           type: "boolean"
                       type: "object"
                     storageConfig:
                       description: "NetworkPolicy configuration for the storage service."
                       properties:
                         disabled:
-                          description: "Disable the NetworkPolicy for a given service."
+                          description: "Disable the NetworkPolicies (Ingress and Egress) for a given service.\nDeprecated: use IngressDisabled and EgressEnabled instead."
+                          type: "boolean"
+                        egressEnabled:
+                          description: "Enable the NetworkPolicy for egress from a given pod. Disabled by default."
+                          type: "boolean"
+                        ingressDisabled:
+                          description: "Disable the NetworkPolicy for ingress to a given pod. Enabled by default."
                           type: "boolean"
                       type: "object"
                   type: "object"

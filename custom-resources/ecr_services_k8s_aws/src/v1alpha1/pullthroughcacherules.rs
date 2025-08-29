@@ -21,9 +21,41 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct PullThroughCacheRuleSpec {
+    /// The Amazon Resource Name (ARN) of the Amazon Web Services Secrets Manager
+    /// secret that identifies the credentials to authenticate to the upstream registry.
+    /// 
+    /// Regex Pattern: `^arn:aws:secretsmanager:[a-zA-Z0-9-:]+:secret:ecr\-pullthroughcache\/[a-zA-Z0-9\/_+=.@-]+$`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialARN")]
+    pub credential_arn: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 	from:
+    /// 	  name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialRef")]
+    pub credential_ref: Option<PullThroughCacheRuleCredentialRef>,
+    /// Amazon Resource Name (ARN) of the IAM role to be assumed by Amazon ECR to
+    /// authenticate to the ECR upstream registry. This role must be in the same
+    /// account as the registry that you are configuring.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customRoleARN")]
+    pub custom_role_arn: Option<String>,
+    /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+    /// type to provide more user friendly syntax for references using 'from' field
+    /// Ex:
+    /// APIIDRef:
+    /// 
+    /// 	from:
+    /// 	  name: my-api
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customRoleRef")]
+    pub custom_role_ref: Option<PullThroughCacheRuleCustomRoleRef>,
     /// The repository name prefix to use when caching images from the source registry.
     /// 
-    /// Regex Pattern: `^(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*$`
+    /// There is always an assumed / applied to the end of the prefix. If you specify
+    /// ecr-public as the prefix, Amazon ECR treats that as ecr-public/.
+    /// 
+    /// Regex Pattern: `^((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*/?|ROOT)$`
     #[serde(rename = "ecrRepositoryPrefix")]
     pub ecr_repository_prefix: String,
     /// The Amazon Web Services account ID associated with the registry to create
@@ -33,23 +65,87 @@ pub struct PullThroughCacheRuleSpec {
     /// Regex Pattern: `^[0-9]{12}$`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryID")]
     pub registry_id: Option<String>,
+    /// The name of the upstream registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamRegistry")]
+    pub upstream_registry: Option<String>,
     /// The registry URL of the upstream public registry to use as the source for
     /// the pull through cache rule. The following is the syntax to use for each
     /// supported upstream registry.
     /// 
-    ///    * Amazon ECR Public (ecr-public) - public.ecr.aws
+    ///    * Amazon ECR (ecr) – .dkr.ecr..amazonaws.com
     /// 
-    ///    * Docker Hub (docker-hub) - registry-1.docker.io
+    ///    * Amazon ECR Public (ecr-public) – public.ecr.aws
     /// 
-    ///    * Quay (quay) - quay.io
+    ///    * Docker Hub (docker-hub) – registry-1.docker.io
     /// 
-    ///    * Kubernetes (k8s) - registry.k8s.io
+    ///    * GitHub Container Registry (github-container-registry) – ghcr.io
     /// 
-    ///    * GitHub Container Registry (github-container-registry) - ghcr.io
+    ///    * GitLab Container Registry (gitlab-container-registry) – registry.gitlab.com
     /// 
-    ///    * Microsoft Azure Container Registry (azure-container-registry) - .azurecr.io
+    ///    * Kubernetes (k8s) – registry.k8s.io
+    /// 
+    ///    * Microsoft Azure Container Registry (azure-container-registry) – .azurecr.io
+    /// 
+    ///    * Quay (quay) – quay.io
     #[serde(rename = "upstreamRegistryURL")]
     pub upstream_registry_url: String,
+    /// The repository name prefix of the upstream registry to match with the upstream
+    /// repository name. When this field isn't specified, Amazon ECR will use the
+    /// ROOT.
+    /// 
+    /// Regex Pattern: `^((?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*/?|ROOT)$`
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamRepositoryPrefix")]
+    pub upstream_repository_prefix: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PullThroughCacheRuleCredentialRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<PullThroughCacheRuleCredentialRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PullThroughCacheRuleCredentialRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
+/// type to provide more user friendly syntax for references using 'from' field
+/// Ex:
+/// APIIDRef:
+/// 
+/// 	from:
+/// 	  name: my-api
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PullThroughCacheRuleCustomRoleRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<PullThroughCacheRuleCustomRoleRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PullThroughCacheRuleCustomRoleRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// PullThroughCacheRuleStatus defines the observed state of PullThroughCacheRule

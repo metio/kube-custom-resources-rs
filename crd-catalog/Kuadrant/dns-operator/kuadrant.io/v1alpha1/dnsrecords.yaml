@@ -61,6 +61,9 @@ spec:
               properties:
                 delegate:
                   type: "boolean"
+                  x-kubernetes-validations:
+                    - message: "delegate is immutable"
+                      rule: "self == oldSelf"
                 endpoints:
                   description: "endpoints is a list of endpoints that will be published into the dns provider."
                   items:

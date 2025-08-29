@@ -65,6 +65,9 @@ spec:
                 customIAMInstanceProfile:
                   description: "The instance profile associated with the underlying Amazon EC2 instance of\nan RDS Custom DB instance.\n\nThis setting is required for RDS Custom.\n\nConstraints:\n\n   * The profile must exist in your account.\n\n   * The profile must have an IAM role that Amazon EC2 has permissions to\n   assume.\n\n   * The instance profile name and the associated IAM role name must start\n   with the prefix AWSRDSCustom.\n\nFor the list of permissions required for the IAM role, see Configure IAM\nand your VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc)\nin the Amazon RDS User Guide."
                   type: "string"
+                databaseInsightsMode:
+                  description: "Specifies the mode of Database Insights to enable for the instance."
+                  type: "string"
                 dbClusterIdentifier:
                   description: "The identifier of the DB cluster that this DB instance will belong to.\n\nThis setting doesn't apply to RDS Custom DB instances."
                   type: "string"

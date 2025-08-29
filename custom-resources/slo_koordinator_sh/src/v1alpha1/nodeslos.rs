@@ -1316,15 +1316,33 @@ pub struct NodeSLOResourceUsedThresholdWithBe {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOSystemStrategy {
     /// /sys/kernel/mm/memcg_reaper/reap_background
+    /// Unset by default.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memcgReapBackGround")]
     pub memcg_reap_back_ground: Option<i64>,
     /// for /proc/sys/vm/min_free_kbytes, min_free_kbytes = minFreeKbytesFactor * nodeTotalMemory /10000
+    /// Unset by default. 1 means 1/10000. Recommended = 100.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minFreeKbytesFactor")]
     pub min_free_kbytes_factor: Option<i64>,
+    /// /sys/kernel/sched_features
+    /// Extra scheduling features supported by the kernel.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedFeatures")]
+    pub sched_features: Option<BTreeMap<String, bool>>,
+    /// /sys/kernel/sched_group_identity_enabled
+    /// <https://github.com/koordinator-sh/koordinator/pull/1172>
+    /// 0 to disable, 1 to enable.
+    /// Disable (0) when CPUQoS (Group Identity) is manually disabled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedGroupIdentityEnabled")]
+    pub sched_group_identity_enabled: Option<i64>,
+    /// /proc/sys/kernel/sched_idle_saver_wmark
+    /// <https://www.alibabacloud.com/help/en/alinux/user-guide/group-identity-feature>
+    /// 1 means 1ns.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedIdleSaverWmark")]
+    pub sched_idle_saver_wmark: Option<i64>,
     /// TotalNetworkBandwidth indicates the overall network bandwidth, cluster manager can set this field, and default value taken from /sys/class/net/${NIC_NAME}/speed, unit: Mbps
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalNetworkBandwidth")]
     pub total_network_bandwidth: Option<IntOrString>,
     /// /proc/sys/vm/watermark_scale_factor
+    /// Unset by default. 1 means 1/10000. Recommended = 150.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "watermarkScaleFactor")]
     pub watermark_scale_factor: Option<i64>,
 }

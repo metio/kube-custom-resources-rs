@@ -28,7 +28,7 @@ pub struct FunctionSpec {
     /// The code for the function.
     pub code: FunctionCode,
     /// To enable code signing for this function, specify the ARN of a code-signing
-    /// configuration. A code-signing configurationincludes a set of signing profiles,
+    /// configuration. A code-signing configuration includes a set of signing profiles,
     /// which define the trusted publishers for this function.
     /// 
     /// Regex Pattern: `^arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\d{1}:\d{12}:code-signing-config:csc-[a-z0-9]{17}$`
@@ -194,8 +194,8 @@ pub struct FunctionSpec {
     /// For more information, see Lambda execution environment (<https://docs.aws.amazon.com/lambda/latest/dg/runtimes-context.html).>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timeout: Option<i64>,
-    /// Set Mode to Active to sample and trace a subset of incoming requests withX-Ray
-    /// (<https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html).>
+    /// Set Mode to Active to sample and trace a subset of incoming requests with
+    /// X-Ray (<https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfig")]
     pub tracing_config: Option<FunctionTracingConfig>,
     /// For network connectivity to Amazon Web Services resources in a VPC, specify
@@ -300,7 +300,7 @@ pub struct FunctionFileSystemConfigs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionFunctionEventInvokeConfig {
     /// A configuration object that specifies the destination of an event after Lambda
-    /// processes it.
+    /// processes it. For more information, see Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationConfig")]
     pub destination_config: Option<FunctionFunctionEventInvokeConfigDestinationConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
@@ -314,10 +314,11 @@ pub struct FunctionFunctionEventInvokeConfig {
 }
 
 /// A configuration object that specifies the destination of an event after Lambda
-/// processes it.
+/// processes it. For more information, see Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionFunctionEventInvokeConfigDestinationConfig {
-    /// A destination for events that failed processing.
+    /// A destination for events that failed processing. For more information, see
+    /// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailure")]
     pub on_failure: Option<FunctionFunctionEventInvokeConfigDestinationConfigOnFailure>,
     /// A destination for events that were processed successfully.
@@ -325,11 +326,15 @@ pub struct FunctionFunctionEventInvokeConfigDestinationConfig {
     /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
     /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
     /// or Amazon EventBridge event bus as the destination.
+    /// 
+    /// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+    /// requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSuccess")]
     pub on_success: Option<FunctionFunctionEventInvokeConfigDestinationConfigOnSuccess>,
 }
 
-/// A destination for events that failed processing.
+/// A destination for events that failed processing. For more information, see
+/// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionFunctionEventInvokeConfigDestinationConfigOnFailure {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -341,6 +346,9 @@ pub struct FunctionFunctionEventInvokeConfigDestinationConfigOnFailure {
 /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
 /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
 /// or Amazon EventBridge event bus as the destination.
+/// 
+/// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+/// requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionFunctionEventInvokeConfigDestinationConfigOnSuccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -430,8 +438,8 @@ pub struct FunctionSnapStart {
     pub apply_on: Option<String>,
 }
 
-/// Set Mode to Active to sample and trace a subset of incoming requests withX-Ray
-/// (<https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html).>
+/// Set Mode to Active to sample and trace a subset of incoming requests with
+/// X-Ray (<https://docs.aws.amazon.com/lambda/latest/dg/services-xray.html).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FunctionTracingConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]

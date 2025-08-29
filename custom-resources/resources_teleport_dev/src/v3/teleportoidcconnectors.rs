@@ -129,6 +129,9 @@ pub struct TeleportOIDCConnectorMfa {
     /// Prompt is an optional OIDC prompt. An empty string omits prompt. If not specified, it defaults to select_account for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prompt: Option<String>,
+    /// RequestObjectMode determines how JWT-Secured Authorization Requests will be used for authorization requests. JARs, or request objects, can provide integrity protection, source authentication, and confidentiality for authorization request parameters. If omitted, MFA flows will default to the `RequestObjectMode` behavior specified in the base OIDC connector. Set this property to 'none' to explicitly disable request objects for the MFA client.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request_object_mode: Option<String>,
 }
 
 /// Status defines the observed state of the Teleport resource

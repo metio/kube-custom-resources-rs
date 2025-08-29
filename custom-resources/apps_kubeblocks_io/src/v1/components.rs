@@ -44,6 +44,9 @@ pub struct ComponentSpec {
     /// These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
     pub disable_exporter: Option<bool>,
+    /// Specifies whether to enable the new Instance API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInstanceAPI")]
+    pub enable_instance_api: Option<bool>,
     /// List of environment variables to add.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ComponentEnv>>,

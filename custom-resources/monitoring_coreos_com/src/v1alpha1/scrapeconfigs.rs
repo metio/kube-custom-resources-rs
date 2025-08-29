@@ -4568,7 +4568,7 @@ pub struct ScrapeConfigHetznerSdConfigs {
     pub oauth2: Option<ScrapeConfigHetznerSdConfigsOauth2>,
     /// The port to scrape metrics from.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub port: Option<i64>,
+    pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
     /// 

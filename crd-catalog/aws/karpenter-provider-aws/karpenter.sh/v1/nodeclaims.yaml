@@ -190,7 +190,7 @@ spec:
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(\\/))?([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
                         type: "string"
                       timeAdded:
-                        description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                        description: "TimeAdded represents the time at which the taint was added."
                         format: "date-time"
                         type: "string"
                       value:
@@ -220,7 +220,7 @@ spec:
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*(\\/))?([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9]$"
                         type: "string"
                       timeAdded:
-                        description: "TimeAdded represents the time at which the taint was added.\nIt is only written for NoExecute taints."
+                        description: "TimeAdded represents the time at which the taint was added."
                         format: "date-time"
                         type: "string"
                       value:

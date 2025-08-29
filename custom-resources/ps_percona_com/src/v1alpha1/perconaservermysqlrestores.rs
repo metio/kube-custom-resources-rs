@@ -25,6 +25,8 @@ pub struct PerconaServerMySQLRestoreSpec {
     pub backup_source: Option<PerconaServerMySQLRestoreBackupSource>,
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOptions")]
+    pub container_options: Option<PerconaServerMySQLRestoreContainerOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -51,6 +53,8 @@ pub struct PerconaServerMySQLRestoreBackupSourceStorage {
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azure: Option<PerconaServerMySQLRestoreBackupSourceStorageAzure>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerOptions")]
+    pub container_options: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptions>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerSecurityContext")]
     pub container_security_context: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerSecurityContext>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -397,6 +401,80 @@ pub struct PerconaServerMySQLRestoreBackupSourceStorageAzure {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsArgs>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnv>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsArgs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xbcloud: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xbstream: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xtrabackup: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnv {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerOptionsEnvValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMySQLRestoreBackupSourceStorageContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
@@ -730,6 +808,80 @@ pub struct PerconaServerMySQLRestoreBackupSourceStorageVolumeSpecPersistentVolum
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<PerconaServerMySQLRestoreContainerOptionsArgs>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<PerconaServerMySQLRestoreContainerOptionsEnv>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsArgs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xbcloud: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xbstream: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub xtrabackup: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnv {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<PerconaServerMySQLRestoreContainerOptionsEnvValueFrom>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnvValueFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<PerconaServerMySQLRestoreContainerOptionsEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<PerconaServerMySQLRestoreContainerOptionsEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<PerconaServerMySQLRestoreContainerOptionsEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<PerconaServerMySQLRestoreContainerOptionsEnvValueFromSecretKeyRef>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnvValueFromConfigMapKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    pub resource: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PerconaServerMySQLRestoreContainerOptionsEnvValueFromSecretKeyRef {
+    pub key: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

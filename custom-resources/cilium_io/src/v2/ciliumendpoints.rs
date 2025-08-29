@@ -48,6 +48,9 @@ pub struct CiliumEndpointStatus {
     /// ingress and egress identities in combination with L4 port and protocol.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<CiliumEndpointStatusPolicy>,
+    /// ServiceAccount is the service account associated with the endpoint
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-account")]
+    pub service_account: Option<String>,
     /// State is the state of the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<CiliumEndpointStatusState>,

@@ -226,7 +226,6 @@ pub struct NodePoolTemplateSpecStartupTaints {
     /// Required. The taint key to be applied to a node.
     pub key: String,
     /// TimeAdded represents the time at which the taint was added.
-    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.
@@ -254,7 +253,6 @@ pub struct NodePoolTemplateSpecTaints {
     /// Required. The taint key to be applied to a node.
     pub key: String,
     /// TimeAdded represents the time at which the taint was added.
-    /// It is only written for NoExecute taints.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
     pub time_added: Option<String>,
     /// The taint value corresponding to the taint key.

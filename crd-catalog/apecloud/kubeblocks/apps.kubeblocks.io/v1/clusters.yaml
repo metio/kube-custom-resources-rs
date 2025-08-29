@@ -414,6 +414,9 @@ spec:
                       disableExporter:
                         description: "Determines whether metrics exporter information is annotated on the Component's headless Service.\n\n\nIf set to true, the following annotations will not be patched into the Service:\n\n\n- \"monitor.kubeblocks.io/path\"\n- \"monitor.kubeblocks.io/port\"\n- \"monitor.kubeblocks.io/scheme\"\n\n\nThese annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
                         type: "boolean"
+                      enableInstanceAPI:
+                        description: "Specifies whether to enable the new Instance API."
+                        type: "boolean"
                       env:
                         description: "List of environment variables to add.\nThese environment variables will be placed after the environment variables declared in the Pod."
                         items:
@@ -6615,6 +6618,9 @@ spec:
                             type: "array"
                           disableExporter:
                             description: "Determines whether metrics exporter information is annotated on the Component's headless Service.\n\n\nIf set to true, the following annotations will not be patched into the Service:\n\n\n- \"monitor.kubeblocks.io/path\"\n- \"monitor.kubeblocks.io/port\"\n- \"monitor.kubeblocks.io/scheme\"\n\n\nThese annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter."
+                            type: "boolean"
+                          enableInstanceAPI:
+                            description: "Specifies whether to enable the new Instance API."
                             type: "boolean"
                           env:
                             description: "List of environment variables to add.\nThese environment variables will be placed after the environment variables declared in the Pod."
