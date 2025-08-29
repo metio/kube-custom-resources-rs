@@ -201,6 +201,9 @@ pub struct ClusterComponentSpecs {
     /// These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
     pub disable_exporter: Option<bool>,
+    /// Specifies whether to enable the new Instance API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInstanceAPI")]
+    pub enable_instance_api: Option<bool>,
     /// List of environment variables to add.
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9640,6 +9643,9 @@ pub struct ClusterShardingsTemplate {
     /// These annotations allow the Prometheus installed by KubeBlocks to discover and scrape metrics from the exporter.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableExporter")]
     pub disable_exporter: Option<bool>,
+    /// Specifies whether to enable the new Instance API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInstanceAPI")]
+    pub enable_instance_api: Option<bool>,
     /// List of environment variables to add.
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]

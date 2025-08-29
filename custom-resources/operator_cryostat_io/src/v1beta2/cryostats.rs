@@ -555,33 +555,61 @@ pub struct CryostatNetworkPolicies {
 /// NetworkPolicy configuration for the Cryostat application service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CryostatNetworkPoliciesCoreConfig {
-    /// Disable the NetworkPolicy for a given service.
+    /// Disable the NetworkPolicies (Ingress and Egress) for a given service.
+    /// Deprecated: use IngressDisabled and EgressEnabled instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
+    /// Enable the NetworkPolicy for egress from a given pod. Disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressEnabled")]
+    pub egress_enabled: Option<bool>,
+    /// Disable the NetworkPolicy for ingress to a given pod. Enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDisabled")]
+    pub ingress_disabled: Option<bool>,
 }
 
 /// NetworkPolicy configuration for the database service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CryostatNetworkPoliciesDatabaseConfig {
-    /// Disable the NetworkPolicy for a given service.
+    /// Disable the NetworkPolicies (Ingress and Egress) for a given service.
+    /// Deprecated: use IngressDisabled and EgressEnabled instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
+    /// Enable the NetworkPolicy for egress from a given pod. Disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressEnabled")]
+    pub egress_enabled: Option<bool>,
+    /// Disable the NetworkPolicy for ingress to a given pod. Enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDisabled")]
+    pub ingress_disabled: Option<bool>,
 }
 
 /// NetworkPolicy configuration for the cryostat-reports service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CryostatNetworkPoliciesReportsConfig {
-    /// Disable the NetworkPolicy for a given service.
+    /// Disable the NetworkPolicies (Ingress and Egress) for a given service.
+    /// Deprecated: use IngressDisabled and EgressEnabled instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
+    /// Enable the NetworkPolicy for egress from a given pod. Disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressEnabled")]
+    pub egress_enabled: Option<bool>,
+    /// Disable the NetworkPolicy for ingress to a given pod. Enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDisabled")]
+    pub ingress_disabled: Option<bool>,
 }
 
 /// NetworkPolicy configuration for the storage service.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CryostatNetworkPoliciesStorageConfig {
-    /// Disable the NetworkPolicy for a given service.
+    /// Disable the NetworkPolicies (Ingress and Egress) for a given service.
+    /// Deprecated: use IngressDisabled and EgressEnabled instead.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
+    /// Enable the NetworkPolicy for egress from a given pod. Disabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressEnabled")]
+    pub egress_enabled: Option<bool>,
+    /// Disable the NetworkPolicy for ingress to a given pod. Enabled by default.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDisabled")]
+    pub ingress_disabled: Option<bool>,
 }
 
 /// Options to configure the Cryostat deployments and pods metadata

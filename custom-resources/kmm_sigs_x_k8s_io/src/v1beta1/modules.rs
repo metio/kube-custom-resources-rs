@@ -2286,10 +2286,6 @@ pub struct ModuleModuleLoaderContainerBuild {
     /// ConfigMap that holds Dockerfile contents
     #[serde(rename = "dockerfileConfigMap")]
     pub dockerfile_config_map: ModuleModuleLoaderContainerBuildDockerfileConfigMap,
-    /// DockerfileOCIArtifact specifies an OCI artifact that contains the dockerfile
-    /// used to build the kernel module container image.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerfileOCIArtifact")]
-    pub dockerfile_oci_artifact: Option<String>,
     /// KanikoParams is used to customize the building process of the image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kanikoParams")]
     pub kaniko_params: Option<ModuleModuleLoaderContainerBuildKanikoParams>,
@@ -2399,10 +2395,6 @@ pub struct ModuleModuleLoaderContainerKernelMappingsBuild {
     /// ConfigMap that holds Dockerfile contents
     #[serde(rename = "dockerfileConfigMap")]
     pub dockerfile_config_map: ModuleModuleLoaderContainerKernelMappingsBuildDockerfileConfigMap,
-    /// DockerfileOCIArtifact specifies an OCI artifact that contains the dockerfile
-    /// used to build the kernel module container image.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerfileOCIArtifact")]
-    pub dockerfile_oci_artifact: Option<String>,
     /// KanikoParams is used to customize the building process of the image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kanikoParams")]
     pub kaniko_params: Option<ModuleModuleLoaderContainerKernelMappingsBuildKanikoParams>,

@@ -89,6 +89,9 @@ pub enum ClusterManagerAddOnManagerConfigurationFeatureGatesMode {
 /// Default mode is used if DeployOption is not set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterManagerDeployOption {
+    /// Default includes optional configurations for clustermanager in the Default mode.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub default: Option<ClusterManagerDeployOptionDefault>,
     /// Hosted includes configurations we need for clustermanager in the Hosted mode.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosted: Option<ClusterManagerDeployOptionHosted>,
@@ -99,6 +102,75 @@ pub struct ClusterManagerDeployOption {
     /// of hub-cluster with cluster-admin permission).
     /// Note: Do not modify the Mode field once it's applied.
     pub mode: ClusterManagerDeployOptionMode,
+}
+
+/// Default includes optional configurations for clustermanager in the Default mode.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionDefault {
+    /// RegistrationWebhookConfiguration represents the customized webhook-server configuration of registration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationWebhookConfiguration")]
+    pub registration_webhook_configuration: Option<ClusterManagerDeployOptionDefaultRegistrationWebhookConfiguration>,
+    /// WorkWebhookConfiguration represents the customized webhook-server configuration of work.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workWebhookConfiguration")]
+    pub work_webhook_configuration: Option<ClusterManagerDeployOptionDefaultWorkWebhookConfiguration>,
+}
+
+/// RegistrationWebhookConfiguration represents the customized webhook-server configuration of registration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionDefaultRegistrationWebhookConfiguration {
+    /// BindConfiguration represents server bind configuration for the webhook server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindConfiguration")]
+    pub bind_configuration: Option<ClusterManagerDeployOptionDefaultRegistrationWebhookConfigurationBindConfiguration>,
+}
+
+/// BindConfiguration represents server bind configuration for the webhook server
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionDefaultRegistrationWebhookConfigurationBindConfiguration {
+    /// HealthProbePort represents the bind port of a webhook-server's healthcheck endpoint. The default value is 8000.
+    /// Healthchecks may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbePort")]
+    pub health_probe_port: Option<i32>,
+    /// HostNetwork enables running webhook pods in host networking mode.
+    /// This may be required in some installations, such as EKS with Calico CNI,
+    /// to allow the API Server to communicate with the webhook pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+    /// MetricsPort represents the bind port for a webhook-server's metric endpoint. The default value is 8080.
+    /// Metrics may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPort")]
+    pub metrics_port: Option<i32>,
+    /// Port represents the primary bind port of a server. The default value is 9443.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
+/// WorkWebhookConfiguration represents the customized webhook-server configuration of work.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionDefaultWorkWebhookConfiguration {
+    /// BindConfiguration represents server bind configuration for the webhook server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindConfiguration")]
+    pub bind_configuration: Option<ClusterManagerDeployOptionDefaultWorkWebhookConfigurationBindConfiguration>,
+}
+
+/// BindConfiguration represents server bind configuration for the webhook server
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionDefaultWorkWebhookConfigurationBindConfiguration {
+    /// HealthProbePort represents the bind port of a webhook-server's healthcheck endpoint. The default value is 8000.
+    /// Healthchecks may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbePort")]
+    pub health_probe_port: Option<i32>,
+    /// HostNetwork enables running webhook pods in host networking mode.
+    /// This may be required in some installations, such as EKS with Calico CNI,
+    /// to allow the API Server to communicate with the webhook pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+    /// MetricsPort represents the bind port for a webhook-server's metric endpoint. The default value is 8080.
+    /// Metrics may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPort")]
+    pub metrics_port: Option<i32>,
+    /// Port represents the primary bind port of a server. The default value is 9443.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
 }
 
 /// Hosted includes configurations we need for clustermanager in the Hosted mode.
@@ -119,7 +191,31 @@ pub struct ClusterManagerDeployOptionHostedRegistrationWebhookConfiguration {
     /// It could be in IP format or fqdn format.
     /// The Address must be reachable by apiserver of the hub cluster.
     pub address: String,
-    /// Port represents the port of a webhook-server. The default value of Port is 443.
+    /// BindConfiguration represents server bind configuration for the webhook server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindConfiguration")]
+    pub bind_configuration: Option<ClusterManagerDeployOptionHostedRegistrationWebhookConfigurationBindConfiguration>,
+    /// Port represents the external port of a webhook-server. The default value of Port is 443.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
+/// BindConfiguration represents server bind configuration for the webhook server
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionHostedRegistrationWebhookConfigurationBindConfiguration {
+    /// HealthProbePort represents the bind port of a webhook-server's healthcheck endpoint. The default value is 8000.
+    /// Healthchecks may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbePort")]
+    pub health_probe_port: Option<i32>,
+    /// HostNetwork enables running webhook pods in host networking mode.
+    /// This may be required in some installations, such as EKS with Calico CNI,
+    /// to allow the API Server to communicate with the webhook pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+    /// MetricsPort represents the bind port for a webhook-server's metric endpoint. The default value is 8080.
+    /// Metrics may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPort")]
+    pub metrics_port: Option<i32>,
+    /// Port represents the primary bind port of a server. The default value is 9443.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
@@ -131,7 +227,31 @@ pub struct ClusterManagerDeployOptionHostedWorkWebhookConfiguration {
     /// It could be in IP format or fqdn format.
     /// The Address must be reachable by apiserver of the hub cluster.
     pub address: String,
-    /// Port represents the port of a webhook-server. The default value of Port is 443.
+    /// BindConfiguration represents server bind configuration for the webhook server
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindConfiguration")]
+    pub bind_configuration: Option<ClusterManagerDeployOptionHostedWorkWebhookConfigurationBindConfiguration>,
+    /// Port represents the external port of a webhook-server. The default value of Port is 443.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i32>,
+}
+
+/// BindConfiguration represents server bind configuration for the webhook server
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterManagerDeployOptionHostedWorkWebhookConfigurationBindConfiguration {
+    /// HealthProbePort represents the bind port of a webhook-server's healthcheck endpoint. The default value is 8000.
+    /// Healthchecks may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbePort")]
+    pub health_probe_port: Option<i32>,
+    /// HostNetwork enables running webhook pods in host networking mode.
+    /// This may be required in some installations, such as EKS with Calico CNI,
+    /// to allow the API Server to communicate with the webhook pods.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
+    pub host_network: Option<bool>,
+    /// MetricsPort represents the bind port for a webhook-server's metric endpoint. The default value is 8080.
+    /// Metrics may be disabled by setting a value less than or equal to 0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPort")]
+    pub metrics_port: Option<i32>,
+    /// Port represents the primary bind port of a server. The default value is 9443.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }

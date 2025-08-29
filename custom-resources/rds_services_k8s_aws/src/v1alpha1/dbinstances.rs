@@ -232,6 +232,9 @@ pub struct DBInstanceSpec {
     /// in the Amazon RDS User Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "customIAMInstanceProfile")]
     pub custom_iam_instance_profile: Option<String>,
+    /// Specifies the mode of Database Insights to enable for the instance.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseInsightsMode")]
+    pub database_insights_mode: Option<String>,
     /// The identifier of the DB cluster that this DB instance will belong to.
     /// 
     /// This setting doesn't apply to RDS Custom DB instances.

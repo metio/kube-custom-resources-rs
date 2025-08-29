@@ -181,6 +181,9 @@ pub struct KlusterletRegistrationConfiguration {
     /// Effective only when the `ClusterClaim` feature gate is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterClaimConfiguration")]
     pub cluster_claim_configuration: Option<KlusterletRegistrationConfigurationClusterClaimConfiguration>,
+    /// ClusterLabels is labels set on ManagedCluster when creating only, other actors can update it afterwards.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterLabels")]
+    pub cluster_labels: Option<BTreeMap<String, String>>,
     /// FeatureGates represents the list of feature gates for registration
     /// If it is set empty, default feature gates will be used.
     /// If it is set, featuregate/Foo is an example of one item in FeatureGates:

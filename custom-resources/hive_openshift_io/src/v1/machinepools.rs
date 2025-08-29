@@ -814,6 +814,9 @@ pub struct MachinePoolPlatformVsphere {
     /// If it is not present, a default value will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
+    /// TagIDs is a list of up to 10 tags to add to the VMs that this machine set provisions in vSphere.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagIDs")]
+    pub tag_i_ds: Option<Vec<String>>,
 }
 
 /// OSDisk defines the storage for instance.

@@ -102,6 +102,9 @@ pub struct DBClusterSpec {
     /// Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "copyTagsToSnapshot")]
     pub copy_tags_to_snapshot: Option<bool>,
+    /// Specifies the mode of Database Insights to enable for the cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseInsightsMode")]
+    pub database_insights_mode: Option<String>,
     /// The name for your database of up to 64 alphanumeric characters. A database
     /// named postgres is always created. If this parameter is specified, an additional
     /// database with this name is created.

@@ -695,7 +695,7 @@ pub struct BuildRunBuildSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<BuildRunBuildSpecVolumesImage>,
@@ -1559,7 +1559,7 @@ pub struct BuildRunBuildSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildRunBuildSpecVolumesImage {
@@ -2643,7 +2643,7 @@ pub struct BuildRunVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<BuildRunVolumesImage>,
@@ -3507,7 +3507,7 @@ pub struct BuildRunVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildRunVolumesImage {
@@ -4857,7 +4857,7 @@ pub struct BuildRunStatusBuildSpecVolumes {
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
     /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
     /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+    /// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
     /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<BuildRunStatusBuildSpecVolumesImage>,
@@ -5721,7 +5721,7 @@ pub struct BuildRunStatusBuildSpecVolumesHostPath {
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
 /// The OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.
 /// The volume will be mounted read-only (ro) and non-executable files (noexec).
-/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).
+/// Sub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath) before 1.33.
 /// The field spec.securityContext.fsGroupChangePolicy has no effect on this volume type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BuildRunStatusBuildSpecVolumesImage {

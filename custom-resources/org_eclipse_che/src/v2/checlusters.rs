@@ -1305,6 +1305,9 @@ pub struct CheClusterDevEnvironments {
     /// The value, -1, allows users to keep an unlimited number of workspaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfWorkspacesPerUser")]
     pub max_number_of_workspaces_per_user: Option<i64>,
+    /// Configuration settings related to the workspaces networking.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub networking: Option<CheClusterDevEnvironmentsNetworking>,
     /// The node selector limits the nodes that can run the workspace pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -3057,6 +3060,30 @@ pub enum CheClusterDevEnvironmentsImagePullPolicy {
     Always,
     IfNotPresent,
     Never,
+}
+
+/// Configuration settings related to the workspaces networking.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsNetworking {
+    /// External TLS configuration.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTLSConfig")]
+    pub external_tls_config: Option<CheClusterDevEnvironmentsNetworkingExternalTlsConfig>,
+}
+
+/// External TLS configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct CheClusterDevEnvironmentsNetworkingExternalTlsConfig {
+    /// Annotations to be applied to ingress/route objects when external TLS is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Enabled determines whether external TLS configuration is used.
+    /// If set to true, the operator will not set TLS config for ingress/route objects.
+    /// Instead, it ensures that any custom TLS configuration will not be reverted on synchronization.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub enabled: Option<bool>,
+    /// Labels to be applied to ingress/route objects when external TLS is enabled.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
 }
 
 /// PersistUserHome defines configuration options for persisting the

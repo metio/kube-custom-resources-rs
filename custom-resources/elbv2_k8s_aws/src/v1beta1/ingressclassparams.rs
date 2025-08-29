@@ -61,6 +61,9 @@ pub struct IngressClassParamsSpec {
     /// SSLPolicy specifies the SSL Policy for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslPolicy")]
     pub ssl_policy: Option<String>,
+    /// SSLRedirectPort specifies the SSL Redirect Port for all Ingresses that belong to IngressClass with this IngressClassParams.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslRedirectPort")]
+    pub ssl_redirect_port: Option<String>,
     /// Subnets defines the subnets for all Ingresses that belong to IngressClass with this IngressClassParams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<IngressClassParamsSubnets>,

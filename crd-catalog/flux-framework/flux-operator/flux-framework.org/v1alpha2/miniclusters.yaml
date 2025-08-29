@@ -90,6 +90,9 @@ spec:
                         default: "ghcr.io/rse-ops/accounting:app-latest"
                         description: "Container image must contain flux and flux-sched install"
                         type: "string"
+                      imagePullPolicy:
+                        description: "Allow the user to dictate pulling directly"
+                        type: "string"
                       imagePullSecret:
                         description: "Allow the user to pull authenticated images\nBy default no secret is selected. Setting\nthis with the name of an already existing\nimagePullSecret will specify that secret\nin the pod spec."
                         type: "string"
@@ -284,7 +287,7 @@ spec:
                       description: "Single user executable to provide to flux start"
                       type: "string"
                     container:
-                      description: "Container base for flux"
+                      description: "Container base for flux. Options include only:\nghcr.io/converged-computing/flux-view-rocky:arm-9\nghcr.io/converged-computing/flux-view-rocky:arn-8\nghcr.io/converged-computing/flux-view-rocky:tag-9\nghcr.io/converged-computing/flux-view-rocky:tag-8\nghcr.io/converged-computing/flux-view-ubuntu:tag-noble\nghcr.io/converged-computing/flux-view-ubuntu:tag-jammy\nghcr.io/converged-computing/flux-view-ubuntu:tag-focal\nghcr.io/converged-computing/flux-view-ubuntu:arm-jammy\nghcr.io/converged-computing/flux-view-ubuntu:arm-focal"
                       properties:
                         disable:
                           default: false
@@ -483,6 +486,24 @@ spec:
                     serviceAccountName:
                       description: "Service account name for the pod"
                       type: "string"
+                    tolerations:
+                      description: "Tolerations for a pod"
+                      items:
+                        properties:
+                          effect:
+                            description: "The effect to have"
+                            type: "string"
+                          key:
+                            description: "The label key to tolerate"
+                            type: "string"
+                          operator:
+                            description: "The operator to use (e.g., Equal)"
+                            type: "string"
+                          value:
+                            description: "E.g., NoSchedule"
+                            type: "string"
+                        type: "object"
+                      type: "array"
                   type: "object"
                 services:
                   description: "Services are one or more service containers to bring up\nalongside the MiniCluster."
@@ -533,6 +554,9 @@ spec:
                       image:
                         default: "ghcr.io/rse-ops/accounting:app-latest"
                         description: "Container image must contain flux and flux-sched install"
+                        type: "string"
+                      imagePullPolicy:
+                        description: "Allow the user to dictate pulling directly"
                         type: "string"
                       imagePullSecret:
                         description: "Allow the user to pull authenticated images\nBy default no secret is selected. Setting\nthis with the name of an already existing\nimagePullSecret will specify that secret\nin the pod spec."

@@ -30,6 +30,9 @@ pub struct CiliumEndpointSliceEndpoints {
     /// EndpointNetworking is the addressing information of an endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<CiliumEndpointSliceEndpointsNetworking>,
+    /// ServiceAccount is the service account of the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "service-account")]
+    pub service_account: Option<String>,
 }
 
 /// EncryptionSpec defines the encryption relevant configuration of a node.

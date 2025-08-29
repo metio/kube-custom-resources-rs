@@ -1003,13 +1003,26 @@ pub struct KeycloakTransaction {
 /// In this section you can configure Keycloak truststores.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakTruststores {
+    /// The ConfigMap containing the trust material - only set one of the other secret or configMap
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
+    pub config_map: Option<KeycloakTruststoresConfigMap>,
     /// Not used. To be removed in later versions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// The Secret containing the trust material - only set one of the other secret or configMap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<KeycloakTruststoresSecret>,
 }
 
+/// The ConfigMap containing the trust material - only set one of the other secret or configMap
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KeycloakTruststoresConfigMap {
+    pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// The Secret containing the trust material - only set one of the other secret or configMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KeycloakTruststoresSecret {
     pub name: String,

@@ -80,6 +80,9 @@ spec:
                     required:
                       - "addressing"
                     type: "object"
+                  service-account:
+                    description: "ServiceAccount is the service account of the endpoint."
+                    type: "string"
                 type: "object"
               type: "array"
             kind:

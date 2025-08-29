@@ -89,6 +89,9 @@ pub struct SubmarinerSpec {
     pub custom_domains: Option<Vec<String>>,
     /// Enable operator debugging.
     pub debug: bool,
+    /// Disable intra-cluster connectivity routing.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableIntraClusterConnectivity")]
+    pub disable_intra_cluster_connectivity: Option<bool>,
     /// The Global CIDR super-net range for allocating GlobalCIDRs to each cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalCIDR")]
     pub global_cidr: Option<String>,

@@ -62,7 +62,7 @@ spec:
                 components:
                   description: "Components represents the requirements of multiple pod templates of the referencing resource.\nIt is designed to support workloads that consist of multiple pod templates,\nsuch as distributed training jobs (e.g., PyTorch, TensorFlow) and big data workloads (e.g., FlinkDeployment),\nwhere each workload is composed of more than one pod template. It is also capable of representing\nsingle-component workloads, such as Deployment.\n\nNote: This field is intended to replace the legacy ReplicaRequirements and Replicas fields above.\nIt is only populated when the MultiplePodTemplatesScheduling feature gate is enabled."
                   items:
-                    description: "ComponentRequirements represents the requirements for a specific component."
+                    description: "Component represents the requirements for a specific component."
                     properties:
                       name:
                         description: "Name of this component.\nIt is required when the resource contains multiple components to ensure proper identification,\nand must also be unique within the same resource."
@@ -71,9 +71,6 @@ spec:
                       replicaRequirements:
                         description: "ReplicaRequirements represents the requirements required by each replica for this component."
                         properties:
-                          namespace:
-                            description: "Namespace represents the resources namespaces"
-                            type: "string"
                           nodeClaim:
                             description: "NodeClaim represents the node claim HardNodeAffinity, NodeSelector and Tolerations required by each replica."
                             properties:

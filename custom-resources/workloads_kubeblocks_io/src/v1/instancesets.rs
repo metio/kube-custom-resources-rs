@@ -9,6 +9,7 @@ mod prelude {
     pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
@@ -37,6 +38,9 @@ pub struct InstanceSetSpec {
     /// Specifies whether to create the default headless service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDefaultHeadlessService")]
     pub disable_default_headless_service: Option<bool>,
+    /// Specifies whether to enable the new Instance API.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInstanceAPI")]
+    pub enable_instance_api: Option<bool>,
     /// flatInstanceOrdinal controls whether the naming of instances(pods) under this component uses a flattened,
     /// globally uniquely ordinal scheme, regardless of the instance template.
     /// 
@@ -44,6 +48,24 @@ pub struct InstanceSetSpec {
     /// Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flatInstanceOrdinal")]
     pub flat_instance_ordinal: Option<bool>,
+    /// Assistant objects that are necessary to run the instance.
+    /// 
+    /// 
+    /// - Service:
+    ///   - component service
+    /// - ConfigMap:
+    ///   - config & script templates
+    ///   - env
+    ///   - kbagent task
+    /// - Secret:
+    ///   - account
+    ///   - TLS
+    /// - RBAC:
+    ///   - sa
+    ///   - role
+    ///   - rolebinding
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceAssistantObjects")]
+    pub instance_assistant_objects: Option<Vec<ObjectReference>>,
     /// Provides fine-grained control over the spec update process of all instances.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceUpdateStrategy")]
     pub instance_update_strategy: Option<InstanceSetInstanceUpdateStrategy>,

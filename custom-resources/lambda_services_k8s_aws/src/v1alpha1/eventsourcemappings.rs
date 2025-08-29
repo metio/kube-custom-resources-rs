@@ -200,6 +200,70 @@ pub struct EventSourceMappingSpec {
 pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerGroupID")]
     pub consumer_group_id: Option<String>,
+    /// Specific configuration settings for a Kafka schema registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaRegistryConfig")]
+    pub schema_registry_config: Option<EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfig>,
+}
+
+/// Specific configuration settings for a Kafka schema registry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessConfigs")]
+    pub access_configs: Option<Vec<EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventRecordFormat")]
+    pub event_record_format: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaRegistryURI")]
+    pub schema_registry_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaValidationConfigs")]
+    pub schema_validation_configs: Option<Vec<EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigSchemaValidationConfigs>>,
+}
+
+/// Specific access configuration settings that tell Lambda how to authenticate
+/// with your schema registry.
+/// 
+/// If you're working with an Glue schema registry, don't provide authentication
+/// details in this object. Instead, ensure that your execution role has the
+/// required permissions for Lambda to access your cluster.
+/// 
+/// If you're working with a Confluent schema registry, choose the authentication
+/// method in the Type field, and provide the Secrets Manager secret ARN in the
+/// URI field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigs {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+    /// Reference field for URI
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriRef")]
+    pub uri_ref: Option<EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRef>,
+}
+
+/// Reference field for URI
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Specific schema validation configuration settings that tell Lambda the message
+/// attributes you want to validate and filter using your schema registry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfigSchemaRegistryConfigSchemaValidationConfigs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attribute: Option<String>,
 }
 
 /// (Kinesis, DynamoDB Streams, Amazon MSK, and self-managed Kafka only) A configuration
@@ -207,7 +271,8 @@ pub struct EventSourceMappingAmazonManagedKafkaEventSourceConfig {
 /// it.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfig {
-    /// A destination for events that failed processing.
+    /// A destination for events that failed processing. For more information, see
+    /// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailure")]
     pub on_failure: Option<EventSourceMappingDestinationConfigOnFailure>,
     /// A destination for events that were processed successfully.
@@ -215,11 +280,15 @@ pub struct EventSourceMappingDestinationConfig {
     /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
     /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
     /// or Amazon EventBridge event bus as the destination.
+    /// 
+    /// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+    /// requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSuccess")]
     pub on_success: Option<EventSourceMappingDestinationConfigOnSuccess>,
 }
 
-/// A destination for events that failed processing.
+/// A destination for events that failed processing. For more information, see
+/// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfigOnFailure {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -231,6 +300,9 @@ pub struct EventSourceMappingDestinationConfigOnFailure {
 /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
 /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
 /// or Amazon EventBridge event bus as the destination.
+/// 
+/// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+/// requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EventSourceMappingDestinationConfigOnSuccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -350,6 +422,70 @@ pub struct EventSourceMappingSelfManagedEventSource {
 pub struct EventSourceMappingSelfManagedKafkaEventSourceConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerGroupID")]
     pub consumer_group_id: Option<String>,
+    /// Specific configuration settings for a Kafka schema registry.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaRegistryConfig")]
+    pub schema_registry_config: Option<EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfig>,
+}
+
+/// Specific configuration settings for a Kafka schema registry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfig {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessConfigs")]
+    pub access_configs: Option<Vec<EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventRecordFormat")]
+    pub event_record_format: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaRegistryURI")]
+    pub schema_registry_uri: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schemaValidationConfigs")]
+    pub schema_validation_configs: Option<Vec<EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigSchemaValidationConfigs>>,
+}
+
+/// Specific access configuration settings that tell Lambda how to authenticate
+/// with your schema registry.
+/// 
+/// If you're working with an Glue schema registry, don't provide authentication
+/// details in this object. Instead, ensure that your execution role has the
+/// required permissions for Lambda to access your cluster.
+/// 
+/// If you're working with a Confluent schema registry, choose the authentication
+/// method in the Type field, and provide the Secrets Manager secret ARN in the
+/// URI field.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigs {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
+    pub r#type: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uri: Option<String>,
+    /// Reference field for URI
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uriRef")]
+    pub uri_ref: Option<EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRef>,
+}
+
+/// Reference field for URI
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRef {
+    /// AWSResourceReference provides all the values necessary to reference another
+    /// k8s resource for finding the identifier(Id/ARN/Name)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from: Option<EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRefFrom>,
+}
+
+/// AWSResourceReference provides all the values necessary to reference another
+/// k8s resource for finding the identifier(Id/ARN/Name)
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigAccessConfigsUriRefFrom {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
+}
+
+/// Specific schema validation configuration settings that tell Lambda the message
+/// attributes you want to validate and filter using your schema registry.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct EventSourceMappingSelfManagedKafkaEventSourceConfigSchemaRegistryConfigSchemaValidationConfigs {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub attribute: Option<String>,
 }
 
 /// To secure and define access to your event source, you can specify the authentication
@@ -385,7 +521,7 @@ pub struct EventSourceMappingStatus {
     /// changed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastModified")]
     pub last_modified: Option<String>,
-    /// The result of the last Lambda invocation of your function.
+    /// The result of the event source mapping's last processing attempt.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastProcessingResult")]
     pub last_processing_result: Option<String>,
     /// The state of the event source mapping. It can be one of the following: Creating,

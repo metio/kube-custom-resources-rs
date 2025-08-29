@@ -68,7 +68,7 @@ pub struct VersionSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionFunctionEventInvokeConfig {
     /// A configuration object that specifies the destination of an event after Lambda
-    /// processes it.
+    /// processes it. For more information, see Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationConfig")]
     pub destination_config: Option<VersionFunctionEventInvokeConfigDestinationConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "functionName")]
@@ -82,10 +82,11 @@ pub struct VersionFunctionEventInvokeConfig {
 }
 
 /// A configuration object that specifies the destination of an event after Lambda
-/// processes it.
+/// processes it. For more information, see Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionFunctionEventInvokeConfigDestinationConfig {
-    /// A destination for events that failed processing.
+    /// A destination for events that failed processing. For more information, see
+    /// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailure")]
     pub on_failure: Option<VersionFunctionEventInvokeConfigDestinationConfigOnFailure>,
     /// A destination for events that were processed successfully.
@@ -93,11 +94,15 @@ pub struct VersionFunctionEventInvokeConfigDestinationConfig {
     /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
     /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
     /// or Amazon EventBridge event bus as the destination.
+    /// 
+    /// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+    /// requests.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSuccess")]
     pub on_success: Option<VersionFunctionEventInvokeConfigDestinationConfigOnSuccess>,
 }
 
-/// A destination for events that failed processing.
+/// A destination for events that failed processing. For more information, see
+/// Adding a destination (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async-retain-records.html#invocation-async-destinations).>
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionFunctionEventInvokeConfigDestinationConfigOnFailure {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -109,6 +114,9 @@ pub struct VersionFunctionEventInvokeConfigDestinationConfigOnFailure {
 /// To retain records of successful asynchronous invocations (<https://docs.aws.amazon.com/lambda/latest/dg/invocation-async.html#invocation-async-destinations),>
 /// you can configure an Amazon SNS topic, Amazon SQS queue, Lambda function,
 /// or Amazon EventBridge event bus as the destination.
+/// 
+/// OnSuccess is not supported in CreateEventSourceMapping or UpdateEventSourceMapping
+/// requests.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VersionFunctionEventInvokeConfigDestinationConfigOnSuccess {
     #[serde(default, skip_serializing_if = "Option::is_none")]

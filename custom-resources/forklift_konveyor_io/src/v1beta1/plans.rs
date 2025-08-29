@@ -60,7 +60,7 @@ pub struct PlanSpec {
     /// - If set to false, legacy drivers will be skipped, and the system will fall back to using the standard (SHA-2 signed) drivers.
     /// 
     /// When enabled, legacy drivers are exposed to the virt-v2v conversion process via the VIRTIO_WIN environment variable,
-    /// which points to the legacy ISO at /usr/local/virtio-win.iso.
+    /// which points to the legacy ISO at /usr/local/virtio-win-legacy.iso.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "installLegacyDrivers")]
     pub install_legacy_drivers: Option<bool>,
     /// Resource mapping.

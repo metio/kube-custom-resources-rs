@@ -906,10 +906,8 @@ spec:
                 truststores:
                   additionalProperties:
                     properties:
-                      name:
-                        description: "Not used. To be removed in later versions."
-                        type: "string"
-                      secret:
+                      configMap:
+                        description: "The ConfigMap containing the trust material - only set one of the other secret or configMap"
                         properties:
                           name:
                             type: "string"
@@ -918,8 +916,19 @@ spec:
                         required:
                           - "name"
                         type: "object"
-                    required:
-                      - "secret"
+                      name:
+                        description: "Not used. To be removed in later versions."
+                        type: "string"
+                      secret:
+                        description: "The Secret containing the trust material - only set one of the other secret or configMap"
+                        properties:
+                          name:
+                            type: "string"
+                          optional:
+                            type: "boolean"
+                        required:
+                          - "name"
+                        type: "object"
                     type: "object"
                   description: "In this section you can configure Keycloak truststores."
                   type: "object"

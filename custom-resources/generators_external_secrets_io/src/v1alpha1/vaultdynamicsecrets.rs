@@ -62,6 +62,11 @@ pub struct VaultDynamicSecretProvider {
     /// The provider for the CA bundle to use to validate Vault server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caProvider")]
     pub ca_provider: Option<VaultDynamicSecretProviderCaProvider>,
+    /// CheckAndSet defines the Check-And-Set (CAS) settings for PushSecret operations.
+    /// Only applies to Vault KV v2 stores. When enabled, write operations must include
+    /// the current version of the secret to prevent unintentional overwrites.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkAndSet")]
+    pub check_and_set: Option<VaultDynamicSecretProviderCheckAndSet>,
     /// ForwardInconsistent tells Vault to forward read-after-write requests to the Vault
     /// leader instead of simply retrying within a loop. This can increase performance if
     /// the option is enabled serverside.
@@ -622,6 +627,17 @@ pub struct VaultDynamicSecretProviderCaProvider {
 pub enum VaultDynamicSecretProviderCaProviderType {
     Secret,
     ConfigMap,
+}
+
+/// CheckAndSet defines the Check-And-Set (CAS) settings for PushSecret operations.
+/// Only applies to Vault KV v2 stores. When enabled, write operations must include
+/// the current version of the secret to prevent unintentional overwrites.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VaultDynamicSecretProviderCheckAndSet {
+    /// Required when true, all write operations must include a check-and-set parameter.
+    /// This helps prevent unintentional overwrites of secrets.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub required: Option<bool>,
 }
 
 /// The configuration used for client side related TLS communication, when the Vault server
